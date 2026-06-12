@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zero-Copy & RDMA — Post 58</title>
+<title>Zero-Copy & RDMA, Post 58</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
     font-size: clamp(24px, 5vw, 34px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -291,7 +291,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -302,7 +302,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — Every Byte Crosses Four Walls -->
+    <!-- SLIDE 2, Every Byte Crosses Four Walls -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -313,7 +313,7 @@
         <div class="stats">
           <div class="st">
             <span class="st-v pk">Arrive</span>
-            <div class="st-t"><strong>Packet arrives at NIC, DMA'd into kernel socket buffer.</strong> First copy lands in kernel memory — inaccessible to your application.</div>
+            <div class="st-t"><strong>Packet arrives at NIC, DMA'd into kernel socket buffer.</strong> First copy lands in kernel memory, inaccessible to your application.</div>
           </div>
           <div class="st">
             <span class="st-v pk">recv()</span>
@@ -325,14 +325,14 @@
           </div>
           <div class="st">
             <span class="st-v vt">At scale</span>
-            <div class="st-t"><strong>Syncing 100 GB of gradients across 1,000 GPUs means 100 TB of memory copies per step.</strong> The bottleneck is not the network — it is the copy.</div>
+            <div class="st-t"><strong>Syncing 100 GB of gradients across 1,000 GPUs means 100 TB of memory copies per step.</strong> The bottleneck is not the network, it is the copy.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — sendfile, mmap, io_uring -->
+    <!-- SLIDE 3, sendfile, mmap, io_uring -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -343,7 +343,7 @@
         <div class="stats">
           <div class="st">
             <span class="st-v vt">sendfile()</span>
-            <div class="st-t"><strong>Copies data from page cache directly to a socket — no copy to userspace.</strong> nginx uses this. 40x faster than read+write for file serving at high concurrency.</div>
+            <div class="st-t"><strong>Copies data from page cache directly to a socket, no copy to userspace.</strong> nginx uses this. 40x faster than read+write for file serving at high concurrency.</div>
           </div>
           <div class="st">
             <span class="st-v cy">mmap()</span>
@@ -362,7 +362,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — RDMA: No CPU. No Kernel. No Copy. -->
+    <!-- SLIDE 4, RDMA: No CPU. No Kernel. No Copy. -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -387,7 +387,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — Three Flavors of RDMA -->
+    <!-- SLIDE 5, Three Flavors of RDMA -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -417,7 +417,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — In Production -->
+    <!-- SLIDE 6, In Production -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -447,7 +447,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -458,7 +458,7 @@
         <div class="stats">
           <div class="st">
             <span class="st-v vt">Zero-copy</span>
-            <div class="st-t"><strong>Avoiding redundant CPU memcpy between kernel and userspace.</strong> sendfile(), mmap(), splice(), io_uring — each eliminates one or more memory copies.</div>
+            <div class="st-t"><strong>Avoiding redundant CPU memcpy between kernel and userspace.</strong> sendfile(), mmap(), splice(), io_uring, each eliminates one or more memory copies.</div>
           </div>
           <div class="st">
             <span class="st-v cy">RDMA</span>
@@ -519,7 +519,7 @@ Not because the code was slow. Because data had to cross four walls before a sin
 
 Modern networking hardware moves data at 400 gigabits per second. But the Linux network stack was designed when that was unimaginable. A packet arrives at the NIC, gets DMA'd into a kernel socket buffer, copied to a userspace buffer on recv(), then copied again into GPU memory via cudaMemcpy. At 100 Gbps line rate, the copy overhead consumes more CPU than the application logic itself. In a distributed ML cluster syncing 100 GB of gradients, the bottleneck stops being the network and starts being the copy.
 
-Zero-copy is the first half of the fix. sendfile() sends a file directly from the page cache to a socket without ever copying to userspace. nginx uses this and serves files 40x faster than naive read plus write at high concurrency. mmap() maps kernel memory into userspace address space — your app reads the same physical pages the kernel wrote. io_uring submits and reaps async I/O through a shared ring buffer, eliminating the per-operation syscall overhead entirely.
+Zero-copy is the first half of the fix. sendfile() sends a file directly from the page cache to a socket without ever copying to userspace. nginx uses this and serves files 40x faster than naive read plus write at high concurrency. mmap() maps kernel memory into userspace address space, your app reads the same physical pages the kernel wrote. io_uring submits and reaps async I/O through a shared ring buffer, eliminating the per-operation syscall overhead entirely.
 
 RDMA is the second half. Remote Direct Memory Access lets a NIC read from one machine's application memory and write directly to another machine's application memory, with the CPU uninvolved on both ends after initial registration. No kernel network stack. No context switches. No copies. Latency drops from 100 to 200 microseconds for TCP to 1 to 2 microseconds for InfiniBand RDMA.
 

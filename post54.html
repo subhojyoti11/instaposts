@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BitNet — Post 54</title>
+<title>BitNet, Post 54</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -301,7 +301,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -312,7 +312,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — The Quantization Ladder -->
+    <!-- SLIDE 2, The Quantization Ladder -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -342,7 +342,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — Weights as -1, 0, +1 -->
+    <!-- SLIDE 3, Weights as -1, 0, +1 -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -359,7 +359,7 @@
           <span class="fc">W</span> in {-1, 0, +1}      <span class="dm"># no fractions</span><br>
           output = sum(<span class="cy">x[i]</span> if <span class="fc">W[i]</span>==+1)<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- sum(<span class="cy">x[i]</span> if <span class="fc">W[i]</span>==-1)<br>
-          <span class="dm"># W[i]==0: skip — free computation</span>
+          <span class="dm"># W[i]==0: skip, free computation</span>
         </div>
         <div class="gcard fc-c">
           <p><strong>1.58 bits = log2(3).</strong> Three states: amplify (+1), suppress (-1), ignore (0). Matrix multiplication becomes addition and subtraction only. Zero multiplies at inference.</p>
@@ -368,7 +368,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — Why Hardware Changes -->
+    <!-- SLIDE 4, Why Hardware Changes -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -398,7 +398,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — Training with Ternary Weights -->
+    <!-- SLIDE 5, Training with Ternary Weights -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -419,13 +419,13 @@
           <span class="dm"># dL/dW_fp ≈ dL/dW_tern (pass-through)</span>
         </div>
         <div class="gcard cy-c">
-          <p><strong>Quantization only happens in the forward pass.</strong> Gradients flow through it unchanged — this is the straight-through estimator. Without it, ternary weights would zero out every gradient.</p>
+          <p><strong>Quantization only happens in the forward pass.</strong> Gradients flow through it unchanged, this is the straight-through estimator. Without it, ternary weights would zero out every gradient.</p>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — What It Delivers -->
+    <!-- SLIDE 6, What It Delivers -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -448,14 +448,14 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Latency</span>
-            <div class="st-t"><strong>On ARM CPU with NEON SIMD,</strong> 1.58-bit inference matches or beats float16 GPU throughput at batch size 1 — the critical edge serving scenario.</div>
+            <div class="st-t"><strong>On ARM CPU with NEON SIMD,</strong> 1.58-bit inference matches or beats float16 GPU throughput at batch size 1, the critical edge serving scenario.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -478,7 +478,7 @@
           </div>
           <div class="st">
             <span class="st-v yl">STE</span>
-            <div class="st-t"><strong>Straight-Through Estimator.</strong> Passes gradient through quantization unchanged. Required for training — without it, ternary models cannot learn.</div>
+            <div class="st-t"><strong>Straight-Through Estimator.</strong> Passes gradient through quantization unchanged. Required for training, without it, ternary models cannot learn.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Use when</span>
@@ -529,13 +529,13 @@ Standard neural network weights are stored as 16-bit floating-point numbers. Eac
 
 BitNet asks a different question. What if the weights were not fractions at all?
 
-Microsoft Research published BitNet in 2023. The idea: replace every weight in every linear layer with a binary value — either -1 or +1. Nothing else. No fractions. No floating-point arithmetic. A matrix multiplication becomes a sequence of additions and subtractions. On modern hardware, that is roughly 10 times cheaper per operation in both energy and transistor count.
+Microsoft Research published BitNet in 2023. The idea: replace every weight in every linear layer with a binary value, either -1 or +1. Nothing else. No fractions. No floating-point arithmetic. A matrix multiplication becomes a sequence of additions and subtractions. On modern hardware, that is roughly 10 times cheaper per operation in both energy and transistor count.
 
-BitNet b1.58 extended this to ternary weights: -1, 0, or +1. Three states. Log2 of 3 is 1.58, hence the name. The zero state adds something binary could not offer — the ability to skip a weight entirely, contributing nothing to the output. Ternary weights match the accuracy of binary models while being easier to train, and at 3 billion parameters and above they match the quality of full float16 models on standard benchmarks.
+BitNet b1.58 extended this to ternary weights: -1, 0, or +1. Three states. Log2 of 3 is 1.58, hence the name. The zero state adds something binary could not offer, the ability to skip a weight entirely, contributing nothing to the output. Ternary weights match the accuracy of binary models while being easier to train, and at 3 billion parameters and above they match the quality of full float16 models on standard benchmarks.
 
-The training trick is subtle. The weights are stored in full float32 precision during training and updated normally by the optimizer. Only in the forward pass are they quantized to -1, 0, or +1 for the actual computation. Gradients flow back through the quantization step unchanged — this is called the straight-through estimator. Without it, the discrete step function would zero out every gradient and the model could never learn.
+The training trick is subtle. The weights are stored in full float32 precision during training and updated normally by the optimizer. Only in the forward pass are they quantized to -1, 0, or +1 for the actual computation. Gradients flow back through the quantization step unchanged, this is called the straight-through estimator. Without it, the discrete step function would zero out every gradient and the model could never learn.
 
-The result is a model that is 8 to 10 times smaller, uses a tenth of the energy per token, and runs faster on a CPU than a float16 model runs on a GPU — for the single-request batch sizes that matter most for edge and mobile deployment.
+The result is a model that is 8 to 10 times smaller, uses a tenth of the energy per token, and runs faster on a CPU than a float16 model runs on a GPU, for the single-request batch sizes that matter most for edge and mobile deployment.
 
 We have been building AI infrastructure around the assumption that weights are floats. BitNet suggests that assumption was never necessary.
 

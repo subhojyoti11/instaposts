@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consensus Algorithms — Raft vs Paxos vs PBFT</title>
+<title>Consensus Algorithms, Raft vs Paxos vs PBFT</title>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,300;0,400;0,700;0,900;1,400;1,700&family=Fira+Code:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -204,7 +204,7 @@ h1.main .warm{color:var(--accent-warm)}
 
 <header class="page-head">
   <div class="kicker">Distributed Systems · Consensus</div>
-  <h1 class="main">How distributed nodes <em>agree on truth</em> — even when <span class="warm">some lie.</span></h1>
+  <h1 class="main">How distributed nodes <em>agree on truth</em>, even when <span class="warm">some lie.</span></h1>
   <p class="dek">Three algorithms. One committee voting metaphor. The protocols that keep your databases, blockchains, and clusters from falling apart.</p>
 </header>
 
@@ -217,9 +217,9 @@ h1.main .warm{color:var(--accent-warm)}
       <div class="slide-meta"><span>01 / 07</span><span class="tag">● COVER</span></div>
       <div class="hero">
         <span class="hero-word hero-raft">Raft</span>
-        <span class="hero-vs">— vs —</span>
+        <span class="hero-vs">- vs -</span>
         <span class="hero-word hero-paxos">Paxos</span>
-        <span class="hero-vs">— vs —</span>
+        <span class="hero-vs">- vs -</span>
         <span class="hero-word hero-pbft">PBFT</span>
       </div>
       <!-- <p class="mono-sub">consensus · 3 algorithms · 1 metaphor</p> -->
@@ -345,10 +345,10 @@ h1.main .warm{color:var(--accent-warm)}
         <tr><td class="lbl">Scale</td><td class="raft-col">100s nodes</td><td class="paxos-col">100s nodes</td><td class="pbft-col">~20 nodes</td></tr>
       </table>
       <div class="uses" style="margin-top:14px">
-        <div class="use-chip"><strong>etcd & K8s</strong>Raft — Kubernetes leader election and config store.</div>
-        <div class="use-chip warm"><strong>Google Chubby</strong>Paxos — distributed lock service powering Bigtable.</div>
-        <div class="use-chip red"><strong>Hyperledger</strong>PBFT — permissioned blockchain consensus.</div>
-        <div class="use-chip"><strong>CockroachDB</strong>Raft — multi-region strongly consistent SQL.</div>
+        <div class="use-chip"><strong>etcd & K8s</strong>Raft, Kubernetes leader election and config store.</div>
+        <div class="use-chip warm"><strong>Google Chubby</strong>Paxos, distributed lock service powering Bigtable.</div>
+        <div class="use-chip red"><strong>Hyperledger</strong>PBFT, permissioned blockchain consensus.</div>
+        <div class="use-chip"><strong>CockroachDB</strong>Raft, multi-region strongly consistent SQL.</div>
       </div>
       <div class="foot">
         <span class="brand">// different trust, different tool</span>

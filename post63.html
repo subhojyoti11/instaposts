@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitOps, Post 63</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0b0f; --card:#131520; --ink:#e2e8f0; --ink2:#a0a0a0; --dim:#8899aa; --orange:#f97316; --teal:#10b981; --indigo:#6366f1; --border:rgba(249,115,22,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .or { color:var(--orange); } .slide h2 .tl { color:var(--teal); } .slide h2 .id { color:var(--indigo); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--orange); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .or { color:#fdba74; } .code .tl { color:#6ee7b7; } .code .id { color:#a5b4fc; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.or { color:var(--orange); } .st-v.tl { color:var(--teal); } .st-v.id { color:var(--indigo); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.or-c { background:rgba(249,115,22,.06); border:1px solid rgba(249,115,22,.15); }
+  .gcard.tl-c { background:rgba(16,185,129,.06); border:1px solid rgba(16,185,129,.15); }
+  .gcard.id-c { background:rgba(99,102,241,.06); border:1px solid rgba(99,102,241,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(249,115,22,.2); color:var(--orange); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--orange); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--orange); color:var(--orange); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(249,115,22,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--orange); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--orange); color:var(--orange); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(226,232,240,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--orange); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(249,115,22,.2); color:var(--orange); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--orange); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--teal); color:var(--teal); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="or">GitOps</span>.<br>Git as the<br><span class="tl">Source of</span><br>Truth.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="or">Push Model</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v or">Push CI/CD</span><div class="st-t"><strong>A pipeline detects a code change, runs tests, then pushes to the cluster via kubectl or Helm.</strong> The pipeline holds cluster credentials with admin permissions.</div></div>
+          <div class="st"><span class="st-v or">Sprawl</span><div class="st-t"><strong>Every CI system needs direct access to every cluster.</strong> Jenkins, GitHub Actions, and Buildkite all hold kubeconfig files. Credentials multiply across systems.</div></div>
+          <div class="st"><span class="st-v" style="color:var(--dim)">No reconcile</span><div class="st-t"><strong>The pipeline runs once at deploy time.</strong> If someone manually runs kubectl apply to hotfix an incident, the cluster state diverges. Nobody knows until something breaks.</div></div>
+          <div class="st"><span class="st-v tl">Audit gap</span><div class="st-t"><strong>Git history shows code changes. Cluster history shows nothing.</strong> Who changed the replica count? When? The answer lives in a Slack message nobody can find.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="tl">Pull Model</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v tl">Principle</span><div class="st-t"><strong>Git is the single source of truth for the desired state of the system.</strong> No human and no pipeline pushes to the cluster. A controller inside the cluster does.</div></div>
+          <div class="st"><span class="st-v or">Reconcile</span><div class="st-t"><strong>ArgoCD or Flux runs a continuous loop.</strong> Every few seconds it compares Git state to cluster state. If they differ, it applies the Git version. The cluster always converges.</div></div>
+          <div class="st"><span class="st-v tl">No outbound</span><div class="st-t"><strong>The CI pipeline never touches the cluster.</strong> It pushes to Git. The cluster controller pulls from Git. Cluster credentials stay inside the cluster, never in CI systems.</div></div>
+          <div class="st"><span class="st-v or">Audit trail</span><div class="st-t"><strong>Every change to the cluster is a Git commit.</strong> Who changed what and when is answerable with git log. Rollback is git revert. No special tooling needed.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="or">Reconciliation</span><br>Loop.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># ArgoCD Application manifest (in Git):</span>
+apiVersion: argoproj.io/v1alpha1
+kind: <span class="or">Application</span>
+metadata:
+  name: <span class="tl">payment-service</span>
+spec:
+  source:
+    repoURL: https://github.com/acme/gitops
+    path:    apps/payment/overlays/prod
+    targetRevision: <span class="or">main</span>
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: <span class="tl">payments</span>
+  syncPolicy:
+    automated:
+      prune:    <span class="id">true</span>  <span class="dm"># delete removed resources</span>
+      selfHeal: <span class="id">true</span>  <span class="dm"># revert manual changes</span>
+        </div>
+        <div class="gcard tl-c"><p><strong>selfHeal: true</strong> means ArgoCD reverts any manual kubectl apply automatically. The cluster cannot drift from Git.</p></div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What Changes<br><span class="tl">in GitOps.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v tl">Deploy by PR</span><div class="st-t"><strong>To deploy to production, open a pull request updating the image tag in a Kustomize overlay.</strong> Reviewers approve. The merge triggers ArgoCD, not a pipeline.</div></div>
+          <div class="st"><span class="st-v or">Promotion</span><div class="st-t"><strong>Promoting from staging to production is a Git operation.</strong> Cherry-pick or merge the change across overlay directories. Full history preserved with no special deploy tools.</div></div>
+          <div class="st"><span class="st-v tl">Drift alerts</span><div class="st-t"><strong>ArgoCD marks applications as OutOfSync if the cluster diverges from Git,</strong> even due to manual changes. Alerts fire before the gap can widen into an incident.</div></div>
+          <div class="st"><span class="st-v or">DR</span><div class="st-t"><strong>To restore a cluster from zero, point ArgoCD at the Git repository.</strong> Every namespace, deployment, configmap, and secret descriptor is in Git. The cluster rebuilds itself.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="or">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v or">ArgoCD</span><div class="st-t"><strong>CNCF graduated project and the most widely adopted GitOps controller.</strong> Used by Adobe, IBM, Intuit, Red Hat. Supports multi-cluster management, RBAC, and SSO.</div></div>
+          <div class="st"><span class="st-v tl">Flux</span><div class="st-t"><strong>The other major CNCF GitOps project.</strong> More composable and Helm-native. Preferred by teams that want lighter-weight tooling and more granular controller composition.</div></div>
+          <div class="st"><span class="st-v or">Weaveworks</span><div class="st-t"><strong>The company that coined the term "GitOps" in 2017.</strong> Their open-source tooling and blog posts established the pattern across the cloud-native community.</div></div>
+          <div class="st"><span class="st-v tl">Adoption</span><div class="st-t"><strong>CNCF 2023 survey: GitOps is the fastest-growing operational pattern in cloud-native deployments.</strong> ArgoCD usage up 150% year over year across surveyed organizations.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="or">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v or">GitOps</span><div class="st-t"><strong>Operational pattern where Git is the single source of truth for system state.</strong> A controller inside the cluster continuously reconciles actual state to Git state.</div></div>
+          <div class="st"><span class="st-v tl">ArgoCD</span><div class="st-t"><strong>CNCF GitOps controller.</strong> Watches Git repositories and syncs Kubernetes clusters. Detects drift and optionally self-heals by reverting manual changes automatically.</div></div>
+          <div class="st"><span class="st-v or">Flux</span><div class="st-t"><strong>Alternative CNCF GitOps controller.</strong> More modular and toolkit-based. Preferred for Helm-heavy workflows and composable multi-tenant cluster management setups.</div></div>
+          <div class="st"><span class="st-v tl">Reconcile</span><div class="st-t"><strong>Continuous loop comparing desired state (Git) to actual state (cluster).</strong> If they differ, the controller applies Git version and raises an alert for the team.</div></div>
+          <div class="st"><span class="st-v or">Drift</span><div class="st-t"><strong>When cluster state no longer matches Git state.</strong> Caused by manual kubectl apply or partial sync failures. Detected and reported by ArgoCD or Flux within seconds.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Your deployment pipeline has credentials for every cluster it deploys to. That is the problem.
+
+Traditional CI/CD works by push. A pipeline detects a code change, runs tests, then pushes to the Kubernetes cluster using kubeconfig files stored in the CI system. Jenkins holds credentials. GitHub Actions holds credentials. Every pipeline has cluster admin access because the deployment needs it. The credentials multiply. The attack surface grows. And when someone runs a manual kubectl apply to fix an incident, the cluster state silently diverges from the declared state in code.
+
+GitOps reverses the model. Git is the single source of truth for what the cluster should look like. A controller running inside the cluster watches a Git repository. Every few seconds it compares the desired state in Git to the actual state in the cluster. If they differ, it applies the Git version and alerts the team. The CI pipeline never touches the cluster. It pushes to Git. The cluster pulls from Git. Credentials stay inside the cluster.
+
+The consequences of this reversal are significant. Deploying to production means opening a pull request that updates an image tag. Reviewers approve. The merge triggers the controller, not a pipeline. Rolling back is git revert. The full history of every cluster change is in the Git log, with author and timestamp. If the cluster is destroyed, pointing the controller at the repository rebuilds it entirely, because every resource descriptor is already in Git.
+
+Drift detection is automatic. If anyone runs kubectl apply manually, ArgoCD marks the application as OutOfSync within seconds and alerts the team before the gap becomes an incident.
+
+ArgoCD is the CNCF-graduated standard, used by Adobe, IBM, and Red Hat. Flux is the composable alternative preferred for Helm-heavy environments.
+
+Swipe to see the push model versus the pull model, what the ArgoCD reconciliation loop looks like, and how a single manifest controls everything.
+
+#gitops #kubernetes #devops #cloudnative #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#131520',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'gitops-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'gitops-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

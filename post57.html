@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eBPF — Post 57</title>
+<title>eBPF, Post 57</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -301,7 +301,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -312,7 +312,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — The Kernel Module Trap -->
+    <!-- SLIDE 2, The Kernel Module Trap -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -342,7 +342,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — A Safe VM Inside the Kernel -->
+    <!-- SLIDE 3, A Safe VM Inside the Kernel -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -365,14 +365,14 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Deploy</span>
-            <div class="st-t"><strong>Bad programs are rejected at load time — the kernel is never at risk.</strong> Load, update, and remove eBPF programs without rebooting.</div>
+            <div class="st-t"><strong>Bad programs are rejected at load time, the kernel is never at risk.</strong> Load, update, and remove eBPF programs without rebooting.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — Attach to Anything -->
+    <!-- SLIDE 4, Attach to Anything -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -385,19 +385,19 @@
           <span class="em">kprobe</span>/<span class="em">kretprobe</span>  <span class="dm"># any kernel function</span><br>
           <span class="am">uprobe</span>/<span class="am">uretprobe</span>  <span class="dm"># any userspace function</span><br>
           <span class="em">tracepoint</span>        <span class="dm"># stable kernel events</span><br>
-          <span class="ro">XDP</span>               <span class="dm"># NIC driver — before stack</span><br>
+          <span class="ro">XDP</span>               <span class="dm"># NIC driver, before stack</span><br>
           <span class="am">TC</span> ingress/egress  <span class="dm"># traffic control hooks</span><br>
           <span class="em">LSM</span>               <span class="dm"># security module hooks</span><br>
           <span class="am">perf_event</span>        <span class="dm"># CPU hardware counters</span>
         </div>
         <div class="gcard ro-c">
-          <p><strong>XDP runs at the NIC driver level</strong> — before socket buffer allocation, before the network stack. Drop or redirect packets at hardware line rate.</p>
+          <p><strong>XDP runs at the NIC driver level</strong>, before socket buffer allocation, before the network stack. Drop or redirect packets at hardware line rate.</p>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — Maps: The Data Bridge -->
+    <!-- SLIDE 5, Maps: The Data Bridge -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -420,14 +420,14 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Both ways</span>
-            <div class="st-t"><strong>Userspace can write to maps too.</strong> Push policy or configuration into a running eBPF program at any time — no reload, no reboot.</div>
+            <div class="st-t"><strong>Userspace can write to maps too.</strong> Push policy or configuration into a running eBPF program at any time, no reload, no reboot.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — In Production -->
+    <!-- SLIDE 6, In Production -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -442,11 +442,11 @@
           </div>
           <div class="st">
             <span class="st-v am">Meta</span>
-            <div class="st-t"><strong>Replaced their L4 load balancer with eBPF/XDP.</strong> Tens of millions of packets per second per CPU core — IPVS could not scale to this.</div>
+            <div class="st-t"><strong>Replaced their L4 load balancer with eBPF/XDP.</strong> Tens of millions of packets per second per CPU core, IPVS could not scale to this.</div>
           </div>
           <div class="st">
             <span class="st-v ro">Cloudflare</span>
-            <div class="st-t"><strong>DDoS mitigation via XDP.</strong> Malicious packets dropped before kernel network stack allocation — at hardware line rate, no per-packet CPU cost.</div>
+            <div class="st-t"><strong>DDoS mitigation via XDP.</strong> Malicious packets dropped before kernel network stack allocation, at hardware line rate, no per-packet CPU cost.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Observability</span>
@@ -457,7 +457,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -484,7 +484,7 @@
           </div>
           <div class="st">
             <span class="st-v ro">XDP</span>
-            <div class="st-t"><strong>eXpress Data Path.</strong> eBPF at the NIC driver — earliest packet processing point. Used for DDoS mitigation, L4 load balancing, packet steering.</div>
+            <div class="st-t"><strong>eXpress Data Path.</strong> eBPF at the NIC driver, earliest packet processing point. Used for DDoS mitigation, L4 load balancing, packet steering.</div>
           </div>
         </div>
       </div>
@@ -525,13 +525,13 @@
     </div>
     <div class="caption-text" id="captionText">Your Kubernetes cluster runs a feature you never deployed. It ships with the Linux kernel.
 
-For decades, the only way to add custom behavior to the Linux kernel was to write a kernel module. Kernel modules live in kernel space. They run with full privileges. And when they have a bug — not if, when — they take down the entire machine. No process isolation. No safety net. A bad pointer dereference in a kernel module is a kernel panic. That is why nobody ships custom kernel code to production machines at scale. The risk is too high and the deployment cost is too steep: new kernel version, recompile, reboot.
+For decades, the only way to add custom behavior to the Linux kernel was to write a kernel module. Kernel modules live in kernel space. They run with full privileges. And when they have a bug, not if, when, they take down the entire machine. No process isolation. No safety net. A bad pointer dereference in a kernel module is a kernel panic. That is why nobody ships custom kernel code to production machines at scale. The risk is too high and the deployment cost is too steep: new kernel version, recompile, reboot.
 
 eBPF changes both of those constraints simultaneously.
 
-eBPF is a virtual machine built into the Linux kernel. You write a small program — in C, or Rust, or directly in eBPF bytecode — and load it into the kernel via the bpf() system call. Before it ever runs, the kernel's verifier mathematically proves the program is safe: no infinite loops, no out-of-bounds memory access, no way to crash the system. If it passes, it gets JIT-compiled to native machine code and attached to a hook. The kernel is never at risk.
+eBPF is a virtual machine built into the Linux kernel. You write a small program, in C, or Rust, or directly in eBPF bytecode, and load it into the kernel via the bpf() system call. Before it ever runs, the kernel's verifier mathematically proves the program is safe: no infinite loops, no out-of-bounds memory access, no way to crash the system. If it passes, it gets JIT-compiled to native machine code and attached to a hook. The kernel is never at risk.
 
-The hooks are what make eBPF remarkable. You can attach to any kernel function entry or return. Any userspace function. Any hardware performance counter. But the most powerful hook is XDP — eXpress Data Path — which sits at the NIC driver level, before the kernel even allocates a socket buffer. eBPF programs at XDP inspect, modify, redirect, or drop packets before they touch the network stack, at hardware line rate. Millions of packets per second per CPU core.
+The hooks are what make eBPF remarkable. You can attach to any kernel function entry or return. Any userspace function. Any hardware performance counter. But the most powerful hook is XDP, eXpress Data Path, which sits at the NIC driver level, before the kernel even allocates a socket buffer. eBPF programs at XDP inspect, modify, redirect, or drop packets before they touch the network stack, at hardware line rate. Millions of packets per second per CPU core.
 
 Data flows out through maps. Maps are key-value stores in kernel memory that eBPF programs and userspace applications share. A ring buffer map streams events to userspace with near-zero overhead. A hash map stores per-connection state that both sides read and write.
 

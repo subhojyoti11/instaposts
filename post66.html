@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information Theory in LLMs, Post 66</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#07090b; --card:#0e1015; --ink:#dce8f5; --ink2:#a0a0a0; --dim:#7a8fa0; --blue:#60a5fa; --emerald:#34d399; --red:#f87171; --border:rgba(96,165,250,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .bl { color:var(--blue); } .slide h2 .em { color:var(--emerald); } .slide h2 .rd { color:var(--red); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--blue); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .bl { color:#93c5fd; } .code .em { color:#6ee7b7; } .code .rd { color:#fca5a5; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.bl { color:var(--blue); } .st-v.em { color:var(--emerald); } .st-v.rd { color:var(--red); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.bl-c { background:rgba(96,165,250,.06); border:1px solid rgba(96,165,250,.15); }
+  .gcard.em-c { background:rgba(52,211,153,.06); border:1px solid rgba(52,211,153,.15); }
+  .gcard.rd-c { background:rgba(248,113,113,.06); border:1px solid rgba(248,113,113,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(96,165,250,.2); color:var(--blue); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--blue); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--blue); color:var(--blue); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(96,165,250,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--blue); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--blue); color:var(--blue); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(220,232,245,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--blue); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(96,165,250,.2); color:var(--blue); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--blue); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--emerald); color:var(--emerald); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="bl">Information</span><br>Theory<br>Inside<br><span class="em">LLMs</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Shannon's <span class="bl">Entropy</span>,<br>Briefly.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Definition</span><div class="st-t"><strong>Shannon entropy measures the average uncertainty in a probability distribution.</strong> High entropy means many outcomes are equally likely. Low entropy means one outcome dominates and the result is predictable.</div></div>
+          <div class="st"><span class="st-v bl">In language</span><div class="st-t"><strong>Given the word "the", the next word has high entropy.</strong> Thousands of words can follow. Given "United", the next word "States" has low entropy. Context collapses the distribution.</div></div>
+          <div class="st"><span class="st-v em">Bits</span><div class="st-t"><strong>Entropy is measured in bits.</strong> One bit is the information content of a fair coin flip. A 256-word vocabulary with uniform distribution has entropy of 8 bits per token. Real language is far lower.</div></div>
+          <div class="st"><span class="st-v rd">Why it matters</span><div class="st-t"><strong>LLMs are learning to compress language by modeling its entropy.</strong> A model that predicts the next token well has internalized the statistical structure of the training corpus, including grammar, facts, and reasoning patterns.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Cross-Entropy<br><span class="em">Training Loss</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Cross-entropy loss for next-token prediction:</span>
+
+<span class="bl">L</span> = -<span class="em">sum</span>(y_true * <span class="rd">log</span>(y_pred))
+
+<span class="dm"># Where:</span>
+<span class="em">y_true</span> = one-hot label   <span class="dm"># actual next token</span>
+<span class="bl">y_pred</span> = model output   <span class="dm"># softmax probability dist</span>
+
+<span class="dm"># Simplified for a single correct token t:</span>
+<span class="bl">L</span> = -<span class="rd">log</span>(p(t))
+
+<span class="dm"># p("States") = 0.97  → loss = 0.03  (confident, right)</span>
+<span class="dm"># p("States") = 0.01  → loss = 4.61  (uncertain, right)</span>
+<span class="dm"># Minimizing loss == maximizing log-probability of correct tokens</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="bl">Perplexity</span><br>Explained.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">What it is</span><div class="st-t"><strong>Perplexity is the exponentiated average cross-entropy loss.</strong> It represents the effective branching factor: how many choices the model is uncertain between at each token position, on average.</div></div>
+          <div class="st"><span class="st-v em">Interpretation</span><div class="st-t"><strong>Perplexity 10 means the model is, on average, as uncertain as if it had to choose uniformly from 10 equally likely options.</strong> GPT-2 scored ~35 on Penn Treebank. GPT-4 is below 5 on the same benchmark.</div></div>
+          <div class="st"><span class="st-v rd">The limit</span><div class="st-t"><strong>Human perplexity on natural text is estimated around 12 to 20.</strong> LLMs now score well below that on held-out text, which means they are better at predicting text than humans are, but that is a different question from whether they understand it.</div></div>
+          <div class="st"><span class="st-v bl">Temperature</span><div class="st-t"><strong>Temperature scales the logits before the softmax, controlling the sharpness of the output distribution.</strong> Temperature 0 collapses to argmax (lowest entropy, most deterministic). Temperature 1 uses the trained distribution unchanged.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>KL Divergence<br>and <span class="em">RLHF</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v em">KL divergence</span><div class="st-t"><strong>Kullback-Leibler divergence measures how much one probability distribution differs from another.</strong> KL(P||Q) is the extra bits needed to encode samples from P using a code optimized for Q.</div></div>
+          <div class="st"><span class="st-v bl">In RLHF</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback optimizes a reward model but adds a KL penalty term.</strong> The penalty prevents the fine-tuned model from drifting too far from the base model's distribution, which would cause degenerate outputs.</div></div>
+          <div class="st"><span class="st-v em">Objective</span><div class="st-t"><strong>Maximize reward from the preference model while keeping KL(policy||reference) below a threshold.</strong> This is why RLHF-trained models remain fluent. Without the KL constraint, reward hacking produces grammatically broken but high-reward outputs.</div></div>
+          <div class="st"><span class="st-v rd">In practice</span><div class="st-t"><strong>The KL coefficient is a tunable hyperparameter.</strong> Too low and the model reward-hacks. Too high and fine-tuning has no effect. Finding the right value is one of the key engineering challenges in alignment training.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Tokenization<br>and <span class="bl">Compression</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">BPE</span><div class="st-t"><strong>Byte-Pair Encoding builds a vocabulary by iteratively merging the most frequent symbol pairs in the training corpus.</strong> Common words become single tokens. Rare words are split into subword units, balancing vocabulary size against coverage.</div></div>
+          <div class="st"><span class="st-v em">Compression view</span><div class="st-t"><strong>A lower-perplexity model is a better compressor of text.</strong> Researchers have shown that LLM loss directly corresponds to compression ratio on a lossless compressor benchmark. Better language modeling equals better compression.</div></div>
+          <div class="st"><span class="st-v rd">Token cost</span><div class="st-t"><strong>Information-dense text uses fewer tokens per unit of meaning.</strong> Python code tokenizes more efficiently than English prose of equivalent semantic content. Token count drives both latency and API cost in production deployments.</div></div>
+          <div class="st"><span class="st-v bl">Mutual info</span><div class="st-t"><strong>Attention heads in transformers can be interpreted as maximizing mutual information between token positions.</strong> Heads that attend strongly to a distant token are capturing high mutual information between those two positions in the sequence.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="bl">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Entropy</span><div class="st-t"><strong>Average uncertainty in a probability distribution, measured in bits.</strong> High entropy means many equally likely outcomes. Low entropy means a dominant outcome. Context reduces entropy in language generation.</div></div>
+          <div class="st"><span class="st-v em">Cross-entropy loss</span><div class="st-t"><strong>The training objective for LLMs.</strong> Measures the gap between the model's predicted token distribution and the true next token. Minimizing it forces the model to assign high probability to correct tokens.</div></div>
+          <div class="st"><span class="st-v rd">Perplexity</span><div class="st-t"><strong>Exponentiated average loss.</strong> Represents the effective branching factor at each token. Lower is better. Modern LLMs score below human perplexity on held-out text benchmarks, though this does not imply understanding.</div></div>
+          <div class="st"><span class="st-v bl">KL divergence</span><div class="st-t"><strong>Measures difference between two probability distributions in bits.</strong> Used in RLHF as a penalty to prevent the fine-tuned policy from drifting too far from the base model during reward optimization.</div></div>
+          <div class="st"><span class="st-v em">Temperature</span><div class="st-t"><strong>Scales logits before softmax to sharpen or flatten the output distribution.</strong> Low temperature: confident, deterministic outputs. High temperature: diverse, creative, more uncertain outputs with higher effective entropy.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">LLMs are not magic. They are compression algorithms trained to minimize information-theoretic loss.
+
+Shannon entropy measures uncertainty. In language, entropy at each position depends on context. After "The United", the entropy over the next word is very low. After "The", it is high. A language model is learning to model this distribution, predicting the next token by estimating the probability of every token in its vocabulary given everything that came before.
+
+The training objective is cross-entropy loss: the negative log probability the model assigns to the correct next token. If the model assigns 97% probability to the right token, the loss is very small. If it assigns 1%, the loss is large. Gradient descent adjusts model weights to reduce this loss across billions of token predictions over the training corpus.
+
+Perplexity is the exponentiated average cross-entropy loss. Intuitively it is the effective branching factor: how many options the model is uncertain between at each step. GPT-2 scored around 35 on Penn Treebank in 2019. Modern LLMs score below 5 on the same benchmark, lower than human perplexity on natural text.
+
+Temperature controls the sharpness of the output distribution. Temperature 0 collapses to argmax. Temperature 1 samples from the trained distribution. Higher values produce more diverse, less predictable outputs with higher effective entropy.
+
+KL divergence appears in RLHF: when fine-tuning a model with a reward signal from human preferences, a KL penalty prevents the model from drifting too far from the base distribution. Without it, models reward-hack, producing grammatically broken outputs that maximize the reward model score without being useful.
+
+Compression and language modeling are mathematically equivalent. A lower-perplexity model is a better compressor. This connection is not metaphorical. It is measurable.
+
+Swipe to see the cross-entropy formula, how perplexity has improved across model generations, and the KL constraint in RLHF training.
+
+#llm #ai #machinelearning #informationtheory #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0e1015',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'infotheory-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'infotheory-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

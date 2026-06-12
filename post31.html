@@ -18,7 +18,7 @@ html,body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;min-he
 .hdr .num{font-family:'Fira Code',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .body{flex:1;min-height:0;overflow:hidden;padding:10px 26px 0 28px;display:flex;flex-direction:column}
 .tag{display:inline-block;font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;font-weight:600;flex-shrink:0;border-bottom:2px solid var(--purple);padding-bottom:3px;width:fit-content}
-.slide h2{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(26px,5.2vw,42px);line-height:.92;letter-spacing:-.02em;margin-bottom:12px;flex-shrink:0}
+.slide h2{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(26px,5.2vw,42px);line-height:1.0;letter-spacing:-.02em;margin-bottom:12px;flex-shrink:0}
 .slide h2 .p{color:var(--purple)}.slide h2 .d{color:var(--deep)}.slide h2 .r{color:var(--rose)}.slide h2 em{font-style:italic;font-weight:400}
 .slide p{font-size:13px;line-height:1.6;color:var(--ink2);margin-bottom:6px;font-weight:300}
 .slide p.lead{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--ink);line-height:1.4}
@@ -73,7 +73,7 @@ html,body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;min-he
       <p>Attention solves this by letting every word compute a relevance score with every other word. "it" attends strongly to "cat" (high score) and weakly to "mat" (low score). The model learns these patterns from billions of examples.</p>
       <p style="margin-bottom: 110px;"> </p>
       <div class="card p-c">
-        <p><strong>Self-attention —</strong> means the sentence attends to itself. Each word asks: "Which other words in this sentence are relevant to understanding ME?" Then it adjusts its representation based on the answer.</p>
+        <p><strong>Self-attention -</strong> means the sentence attends to itself. Each word asks: "Which other words in this sentence are relevant to understanding ME?" Then it adjusts its representation based on the answer.</p>
       </div>
     </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
 
@@ -99,7 +99,7 @@ html,body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;min-he
       </div>
       <p style="margin-bottom: 20px;"> </p>
       <div class="card d-c">
-        <p><strong>Library analogy —</strong> Q is your search query. K is the label on each book. V is the content inside. You match your query against all labels (Q×K), then read the most relevant books (weighted V).</p>
+        <p><strong>Library analogy -</strong> Q is your search query. K is the label on each book. V is the content inside. You match your query against all labels (Q×K), then read the most relevant books (weighted V).</p>
       </div>
     </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
 
@@ -137,10 +137,10 @@ html,body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;min-he
       <p class="lead">One attention head can only learn one type of relationship. Multiple heads learn different patterns simultaneously.</p>
       <p style="margin-bottom: 20px;"> </p>
       <div class="stats">
-        <div class="st"><span class="st-v">H1</span><div class="st-t"><strong>Syntactic head.</strong> Learns subject-verb agreement. "The dogs [that the boy feeds] are happy" — links "dogs" to "are"</div></div>
-        <div class="st"><span class="st-v">H2</span><div class="st-t"><strong>Coreference head.</strong> Learns pronoun resolution. "Sarah told John she was leaving" — links "she" to "Sarah"</div></div>
+        <div class="st"><span class="st-v">H1</span><div class="st-t"><strong>Syntactic head.</strong> Learns subject-verb agreement. "The dogs [that the boy feeds] are happy", links "dogs" to "are"</div></div>
+        <div class="st"><span class="st-v">H2</span><div class="st-t"><strong>Coreference head.</strong> Learns pronoun resolution. "Sarah told John she was leaving", links "she" to "Sarah"</div></div>
         <div class="st"><span class="st-v">H3</span><div class="st-t"><strong>Positional head.</strong> Tracks word distance. Adjacent words, sentence boundaries, paragraph structure</div></div>
-        <div class="st"><span class="st-v">H4</span><div class="st-t"><strong>Semantic head.</strong> Groups related concepts. "Doctor prescribed medicine for the patient" — clusters medical terms</div></div>
+        <div class="st"><span class="st-v">H4</span><div class="st-t"><strong>Semantic head.</strong> Groups related concepts. "Doctor prescribed medicine for the patient", clusters medical terms</div></div>
       </div>
       <p style="margin-bottom: 20px;"> </p>
       <div class="card p-c">

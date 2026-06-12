@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents vs RPA, Post 65</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#08060e; --card:#110d1c; --ink:#e8e0f5; --ink2:#a0a0a0; --dim:#887fa0; --rose:#f43f5e; --violet:#8b5cf6; --amber:#fbbf24; --border:rgba(244,63,94,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .ro { color:var(--rose); } .slide h2 .vt { color:var(--violet); } .slide h2 .am { color:var(--amber); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--rose); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .ro { color:#fda4af; } .code .vt { color:#c4b5fd; } .code .am { color:#fde68a; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.ro { color:var(--rose); } .st-v.vt { color:var(--violet); } .st-v.am { color:var(--amber); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.ro-c { background:rgba(244,63,94,.06); border:1px solid rgba(244,63,94,.15); }
+  .gcard.vt-c { background:rgba(139,92,246,.06); border:1px solid rgba(139,92,246,.15); }
+  .gcard.am-c { background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(244,63,94,.2); color:var(--rose); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--rose); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--rose); color:var(--rose); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(244,63,94,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--rose); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--rose); color:var(--rose); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(232,224,245,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--rose); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(244,63,94,.2); color:var(--rose); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--rose); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--violet); color:var(--violet); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0">AI <span class="ro">Agents</span>.<br>Beyond<br><span class="vt">RPA</span><br>Automation.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="ro">RPA</span><br>Actually Does.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">How it works</span><div class="st-t"><strong>Robotic Process Automation records and replays UI interactions.</strong> A bot clicks buttons, copies values between fields, and fills forms, mimicking a human operating a keyboard and mouse.</div></div>
+          <div class="st"><span class="st-v ro">The constraint</span><div class="st-t"><strong>RPA follows an exact script.</strong> If the UI changes by a single pixel, or a field label is renamed, the bot fails. Maintenance cost grows as fast as the automation estate.</div></div>
+          <div class="st"><span class="st-v" style="color:var(--dim)">No reasoning</span><div class="st-t"><strong>RPA has no ability to interpret ambiguous input or decide between options.</strong> Every decision branch must be hard-coded in advance. Exceptions route to a human queue.</div></div>
+          <div class="st"><span class="st-v vt">What it solved</span><div class="st-t"><strong>Connecting legacy systems that had no API.</strong> RPA automated the swivel-chair work of copying data between enterprise systems by treating the screen as the integration layer.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="vt">AI Agents</span><br>Do Differently.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v vt">Reasoning</span><div class="st-t"><strong>An AI agent reads a goal and determines the steps required to achieve it.</strong> It is not replaying a recording. It plans, chooses tools, evaluates output, and adjusts when results are unexpected.</div></div>
+          <div class="st"><span class="st-v ro">Tool use</span><div class="st-t"><strong>Agents call APIs, search the web, run code, query databases, and write files.</strong> Each tool returns a result the agent incorporates into its next decision. Tools compose into multi-step workflows.</div></div>
+          <div class="st"><span class="st-v am">Memory</span><div class="st-t"><strong>Agents maintain context across steps within a session and can store results in external memory.</strong> A research agent recalls that a source was already checked and skips it, without being told explicitly.</div></div>
+          <div class="st"><span class="st-v vt">Delegation</span><div class="st-t"><strong>An orchestrator agent can spawn sub-agents for parallel subtasks.</strong> One sub-agent summarizes documents while another queries a database. Results are merged before the orchestrator continues.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="ro">ReAct</span><br>Loop.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># ReAct: Reason + Act loop</span>
+
+Goal: <span class="vt">"Summarize open support tickets for CEO"</span>
+
+Step 1 - Thought:
+  <span class="am">Need to query the ticketing API for open tickets.</span>
+
+Step 2 - Action: <span class="ro">call_tool</span>(<span class="vt">"zendesk_api"</span>, status=<span class="am">"open"</span>)
+Step 2 - Observation: <span class="dm">142 tickets returned</span>
+
+Step 3 - Thought:
+  <span class="am">Group by category, compute priority breakdown.</span>
+
+Step 4 - Action: <span class="ro">call_tool</span>(<span class="vt">"code_interpreter"</span>, ...)
+Step 4 - Observation: <span class="dm">table with 6 categories</span>
+
+Step 5 - Final: write executive summary
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Where <span class="am">Agents</span><br>Win.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">Unstructured input</span><div class="st-t"><strong>An agent can read a PDF contract, extract terms, cross-reference a database, and flag anomalies.</strong> RPA cannot handle variable document layouts or interpret natural language clauses.</div></div>
+          <div class="st"><span class="st-v ro">Cross-system tasks</span><div class="st-t"><strong>An agent orchestrating five tools in sequence replaces a pipeline of RPA bots each handling one system.</strong> When one system changes its API, only the tool definition updates, not every step in the script.</div></div>
+          <div class="st"><span class="st-v vt">Exception handling</span><div class="st-t"><strong>When output is unexpected, the agent reasons about it rather than routing to a human queue.</strong> A billing agent that sees a duplicate charge investigates and resolves it within the same session.</div></div>
+          <div class="st"><span class="st-v am">Scale</span><div class="st-t"><strong>A single agent prompt handles thousands of input variants.</strong> RPA needs a separate script for each variant. The maintenance burden of an AI automation estate grows much more slowly than an RPA estate.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="ro">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">Cognition Devin</span><div class="st-t"><strong>AI software engineer agent that reads a GitHub issue, sets up a dev environment, writes code, runs tests, and opens a pull request.</strong> Handles the full cycle without a human at each step.</div></div>
+          <div class="st"><span class="st-v vt">Customer support</span><div class="st-t"><strong>Klarna deployed AI agents that handle 70% of customer support conversations without human escalation.</strong> The agent queries order systems, processes refunds, and updates records autonomously.</div></div>
+          <div class="st"><span class="st-v am">Sales ops</span><div class="st-t"><strong>AI agents enrich CRM records, draft follow-up emails, schedule demos, and update pipeline stages.</strong> Tasks that required an SDR to spend two hours a day now complete in minutes without human input.</div></div>
+          <div class="st"><span class="st-v ro">UiPath</span><div class="st-t"><strong>The leading RPA vendor is embedding LLMs into its platform to add reasoning capabilities to existing bots.</strong> The hybrid approach lets organizations extend automation without discarding RPA investments.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="ro">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">RPA</span><div class="st-t"><strong>Robotic Process Automation: records and replays UI interactions.</strong> Brittle to UI changes, requires explicit scripts for every decision branch. Best for stable, structured, repetitive workflows with no variation.</div></div>
+          <div class="st"><span class="st-v vt">AI agent</span><div class="st-t"><strong>An LLM-powered system that plans and executes multi-step tasks using tools.</strong> Handles ambiguous input, adapts when output is unexpected, and delegates subtasks to other agents.</div></div>
+          <div class="st"><span class="st-v am">ReAct</span><div class="st-t"><strong>Reason-Act loop: the agent alternates between thinking about the next step and calling a tool.</strong> Tool output is incorporated into the next reasoning step. The loop continues until the goal is achieved.</div></div>
+          <div class="st"><span class="st-v ro">Orchestrator</span><div class="st-t"><strong>An agent that breaks a goal into subtasks and assigns them to sub-agents running in parallel.</strong> The orchestrator collects results and synthesizes a final output without handling each subtask itself.</div></div>
+          <div class="st"><span class="st-v vt">Tool use</span><div class="st-t"><strong>Structured API calls the agent makes to interact with external systems.</strong> Each tool has a name, description, and typed parameters. The LLM decides when to call a tool based on the task context.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">RPA automates what humans do. AI agents automate what humans think.
+
+Robotic Process Automation works by recording and replaying UI interactions. A bot clicks through a web form, copies data from a spreadsheet, and pastes it into an ERP system. It follows a fixed script. When the UI changes, the script breaks. When input arrives in an unexpected format, the bot fails and routes the exception to a human queue. Every decision branch must be programmed in advance.
+
+This was genuinely valuable for connecting legacy systems that had no APIs. It eliminated thousands of hours of repetitive swivel-chair work. But the maintenance burden grows as fast as the automation estate. Large enterprises end up with armies of RPA bots, each requiring attention whenever an underlying system updates.
+
+AI agents are structurally different. An agent reads a goal and determines the steps required to achieve it. It reasons about what information it needs, calls tools to get that information, evaluates the results, and adjusts when outputs are unexpected. It handles unstructured input like PDFs and emails, interprets ambiguous instructions, and makes decisions between options without a hard-coded decision tree.
+
+The ReAct loop is the core pattern: the agent alternates between reasoning about the next step and taking an action with a tool. Tool output is incorporated into the next reasoning step. Orchestrator agents break complex goals into subtasks and delegate them to specialized sub-agents running in parallel.
+
+Klarna deployed AI agents that now handle 70% of customer support conversations autonomously, including refunds and order updates. Cognition's Devin reads a GitHub issue and opens a pull request without a human intervening at each step.
+
+RPA will not disappear. It is well-suited to structured, stable workflows. But for everything that requires judgment, adaptation, or unstructured input, agents are replacing the script.
+
+Swipe to see the ReAct reasoning loop, where agents outperform RPA, and what the agent architecture looks like in production.
+
+#aiagents #automation #rpa #llm #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#110d1c',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'aiagent-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'aiagent-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CAP Theorem — Pick Two, Regret One</title>
+<title>CAP Theorem, Pick Two, Regret One</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Code+Pro:wght@400;500;600&family=Libre+Franklin:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -222,7 +222,7 @@ h1.main .p{color:var(--accent-3)}
 
 <header class="page-head">
   <div class="kicker">Distributed Systems · Fundamentals</div>
-  <h1 class="main"><span class="c">Consistency,</span> <span class="a">Availability,</span> <span class="p">Partition Tolerance</span> — pick <em>two.</em></h1>
+  <h1 class="main"><span class="c">Consistency,</span> <span class="a">Availability,</span> <span class="p">Partition Tolerance</span>, pick <em>two.</em></h1>
   <p class="dek">The most important theorem in distributed systems, explained with a pizza delivery analogy. Every database you've ever used made this trade-off. Here's what they chose.</p>
 </header>
 
@@ -317,7 +317,7 @@ h1.main .p{color:var(--accent-3)}
     <!-- SLIDE 5: CP Systems -->
     <div class="slide">
       <div class="slide-meta"><span>05 / 10</span><span class="tag">● CP SYSTEMS</span></div>
-      <h2><span class="c">C</span> + <span class="p">P</span> — <em>correct or nothing</em></h2>
+      <h2><span class="c">C</span> + <span class="p">P</span>, <em>correct or nothing</em></h2>
       <p class="lead">Sacrifice availability. When partitioned, block requests until consistency is restored.</p>
       <div class="code-box">
 <span class="dim">// network partition happens</span><br>
@@ -340,7 +340,7 @@ h1.main .p{color:var(--accent-3)}
     <!-- SLIDE 6: AP Systems -->
     <div class="slide">
       <div class="slide-meta"><span>06 / 10</span><span class="tag">● AP SYSTEMS</span></div>
-      <h2><span class="a">A</span> + <span class="p">P</span> — <em>always answer</em></h2>
+      <h2><span class="a">A</span> + <span class="p">P</span>, <em>always answer</em></h2>
       <p class="lead">Sacrifice consistency. Always respond, even with potentially stale data.</p>
       <div class="code-box">
 <span class="dim">// network partition happens</span><br>
@@ -363,11 +363,11 @@ h1.main .p{color:var(--accent-3)}
     <!-- SLIDE 7: CA Systems -->
     <div class="slide">
       <div class="slide-meta"><span>07 / 10</span><span class="tag">● CA SYSTEMS</span></div>
-      <h2><span class="c">C</span> + <span class="a">A</span> — <em>the unicorn</em></h2>
+      <h2><span class="c">C</span> + <span class="a">A</span>, <em>the unicorn</em></h2>
       <p class="lead">Sacrifice partition tolerance. Consistent and available, but only if the network never fails.</p>
       <div class="code-box">
 <span class="dim">// no partition (everything is fine)</span><br>
-<span class="c">node_A</span> <span class="arrow">←——→</span> <span class="p">node_B</span> <span class="result">✓ connected</span><br>
+<span class="c">node_A</span> <span class="arrow">←--→</span> <span class="p">node_B</span> <span class="result">✓ connected</span><br>
 <span class="dim">────────────────────────</span><br>
 <span class="dim">write:</span> <span class="c">SET price = 250</span> <span class="result">✓ synced</span><br>
 <span class="dim">read:</span>  <span class="a">GET price → 250</span> <span class="result">✓ correct</span><br>

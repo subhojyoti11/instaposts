@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infrastructure as Software, Post 62</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#070c0d; --card:#0d1416; --ink:#e2e8f0; --ink2:#a0a0a0; --dim:#8899aa; --cyan:#06b6d4; --purple:#a855f7; --yellow:#facc15; --border:rgba(6,182,212,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .cy { color:var(--cyan); } .slide h2 .pu { color:var(--purple); } .slide h2 .yl { color:var(--yellow); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--cyan); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .cy { color:#67e8f9; } .code .pu { color:#d8b4fe; } .code .yl { color:#fef08a; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.cy { color:var(--cyan); } .st-v.pu { color:var(--purple); } .st-v.yl { color:var(--yellow); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.cy-c { background:rgba(6,182,212,.06); border:1px solid rgba(6,182,212,.15); }
+  .gcard.pu-c { background:rgba(168,85,247,.06); border:1px solid rgba(168,85,247,.15); }
+  .gcard.yl-c { background:rgba(250,204,21,.06); border:1px solid rgba(250,204,21,.15); }
+  .gcard p { color:var(--ink2); margin-bottom:2px; } .gcard p:last-child { margin-bottom:0; } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(6,182,212,.2); color:var(--cyan); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--cyan); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--cyan); color:var(--cyan); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(6,182,212,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--cyan); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--cyan); color:var(--cyan); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(226,232,240,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--cyan); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(6,182,212,.2); color:var(--cyan); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--cyan); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--yellow); color:var(--yellow); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Infra as<br><span class="cy">Software</span>.<br><span class="yl">Beyond YAML</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What IaC<br><span class="cy">Fixed.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v" style="color:var(--dim)">Before</span><div class="st-t"><strong>Infrastructure provisioned manually through cloud consoles or shell scripts.</strong> No version control, no review process, no reproducibility between environments.</div></div>
+          <div class="st"><span class="st-v cy">Terraform</span><div class="st-t"><strong>Declare desired state in HCL. Plan to preview. Apply to make it real.</strong> Infrastructure becomes reviewable, diffable, and auditable like any other codebase.</div></div>
+          <div class="st"><span class="st-v yl">Drift detect</span><div class="st-t"><strong>Terraform plan shows what changed between declared state and actual cloud state.</strong> Manual console changes are visible and reversible through the plan workflow.</div></div>
+          <div class="st"><span class="st-v cy">Adoption</span><div class="st-t"><strong>Over 1 million organizations use Terraform today.</strong> Infrastructure as Code is now the industry baseline, not a best practice for advanced teams.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What HCL<br><span class="pu">Cannot Do.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">No loops</span><div class="st-t"><strong>count and for_each exist but break under complex iteration.</strong> Creating 20 resources with varying policies requires workarounds that become unreadable fast.</div></div>
+          <div class="st"><span class="st-v pu">No functions</span><div class="st-t"><strong>HCL has built-in functions but no user-defined ones.</strong> Reusable logic lives in modules, which cannot be composed or versioned like real software libraries.</div></div>
+          <div class="st"><span class="st-v pu">No types</span><div class="st-t"><strong>HCL is loosely typed.</strong> Type errors surface at apply time, not at write time. You find out infrastructure is wrong when it is already half-provisioned in your cloud account.</div></div>
+          <div class="st"><span class="st-v" style="color:var(--dim)">No tests</span><div class="st-t"><strong>No standard way to unit test Terraform modules.</strong> Testing means running against a real cloud account. Slow, expensive, and leaves orphaned resources when tests fail.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Real Code for<br><span class="cy">Real Infra.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Terraform: limited composition</span>
+resource <span class="pu">"aws_s3_bucket"</span> <span class="pu">"logs"</span> {
+  bucket = <span class="yl">"acme-logs-${var.env}"</span>
+}
+<span class="dm"># Need 20 with different policies? Write 20 blocks.</span>
+
+<span class="dm"># Pulumi (TypeScript): real programming</span>
+const envs = [<span class="cy">"dev"</span>, <span class="cy">"staging"</span>, <span class="cy">"prod"</span>];
+<span class="yl">for</span> (const env of envs) {
+  new aws.s3.<span class="cy">Bucket</span>(`acme-logs-${env}`, {
+    versioning: { enabled: env === <span class="yl">"prod"</span> },
+    lifecycleRules: <span class="cy">getPolicy</span>(env),
+  });
+}
+<span class="dm"># Loops. Conditionals. Functions. Type safety.</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>A Real Language<br><span class="cy">Brings Real Tools.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Unit tests</span><div class="st-t"><strong>Mock the Pulumi runtime and verify infrastructure logic without touching AWS.</strong> Test before you deploy. Catch mistakes in CI, not in production accounts.</div></div>
+          <div class="st"><span class="st-v yl">Type safety</span><div class="st-t"><strong>TypeScript tells you at compile time that you passed a string where a CIDR block is required.</strong> Not at apply time, after 10 minutes of waiting for a resource rollback.</div></div>
+          <div class="st"><span class="st-v cy">Abstraction</span><div class="st-t"><strong>Build internal component libraries.</strong> A "StandardService" component encoding your ECS, ALB, and WAF pattern. Shared via npm. Version-pinned. Consumed by every team.</div></div>
+          <div class="st"><span class="st-v yl">IDE support</span><div class="st-t"><strong>Autocomplete on AWS resource properties. Jump-to-definition on imports. Inline documentation.</strong> Without switching to a browser tab to search the Terraform registry.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="cy">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Pulumi</span><div class="st-t"><strong>Used at Atlassian, BMW, Mercedes-Benz, and Snowflake.</strong> Supports 120+ cloud providers. Full state management equivalent to Terraform, with real language support.</div></div>
+          <div class="st"><span class="st-v yl">AWS CDK</span><div class="st-t"><strong>TypeScript over CloudFormation.</strong> AWS Construct Library ships typed components for common patterns. Used across AWS-native organizations as the standard for new greenfield projects.</div></div>
+          <div class="st"><span class="st-v cy">CDKTF</span><div class="st-t"><strong>HashiCorp's answer: Terraform under the hood, real programming language on top.</strong> Bridges teams that need Terraform providers but want TypeScript or Python composition.</div></div>
+          <div class="st"><span class="st-v" style="color:var(--dim)">Libraries</span><div class="st-t"><strong>Platform teams publish internal component libraries.</strong> One approved "DatabaseCluster" construct encodes security, backup, and monitoring defaults for all teams to consume.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="cy">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">IaC</span><div class="st-t"><strong>Infrastructure as Code.</strong> Declaring desired cloud state in version-controlled files. Terraform, Pulumi, CDK, CloudFormation, Bicep are the major tools.</div></div>
+          <div class="st"><span class="st-v yl">Terraform</span><div class="st-t"><strong>HashiCorp's declarative IaC tool.</strong> HCL-based, plan/apply workflow, stateful. The industry standard for multi-cloud provisioning at most organizations.</div></div>
+          <div class="st"><span class="st-v cy">Pulumi</span><div class="st-t"><strong>Infrastructure as Software.</strong> Write real Python, TypeScript, or Go to provision cloud resources. Unit-testable, type-safe, composable with real package managers.</div></div>
+          <div class="st"><span class="st-v yl">AWS CDK</span><div class="st-t"><strong>Cloud Development Kit.</strong> TypeScript or Python constructs that synthesize to CloudFormation. Typed, composable components for AWS-native infrastructure patterns.</div></div>
+          <div class="st"><span class="st-v cy">Drift</span><div class="st-t"><strong>Gap between declared state and actual cloud state.</strong> Detected by Terraform plan, ArgoCD diff, or Pulumi preview. The core problem IaC tools were built to prevent.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">You described your infrastructure in a configuration file. The file became the infrastructure. Then you needed to write a for loop.
+
+Terraform changed how the industry thought about cloud. Instead of clicking through a console or running shell scripts, you declared what you wanted and Terraform made it real. Write HCL, run plan, review the diff, apply. The concept was clean. The execution introduced a new class of problems.
+
+HCL is not a programming language. It has limited loops, no user-defined functions, no type system, no unit tests. When you need 20 S3 buckets with slightly different policies, you write 20 near-identical blocks or fight with count and for_each until the error messages become unintelligible. When infrastructure needs conditional logic based on environment or region, you stack ternary expressions inside HCL strings. When something breaks, you debug by staring at a 50,000-line plan output with no stack trace.
+
+Pulumi took a different position. Infrastructure is a software problem. Solve it with software. Write actual Python, TypeScript, or Go. Use loops, functions, classes, and composition the same way you would for any engineering problem. Write unit tests that mock cloud APIs and verify infrastructure logic before touching a real account. Get type errors at compile time, not at apply time.
+
+AWS CDK applied the same idea to CloudFormation. Instead of YAML, you write TypeScript that synthesizes to CloudFormation templates. The AWS team ships constructs, typed components for common infrastructure patterns that compose the way React components do.
+
+The underlying shift is that declarative configuration works well until your infrastructure is dynamic. When modules need real logic, when infrastructure has the same complexity as the applications running on it, you need a real language.
+
+YAML does not have a debugger. Python does.
+
+Swipe to see what HCL cannot express, how Pulumi handles the same problem in TypeScript, and why type safety matters for infrastructure.
+
+#terraform #pulumi #devops #cloudinfrastructure #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0d1416',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'ias-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'ias-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

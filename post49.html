@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X-Token — Post 49</title>
+<title>X-Token, Post 49</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
     font-family: 'Manrope', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -250,7 +250,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -261,7 +261,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — The Problem -->
+    <!-- SLIDE 2, The Problem -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -290,7 +290,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — Token Splitting -->
+    <!-- SLIDE 3, Token Splitting -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -316,7 +316,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — The Sparse Projection Matrix -->
+    <!-- SLIDE 4, The Sparse Projection Matrix -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -331,11 +331,11 @@
           </div>
           <div class="st">
             <span class="st-v pu">Guided</span>
-            <div class="st-t"><strong>Built from token alignment rules</strong> — prefix/suffix matching, subword containment, vocabulary intersection.</div>
+            <div class="st-t"><strong>Built from token alignment rules</strong>, prefix/suffix matching, subword containment, vocabulary intersection.</div>
           </div>
           <div class="st">
             <span class="st-v gn">Static</span>
-            <div class="st-t"><strong>Computed once before training starts.</strong> No extra cost per step — reused across the full training run.</div>
+            <div class="st-t"><strong>Computed once before training starts.</strong> No extra cost per step, reused across the full training run.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Maps</span>
@@ -346,7 +346,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — P-KL and H-KL -->
+    <!-- SLIDE 5, P-KL and H-KL -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -355,12 +355,12 @@
         <h2>Two Losses,<br><span class="gn">One Fix.</span></h2>
         <div style="height:14px"></div>
         <div class="code">
-          <span class="bl">P-KL</span><span class="dm"> — Projected KL (matched tokens)</span><br>
+          <span class="bl">P-KL</span><span class="dm">, Projected KL (matched tokens)</span><br>
           <span class="dm">  Project student dist. into teacher space</span><br>
           <span class="dm">  Compute KL on aligned token subsets</span><br>
           <span class="dm">  Handles vocabulary overlap correctly</span><br>
           <br>
-          <span class="gn">H-KL</span><span class="dm"> — Hybrid KL (unmatched tokens)</span><br>
+          <span class="gn">H-KL</span><span class="dm">, Hybrid KL (unmatched tokens)</span><br>
           <span class="dm">  Mix teacher dist. with uniform prior</span><br>
           <span class="dm">  Prevents zero-probability suppression</span><br>
           <span class="dm">  Recovers signal from unmatched tokens</span>
@@ -372,7 +372,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — Results -->
+    <!-- SLIDE 6, Results -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -391,7 +391,7 @@
           </div>
           <div class="st">
             <span class="st-v pu">Cost</span>
-            <div class="st-t"><strong>Same training compute as standard KD.</strong> The projection matrix is static — near-zero overhead per step.</div>
+            <div class="st-t"><strong>Same training compute as standard KD.</strong> The projection matrix is static, near-zero overhead per step.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">NVIDIA</span>
@@ -402,7 +402,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -429,7 +429,7 @@
           </div>
           <div class="st">
             <span class="st-v bl">Use</span>
-            <div class="st-t"><strong>When distilling across tokenizers</strong> — e.g., GPT-4 teacher into Llama student for open-weight alignment.</div>
+            <div class="st-t"><strong>When distilling across tokenizers</strong>, e.g., GPT-4 teacher into Llama student for open-weight alignment.</div>
           </div>
         </div>
       </div>

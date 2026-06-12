@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Model Serving at Scale — Batching, Quantization, and KV Cache</title>
+<title>Model Serving at Scale, Batching, Quantization, and KV Cache</title>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Red+Hat+Mono:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -163,7 +163,7 @@ h1.main .pk{color:var(--pink)}
 <header class="page-head">
   <div class="kicker">MLOps · AI Infrastructure</div>
   <h1 class="main">How to serve a <em>70B-parameter model</em> to <span class="pk">10,000 users</span> at once.</h1>
-  <p class="dek">Training gets the headlines. Serving is where the money burns. Batching, quantization, KV cache, and speculative decoding — the techniques that make inference actually affordable.</p>
+  <p class="dek">Training gets the headlines. Serving is where the money burns. Batching, quantization, KV cache, and speculative decoding, the techniques that make inference actually affordable.</p>
 </header>
 
 <div class="carousel-wrap">
@@ -343,7 +343,7 @@ h1.main .pk{color:var(--pink)}
         <img src="" class="slide-logo" alt="Ravenex Technologies">
       <div class="sm"><span>08 / 08</span><span class="tag">● CHEATSHEET</span></div>
       <h2>The <em>optimization</em> ladder</h2>
-      <!-- <p style="font-size:13px">Stack these techniques — each one multiplies the previous:</p> -->
+      <!-- <p style="font-size:13px">Stack these techniques, each one multiplies the previous:</p> -->
       <div class="steps">
         <div class="step"><span class="snum">1</span><div class="sbody"><strong>Quantize first (INT8/INT4)</strong><span>Halve or quarter your memory. Biggest bang for zero code changes. GPTQ or AWQ.</span></div></div>
         <div class="step"><span class="snum">2</span><div class="sbody"><strong>Add continuous batching</strong><span>Serve 32× more users with the same GPU. Use vLLM or TGI. Non-negotiable for production.</span></div></div>

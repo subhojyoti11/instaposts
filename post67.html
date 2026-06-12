@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Provenance in the AI Era, Post 67</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f9f7f4; --card:#ffffff; --ink:#1c1412; --ink2:#6b5a52; --dim:#9b8880; --purple:#9333ea; --cyan:#0891b2; --amber:#b45309; --border:rgba(147,51,234,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); box-shadow:0 4px 28px rgba(147,51,234,.04); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Outfit',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .pu { color:var(--purple); } .slide h2 .cy { color:var(--cyan); } .slide h2 .am { color:var(--amber); }
+  .ftr { flex-shrink:0; padding:8px 24px 14px 26px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--purple); }
+  .code { background:#f5f0ff; border:1px solid rgba(147,51,234,.12); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .pu { color:#7e22ce; } .code .cy { color:#0e7490; } .code .am { color:#92400e; } .code .dm { color:var(--dim); }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.pu { color:var(--purple); } .st-v.cy { color:var(--cyan); } .st-v.am { color:var(--amber); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.pu-c { background:rgba(147,51,234,.04); border:1px solid rgba(147,51,234,.12); }
+  .gcard.cy-c { background:rgba(8,145,178,.04); border:1px solid rgba(8,145,178,.12); }
+  .gcard.am-c { background:rgba(180,83,9,.04); border:1px solid rgba(180,83,9,.12); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(147,51,234,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--purple); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--purple); color:var(--purple); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(147,51,234,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--purple); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--purple); color:var(--purple); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(28,20,18,.08); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--purple); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 4px 28px rgba(147,51,234,.04); }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(147,51,234,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--purple); color:#fff; }
+  .copy-btn.copied { border-color:var(--cyan); color:var(--cyan); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="pu">Data</span><br>Provenance<br>in the<br><span class="cy">AI Era</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Why <span class="pu">Provenance</span><br>Matters Now.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Definition</span><div class="st-t"><strong>Data provenance is the complete record of where data originated, who transformed it, and how it was used.</strong> It answers: where did this come from, and how did it get here?</div></div>
+          <div class="st"><span class="st-v cy">Before AI</span><div class="st-t"><strong>Provenance mattered for compliance and auditing.</strong> Knowing which database row came from which source was important for regulated industries, but optional for most teams outside of finance and healthcare.</div></div>
+          <div class="st"><span class="st-v am">After AI</span><div class="st-t"><strong>Training data provenance now affects legal liability, copyright exposure, and model safety.</strong> If a model was trained on data collected without consent, every inference it produces carries that risk forward into production.</div></div>
+          <div class="st"><span class="st-v pu">The gap</span><div class="st-t"><strong>Most organizations cannot answer "what was in our training data and where did it come from?"</strong> The teams that trained the model may no longer work there. The dataset was assembled from dozens of sources with inconsistent documentation.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="cy">Lineage</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Source</span><div class="st-t"><strong>Data arrives from web scrapes, licensed datasets, internal databases, and third-party APIs.</strong> Each source has different terms of service, consent frameworks, and geographic jurisdiction. Mixing them without tracking creates legal exposure.</div></div>
+          <div class="st"><span class="st-v pu">Transform</span><div class="st-t"><strong>Raw data passes through cleaning, deduplication, filtering, and augmentation pipelines.</strong> Each step changes the dataset. Without a full transformation log, the relationship between the original source and the training set is broken.</div></div>
+          <div class="st"><span class="st-v am">Version</span><div class="st-t"><strong>Training datasets change between model versions.</strong> Knowing exactly which version of the dataset produced which model is required for reproducibility, debugging, and regulatory audits in regulated domains.</div></div>
+          <div class="st"><span class="st-v cy">Deletion</span><div class="st-t"><strong>GDPR and similar regulations grant users the right to erasure.</strong> If a user's data was in the training set, the organization must know which model checkpoints were trained on it and whether retraining is required upon deletion.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>A <span class="pu">Provenance</span><br>Record.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Dataset card entry (Hugging Face DataCard format):</span>
+
+dataset_id: <span class="pu">acme/product-reviews-v3</span>
+version:    <span class="cy">3.1.2</span>
+created:    <span class="am">2025-11-14</span>
+
+sources:
+  - origin:  <span class="pu">trustpilot-licensed</span>
+    license: <span class="cy">commercial</span>
+    rows:    840_000
+  - origin:  <span class="pu">internal-crm-export</span>
+    consent: <span class="cy">terms-v4-2024</span>
+    rows:    210_000
+
+transforms:
+  - <span class="am">deduplicate</span>  <span class="dm"># sha256 hash match</span>
+  - <span class="am">pii_scrub</span>    <span class="dm"># presidio v2.3</span>
+  - <span class="am">lang_filter</span>  <span class="dm"># langdetect en-only</span>
+
+used_in_models: [<span class="pu">review-clf-v7</span>, <span class="pu">sentiment-v12</span>]
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Legal and<br><span class="am">Compliance</span> Pressure.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">EU AI Act</span><div class="st-t"><strong>The EU AI Act requires high-risk AI systems to document training data sources, including copyright status and data collection methods.</strong> Non-compliance carries fines up to 3% of global annual revenue.</div></div>
+          <div class="st"><span class="st-v pu">Copyright suits</span><div class="st-t"><strong>Multiple lawsuits against AI companies allege that training on copyrighted content without a license constitutes infringement.</strong> Organizations that cannot document their training data sources face litigation risk on every model they deploy.</div></div>
+          <div class="st"><span class="st-v cy">GDPR erasure</span><div class="st-t"><strong>If a model memorized personally identifiable information from training data, a deletion request may require retraining.</strong> Without provenance records, the organization cannot determine which models are affected or the scope of remediation.</div></div>
+          <div class="st"><span class="st-v am">Model cards</span><div class="st-t"><strong>Hugging Face model cards and Google's Data Cards are emerging standards for documenting training data provenance.</strong> Enterprise AI governance frameworks now require these artifacts before production deployment approval.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="pu">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">DVC</span><div class="st-t"><strong>Data Version Control tracks dataset versions alongside model versions in Git.</strong> Every experiment references a specific dataset hash. Reproducing a training run requires only the commit hash and DVC remote pointer.</div></div>
+          <div class="st"><span class="st-v cy">MLflow</span><div class="st-t"><strong>MLflow logs dataset metadata as part of every training run.</strong> The run record links the model artifact to the exact dataset version, parameters, and environment used to produce it. Full lineage is queryable by run ID.</div></div>
+          <div class="st"><span class="st-v am">DataHub</span><div class="st-t"><strong>LinkedIn open-sourced DataHub as a data catalog with lineage tracking.</strong> It visualizes the full graph from raw source tables through transformation pipelines to the final datasets consumed by models in production.</div></div>
+          <div class="st"><span class="st-v pu">OpenLineage</span><div class="st-t"><strong>An open standard for lineage metadata, supported by Airflow, Spark, dbt, and Flink.</strong> Pipeline runs emit lineage events that tools like Marquez collect and visualize, providing a vendor-neutral provenance record across the stack.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="pu">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Provenance</span><div class="st-t"><strong>The complete record of where data originated, who transformed it, and which models it trained.</strong> Required for regulatory compliance, copyright defense, GDPR erasure requests, and model reproducibility audits.</div></div>
+          <div class="st"><span class="st-v cy">Lineage</span><div class="st-t"><strong>The graph of transformations connecting raw source data to a final dataset or model artifact.</strong> Lineage tools like OpenLineage and DataHub capture this graph automatically as pipelines run.</div></div>
+          <div class="st"><span class="st-v am">DVC</span><div class="st-t"><strong>Data Version Control: tracks dataset versions in Git with content hashes.</strong> Ensures that a specific model checkpoint can be reproduced from the same data and code, even years after the original training run.</div></div>
+          <div class="st"><span class="st-v pu">Model card</span><div class="st-t"><strong>Structured documentation of a model's training data, intended use, limitations, and evaluation results.</strong> Required by EU AI Act for high-risk systems. Standard artifact in enterprise AI governance review processes.</div></div>
+          <div class="st"><span class="st-v cy">Right to erasure</span><div class="st-t"><strong>GDPR Article 17 grants individuals the right to have their personal data deleted.</strong> If that data was in a training set, the organization must trace which models were trained on it and evaluate whether retraining is required.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Most AI teams cannot answer the question: where did our training data come from?
+
+Data provenance is the complete record of where data originated, who transformed it, and how it was used. In traditional data engineering this was a compliance requirement for regulated industries. In the AI era it has become a prerequisite for operating legally and safely at scale.
+
+The problem is structural. Training datasets are assembled from dozens of sources: web scrapes, licensed feeds, internal databases, and third-party APIs. Each source has different terms of service, consent frameworks, and jurisdictional rules. Data passes through cleaning, deduplication, PII scrubbing, and filtering pipelines. Each transformation changes the dataset, and without a full log of those transformations, the connection between the original source and the model's training set is broken.
+
+This matters for three concrete reasons. First, copyright: multiple ongoing lawsuits allege that training on copyrighted content without a license constitutes infringement. Organizations that cannot document their data sources cannot defend against these claims. Second, GDPR erasure: if a user's personal data was in the training set, the organization must know which models trained on it and whether retraining is required upon deletion. Third, the EU AI Act requires high-risk AI systems to document training data sources, including copyright status, or face fines up to 3% of global annual revenue.
+
+DVC (Data Version Control) tracks dataset versions alongside code in Git so any training run can be reproduced years later. MLflow links every model artifact to the exact dataset version that produced it. OpenLineage is an open standard for emitting lineage events from Airflow, Spark, and dbt pipelines, captured in tools like Marquez and DataHub.
+
+Provenance is not bureaucratic overhead. It is the chain of custody for one of your organization's most valuable assets.
+
+Swipe to see what a provenance record looks like, the compliance pressures driving adoption, and the tools teams use in production.
+
+#dataprovenance #mlops #aigovernance #dataengineering #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'dataprov-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'dataprov-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

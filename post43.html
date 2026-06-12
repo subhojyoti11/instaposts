@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vector Databases — The Memory of AI</title>
+  <title>Vector Databases, The Memory of AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -484,7 +484,7 @@
           </div>
           <div class="gcard vi-c">
             <p><strong>The core problem:</strong> AI works with meaning, not keywords. A vector database stores float
-              arrays and finds the nearest neighbors — that's what bridges language and math.</p>
+              arrays and finds the nearest neighbors, that's what bridges language and math.</p>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -511,7 +511,7 @@
             <span class="te"> ANN search → top-k nearest → docs</span>
           </div>
           <div class="gcard te-c">
-            <p><strong>Key insight:</strong> The vector DB never sees your text — only float arrays. The semantic
+            <p><strong>Key insight:</strong> The vector DB never sees your text, only float arrays. The semantic
               understanding lives in the embedding model. The DB just stores and retrieves those floats fast.</p>
           </div>
         </div>
@@ -523,7 +523,7 @@
         <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>HNSW — the index<br>that makes it <span class="vi">fast.</span></h2>
+          <h2>HNSW, the index<br>that makes it <span class="vi">fast.</span></h2>
           <div style="height:60px"></div>
           <div class="code">
             <span class="am">Brute force: </span><span class="dm">compare query to ALL 100M vectors</span><br>
@@ -539,7 +539,7 @@
             <span class="vi">→ 100M vectors in ~5ms. Usable.</span>
           </div>
           <div class="gcard vi-c">
-            <p><strong>ANN = Approximate Nearest Neighbor.</strong> HNSW doesn't guarantee the absolute closest vector —
+            <p><strong>ANN = Approximate Nearest Neighbor.</strong> HNSW doesn't guarantee the absolute closest vector -
               it finds one very close, very fast. In practice: 95-99% recall. The speed trade-off is almost always worth
               it.</p>
           </div>
@@ -557,11 +557,11 @@
           <div class="stats">
             <div class="st"><span class="st-v vi">cos</span>
               <div class="st-t"><strong>Cosine similarity.</strong> Measures the angle between vectors. Ignores
-                magnitude — same meaning regardless of text length. Best for sentence embeddings. Range: -1 to 1</div>
+                magnitude, same meaning regardless of text length. Best for sentence embeddings. Range: -1 to 1</div>
             </div>
             <div class="st"><span class="st-v te">dot</span>
               <div class="st-t"><strong>Dot product.</strong> Cosine × magnitude. Fast when vectors are normalized (unit
-                length). OpenAI embeddings are pre-normalized — use this for speed. Range: -∞ to ∞</div>
+                length). OpenAI embeddings are pre-normalized, use this for speed. Range: -∞ to ∞</div>
             </div>
             <div class="st"><span class="st-v am">L2</span>
               <div class="st-t"><strong>Euclidean distance.</strong> Straight-line distance in N-D space. Good for

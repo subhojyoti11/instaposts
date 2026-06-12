@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Engineering, Post 61</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6ff;
+    --card: #ffffff;
+    --ink: #1a1640;
+    --ink2: #475569;
+    --dim: #94a3b8;
+    --blue: #2563eb;
+    --red: #dc2626;
+    --emerald: #059669;
+    --border: rgba(37,99,235,.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; padding: 40px 16px 80px; }
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+  .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+  .carousel::-webkit-scrollbar { display: none; }
+  .slide { flex: 0 0 min(92vw, 520px); aspect-ratio: 4/5; scroll-snap-align: center; background: var(--card); color: var(--ink); position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); box-shadow: 0 2px 16px rgba(37,99,235,.05); }
+  .ghost { display: none; }
+  .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+  .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+  .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+  .slide h2 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(24px, 5vw, 34px); line-height:1.0; letter-spacing: -.03em; margin-bottom: 12px; flex-shrink: 0; color: var(--ink); }
+  .slide h2 .bl { color: var(--blue); }
+  .slide h2 .rd { color: var(--red); }
+  .slide h2 .em { color: var(--emerald); }
+  .ftr { flex-shrink: 0; padding: 8px 24px 14px 26px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+  .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+  .ftr .right { font-size: 13px; font-weight: 600; color: var(--blue); }
+  .code { background: #eff0ff; border: 1px solid rgba(37,99,235,.12); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 13px 16px; margin: 8px 0; white-space: pre-wrap; flex-shrink: 0; }
+  .code .bl { color: #1d4ed8; font-weight: 500; }
+  .code .rd { color: #b91c1c; font-weight: 500; }
+  .code .em { color: #047857; font-weight: 500; }
+  .code .dm { color: rgba(26,22,64,.4); }
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st { display: grid; grid-template-columns: 20% 1fr; gap: 0 10px; align-items: start; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .st:last-child { border-bottom: none; }
+  .st-v { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; text-align: right; word-break: break-word; }
+  .st-v.bl { color: var(--blue); }
+  .st-v.rd { color: var(--red); }
+  .st-v.em { color: var(--emerald); }
+  .st-t { font-size: 14px; color: var(--ink2); line-height: 1.35; }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+  .gcard { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 14px; line-height: 1.5; flex-shrink: 0; }
+  .gcard.bl-c { background: rgba(37,99,235,.04); border: 1px solid rgba(37,99,235,.15); }
+  .gcard.rd-c { background: rgba(220,38,38,.04); border: 1px solid rgba(220,38,38,.15); }
+  .gcard.em-c { background: rgba(5,150,105,.04); border: 1px solid rgba(5,150,105,.15); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(37,99,235,.2); color: var(--blue); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+  .dl-btn:hover { background: var(--blue); color: #fff; }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--blue); color: var(--blue); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+  .progress-bar { width: 160px; height: 2px; background: rgba(37,99,235,.08); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--blue); transition: width .3s; }
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+  .nav button:hover { border-color: var(--blue); color: var(--blue); }
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(26,22,64,.08); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--blue); width: 22px; border-radius: 3px; }
+  .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(37,99,235,.05); }
+  .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+  .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(37,99,235,.2); color: var(--blue); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+  .copy-btn:hover { background: var(--blue); color: #fff; }
+  .copy-btn.copied { border-color: var(--emerald); color: var(--emerald); }
+  .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0">Platform<br><span class="bl">Engineering</span>.<br>DevOps<br><span class="em">At Scale</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>DevOps Works.<br><span class="rd">Then It Doesn't.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v rd">Promise</span><div class="st-t"><strong>"You build it, you run it."</strong> Teams own features and production. No ops silos, no tickets to a separate team. Fast, accountable, no wall to throw code over.</div></div>
+          <div class="st"><span class="st-v em">Startup</span><div class="st-t"><strong>10 engineers, one codebase, one cluster.</strong> DevOps ownership works perfectly here. Teams move fast and understand their own systems end to end.</div></div>
+          <div class="st"><span class="st-v rd">Growth</span><div class="st-t"><strong>200 engineers, 40 services, 15 teams.</strong> Each team now owns Kubernetes, Terraform, observability, on-call, security, and cost management simultaneously.</div></div>
+          <div class="st"><span class="st-v bl">Result</span><div class="st-t"><strong>Cognitive load becomes unbearable.</strong> Developers writing features are also expected to write Helm charts, configure PagerDuty, tune Prometheus, and understand blast radius.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="rd">Cognitive Load</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v rd">Owned by all</span><div class="st-t"><strong>Every team owns: features, infra manifests, CI pipelines, observability config, security policies, on-call rotations, and cloud costs.</strong> None of these are small.</div></div>
+          <div class="st"><span class="st-v" style="color:var(--dim)">Toil cost</span><div class="st-t"><strong>30 to 40% of developer time spent on operational plumbing</strong> instead of product value at companies without a platform team.</div></div>
+          <div class="st"><span class="st-v rd">Onboarding</span><div class="st-t"><strong>A new engineer spends weeks learning which Terraform modules, Grafana dashboards, and CI templates are the approved ones.</strong> No single source of truth.</div></div>
+          <div class="st"><span class="st-v bl">Duplication</span><div class="st-t"><strong>15 teams write 15 versions of the same Kubernetes deployment pattern, alerting rule, and incident runbook.</strong> None interoperate. All drift over time.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Internal<br><span class="bl">Developer Platform.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">IDP</span><div class="st-t"><strong>A curated layer of tooling that abstracts infrastructure complexity.</strong> Create a service, get infrastructure, CI, monitoring, and on-call routing provisioned automatically.</div></div>
+          <div class="st"><span class="st-v em">Golden paths</span><div class="st-t"><strong>Opinionated, well-supported routes through the developer experience.</strong> Not mandated. Just so much easier than the alternative that teams adopt them without being asked.</div></div>
+          <div class="st"><span class="st-v bl">Self-service</span><div class="st-t"><strong>A production-ready service in minutes, not days.</strong> The platform team encodes the decisions so individual teams do not need to make them every time.</div></div>
+          <div class="st"><span class="st-v em">Backstage</span><div class="st-t"><strong>Spotify's open-source developer portal.</strong> Catalogs every service, its owners, dependencies, and deployment status. Adopted by Google, Netflix, Airbnb, Zalando.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="bl">Golden Paths</span><br>in Practice.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Backstage service catalog entry:</span>
+apiVersion: backstage.io/v1alpha1
+kind: <span class="bl">Component</span>
+metadata:
+  name: <span class="em">payment-service</span>
+  annotations:
+    github.com/project-slug: acme/payments
+    pagerduty.com/service-id: <span class="rd">"P123456"</span>
+spec:
+  type:      <span class="bl">service</span>   <span class="dm"># provisions k8s + CI + alerts</span>
+  lifecycle: production
+  owner:     <span class="em">payments-team</span>
+  system:    checkout
+        </div>
+        <div class="gcard bl-c"><p><strong>The catalog entry is the contract.</strong> The platform reads it and provisions infrastructure, wires alerting, and links the runbook. The team writes business logic.</p></div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="bl">DORA</span><br>Metrics.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Deploy Freq</span><div class="st-t"><strong>How often a team ships to production.</strong> Elite teams deploy multiple times per day. Platform golden paths reduce friction on every single deploy.</div></div>
+          <div class="st"><span class="st-v em">Lead Time</span><div class="st-t"><strong>Time from commit to production.</strong> Platform tooling cuts this by eliminating manual Terraform, Helm, and pipeline setup steps per new service.</div></div>
+          <div class="st"><span class="st-v bl">MTTR</span><div class="st-t"><strong>Mean Time to Recovery.</strong> Standardized dashboards and runbooks built into the platform make every incident faster to resolve across all teams.</div></div>
+          <div class="st"><span class="st-v em">Change Fail</span><div class="st-t"><strong>Percentage of deploys causing production incidents.</strong> Shared CI templates with mandatory test gates reduce this rate simultaneously across every team.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="bl">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Platf. Eng.</span><div class="st-t"><strong>Discipline focused on building reusable internal tooling</strong> that reduces developer cognitive load while preserving team ownership and accountability.</div></div>
+          <div class="st"><span class="st-v em">IDP</span><div class="st-t"><strong>Internal Developer Platform.</strong> Provisions infrastructure, CI, monitoring, and on-call as a self-service workflow. The product a platform team builds and maintains.</div></div>
+          <div class="st"><span class="st-v bl">Golden Path</span><div class="st-t"><strong>Opinionated, well-supported route through the developer experience.</strong> Not mandatory. Clearly the easiest and most correct way to do things.</div></div>
+          <div class="st"><span class="st-v em">Backstage</span><div class="st-t"><strong>Spotify's open-source developer portal.</strong> De facto standard for IDP catalog layers. Catalogs services, owners, dependencies, and operational status.</div></div>
+          <div class="st"><span class="st-v bl">DORA</span><div class="st-t"><strong>Deployment Frequency, Lead Time, MTTR, Change Failure Rate.</strong> Four research-backed measures of software delivery performance. Platform quality shows up in all four.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="caption-section">
+    <div class="caption-hdr">
+      <span class="caption-label">Caption</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+    </div>
+    <div class="caption-text" id="captionText">The "you build it, you run it" principle was right. And it broke everything.
+
+DevOps promised to close the gap between engineering and operations. Give developers ownership of production. No more tickets to a separate ops team. It worked at startup scale: 10 engineers, one codebase, clear accountability. Teams moved fast and understood their systems.
+
+Then those teams multiplied. The cognitive load became unbearable.
+
+A developer at a growing company was expected to write features, write tests, write Kubernetes manifests, configure monitoring, be on call at 3am, manage database migrations, audit security policies, and review cloud costs. None of these are small things. Each is a specialty. DevOps asked every engineer to own all of them simultaneously, every sprint.
+
+Platform Engineering is not a rejection of DevOps ownership. It is a recognition that ownership works best when friction is removed. The platform team builds an internal developer platform, a curated set of golden paths that encode best practices into self-service tooling. A developer creates a new service not by reading 40 wiki pages, but by running one command that provisions infrastructure, configures CI, sets up monitoring, and opens a pull request.
+
+The platform team treats developers as customers. They measure success the same way product teams do, with DORA metrics. Deployment frequency, lead time for changes, mean time to recovery, and change failure rate. A good platform makes all four better by getting out of the developer's way.
+
+Backstage, the developer portal open-sourced by Spotify, is now the standard for internal platforms. A service catalog entry declares what a service is and who owns it. The platform reads it and wires up the rest automatically.
+
+The infrastructure did not get simpler. The developer experience did.
+
+Swipe to see why DevOps breaks at scale, what an internal developer platform contains, and how DORA metrics prove the platform is working.
+
+#platformengineering #devops #softwareengineering #cloud #ravenextechnologies</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'plateng-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'plateng-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

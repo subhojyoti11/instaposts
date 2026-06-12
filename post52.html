@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlashAttention — Post 52</title>
+<title>FlashAttention, Post 52</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;700&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -250,7 +250,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -261,7 +261,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — The HBM Bottleneck -->
+    <!-- SLIDE 2, The HBM Bottleneck -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -280,7 +280,7 @@
           </div>
           <div class="st">
             <span class="st-v pu">N²</span>
-            <div class="st-t"><strong>Standard attention materializes an N×N matrix.</strong> At N=8K, that's 128 MB per layer — far larger than all SRAM combined.</div>
+            <div class="st-t"><strong>Standard attention materializes an N×N matrix.</strong> At N=8K, that's 128 MB per layer, far larger than all SRAM combined.</div>
           </div>
           <div class="st">
             <span class="st-v gn">Bound</span>
@@ -291,7 +291,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — Three Trips to Slow Memory -->
+    <!-- SLIDE 3, Three Trips to Slow Memory -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -301,9 +301,9 @@
         <div style="height:14px"></div>
         <div class="code">
           <span class="dm"># Standard attention: 3 HBM round trips</span><br>
-          S = Q @ K.T    <span class="dm"># O(N²) — write S to HBM</span><br>
-          P = softmax(S) <span class="dm"># O(N²) — read S, write P</span><br>
-          O = P @ V      <span class="dm"># O(N²) — read P, write O</span><br>
+          S = Q @ K.T    <span class="dm"># O(N²), write S to HBM</span><br>
+          P = softmax(S) <span class="dm"># O(N²), read S, write P</span><br>
+          O = P @ V      <span class="dm"># O(N²), read P, write O</span><br>
           <br>
           <span class="dm"># N=8192, float16, 96 layers:</span><br>
           <span class="dm"># S per layer = 128 MB</span><br>
@@ -317,7 +317,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — Tile. Stay in SRAM. -->
+    <!-- SLIDE 4, Tile. Stay in SRAM. -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -347,7 +347,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — Online Softmax -->
+    <!-- SLIDE 5, Online Softmax -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -356,7 +356,7 @@
         <h2>Online<br><span class="bl">Softmax.</span></h2>
         <div style="height:14px"></div>
         <div class="code">
-          <span class="dm"># softmax needs full row — can't tile naively</span><br>
+          <span class="dm"># softmax needs full row, can't tile naively</span><br>
           <span class="dm"># online softmax: track running max and sum</span><br>
           <br>
           for each K/V tile j:<br>
@@ -373,7 +373,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — What It Unlocks -->
+    <!-- SLIDE 6, What It Unlocks -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -403,7 +403,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>

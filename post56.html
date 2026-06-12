@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LoRA & QLoRA — Post 56</title>
+<title>LoRA & QLoRA, Post 56</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -91,7 +91,7 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -301,7 +301,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -312,7 +312,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — Full Fine-Tuning Doesn't Fit -->
+    <!-- SLIDE 2, Full Fine-Tuning Doesn't Fit -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -331,18 +331,18 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Optimizer</span>
-            <div class="st-t"><strong>AdamW stores 2 momentum tensors per parameter.</strong> A 7B model = 42 GB just for optimizer state — 3x the size of the model weights alone.</div>
+            <div class="st-t"><strong>AdamW stores 2 momentum tensors per parameter.</strong> A 7B model = 42 GB just for optimizer state, 3x the size of the model weights alone.</div>
           </div>
           <div class="st">
             <span class="st-v tl">Need</span>
-            <div class="st-t"><strong>Most of the update is low-rank.</strong> Fine-tuning doesn't need to change all W — only a small subspace of each weight matrix actually matters.</div>
+            <div class="st-t"><strong>Most of the update is low-rank.</strong> Fine-tuning doesn't need to change all W, only a small subspace of each weight matrix actually matters.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — The Low-Rank Insight -->
+    <!-- SLIDE 3, The Low-Rank Insight -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -372,7 +372,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — The Math -->
+    <!-- SLIDE 4, The Math -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -393,13 +393,13 @@
           <span class="dm"># A+B:     65,536 params  (trained)</span>
         </div>
         <div class="gcard tl-c">
-          <p><strong>A and B initialize so A·B = 0.</strong> Training starts identical to the base model — adapters diverge only as fine-tuning progresses.</p>
+          <p><strong>A and B initialize so A·B = 0.</strong> Training starts identical to the base model, adapters diverge only as fine-tuning progresses.</p>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — QLoRA -->
+    <!-- SLIDE 5, QLoRA -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -414,7 +414,7 @@
           </div>
           <div class="st">
             <span class="st-v tl">Double quant</span>
-            <div class="st-t"><strong>Quantize the NF4 quantization constants themselves.</strong> Saves ~0.37 bits per parameter on top of NF4 — additional memory reduction at near-zero cost.</div>
+            <div class="st-t"><strong>Quantize the NF4 quantization constants themselves.</strong> Saves ~0.37 bits per parameter on top of NF4, additional memory reduction at near-zero cost.</div>
           </div>
           <div class="st">
             <span class="st-v rd">Paged opt.</span>
@@ -429,7 +429,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — Real Numbers -->
+    <!-- SLIDE 6, Real Numbers -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -452,14 +452,14 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Adoption</span>
-            <div class="st-t"><strong>Alpaca, Vicuna, WizardLM, Mistral Instruct</strong> — virtually every open fine-tune in production was trained with LoRA or QLoRA.</div>
+            <div class="st-t"><strong>Alpaca, Vicuna, WizardLM, Mistral Instruct</strong>, virtually every open fine-tune in production was trained with LoRA or QLoRA.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -531,13 +531,13 @@ Not because the technique is hard. Because the hardware doesn't exist. Full fine
 
 LoRA changes the question from "how do we store all of this?" to "how much do we actually need to update?"
 
-The key observation is that weight changes during fine-tuning have low intrinsic rank. When a model learns to follow instructions or adapt to a domain, the update to each weight matrix does not fill its full dimensional space — it concentrates in a small subspace. LoRA exploits this by decomposing the update ΔW into two smaller matrices: A of shape d×r and B of shape r×k, where r is much smaller than d or k. The original weight matrix is frozen. Only A and B are trained. At rank 8 with a 4096-dimensional projection, that is 65,536 trainable parameters instead of 16.7 million — a 256x reduction per layer.
+The key observation is that weight changes during fine-tuning have low intrinsic rank. When a model learns to follow instructions or adapt to a domain, the update to each weight matrix does not fill its full dimensional space, it concentrates in a small subspace. LoRA exploits this by decomposing the update ΔW into two smaller matrices: A of shape d×r and B of shape r×k, where r is much smaller than d or k. The original weight matrix is frozen. Only A and B are trained. At rank 8 with a 4096-dimensional projection, that is 65,536 trainable parameters instead of 16.7 million, a 256x reduction per layer.
 
 QLoRA pushed this further. Dettmers et al. quantized the frozen base model to 4-bit using NF4, a data type designed for normally-distributed neural network weights. They layered LoRA adapters on top in full float16. They quantized the quantization constants themselves to save additional memory. And they used paged optimizers to prevent out-of-memory crashes during gradient accumulation spikes.
 
 The result: fine-tune a 65B LLaMA model on a single 48 GB GPU. The resulting model, Guanaco, matched ChatGPT on MT-Bench benchmarks. It was trained in 24 hours.
 
-Every open fine-tune you have used — Alpaca, Vicuna, WizardLM, Mistral Instruct — was trained with LoRA or QLoRA. The technique democratized fine-tuning overnight.
+Every open fine-tune you have used, Alpaca, Vicuna, WizardLM, Mistral Instruct, was trained with LoRA or QLoRA. The technique democratized fine-tuning overnight.
 
 We didn't make GPUs larger. We made the update smaller.
 

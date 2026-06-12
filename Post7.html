@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How Tokenization Actually Works — BPE, WordPiece, and SentencePiece</title>
+<title>How Tokenization Actually Works, BPE, WordPiece, and SentencePiece</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&family=Azeret+Mono:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -30,7 +30,7 @@ body{
 .page-head{max-width:1100px;margin:0 auto 36px;padding:0 10px}
 .kicker{font-family:'Azeret Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .kicker::before{content:"";width:28px;height:2px;background:var(--accent)}
-h1.main{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(34px,5.5vw,66px);line-height:.92;letter-spacing:-.02em;margin-bottom:14px}
+h1.main{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(34px,5.5vw,66px);line-height:1.0;letter-spacing:-.02em;margin-bottom:14px}
 h1.main em{font-style:italic;font-weight:700;color:var(--accent)}
 h1.main .v{color:var(--accent-2)}
 .dek{font-weight:300;font-size:16px;color:var(--ink-dim);max-width:620px;line-height:1.55}
@@ -224,7 +224,7 @@ h1.main .v{color:var(--accent-2)}
         <p><strong>The sweet spot:</strong> subword tokenization. Split text into pieces larger than characters but smaller than words. "pizzeria" → <span style="font-family:'Azeret Mono',monospace;color:var(--accent)">"pizza" + "ria"</span>. Common words stay whole. Rare words get split intelligently.</p>
       </div>
       <div class="foot">
-        <span class="brand">// not words, not chars — subwords</span>
+        <span class="brand">// not words, not chars, subwords</span>
         <span class="swipe">swipe →</span>
       </div>
     </div>
@@ -266,13 +266,13 @@ h1.main .v{color:var(--accent-2)}
       <div class="tokens">
         <span class="tok">Hello</span><span class="tok">,</span><span class="tok">▁how</span><span class="tok">▁are</span><span class="tok">▁you</span><span class="tok">?</span>
       </div>
-      <p style="font-size:11px;color:var(--ink-dim);margin-bottom:12px">6 tokens — common words = 1 token each</p>
+      <p style="font-size:11px;color:var(--ink-dim);margin-bottom:12px">6 tokens, common words = 1 token each</p>
 
       <p style="font-size:13px;margin-bottom:6px"><strong>Technical term:</strong></p>
       <div class="tokens">
         <span class="tok">Tra</span><span class="tok">nsformer</span><span class="tok">▁architect</span><span class="tok">ure</span>
       </div>
-      <p style="font-size:11px;color:var(--ink-dim);margin-bottom:12px">4 tokens — long words get split at subword boundaries</p>
+      <p style="font-size:11px;color:var(--ink-dim);margin-bottom:12px">4 tokens, long words get split at subword boundaries</p>
 
       <p style="font-size:13px;margin-bottom:6px"><strong>Non-English (Hindi):</strong></p>
       <div class="tokens">

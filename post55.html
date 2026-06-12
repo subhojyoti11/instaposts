@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ring Attention — Post 55</title>
+<title>Ring Attention, Post 55</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap" rel="stylesheet">
@@ -92,7 +92,7 @@
     font-family: 'Sora', sans-serif;
     font-weight: 800;
     font-size: clamp(24px, 5vw, 36px);
-    line-height: .92;
+    line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -304,7 +304,7 @@
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
 
-    <!-- SLIDE 1 — Cover -->
+    <!-- SLIDE 1, Cover -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
@@ -315,7 +315,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
     </div>
 
-    <!-- SLIDE 2 — The Single-GPU Ceiling -->
+    <!-- SLIDE 2, The Single-GPU Ceiling -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
@@ -330,7 +330,7 @@
           </div>
           <div class="st">
             <span class="st-v am">1M tokens</span>
-            <div class="st-t"><strong>At 1M tokens, KV alone exceeds 100 GB in float16</strong> — more than any single GPU holds. Add weights and activations: impossible.</div>
+            <div class="st-t"><strong>At 1M tokens, KV alone exceeds 100 GB in float16</strong>, more than any single GPU holds. Add weights and activations: impossible.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Data parallel</span>
@@ -338,14 +338,14 @@
           </div>
           <div class="st">
             <span class="st-v em">Need</span>
-            <div class="st-t"><strong>A new algorithm is required.</strong> One that distributes a single long sequence across multiple GPUs — not just the batch.</div>
+            <div class="st-t"><strong>A new algorithm is required.</strong> One that distributes a single long sequence across multiple GPUs, not just the batch.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 3 — The Ring Topology -->
+    <!-- SLIDE 3, The Ring Topology -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
@@ -364,7 +364,7 @@
           </div>
           <div class="st">
             <span class="st-v am">Ring</span>
-            <div class="st-t"><strong>GPUs form a logical ring.</strong> K and V blocks rotate around the ring one step at a time — each GPU computes partial attention with the arriving block.</div>
+            <div class="st-t"><strong>GPUs form a logical ring.</strong> K and V blocks rotate around the ring one step at a time, each GPU computes partial attention with the arriving block.</div>
           </div>
           <div class="st">
             <span class="st-v em">Complete</span>
@@ -375,7 +375,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 4 — The Algorithm -->
+    <!-- SLIDE 4, The Algorithm -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
@@ -394,13 +394,13 @@
           <span class="dm"># O_i = correct full attention for Q_i</span>
         </div>
         <div class="gcard am-c">
-          <p><strong>ring_shift (communication) overlaps with flash_update (compute).</strong> Network latency is hidden inside GPU work — adding more GPUs does not proportionally increase wall-clock time.</p>
+          <p><strong>ring_shift (communication) overlaps with flash_update (compute).</strong> Network latency is hidden inside GPU work, adding more GPUs does not proportionally increase wall-clock time.</p>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 5 — Why Online Softmax Makes It Work -->
+    <!-- SLIDE 5, Why Online Softmax Makes It Work -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
@@ -423,14 +423,14 @@
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Exact</span>
-            <div class="st-t"><strong>No approximation.</strong> After all ring steps, O holds exactly the correct attention output — as if the full sequence had always been on one GPU.</div>
+            <div class="st-t"><strong>No approximation.</strong> After all ring steps, O holds exactly the correct attention output, as if the full sequence had always been on one GPU.</div>
           </div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 6 — What It Unlocks -->
+    <!-- SLIDE 6, What It Unlocks -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
@@ -460,7 +460,7 @@
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
     </div>
 
-    <!-- SLIDE 7 — Quick Reference -->
+    <!-- SLIDE 7, Quick Reference -->
     <div class="slide">
       <div class="ghost"> </div>
       <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
@@ -483,7 +483,7 @@
           </div>
           <div class="st">
             <span class="st-v em">Overlap</span>
-            <div class="st-t"><strong>ring_shift runs concurrently with flash_update.</strong> Communication latency is hidden inside local computation — critical for scaling efficiency.</div>
+            <div class="st-t"><strong>ring_shift runs concurrently with flash_update.</strong> Communication latency is hidden inside local computation, critical for scaling efficiency.</div>
           </div>
           <div class="st">
             <span class="st-v" style="color:var(--dim)">Use when</span>
@@ -528,15 +528,15 @@
     </div>
     <div class="caption-text" id="captionText">The context limit was never about the model. It was about the GPU.
 
-FlashAttention made attention memory-efficient on a single GPU. But even with O(N) memory, a single 80 GB A100 runs out somewhere around 200,000 tokens for a large model. At one million tokens, the key and value matrices alone need more than 100 gigabytes. No single GPU holds that. And standard data parallelism, which splits the batch across GPUs, does nothing to help — it never splits the sequence.
+FlashAttention made attention memory-efficient on a single GPU. But even with O(N) memory, a single 80 GB A100 runs out somewhere around 200,000 tokens for a large model. At one million tokens, the key and value matrices alone need more than 100 gigabytes. No single GPU holds that. And standard data parallelism, which splits the batch across GPUs, does nothing to help, it never splits the sequence.
 
 Ring Attention solves this by distributing the sequence itself.
 
-Divide the sequence evenly across a ring of GPUs. Each GPU holds its slice of Q, K, and V. To compute full attention, you need every K and V block — so you pass them around the ring. Each GPU receives a K/V block from its neighbor, computes partial attention between its local queries and that block, then passes the block forward. Repeat for every GPU in the ring. After N_GPUs passes, every query has attended to every key and value in the full sequence.
+Divide the sequence evenly across a ring of GPUs. Each GPU holds its slice of Q, K, and V. To compute full attention, you need every K and V block, so you pass them around the ring. Each GPU receives a K/V block from its neighbor, computes partial attention between its local queries and that block, then passes the block forward. Repeat for every GPU in the ring. After N_GPUs passes, every query has attended to every key and value in the full sequence.
 
-The hard part is correctness. Standard softmax requires the full row of scores to compute the normalizing denominator. You cannot accumulate partial results naively. Ring Attention borrows the online softmax trick from FlashAttention — tracking a running maximum and a running normalizer at each step. The accumulated output is rescaled after every ring pass using the updated running maximum. The final result is numerically identical to computing attention on one GPU with the entire sequence in view.
+The hard part is correctness. Standard softmax requires the full row of scores to compute the normalizing denominator. You cannot accumulate partial results naively. Ring Attention borrows the online softmax trick from FlashAttention, tracking a running maximum and a running normalizer at each step. The accumulated output is rescaled after every ring pass using the updated running maximum. The final result is numerically identical to computing attention on one GPU with the entire sequence in view.
 
-The other half of the design is efficiency. While each GPU computes local attention, the next K/V block is already in transit. Communication and computation overlap — the ring shift is hidden inside the GPU work. Scaling to 64 or 128 GPUs adds more context without proportionally increasing wall-clock time.
+The other half of the design is efficiency. While each GPU computes local attention, the next K/V block is already in transit. Communication and computation overlap, the ring shift is hidden inside the GPU work. Scaling to 64 or 128 GPUs adds more context without proportionally increasing wall-clock time.
 
 Eight GPUs extend your context window by 8x. The limit stopped being the GPU. It became the number of GPUs in the ring.
 

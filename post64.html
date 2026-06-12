@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero Trust Architecture, Post 64</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#fdf8fb; --card:#ffffff; --ink:#1a1023; --ink2:#6b5c78; --dim:#9987a8; --pink:#db2777; --cyan:#0891b2; --lime:#65a30d; --border:rgba(219,39,119,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); box-shadow:0 4px 28px rgba(219,39,119,.04); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Sora',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .pk { color:var(--pink); } .slide h2 .cy { color:var(--cyan); } .slide h2 .lm { color:var(--lime); }
+  .ftr { flex-shrink:0; padding:8px 24px 14px 26px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--pink); }
+  .code { background:#fff0f6; border:1px solid rgba(219,39,119,.12); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .pk { color:#be185d; } .code .cy { color:#0e7490; } .code .lm { color:#4d7c0f; } .code .dm { color:var(--dim); }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.pk { color:var(--pink); } .st-v.cy { color:var(--cyan); } .st-v.lm { color:var(--lime); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.pk-c { background:rgba(219,39,119,.04); border:1px solid rgba(219,39,119,.12); }
+  .gcard.cy-c { background:rgba(8,145,178,.04); border:1px solid rgba(8,145,178,.12); }
+  .gcard.lm-c { background:rgba(101,163,13,.04); border:1px solid rgba(101,163,13,.12); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(219,39,119,.2); color:var(--pink); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--pink); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--pink); color:var(--pink); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(219,39,119,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--pink); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--pink); color:var(--pink); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(26,16,35,.08); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--pink); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 4px 28px rgba(219,39,119,.04); }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(219,39,119,.2); color:var(--pink); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--pink); color:#fff; }
+  .copy-btn.copied { border-color:var(--lime); color:var(--lime); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88"><span class="pk">Zero Trust</span>.<br>Never Trust,<br>Always Verify.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="pk">Castle</span><br>and Moat Is Gone.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">Old model</span><div class="st-t"><strong>Build a hard perimeter (firewall, VPN) and trust everything inside it.</strong> Employees on the corporate network could reach internal services without additional authentication.</div></div>
+          <div class="st"><span class="st-v pk">The problem</span><div class="st-t"><strong>The perimeter has dissolved.</strong> Employees work from home. Services run in the cloud. Partners need access to internal APIs. The inside of the network is no longer safe by definition.</div></div>
+          <div class="st"><span class="st-v cy">Lateral move</span><div class="st-t"><strong>When attackers breach the perimeter, they move freely.</strong> A compromised laptop on the internal network can reach HR databases, payment systems, and source code with no additional challenge.</div></div>
+          <div class="st"><span class="st-v lm">The answer</span><div class="st-t"><strong>Zero Trust assumes the network is already compromised.</strong> Every request must prove who it is, what device it is on, and what it is authorized to access, regardless of network location.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Three<br><span class="cy">Core Principles</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Verify explicitly</span><div class="st-t"><strong>Authenticate and authorize every request using all available signals.</strong> User identity, device health, location, service, and data classification all factor into each access decision, every time.</div></div>
+          <div class="st"><span class="st-v pk">Least privilege</span><div class="st-t"><strong>Grant the minimum permissions required for the specific task, for the minimum time.</strong> Just-in-time access replaces standing permissions. Developers get temporary elevated access, not permanent admin rights.</div></div>
+          <div class="st"><span class="st-v lm">Assume breach</span><div class="st-t"><strong>Design as if the attacker is already inside.</strong> Segment everything. Encrypt all traffic end-to-end, even on internal networks. Log and inspect all requests. Detect lateral movement before it reaches critical systems.</div></div>
+        </div>
+        <div class="gcard pk-c"><p><strong>Location is no longer a trust signal.</strong> A request from inside the data center gets the same scrutiny as a request from a coffee shop.</p></div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="pk">Policy Engine</span><br>in Practice.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># OPA policy: every request evaluated here</span>
+package <span class="pk">zerotrust.authz</span>
+
+default allow = <span class="cy">false</span>
+
+allow {
+  input.user.<span class="lm">identity</span>   == <span class="pk">verified</span>
+  input.device.<span class="lm">posture</span>   == <span class="cy">"compliant"</span>
+  input.device.<span class="lm">encrypted</span>  == <span class="cy">true</span>
+  valid_scope[input.<span class="lm">resource</span>]
+}
+
+valid_scope[r] {
+  role_permissions[input.user.<span class="lm">role</span>][r]
+  <span class="dm"># checked on every single request</span>
+}
+        </div>
+        <div class="gcard cy-c"><p>OPA (Open Policy Agent) evaluates this policy on every API call. <strong>No request is implicitly trusted based on source.</strong></p></div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Five<br><span class="lm">Pillars.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">Identity</span><div class="st-t"><strong>Verify every human and machine identity using MFA, certificates, or workload identity.</strong> Identity is the new perimeter. OIDC and SPIFFE/SPIRE issue short-lived credentials to workloads.</div></div>
+          <div class="st"><span class="st-v cy">Devices</span><div class="st-t"><strong>Check device posture before granting access.</strong> Is the OS patched? Is disk encryption enabled? Is endpoint detection running? Non-compliant devices are quarantined, not trusted.</div></div>
+          <div class="st"><span class="st-v lm">Network</span><div class="st-t"><strong>Micro-segment the network so services can only reach services they need.</strong> Service mesh with mutual TLS (mTLS) encrypts and authenticates all service-to-service traffic on the internal network.</div></div>
+          <div class="st"><span class="st-v pk">Workloads</span><div class="st-t"><strong>Every container, function, and VM gets a cryptographic identity.</strong> SPIFFE IDs are issued at runtime. A service proves what it is with a certificate, not with a network address or IP.</div></div>
+          <div class="st"><span class="st-v cy">Data</span><div class="st-t"><strong>Classify data and enforce access by classification.</strong> PII and financial records require stronger identity verification and device posture checks than public content APIs.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="pk">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">Google BeyondCorp</span><div class="st-t"><strong>Google deployed Zero Trust internally after the 2009 Operation Aurora breach.</strong> By 2014 every Google employee reached internal apps through a context-aware proxy with no VPN. BeyondCorp became the blueprint.</div></div>
+          <div class="st"><span class="st-v cy">Istio</span><div class="st-t"><strong>Service mesh for Kubernetes that enforces mTLS between every pod by default.</strong> No code changes required. The sidecar proxy handles certificate rotation and policy enforcement at the network layer.</div></div>
+          <div class="st"><span class="st-v lm">Cloudflare Access</span><div class="st-t"><strong>Replaces VPN for browser-based access to internal applications.</strong> Every request passes through Cloudflare's edge, evaluated against identity and device posture policies before reaching the origin.</div></div>
+          <div class="st"><span class="st-v pk">HashiCorp Vault</span><div class="st-t"><strong>Dynamic secrets with short TTLs replace static credentials.</strong> Database passwords and API keys are generated on demand, valid for minutes, and automatically revoked. No secret is stored in code or config files.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="pk">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">Zero Trust</span><div class="st-t"><strong>Security model that eliminates implicit trust based on network location.</strong> Every request is authenticated, authorized, and encrypted regardless of whether it originates inside or outside the corporate network.</div></div>
+          <div class="st"><span class="st-v cy">mTLS</span><div class="st-t"><strong>Mutual TLS: both sides of a connection present certificates.</strong> Istio enforces mTLS between Kubernetes pods automatically. Services authenticate to each other, not just to a load balancer.</div></div>
+          <div class="st"><span class="st-v lm">SPIFFE</span><div class="st-t"><strong>Secure Production Identity Framework for Everyone.</strong> Issues cryptographic workload identities at runtime. A container gets an SVID (certificate) it uses to prove identity to other services.</div></div>
+          <div class="st"><span class="st-v pk">OPA</span><div class="st-t"><strong>Open Policy Agent: a general-purpose policy engine.</strong> Evaluates authorization policies for API gateways, Kubernetes admission, and service meshes using Rego policy language.</div></div>
+          <div class="st"><span class="st-v cy">JIT access</span><div class="st-t"><strong>Just-in-time access: temporary elevated permissions granted on demand.</strong> Replaces standing admin rights. A developer gets 30-minute database access for a specific task, then credentials auto-expire.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Your VPN is not a security model. It is a drawbridge you forgot to raise.
+
+Traditional network security drew a perimeter and trusted everything inside it. Employees on the corporate network could reach internal services without re-authenticating. The implicit assumption was that the inside of the network was safe. That assumption was always fragile, and the shift to cloud infrastructure and remote work has made it completely untenable.
+
+Zero Trust starts from the opposite assumption: the network is already compromised. Every request must prove who it is, what device it is on, and what it is authorized to access, regardless of where the request originates. A request from inside the data center gets the same scrutiny as a request from a coffee shop. Network location is not a trust signal.
+
+The three core principles are: verify every request explicitly using all available signals, grant minimum privilege for the minimum time, and assume breach by segmenting everything and encrypting all traffic, even between internal services.
+
+In practice this means mutual TLS between every service (Istio handles this in Kubernetes with no code changes), short-lived dynamic credentials from HashiCorp Vault instead of static secrets in config files, workload identity via SPIFFE so containers authenticate with certificates rather than IP addresses, and device posture checks before any access is granted.
+
+Google deployed this model internally after the 2009 Operation Aurora breach and documented it as BeyondCorp. By 2014 no Google employee needed a VPN. Cloudflare Access brings the same pattern to any team without building the infrastructure from scratch.
+
+The result is that a compromised laptop on the internal network can no longer move laterally to payment systems or HR databases. Every hop requires a fresh authentication decision.
+
+Swipe to see the castle-and-moat model that failed, the OPA policy that evaluates every request, and the five pillars of a Zero Trust implementation.
+
+#zerotrust #security #cybersecurity #devops #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'zerotrust-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'zerotrust-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

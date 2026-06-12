@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WebSockets vs SSE vs Long Polling — Real-Time Three Ways</title>
+<title>WebSockets vs SSE vs Long Polling, Real-Time Three Ways</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -78,7 +78,7 @@ h1.main em{font-weight:900;color:var(--ws)}h1.main .ss{color:var(--sse)}h1.main 
 <header class="page-head">
   <div class="kicker">Web · Real-Time Systems</div>
   <h1 class="main">Same chat app. <em>Three</em> completely different ways to build <span class="ss">real-time.</span></h1>
-  <p class="dek">WebSockets, Server-Sent Events, and Long Polling all solve the same problem — pushing data from server to client. But the connection lifecycle, overhead, and failure modes are radically different.</p>
+  <p class="dek">WebSockets, Server-Sent Events, and Long Polling all solve the same problem, pushing data from server to client. But the connection lifecycle, overhead, and failure modes are radically different.</p>
 </header>
 <div class="carousel-wrap">
   <div class="carousel" id="carousel">
@@ -89,9 +89,9 @@ h1.main em{font-weight:900;color:var(--ws)}h1.main .ss{color:var(--sse)}h1.main 
       <div class="sm"><span>01 / 08</span></div>
       <div class="hero">
         <span class="hl hl-ws">WebSockets</span>
-        <span class="hl-vs">— versus —</span>
+        <span class="hl-vs">- versus -</span>
         <span class="hl hl-sse">SSE</span>
-        <span class="hl-vs">— versus —</span>
+        <span class="hl-vs">- versus -</span>
         <span class="hl hl-lp">Long Polling</span>
       </div>
       <!-- <p class="mono-sub">1 chat app · 3 protocols · all trade-offs</p> -->
@@ -187,7 +187,7 @@ h1.main em{font-weight:900;color:var(--ws)}h1.main .ss{color:var(--sse)}h1.main 
 <span class="ws">both directions, any time, zero overhead ✓</span>
       </div> -->
       <div class="info ws-box">
-        <p><strong style="color:var(--ws)">Pro:</strong> True bidirectional. Binary + text. Lowest latency possible. One connection handles everything — messages, typing indicators, presence, reactions.</p>
+        <p><strong style="color:var(--ws)">Pro:</strong> True bidirectional. Binary + text. Lowest latency possible. One connection handles everything, messages, typing indicators, presence, reactions.</p>
         <p><strong style="color:#f87171">Con:</strong> No auto-reconnect (you build it). Stateful and hard to load-balance. Breaks through some proxies/firewalls. More complex server infrastructure.</p>
       </div>
       <div class="foot"><span class="brand">// full duplex, maximum power</span><span class="swipe">swipe →</span></div>
@@ -246,7 +246,7 @@ h1.main em{font-weight:900;color:var(--ws)}h1.main .ss{color:var(--sse)}h1.main 
         <div class="use-chip"><strong>Multiplayer games</strong>WebSocket + binary frames. Minimum latency, maximum throughput. Position updates 60 times/second.</div>
         <div class="use-chip sse-c"><strong>Live dashboards</strong>SSE. Server pushes metric updates. Client never needs to send data back. Auto-reconnect handles drops.</div>
         <div class="use-chip lp-c"><strong>Legacy notification</strong>Long Polling as fallback when WebSocket and SSE are blocked by corporate proxies.</div>
-        <div class="use-chip"><strong>Collaborative editing</strong>WebSocket. Figma, Google Docs — operational transforms need true bidirectional real-time.</div>
+        <div class="use-chip"><strong>Collaborative editing</strong>WebSocket. Figma, Google Docs, operational transforms need true bidirectional real-time.</div>
       </div>
       <div class="info ws-box" style="margin-top:10px">
         <p><strong>The 2026 rule of thumb:</strong> Start with SSE, it's simpler, works everywhere, and auto-reconnects. Upgrade to WebSocket only when you need bidirectional communication or binary data. Use Long Polling only as a fallback for hostile network environments.</p>

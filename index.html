@@ -3,544 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ravenex — Post Library</title>
+<title>Ravenex Technologies — Post Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0c10;
-    --card: #151320;
-    --card-hover: #1c1a2e;
-    --ink: #e2e8f0;
-    --ink2: #a0a0a0;
-    --accent: #818cf8;
-    --accent2: #fcd34d;
-    --border: rgba(129,140,248,.12);
-    --border-hover: rgba(129,140,248,.35);
+    --bg: #0b0c11;
+    --card: #13151e;
+    --card-hover: #181b26;
+    --ink: #f0f2f8;
+    --ink2: #8892a4;
+    --dim: #4a5568;
+    --accent: #6366f1;
+    --border: rgba(255,255,255,.06);
+    --border-hover: rgba(99,102,241,.25);
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html, body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body {
-    background-image:
-      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(129,140,248,.12), transparent),
-      radial-gradient(ellipse 50% 40% at 90% 100%, rgba(252,211,77,.06), transparent);
-    padding: 48px 20px 100px;
-  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; min-height:100vh; }
 
   /* ── Header ── */
-  .header {
-    max-width: 1100px;
-    margin: 0 auto 48px;
-    text-align: center;
-  }
-
-  .kicker {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -.02em;
-    margin-bottom: 12px;
-  }
-
-  .sub {
-    color: var(--ink2);
-    font-size: 1rem;
-    margin-bottom: 36px;
-  }
+  .hero { text-align:center; padding:72px 24px 56px; }
+  .brand { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+  .hero h1 { font-size:clamp(36px,6vw,64px); font-weight:800; letter-spacing:-.03em; line-height:1; margin-bottom:16px; }
+  .hero p { font-size:16px; color:var(--ink2); max-width:480px; margin:0 auto 36px; line-height:1.6; }
 
   /* ── Search ── */
-  .search-wrap {
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-  }
+  .search-wrap { max-width:480px; margin:0 auto; position:relative; }
+  .search-wrap svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:16px; height:16px; stroke:var(--dim); fill:none; stroke-width:2; stroke-linecap:round; pointer-events:none; }
+  #search { width:100%; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 16px 13px 44px; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); outline:none; transition:border-color .2s; }
+  #search::placeholder { color:var(--dim); }
+  #search:focus { border-color:var(--accent); }
 
-  .search-wrap svg {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--ink2);
-    pointer-events: none;
-  }
+  /* ── Status bar ── */
+  .status-bar { display:flex; align-items:center; justify-content:space-between; max-width:1160px; margin:0 auto; padding:0 24px 20px; gap:12px; }
+  .status-left { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); }
+  .pulse { width:6px; height:6px; border-radius:50%; background:#22c55e; flex-shrink:0; animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+  .pulse.done { background:var(--dim); animation:none; }
+  #counter { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); }
 
-  #search {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-size: .95rem;
-    padding: 11px 16px 11px 42px;
-    outline: none;
-    transition: border-color .2s;
-  }
-
-  #search::placeholder { color: var(--ink2); }
-  #search:focus { border-color: var(--border-hover); }
+  /* ── Error box ── */
+  #err { max-width:600px; margin:0 auto 32px; background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.18); border-radius:10px; padding:18px 22px; display:none; }
+  #err p { font-size:13px; color:#fca5a5; line-height:1.8; }
+  #err code { font-family:'JetBrains Mono',monospace; font-size:12px; background:rgba(239,68,68,.1); padding:2px 7px; border-radius:3px; }
 
   /* ── Grid ── */
-  .grid {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
-  }
+  .grid-wrap { max-width:1160px; margin:0 auto; padding:0 24px 80px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media(max-width:900px){ .grid { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:560px){ .grid { grid-template-columns:1fr; } }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px 24px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: background .2s, border-color .2s, transform .15s;
-  }
+  /* ── Card ── */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; cursor:pointer; text-decoration:none; display:flex; flex-direction:column; gap:10px; transition:background .2s, border-color .2s, transform .2s; }
+  .card:hover { background:var(--card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
+  .card-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+  .card-title { font-size:16px; font-weight:700; color:var(--ink); line-height:1.4; flex:1; }
+  .card-link { font-size:13px; color:var(--ink2); display:flex; align-items:center; gap:4px; transition:color .2s; margin-top:4px; }
+  .card:hover .card-link { color:var(--accent); }
+  .card.hidden { display:none; }
 
-  .card:hover {
-    background: var(--card-hover);
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-  }
-
-  .card-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: .14em;
-    color: var(--accent);
-  }
-
-  .card-title {
-    font-size: .97rem;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--ink);
-  }
-
-  .card-arrow {
-    margin-top: auto;
-    padding-top: 12px;
-    font-size: .82rem;
-    color: var(--ink2);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color .2s;
-  }
-
-  .card:hover .card-arrow { color: var(--accent); }
-
-  .none {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: var(--ink2);
-    padding: 60px 0;
-    font-size: .95rem;
-  }
+  /* ── No results ── */
+  #empty { display:none; text-align:center; padding:60px 24px; font-size:15px; color:var(--dim); }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <p class="kicker">Ravenex Technologies</p>
+<div class="hero">
+  <div class="brand">Ravenex Technologies</div>
   <h1>Post Library</h1>
-  <p class="sub">Technical infographics on AI, systems, and software engineering</p>
+  <p>Technical infographics on AI, systems, and software engineering</p>
   <div class="search-wrap">
-    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-    </svg>
-    <input id="search" type="search" placeholder="Search posts…" autocomplete="off">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input id="search" type="text" placeholder="Search posts..." autocomplete="off">
   </div>
-</header>
+</div>
 
-<main class="grid" id="grid">
+<div class="status-bar">
+  <div class="status-left"><span class="pulse" id="dot"></span><span id="statusText">Discovering posts…</span></div>
+  <div id="counter"></div>
+</div>
 
-  <a class="card" href="Post.html">
-    <span class="card-num">POST 00</span>
-    <span class="card-title">CRDT &amp; HashChain — The Data Structures Powering the Modern Web</span>
-    <span class="card-arrow">View post →</span>
-  </a>
+<div id="err" style="padding:0 24px">
+  <p><strong>Auto-discovery needs a local server.</strong> Run one of these in the folder, then reload:<br><br>
+  Python 3: <code>python -m http.server 5500</code> → open <code>http://localhost:5500</code><br>
+  Node: <code>npx serve .</code> → open the displayed URL<br>
+  VSCode: install <strong>Live Server</strong> and click <em>Go Live</em> in the status bar.</p>
+</div>
 
-  <a class="card" href="Post1.html">
-    <span class="card-num">POST 01</span>
-    <span class="card-title">Load Balancing Algorithms — Round Robin to Consistent Hashing</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post2.html">
-    <span class="card-num">POST 02</span>
-    <span class="card-title">CAP Theorem — Pick Two, Regret One</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post3.html">
-    <span class="card-num">POST 03</span>
-    <span class="card-title">Consensus Algorithms — Raft vs Paxos vs PBFT</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post4.html">
-    <span class="card-num">POST 04</span>
-    <span class="card-title">How DNS Actually Works — A 10-Slide Journey</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post5.html">
-    <span class="card-num">POST 05</span>
-    <span class="card-title">Bloom Filters — The Data Structure That Lies (A Little)</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post6.html">
-    <span class="card-num">POST 06</span>
-    <span class="card-title">Event Sourcing vs CRUD — The Database Showdown</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post7.html">
-    <span class="card-num">POST 07</span>
-    <span class="card-title">How Tokenization Actually Works — BPE, WordPiece, and SentencePiece</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="Post8.html">
-    <span class="card-num">POST 08</span>
-    <span class="card-title">Model Serving at Scale — Batching, Quantization, and KV Cache</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post9.html">
-    <span class="card-num">POST 09</span>
-    <span class="card-title">AI Hallucinations — Why LLMs Make Things Up and How to Stop Them</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post10.html">
-    <span class="card-num">POST 10</span>
-    <span class="card-title">CPU vs GPU vs TPU — The AI Hardware Showdown (2026)</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post11.html">
-    <span class="card-num">POST 11</span>
-    <span class="card-title">WebSockets vs SSE vs Long Polling — Real-Time Three Ways</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post12.html">
-    <span class="card-num">POST 12</span>
-    <span class="card-title">HyperLogLog — Counting to a Billion</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post13.html">
-    <span class="card-num">POST 13</span>
-    <span class="card-title">Every Claude "Secret Code" — Real vs Myth</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post14.html">
-    <span class="card-num">POST 14</span>
-    <span class="card-title">Every Claude Code That Actually Works — Cheatsheet</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post15.html">
-    <span class="card-num">POST 15</span>
-    <span class="card-title">Every Claude Code That Actually Works — Cheatsheet (v2)</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post16.html">
-    <span class="card-num">POST 16</span>
-    <span class="card-title">The Memory Wall — Why AI is Starving for Data</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post17.html">
-    <span class="card-num">POST 17</span>
-    <span class="card-title">Groq and the LPU — Deterministic Compute</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post18.html">
-    <span class="card-num">POST 18</span>
-    <span class="card-title">The Authenticity Reconquista — Brutalist</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post19.html">
-    <span class="card-num">POST 19</span>
-    <span class="card-title">The 1-Bit Revolution — Extreme Quantization</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post20.html">
-    <span class="card-num">POST 20</span>
-    <span class="card-title">The Network is the Computer — Ravenex Technologies</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post22.html">
-    <span class="card-num">POST 22</span>
-    <span class="card-title">Vibe Coding — Midnight Grid Style</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post24.html">
-    <span class="card-num">POST 24</span>
-    <span class="card-title">The Real Cost of a ChatGPT Query</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post26.html">
-    <span class="card-num">POST 26</span>
-    <span class="card-title">Open Source vs Closed Source AI</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post27.html">
-    <span class="card-num">POST 27</span>
-    <span class="card-title">Token Economics — The Hidden Tax on Every AI App</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post28.html">
-    <span class="card-num">POST 28</span>
-    <span class="card-title">Temperature, Top-K, Top-P — The Three Knobs</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post29.html">
-    <span class="card-num">POST 29</span>
-    <span class="card-title">RAG vs Fine-Tuning</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post30.html">
-    <span class="card-num">POST 30</span>
-    <span class="card-title">Context Window Explained</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post31.html">
-    <span class="card-num">POST 31</span>
-    <span class="card-title">The Attention Mechanism</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post32.html">
-    <span class="card-num">POST 32</span>
-    <span class="card-title">Embeddings Visualized</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post33.html">
-    <span class="card-num">POST 33</span>
-    <span class="card-title">AI Agents Explained</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post34.html">
-    <span class="card-num">POST 34</span>
-    <span class="card-title">Two's Complement — How Every Computer Handles Negative Numbers</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post35.html">
-    <span class="card-num">POST 35</span>
-    <span class="card-title">Saved Vault — Instagram Carousel</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post36.html">
-    <span class="card-num">POST 36</span>
-    <span class="card-title">Abstract Syntax Trees — Visualized</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post38.html">
-    <span class="card-num">POST 38</span>
-    <span class="card-title">SaaS Metrics — The Glossary</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post39.html">
-    <span class="card-num">POST 39</span>
-    <span class="card-title">What Happens When You Tap Pay</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post40.html">
-    <span class="card-num">POST 40</span>
-    <span class="card-title">The Real Tech Stack of $1B Startups</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post42.html">
-    <span class="card-num">POST 42</span>
-    <span class="card-title">The Human Element — AI vs Creativity</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post43.html">
-    <span class="card-num">POST 43</span>
-    <span class="card-title">Vector Databases — The Memory of AI</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post44.html">
-    <span class="card-num">POST 44</span>
-    <span class="card-title">B-Trees vs LSM Trees — How Databases Actually Store Your Data</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post45.html">
-    <span class="card-num">POST 45</span>
-    <span class="card-title">MCP — How AI Agents Connect to the World</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post46.html">
-    <span class="card-num">POST 46</span>
-    <span class="card-title">RLHF — How LLMs Learn to Behave</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post47.html">
-    <span class="card-num">POST 47</span>
-    <span class="card-title">Speculative Decoding</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post48.html">
-    <span class="card-num">POST 48</span>
-    <span class="card-title">Garbage Collection</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post49.html">
-    <span class="card-num">POST 49</span>
-    <span class="card-title">X-Token</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post50.html">
-    <span class="card-num">POST 50</span>
-    <span class="card-title">PagedAttention</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post51.html">
-    <span class="card-num">POST 51</span>
-    <span class="card-title">State Space Models</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post52.html">
-    <span class="card-num">POST 52</span>
-    <span class="card-title">FlashAttention</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post53.html">
-    <span class="card-num">POST 53</span>
-    <span class="card-title">Mixture of Experts</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post54.html">
-    <span class="card-num">POST 54</span>
-    <span class="card-title">BitNet</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post55.html">
-    <span class="card-num">POST 55</span>
-    <span class="card-title">Ring Attention</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post56.html">
-    <span class="card-num">POST 56</span>
-    <span class="card-title">LoRA &amp; QLoRA</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post57.html">
-    <span class="card-num">POST 57</span>
-    <span class="card-title">eBPF</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post58.html">
-    <span class="card-num">POST 58</span>
-    <span class="card-title">Zero-Copy &amp; RDMA</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post59.html">
-    <span class="card-num">POST 59</span>
-    <span class="card-title">CRDTs</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-  <a class="card" href="post60.html">
-    <span class="card-num">POST 60</span>
-    <span class="card-title">Unified Memory Architecture</span>
-    <span class="card-arrow">View post →</span>
-  </a>
-
-</main>
+<div class="grid-wrap">
+  <div class="grid" id="grid"></div>
+  <div id="empty">No posts match your search.</div>
+</div>
 
 <script>
-  const search = document.getElementById('search');
-  const cards = Array.from(document.querySelectorAll('.card'));
-  const grid = document.getElementById('grid');
-  let noResult = null;
+const MAX_POST = 150;
+const BATCH    = 20;
 
-  search.addEventListener('input', () => {
-    const q = search.value.trim().toLowerCase();
-    let visible = 0;
-    cards.forEach(card => {
-      const text = card.textContent.toLowerCase();
-      const show = !q || text.includes(q);
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    if (noResult) noResult.remove();
-    if (visible === 0) {
-      noResult = document.createElement('p');
-      noResult.className = 'none';
-      noResult.textContent = 'No posts match "' + search.value + '"';
-      grid.appendChild(noResult);
-    }
+function parsePost(num, html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const titleRaw = doc.title || '';
+  const topic = titleRaw.replace(/[,:\s-]+[Pp]ost\s*\d+\s*$/, '').trim() || `Post ${num}`;
+  const styleText = doc.querySelector('style')?.textContent || '';
+  const colorVars = [...styleText.matchAll(/--(?!bg\b|card\b|ink\b|dim\b|border\b)[a-z]+:\s*(#[0-9a-fA-F]{6})/g)];
+  const primaryHex = colorVars[0]?.[1] || '#6366f1';
+  const bgMatch = styleText.match(/--bg:\s*(#[0-9a-fA-F]{6})/);
+  const bgHex = bgMatch?.[1] || '#111111';
+  const isLight = parseInt(bgHex.slice(1, 3), 16) > 100;
+  return { num, topic, primaryHex, isLight };
+}
+
+function makeCard({ num, topic }) {
+  const a = document.createElement('a');
+  a.href  = `post${num}.html`;
+  a.className = 'card';
+  a.dataset.topic = topic.toLowerCase();
+  a.innerHTML =
+    `<div class="card-num">POST ${String(num).padStart(2, '0')}</div>` +
+    `<div class="card-title">${escHtml(topic)}</div>` +
+    `<div class="card-link">View post <span>→</span></div>`;
+  return a;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function probeFetch(num) {
+  try {
+    const r = await fetch(`post${num}.html`, { cache: 'no-store' });
+    if (!r.ok) return null;
+    return parsePost(num, await r.text());
+  } catch { return null; }
+}
+
+// Search filter
+document.getElementById('search').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(c => {
+    const match = !q || c.dataset.topic.includes(q);
+    c.classList.toggle('hidden', !match);
+    if (match) visible++;
   });
-</script>
+  document.getElementById('empty').style.display = visible === 0 && cards.length > 0 ? 'block' : 'none';
+});
 
+async function run() {
+  const grid    = document.getElementById('grid');
+  const status  = document.getElementById('statusText');
+  const counter = document.getElementById('counter');
+  const dot     = document.getElementById('dot');
+  const errBox  = document.getElementById('err');
+
+  try {
+    const test = await fetch('index.html', { method: 'HEAD', cache: 'no-store' });
+    if (!test.ok) throw new Error();
+  } catch {
+    errBox.style.display = 'block';
+    status.textContent = 'Open via a local server to enable auto-discovery.';
+    dot.classList.add('done');
+    return;
+  }
+
+  const found = [];
+
+  for (let start = 1; start <= MAX_POST; start += BATCH) {
+    const end  = Math.min(start + BATCH - 1, MAX_POST);
+    status.textContent = `Scanning ${start} – ${end}…`;
+    const nums  = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    const batch = await Promise.all(nums.map(n => probeFetch(n)));
+    batch.forEach(r => { if (r) found.push(r); });
+    found.sort((a, b) => b.num - a.num);
+    grid.innerHTML = '';
+    found.forEach(p => grid.appendChild(makeCard(p)));
+    counter.textContent = `${found.length} posts`;
+  }
+
+  dot.classList.add('done');
+  status.textContent = `${found.length} post${found.length !== 1 ? 's' : ''} found`;
+  if (found.length === 0) status.textContent = 'No post*.html files found.';
+}
+
+run();
+</script>
 </body>
 </html>
