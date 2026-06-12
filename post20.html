@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Network is the Computer — Ravenex Technologies</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lexend:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Industrial Titanium Palette */
+  --bg: #0a0b0d;
+  --surface: #14161a;
+  --border: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.15);
+  
+  --text-primary: #f0f2f5;
+  --text-secondary: #94a3b8;
+  
+  /* Muted Technical Accents */
+  --accent-blue: #38bdf8;   /* Cyber Blue */
+  --accent-copper: #d97706; /* Raw Copper */
+  --accent-green: #65a30d;  /* Muted NVIDIA Green */
+  --accent-slate: #475569;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  background: var(--bg); 
+  color: var(--text-primary); 
+  font-family: 'Lexend', sans-serif;
+  padding: 40px 20px;
+  background-image: radial-gradient(circle at 50% 0%, #1e293b, transparent);
+}
+
+.carousel-wrap { max-width: 1100px; margin: 0 auto; position: relative; }
+.carousel { 
+  display: flex; gap: 25px; overflow-x: auto; scroll-snap-type: x mandatory; 
+  padding: 20px 5px 40px; scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.slide {
+  flex: 0 0 min(90vw, 500px);
+  aspect-ratio: 4/5;
+  scroll-snap-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Technical Header Section */
+.s-header {
+  padding: 30px 34px 15px;
+  border-bottom: 1px solid var(--line); /* Thin line below header */
+  background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+}
+
+.s-body {
+  padding: 25px 34px;
+  flex: 1;
+}
+
+/* Technical Footer Section */
+.s-footer {
+  padding: 15px 34px 25px;
+  border-top: 1px solid var(--line); /* Thin line above footer */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sm-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  display:flex;
+  justify-content:space-between;
+  color: var(--accent-blue);
+  letter-spacing: 2px;
+}
+
+.ki {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border: 1px solid var(--accent-slate);
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(38px, 5vw, 52px);
+  line-height: 0.95;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+h2 em { font-style: normal; color: var(--accent-blue); }
+h2 .alt { color: var(--accent-copper); }
+
+p { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 10px; }
+p.lead { font-size: 15px; color: var(--text-primary); font-weight: 500; }
+
+.trace {
+  background: #000;
+  padding: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  line-height: 1.6;
+  border-radius: 4px;
+  margin: 12px 0;
+  border-left: 2px solid var(--accent-slate);
+}
+.trace b { color: var(--accent-blue); }
+.trace i { color: var(--accent-copper); font-style: normal; }
+
+.info-box {
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 12px;
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid var(--accent-slate);
+}
+.info-box.blue { border-color: var(--accent-blue); }
+.info-box.copper { border-color: var(--accent-copper); }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+.metric { border: 1px solid var(--border); padding: 10px; text-align: center; }
+.metric b { display: block; font-size: 16px; font-family: 'Bebas Neue'; color: var(--accent-blue); }
+.metric span { font-size: 8px; color: var(--text-secondary); text-transform: uppercase; }
+
+.dl-slide-btn {
+  position: absolute; top: 15px; right: 15px; background: none;
+  border: 1px solid var(--border); color: var(--text-secondary);
+  width: 30px; height: 30px; cursor: pointer; opacity: 0; transition: 0.3s;
+}
+.slide:hover .dl-slide-btn { opacity: 1; }
+
+.nav { display: flex; justify-content: center; gap: 20px; margin-top: 30px; align-items: center; }
+.nav button {
+  background: none; border: 1px solid var(--border); color: white;
+  width: 45px; height: 45px; cursor: pointer; font-size: 18px; transition: 0.2s;
+}
+.nav button:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+.dots { display: flex; gap: 8px; }
+.dot { width: 6px; height: 6px; background: var(--accent-slate); cursor: pointer; transition: 0.3s; }
+.dot.active { width: 24px; background: var(--accent-blue); }
+
+.dl-bar { text-align: center; margin-top: 30px; }
+.dl-btn {
+  background: none; border: 1px solid var(--accent-blue); color: var(--accent-blue);
+  padding: 10px 24px; font-family: 'JetBrains Mono'; cursor: pointer; font-size: 11px;
+}
+</style>
+</head>
+<body>
+
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>01 / 07</span><span>RAVENEX.TECH</span></div>
+        
+      </div>
+      <div class="s-body">
+        <div class="ki">INTERCONNECT ARCHITECTURE</div>
+        <h2>THE <em>NETWORK</em><br>IS THE<br>COMPUTER.</h2>
+        <p class="lead">You can't train GPT-5 on one chip. You need 100,000 chips acting like a single unified brain. The question is how do you connect them without lagging?</p>
+        <p>The answer is shifting from copper wires to beams of light, and the companies leading this transition will define the next decade of AI.</p>
+      </div>
+      <div class="s-footer">
+        <span>@ravenextechnologies</span>
+        <span>Swipe →</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>02 / 07</span><span>RAVENEX.TECH</span></div>
+        
+      </div>
+      <div class="s-body">
+        <div class="ki">COMPUTE EFFICIENCY</div>
+        <h2>100,000 <em class="alt">CHIPS.</em><br>ONE <em class="alt">WIRE.</em></h2>
+        <p class="lead">When you split a model across thousands of GPUs, every chip needs to share results every single step.</p>
+        <div class="trace">
+          <span style="opacity:0.5">Training 1T-param model:</span><br>
+          1. GPU_0 computes layer 0<br>
+          2. <b>ALL-REDUCE sync operation</b><br>
+          3. System waits for slowest link<br>
+          <i>Result: Network latency = Idle FLOPS</i>
+        </div>
+        <div class="info-box copper">
+          <p><strong>The math:</strong> At 100K GPUs, even 1μs of synchronization delay per step compounds into days of wasted compute per training run.</p>
+        </div>
+      </div>
+      <div class="s-footer">
+        <span>Network Latency Study</span>
+        <span>→</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>03 / 07</span><span>RAVENEX.TECH</span></div>
+        
+      </div>
+      <div class="s-body">
+        <div class="ki">COPPER VS OPTICS</div>
+        <h2><em>NVLINK:</em><br>THE COPPER<br>HIGHWAY.</h2>
+        <p class="lead">NVIDIA's proprietary GPU-to-GPU interconnect. Copper wires, short distance, massive bandwidth.</p>
+        <div class="metrics">
+          <div class="metric"><b>1.8 TB/s</b><span>NVLink 5</span></div>
+          <div class="metric"><b>72</b><span>GPUs/Rack</span></div>
+          <div class="metric"><b>~2m</b><span>Max Reach</span></div>
+        </div>
+        <p style="font-size:12px">Beyond 2 meters, copper signal degrades. You need retimers or a switch to light. That is where optics begins.</p>
+      </div>
+      <div class="s-footer">
+        <span>Blackwell Architecture</span>
+        <span>→</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>04 / 07</span><span>RAVENEX.TECH</span></div>
+        
+      </div>
+      <div class="s-body">
+        <div class="ki">OPTICAL CIRCUIT SWITCH</div>
+        <h2><em>PALOMAR:</em><br>MIRRORS<br>AND LASERS.</h2>
+        <p class="lead">Google's OCS use MEMS mirrors; microscopic mirrors that physically tilt to steer light beams.</p>
+        <div class="trace">
+          <b>Standard:</b> Light > Elec > Route > Light<br>
+          <b>Palomar:</b> Light > Mirror > Target<br>
+          <i>Status: Zero Electrical Conversion</i>
+        </div>
+        <div class="info-box blue">
+          <p>Google has deployed thousands of Palomar OCS systems and the largest optical circuit switching deployment in the world.</p>
+        </div>
+      </div>
+      <div class="s-footer">
+        <span>MEMS Innovation</span>
+        <span>→</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>05 / 07</span><span>RAVENEX.TECH</span></div>
+      </div>
+      <div class="s-body">
+        <div class="ki">CO-PACKAGED OPTICS</div>
+        <h2>CO-PACKAGED<br><em>OPTICS (CPO).</em></h2>
+        <p class="lead">Embed optical engines directly onto the switch ASIC. No pluggable transceivers.</p>
+        <div class="info-box blue">
+          <p><strong>NVIDIA Blackwell NVL576:</strong> Prototype shows copper in-rack and optical fiber between racks. Yellow fiber cables are key.</p>
+        </div>
+        <p style="font-size: 12px;">Feynman NVLink 8 (2028) will likely use CPO for scale-up interconnect, moving light right to the silicon package.</p>
+      </div>
+      <div class="s-footer">
+        <span>2026-2028 Roadmap</span>
+        <span>→</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>06 / 07</span><span>RAVENEX.TECH</span></div>
+      </div>
+      <div class="s-body">
+        <div class="ki">DATA TRANSITION</div>
+        <h2>THE <em class="alt">COPPER</em> TO<br><em>PHOTON</em> SHIFT.</h2>
+        <div class="trace">
+          2024: Copper Racks<br>
+          2025: Pluggables between racks<br>
+          <b>2026: CPO for scale-out switches</b><br>
+          2028: CPO for scale-up (NVLink)
+        </div>
+        <p>CPO cuts rack-level power by up to 40%. All AI datacenter interconnects will be optical within 5 years.</p>
+      </div>
+      <div class="s-footer">
+        <span>Power Efficiency</span>
+        <span>→</span>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="s-header">
+        <div class="sm-tag"><span>07 / 07</span><span>RAVENEX.TECH</span></div>
+      </div>
+      <div class="s-body">
+        <div class="ki">THE FUTURE IS LIGHT</div>
+        <h2>WIRES BECOME<br><em>ANTENNAS.</em><br>PHOTONS<br>REPLACE <em>COPPER.</em></h2>
+        <p class="lead">Forget nodes and links. At AI scale, the interconnect is the architecture.</p>
+        <p style="font-size:12px">AI clusters are becoming optical supercomputers. Control of the photonic fabric belongs to those who orchestrate bandwidth, thermal, and energy into a coherent whole.</p>
+      </div>
+      <div class="s-footer">
+        <span>@ravenextechnologies</span>
+        <span>↻ Save & Share</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div class="dl-bar">
+    <button class="dl-btn" onclick="downloadAllSlides()">Download Series</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel = document.getElementById('carousel'),
+      slides = carousel.querySelectorAll('.slide'),
+      dotsC = document.getElementById('dots'),
+      prev = document.getElementById('prev'),
+      next = document.getElementById('next');
+
+// Add download button to each slide
+slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'dl-slide-btn';
+    b.innerHTML = '↓';
+    b.onclick = async () => {
+        const canvas = await html2canvas(s, { scale: 2, backgroundColor: '#0a0b0d' });
+        const a = document.createElement('a');
+        a.download = `ravenex-slide-${i+1}.png`;
+        a.href = canvas.toDataURL();
+        a.click();
+    };
+    s.appendChild(b);
+});
+
+// Create dots
+slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    dotsC.appendChild(d);
+});
+
+const dots = dotsC.querySelectorAll('.dot');
+carousel.addEventListener('scroll', () => {
+    const index = Math.round(carousel.scrollLeft / (slides[0].offsetWidth + 25));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+});
+
+prev.onclick = () => carousel.scrollBy({ left: -(slides[0].offsetWidth + 25), behavior: 'smooth' });
+next.onclick = () => carousel.scrollBy({ left: (slides[0].offsetWidth + 25), behavior: 'smooth' });
+
+async function downloadAllSlides() {
+    for (let i = 0; i < slides.length; i++) {
+        const canvas = await html2canvas(slides[i], { scale: 2, backgroundColor: '#0a0b0d' });
+        const a = document.createElement('a');
+        a.download = `ravenex-slide-${i+1}.png`;
+        a.href = canvas.toDataURL();
+        a.click();
+        await new Promise(r => setTimeout(r, 600));
+    }
+}
+</script>
+</body>
+</html>

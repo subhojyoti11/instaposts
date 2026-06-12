@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Load Balancing Algorithms — Round Robin to Consistent Hashing</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111116;
+  --ink:#e8e6df;
+  --ink-dim:#7c7a72;
+  --accent:#22d3ee;
+  --accent-hot:#f43f5e;
+  --accent-gold:#fbbf24;
+  --card-bg:#1c1c24;
+  --card-border:rgba(232,230,223,.08);
+  --grid-line:rgba(232,230,223,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+body{
+  background-image:
+    repeating-linear-gradient(0deg,var(--grid-line) 0 1px,transparent 1px 60px),
+    repeating-linear-gradient(90deg,var(--grid-line) 0 1px,transparent 1px 60px),
+    radial-gradient(ellipse 70% 40% at 20% 0%, rgba(34,211,238,.07), transparent),
+    radial-gradient(ellipse 50% 40% at 90% 100%, rgba(244,63,94,.05), transparent);
+  padding:40px 20px 80px;
+}
+
+.page-head{max-width:1100px;margin:0 auto 36px;padding:0 10px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.kicker::before{content:"";width:40px;height:2px;background:linear-gradient(90deg,var(--accent),transparent)}
+h1.main{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(34px,5.5vw,68px);line-height:.92;letter-spacing:-.02em;margin-bottom:14px}
+h1.main em{font-style:italic;color:var(--accent)}
+h1.main .hot{color:var(--accent-hot)}
+.dek{font-family:'Outfit',sans-serif;font-weight:300;font-size:17px;color:var(--ink-dim);max-width:620px;line-height:1.55}
+
+.carousel-wrap{max-width:1100px;margin:0 auto;position:relative}
+.carousel{
+  display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;padding:16px 4px 36px;scrollbar-width:none;
+}
+.carousel::-webkit-scrollbar{display:none}
+
+.slide{
+  flex:0 0 min(90vw, 520px);
+  aspect-ratio:4/5;
+  scroll-snap-align:center;
+  background:var(--card-bg);color:var(--ink);
+  border:1px solid var(--card-border);
+  position:relative;overflow:hidden;
+  padding:36px;
+  display:flex;flex-direction:column;
+  background-image:
+    repeating-linear-gradient(0deg,var(--grid-line) 0 1px,transparent 1px 40px),
+    repeating-linear-gradient(90deg,var(--grid-line) 0 1px,transparent 1px 40px);
+}
+.slide::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-hot));
+}
+
+.slide-meta{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;
+  color:var(--ink-dim);text-transform:uppercase;
+  display:flex;justify-content:space-between;margin-bottom:auto;
+}
+.slide-meta .tag{color:var(--accent);font-weight:600}
+
+.slide h2{
+  font-family:'DM Serif Display',serif;font-weight:400;
+  font-size:clamp(26px,4.2vw,40px);line-height:.95;letter-spacing:-.01em;
+  margin:20px 0 14px;
+}
+.slide h2 em{font-style:italic;color:var(--accent)}
+.slide h2 .hot{color:var(--accent-hot)}
+.slide h2 .gold{color:var(--accent-gold)}
+
+.slide p{font-size:14px;line-height:1.6;color:var(--ink-dim);margin-bottom:10px}
+.slide p.lead{font-family:'DM Serif Display',serif;font-style:italic;font-size:17px;color:var(--ink);opacity:.85}
+
+.slide .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom: 16px;padding-top:16px;border-top:1px solid var(--card-border)}
+.slide .foot .brand{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-dim)}
+.slide .foot .swipe{font-family:'DM Serif Display',serif;font-style:italic;font-size:13px;color:var(--accent)}
+
+.cover{background:var(--bg);border-color:rgba(34,211,238,.15);
+  background-image:
+    repeating-linear-gradient(0deg,var(--grid-line) 0 1px,transparent 1px 40px),
+    repeating-linear-gradient(90deg,var(--grid-line) 0 1px,transparent 1px 40px),
+    radial-gradient(circle at 80% 20%, rgba(34,211,238,.12), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(244,63,94,.08), transparent 50%);
+}
+.cover .big-type{font-family:'DM Serif Display',serif;font-size:clamp(48px,10vw,100px);line-height:.82;letter-spacing:-.03em;margin:16px 0}
+.cover .big-type .l1{display:block;color:var(--accent)}
+.cover .big-type .l2{display:block;color:var(--ink);font-style:italic}
+.cover .big-type .l3{display:block;color:var(--accent-hot);font-size:.30em;font-style:normal;letter-spacing:0;margin-top: 2rem;}
+.cover .mono-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--ink-dim);text-transform:uppercase;margin-top:12px}
+
+.server-grid{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.srv{
+  width:40px;height:40px;border:1px solid var(--card-border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+  color:var(--ink-dim);
+}
+.srv.hit{border-color:var(--accent);color:var(--accent);background:rgba(34,211,238,.08)}
+
+.code-box{
+  background:var(--bg);border:1px solid var(--card-border);
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  padding:14px 16px;margin:10px 0;line-height:1.75;
+  color:var(--ink);
+}
+.code-box .req{color:var(--accent);font-weight:500}
+.code-box .srv-label{color:var(--accent-hot);font-weight:500}
+.code-box .arrow{color:var(--ink-dim)}
+.code-box .result{color:var(--accent-gold);font-weight:600}
+.code-box .dim{color:var(--ink-dim)}
+
+.types{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.type-row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--card-border)}
+.type-row:last-child{border-bottom:none}
+.tnum{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);font-weight:600;padding-top:2px;min-width:22px}
+.tbody strong{font-family:'DM Serif Display',serif;font-weight:400;font-size:15px;color:var(--ink)}
+.tbody span{display:block;font-size:11.5px;color:var(--ink-dim);margin-top:2px;line-height:1.45}
+
+.uses{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.use-chip{border-left:2px solid var(--accent);padding:9px 12px;font-size:11.5px;line-height:1.45;color:var(--ink-dim);background:rgba(34,211,238,.03)}
+.use-chip strong{font-family:'DM Serif Display',serif;display:block;font-size:13px;margin-bottom:2px;color:var(--ink);font-weight:400}
+.use-chip.hot-border{border-color:var(--accent-hot)}
+.use-chip.gold-border{border-color:var(--accent-gold)}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;font-size:12px}
+.compare > div{padding:14px;border:1px solid var(--card-border)}
+.compare .c-simple{border-left:3px solid var(--accent)}
+.compare .c-advanced{border-left:3px solid var(--accent-hot)}
+.compare h4{font-family:'DM Serif Display',serif;font-size:15px;margin-bottom:8px;font-weight:400}
+.compare ul{list-style:none;font-size:11px;line-height:1.7;color:var(--ink-dim)}
+.compare .c-simple li::before{content:"→ ";color:var(--accent);font-weight:700}
+.compare .c-advanced li::before{content:"→ ";color:var(--accent-hot);font-weight:700}
+
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.dl-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;padding:12px 28px;
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+  cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;
+}
+.dl-btn:hover{background:var(--accent);color:var(--bg)}
+.dl-btn.hot{border-color:var(--accent-hot);color:var(--accent-hot)}
+.dl-btn.hot:hover{background:var(--accent-hot);color:#fff}
+.dl-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dl-btn:disabled{opacity:.4;cursor:wait}
+.slide .dl-slide-btn{
+  position:absolute;top:12px;right:12px;
+  width:32px;height:32px;border:1px solid var(--card-border);
+  background:rgba(28,28,36,.85);backdrop-filter:blur(4px);
+  color:var(--ink-dim);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;z-index:5;opacity:0;
+}
+.slide:hover .dl-slide-btn{opacity:1}
+.slide .dl-slide-btn:hover{border-color:var(--accent);color:var(--accent)}
+.slide .dl-slide-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.progress-bar{width:200px;height:3px;background:rgba(232,230,223,.1);overflow:hidden;display:none}
+.progress-bar .fill{height:100%;width:0%;background:var(--accent);transition:width .3s}
+
+.nav{display:flex;justify-content:center;gap:14px;margin-top:18px;align-items:center}
+.nav button{
+  background:transparent;border:1px solid rgba(232,230,223,.15);color:var(--ink);
+  width:42px;height:42px;cursor:pointer;font-size:16px;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;
+}
+.nav button:hover{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:6px;height:6px;background:rgba(232,230,223,.15);cursor:pointer;transition:all .3s}
+.dot.active{background:var(--accent);width:22px}
+
+@media(max-width:600px){
+  .slide{padding:24px}
+  .slide h2{font-size:26px}
+  .uses{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <div class="kicker">Systems Design · Infrastructure</div>
+  <h1 class="main">How your request finds <em>the right server</em> — and why <span class="hot">it matters.</span></h1>
+  <p class="dek">Six algorithms decide which server handles your request. Some are dead simple. Some are beautiful. All of them are running right now, invisibly, behind every app you use.</p>
+</header>
+
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1: Cover -->
+    <div class="slide cover">
+      <button class="dl-slide-btn" title="Download this slide" onclick="downloadSlide(this)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+      <div class="slide-meta"><span>01 / 10</span></div>
+      <div class="big-type">
+        <span class="l1">Load</span>
+        <span class="l2">Balancing</span>
+        <span class="l3">The invisible traffic cop routing billions of requests.</span>
+      </div>
+      <p class="mono-sub">6 algorithms</p>
+      <!-- <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;margin-top:16px;max-width:360px;color:var(--ink-dim)">The invisible traffic cop routing billions of requests — and you've never seen it work.</p> -->
+      <div class="foot">
+        <span class="brand">// systems deep-dive</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: The Problem -->
+    <div class="slide">
+      <div class="slide-meta"><span>02 / 10</span><span class="tag">● THE PROBLEM</span></div>
+      <h2>One server <em>isn't enough.</em></h2>
+      <p class="lead">Your app has 10,000 requests per second. One server handles 2,000. Now what?</p>
+      <p>You add more servers. But now you need a <strong style="color:var(--accent)">load balancer</strong> ; something sitting in front that decides which server gets each request.</p>
+      <p>The algorithm it uses determines everything: speed, fairness, fault tolerance, and whether adding a server breaks your cache.</p>
+      <div class="server-grid">
+        <div class="srv hit">S1</div>
+        <div class="srv hit">S2</div>
+        <div class="srv hit">S3</div>
+        <div class="srv hit">S4</div>
+        <div class="srv hit">S5</div>
+      </div>
+      <p style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--ink-dim)">5 servers, 10K req/s — who gets what?</p>
+      <div class="foot">
+        <span class="brand">// the routing question</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Round Robin -->
+    <div class="slide">
+      <div class="slide-meta"><span>03 / 10</span><span class="tag">● ALGORITHM 01</span></div>
+      <h2><em>Round Robin</em> (take turns)</h2>
+      <p class="lead">The simplest algorithm that actually works.</p>
+      <p>Requests go to servers in a fixed cycle: S1 → S2 → S3 → S1 → S2 → S3… Dead simple. Zero state to track.</p>
+      <div class="code-box">
+<span class="req">req1</span> <span class="arrow">→</span> <span class="srv-label">S1</span><br>
+<span class="req">req2</span> <span class="arrow">→</span> <span class="srv-label">S2</span><br>
+<span class="req">req3</span> <span class="arrow">→</span> <span class="srv-label">S3</span><br>
+<span class="req">req4</span> <span class="arrow">→</span> <span class="srv-label">S1</span> <span class="dim">← cycle repeats</span><br>
+<span class="req">req5</span> <span class="arrow">→</span> <span class="srv-label">S2</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">Pro:</strong> Zero overhead, perfectly fair distribution.<br><strong style="color:var(--accent-hot)">Con:</strong> Ignores server health and capacity. A slow server gets the same traffic as a fast one.</p>
+      <div class="foot">
+        <span class="brand">// O(1), but naive</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Weighted Round Robin -->
+    <div class="slide">
+      <div class="slide-meta"><span>04 / 10</span><span class="tag">● ALGORITHM 02</span></div>
+      <h2><em>Weighted</em> Round Robin</h2>
+      <p class="lead">Not all servers are created equal.</p>
+      <p>Same cycle idea, but bigger servers get more turns. A server with weight 3 gets 3× the requests of a server with weight 1.</p>
+      <div class="code-box">
+<span class="dim">weights:</span> <span class="srv-label">S1</span>=3 <span class="srv-label">S2</span>=1 <span class="srv-label">S3</span>=2<br>
+<span class="dim">────────────────────────</span><br>
+<span class="req">req1,2,3</span> <span class="arrow">→</span> <span class="srv-label">S1</span> <span class="dim">(weight 3)</span><br>
+<span class="req">req4</span>     <span class="arrow">→</span> <span class="srv-label">S2</span> <span class="dim">(weight 1)</span><br>
+<span class="req">req5,6</span>   <span class="arrow">→</span> <span class="srv-label">S3</span> <span class="dim">(weight 2)</span><br>
+<span class="result">→ cycle repeats every 6 requests</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">Pro:</strong> Respects heterogeneous hardware.<br><strong style="color:var(--accent-hot)">Con:</strong> Weights are static, doesn't adapt to real-time load.</p>
+      <div class="foot">
+        <span class="brand">// capacity-aware, but still blind</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Least Connections -->
+    <div class="slide">
+      <div class="slide-meta"><span>05 / 10</span><span class="tag">● ALGORITHM 03</span></div>
+      <h2><em>Least Connections</em> (help the idle one)</h2>
+      <p class="lead">Stop guessing. Check who's actually free.</p>
+      <p>Each new request goes to the server with the fewest active connections right now. It's dynamic, reactive, and adapts in real-time.</p>
+      <div class="code-box">
+<span class="dim">active connections:</span><br>
+<span class="srv-label">S1</span>=<span style="color:var(--accent-hot)">14</span>  <span class="srv-label">S2</span>=<span class="result">3</span>  <span class="srv-label">S3</span>=<span style="color:var(--accent-hot)">11</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="req">new req</span> <span class="arrow">→</span> <span class="srv-label">S2</span> <span class="result">✓ lowest</span><br>
+<br>
+<span class="dim">now:</span> S1=14  S2=<span class="result">4</span>  S3=11<br>
+<span class="req">next req</span> <span class="arrow">→</span> <span class="srv-label">S2</span> <span class="result">✓ still lowest</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">Pro:</strong> Adapts to slow servers, long-lived connections.<br><strong style="color:var(--accent-hot)">Con:</strong> Needs state tracking. Slightly more overhead per request.</p>
+      <div class="foot">
+        <span class="brand">// dynamic, but stateful</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: IP Hash -->
+    <div class="slide">
+      <div class="slide-meta"><span>06 / 10</span><span class="tag">● ALGORITHM 04</span></div>
+      <h2><em>IP Hash</em> (sticky sessions)</h2>
+      <p class="lead">Same user, same server. Every time.</p>
+      <p>Hash the client's IP address and mod by server count. The same IP always lands on the same server, great for session affinity and local caching.</p>
+      <div class="code-box">
+<span class="dim">hash("192.168.1.42")</span> <span class="arrow">→</span> <span class="result">7829</span><br>
+<span class="result">7829</span> <span class="dim">% 3 servers</span> <span class="arrow">=</span> <span class="srv-label">S2</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">same user, 100 requests later:</span><br>
+<span class="dim">hash("192.168.1.42")</span> <span class="arrow">→</span> <span class="result">7829</span><br>
+<span class="result">7829</span> <span class="dim">% 3</span> <span class="arrow">=</span> <span class="srv-label">S2</span> <span class="result">✓ always S2</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">Pro:</strong> Session persistence without shared session store.<br><strong style="color:var(--accent-hot)">Con:</strong> Add/remove a server → every IP remaps. Cache stampede.</p>
+      <div class="foot">
+        <span class="brand">// deterministic, but fragile</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Consistent Hashing -->
+    <div class="slide">
+      <div class="slide-meta"><span>07 / 10</span><span class="tag">● ALGORITHM 05</span></div>
+      <h2><em>Consistent Hashing</em> (the elegant one)</h2>
+      <p class="lead">Add or remove servers without reshuffling the world.</p>
+      <p>Place servers on a virtual ring (0 to 2³²). Hash each request key and walk clockwise to the nearest server. When a server joins or leaves, only its neighbors are affected.</p>
+      <div class="code-box">
+<span class="dim">the ring: 0 ──────── 2³²</span><br>
+<span class="srv-label">S1</span><span class="dim">@pos 1000</span>  <span class="srv-label">S2</span><span class="dim">@pos 4500</span>  <span class="srv-label">S3</span><span class="dim">@pos 8200</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="req">key "user:42"</span> <span class="arrow">→</span> <span class="dim">hash = 3700</span><br>
+<span class="dim">walk clockwise →</span> <span class="srv-label">S2</span> <span class="result">✓</span><br>
+<br>
+<span style="color:var(--accent-gold)">+ add S4@pos 6000</span><br>
+<span class="dim">only keys 4501–6000 move. rest untouched.</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">Pro:</strong> Minimal disruption on scale events.<br><strong style="color:var(--accent-hot)">Con:</strong> Uneven distribution without virtual nodes.</p>
+      <div class="foot">
+        <span class="brand">// O(log n) and elegant</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: More Algorithms -->
+    <div class="slide">
+      <div class="slide-meta"><span>08 / 10</span><span class="tag">● ALGORITHMS 06+</span></div>
+      <h2>The <em>rest</em> of the family</h2>
+      <p style="font-size:13px">These round out the toolkit each with a sharp trade-off:</p>
+      <div class="types">
+        <div class="type-row"><span class="tnum">06</span><div class="tbody"><strong>Random</strong><span>Pick a server at random. Surprisingly effective at scale, no coordination needed. Used in microservices mesh.</span></div></div>
+        <div class="type-row"><span class="tnum">07</span><div class="tbody"><strong>Least Response Time</strong><span>Route to whichever server answered fastest recently. Combines least-connections with latency awareness.</span></div></div>
+        <div class="type-row"><span class="tnum">08</span><div class="tbody"><strong>Resource-Based (Adaptive)</strong><span>Server reports its own CPU/memory. LB routes to the healthiest node. Heavy monitoring overhead.</span></div></div>
+        <div class="type-row"><span class="tnum">09</span><div class="tbody"><strong>Power of Two Choices</strong><span>Pick 2 random servers, send to the one with fewer connections. Near-optimal with almost zero overhead.</span></div></div>
+      </div>
+      <div class="foot">
+        <span class="brand">// no one-size-fits-all</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Real-World -->
+    <div class="slide">
+      <div class="slide-meta"><span>09 / 10</span><span class="tag">● IN THE WILD</span></div>
+      <h2>Where they <em>actually</em> run</h2>
+      <p style="font-size:13px">Every app you use hits a load balancer. Here's who uses what:</p>
+      <div class="uses">
+        <div class="use-chip"><strong>NGINX</strong>Round robin + weighted + least connections. The default for most of the web.</div>
+        <div class="use-chip hot-border"><strong>AWS ALB / ELB</strong>Least outstanding requests + round robin. Scales to millions of connections.</div>
+        <div class="use-chip"><strong>Cassandra & DynamoDB</strong>Consistent hashing as the core partitioning strategy for distributed data.</div>
+        <div class="use-chip gold-border"><strong>Discord</strong>Consistent hashing to route millions of guild connections to gateway servers.</div>
+        <div class="use-chip hot-border"><strong>Cloudflare</strong>Power-of-two + least connections at the edge for global CDN routing.</div>
+        <div class="use-chip gold-border"><strong>Redis Cluster</strong>Consistent hashing to shard cache keys across nodes without reshuffling.</div>
+      </div>
+      <div class="foot">
+        <span class="brand">// running everywhere, invisible</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Cheatsheet -->
+    <div class="slide">
+      <div class="slide-meta"><span>10 / 10</span><span class="tag">● CHEATSHEET</span></div>
+      <h2>Pick your <em>algorithm</em></h2>
+      <p style="font-size:13px">Match the algorithm to your actual constraint:</p>
+      <div class="compare">
+        <div class="c-simple">
+          <h4 style="color:var(--accent)">Simple & stateless</h4>
+          <ul>
+            <li>Round Robin — equal servers, no tracking</li>
+            <li>Weighted RR — mixed hardware</li>
+            <li>Random — microservices, no coordination</li>
+            <li>IP Hash — session affinity needed</li>
+          </ul>
+        </div>
+        <div class="c-advanced">
+          <h4 style="color:var(--accent-hot)">Smart & adaptive</h4>
+          <ul>
+            <li>Least Conn — long-lived connections</li>
+            <li>Least Response — latency-critical</li>
+            <li>Consistent Hash — caches, sharding</li>
+            <li>Power of Two — best cost/benefit</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size:13px;margin-top:14px;font-family:'DM Serif Display',serif;font-style:italic;color:var(--ink-dim)">Start with Round Robin. Upgrade when you hit a real bottleneck. Consistent hashing is the endgame for distributed caches.</p>
+      <div class="foot">
+        <span class="brand">// end of carousel</span>
+        <span class="swipe">↻ save & share</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav">
+    <button id="prev" aria-label="Previous">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next" aria-label="Next">→</button>
+  </div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Current Slide
+    </button>
+    <button class="dl-btn hot" id="dlAll" onclick="downloadAllSlides()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download All Slides
+    </button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+
+// Inject download buttons into all slides that don't have one
+const dlIconSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+slides.forEach(s=>{
+  if(!s.querySelector('.dl-slide-btn')){
+    const btn=document.createElement('button');
+    btn.className='dl-slide-btn';
+    btn.title='Download this slide';
+    btn.innerHTML=dlIconSVG;
+    btn.onclick=function(){downloadSlide(this)};
+    s.prepend(btn);
+  }
+});
+
+let currentSlideIndex=0;
+
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot');
+const scrollByDir=dir=>{const w=slides[0].offsetWidth+20;carousel.scrollBy({left:dir*w,behavior:'smooth'})};
+prev.addEventListener('click',()=>scrollByDir(-1));
+next.addEventListener('click',()=>scrollByDir(1));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const idx=Array.from(slides).indexOf(e.target);currentSlideIndex=idx;dots.forEach((d,i)=>d.classList.toggle('active',i===idx))}})},{root:carousel,threshold:.6});
+slides.forEach(s=>io.observe(s));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')scrollByDir(1);if(e.key==='ArrowLeft')scrollByDir(-1)});
+
+async function captureSlide(slide, scale=2){
+  // Temporarily hide download button
+  const dlBtn=slide.querySelector('.dl-slide-btn');
+  if(dlBtn) dlBtn.style.display='none';
+  const canvas=await html2canvas(slide,{
+    backgroundColor:null,
+    scale:scale,
+    useCORS:true,
+    allowTaint:true,
+    logging:false,
+  });
+  if(dlBtn) dlBtn.style.display='';
+  return canvas;
+}
+
+function triggerDownload(canvas,filename){
+  const link=document.createElement('a');
+  link.download=filename;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function downloadSlide(btn){
+  const slide=btn.closest('.slide');
+  const idx=Array.from(slides).indexOf(slide)+1;
+  btn.disabled=true;
+  try{
+    const canvas=await captureSlide(slide);
+    triggerDownload(canvas,'load-balancing-slide-'+String(idx).padStart(2,'0')+'.png');
+  }catch(err){console.error(err)}
+  btn.disabled=false;
+}
+
+async function downloadCurrentSlide(){
+  const btn=document.getElementById('dlCurrent');
+  btn.disabled=true;
+  btn.textContent='Capturing...';
+  try{
+    const slide=slides[currentSlideIndex];
+    const canvas=await captureSlide(slide);
+    triggerDownload(canvas,'load-balancing-slide-'+String(currentSlideIndex+1).padStart(2,'0')+'.png');
+  }catch(err){console.error(err)}
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Current Slide';
+  btn.disabled=false;
+}
+
+async function downloadAllSlides(){
+  const btn=document.getElementById('dlAll');
+  const bar=document.getElementById('progressBar');
+  const fill=document.getElementById('progressFill');
+  btn.disabled=true;
+  btn.textContent='Downloading...';
+  bar.style.display='block';
+  fill.style.width='0%';
+  try{
+    for(let i=0;i<slides.length;i++){
+      fill.style.width=((i+1)/slides.length*100)+'%';
+      const canvas=await captureSlide(slides[i]);
+      triggerDownload(canvas,'load-balancing-slide-'+String(i+1).padStart(2,'0')+'.png');
+      await new Promise(r=>setTimeout(r,400));
+    }
+  }catch(err){console.error(err)}
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download All Slides';
+  btn.disabled=false;
+  setTimeout(()=>{bar.style.display='none';fill.style.width='0%'},1000);
+}
+</script>
+</body>
+</html>

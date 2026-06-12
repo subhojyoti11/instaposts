@@ -1,0 +1,460 @@
+Future Topics for Ravenex Technologies
+=======================================
+
+--- CURRENT INNOVATIONS (1-11) ---
+1. PagedAttention & The KV Cache
+- Focus: Why memory fragmentation was quietly killing LLM serving, and how vLLM borrowed OS virtual memory concepts to fix it.
+
+2. State Space Models (Mamba/Jamba)
+- Focus: The architecture challenging the Transformer. How SSMs eliminate the quadratic cost of attention and process infinite sequences.
+
+3. FlashAttention
+- Focus: The hardware-aware algorithm that made large context windows possible. Why avoiding GPU memory reads is more important than doing fewer calculations.
+
+4. Mixture of Experts (MoE)
+- Focus: Why dense models are dead. How sparse routing allows scaling to trillions of parameters without melting the data center.
+
+5. BitNet & 1.58-bit LLMs
+- Focus: Trading multiplication for addition. How ternary weights (-1, 0, 1) are redefining AI hardware efficiency and extreme quantization.
+
+6. Ring Attention
+- Focus: Passing keys and values in a ring across GPUs to train models with millions of tokens in context. The death of the context limit.
+
+7. LoRA & QLoRA (Low-Rank Adaptation)
+- Focus: The economics of fine-tuning. How freezing 99% of weights lets you train world-class models on a single consumer GPU.
+
+8. eBPF (Extended Berkeley Packet Filter)
+- Focus: The superpower inside the Linux kernel. How eBPF is quietly eating modern networking, security, and observability without changing kernel code.
+
+9. Zero-Copy & RDMA
+- Focus: Datacenter networking. Why copying data between CPU and memory is too slow for modern clusters, and how RDMA bypasses the CPU entirely.
+
+10. CRDTs (Conflict-free Replicated Data Types)
+- Focus: The math behind real-time collaboration. How Figma and Notion keep everything in sync offline without ever throwing a conflict error.
+
+11. Unified Memory Architecture (Apple Silicon / UMA)
+- Focus: Why copying data between CPU and GPU wastes time, power, and battery. How Apple's chip-first design eliminates the PCIe bottleneck.
+
+--- TECH SHIFTS & AUTOMATION (12-16) ---
+12. Platform Engineering vs DevOps
+- Focus: Why the DevOps "you build it, you run it" culture failed at scale, and why Platform Engineering abstracting infrastructure is the new standard.
+
+13. Infrastructure as Code (IaC) to Infrastructure as Software
+- Focus: Moving from declarative YAML (Terraform) to actual programming languages (Pulumi) for dynamic, logic-driven cloud provisioning.
+
+14. GitOps & The Single Source of Truth
+- Focus: How Kubernetes and tools like ArgoCD shifted deployment from manual pipelines to continuous state reconciliation based purely on Git commits.
+
+15. Zero Trust Architecture
+- Focus: The death of the corporate VPN. Why modern security assumes the network is already compromised and authenticates every single request.
+
+16. Autonomous Agents replacing RPA
+- Focus: Why traditional Robotic Process Automation (RPA) was just brittle screen-scraping, and how agentic AI dynamically heals broken workflows.
+
+--- INFORMATION & DATA (17-21) ---
+17. Information Theory in LLMs
+- Focus: How Claude Shannon's 1948 paper on entropy perfectly explains why LLMs compress human knowledge into billions of weights.
+
+18. Data Provenance in the AI Era
+- Focus: Cryptographic watermarking and how we will prove the origin of digital information when 99% of internet content is synthetically generated.
+
+19. Differential Privacy
+- Focus: How Apple and Google collect massive datasets for ML training without ever knowing your specific, individual data points.
+
+20. Homomorphic Encryption
+- Focus: The holy grail of cloud security: performing complex computations on data while it remains fully encrypted.
+
+21. Vector Databases vs Graph Databases
+- Focus: Searching by meaning (semantic vectors) versus searching by relationship (knowledge graphs). When to use which for enterprise RAG.
+
+--- GENERAL TECH (22-26) ---
+22. WebAssembly (Wasm) beyond the Browser
+- Focus: Why Wasm is replacing Docker for edge computing, offering near-native speeds and perfect sandboxing without container overhead.
+
+23. Edge Computing vs Cloud Centralization
+- Focus: The pendulum swing of computing. Why processing is moving out of AWS us-east-1 and directly onto 5G towers and IoT devices.
+
+24. Serverless Cold Starts
+- Focus: The physics of serverless. What actually happens in the 500ms when AWS Lambda boots your code, and how SnapStart fixes it.
+
+25. Quantum Computing: Shor's Algorithm
+- Focus: Cutting through the hype. How quantum computers will break RSA encryption, and the race to post-quantum cryptography.
+
+26. Digital Twins
+- Focus: Simulating physical reality. How companies run billions of Monte Carlo simulations on virtual factories before laying a single brick.
+
+--- LLMs & AI HARDWARE (27-31) ---
+27. AirLLM & Memory Offloading
+- Focus: How to run a 70B parameter model on a single 8GB consumer GPU by streaming layers from disk to RAM to VRAM just-in-time.
+
+28. vLLM vs TGI (Text Generation Inference)
+- Focus: The battle of the serving engines. How continuous batching replaced static batching to triple LLM throughput in production.
+
+29. Direct Preference Optimization (DPO)
+- Focus: Why RLHF is too complex, and how DPO mathematically bypasses the reward model to align LLMs directly on human preferences.
+
+30. RAG vs Long-Context Windows
+- Focus: Do we still need Retrieval-Augmented Generation when Gemini can read 2 million tokens? The cost vs context debate.
+
+31. Speculative Decoding
+- Focus: The trick to 3x faster inference: a tiny model guesses the next 5 words, and the massive model verifies them in parallel.
+
+--- CORE AI/ML (32-36) ---
+32. Diffusion Models vs GANs
+- Focus: Why Generative Adversarial Networks lost the image generation war to Diffusion models (Midjourney, Stable Diffusion).
+
+33. Federated Learning
+- Focus: Training global AI models without moving local data. How your phone learns to predict text without sending your keystrokes to Google.
+
+34. Liquid Neural Networks
+- Focus: Brain-inspired networks developed at MIT that adapt continuously to new data during inference, ideal for self-driving cars.
+
+35. AlphaZero & Reinforcement Learning
+- Focus: How an algorithm learned to beat the world champion of Go by playing itself millions of times, with zero human data.
+
+36. Neuromorphic Computing
+- Focus: Chips designed like the human brain. Spiking Neural Networks (SNNs) that only consume power when an "action potential" fires.
+
+--- DISTRIBUTED SYSTEMS (37-56) ---
+37. CAP Theorem
+- Focus: Why you can only pick two: Consistency, Availability, Partition Tolerance. And why Network Partitions mean you really only pick one.
+38. Raft Consensus Algorithm
+- Focus: How a cluster of servers agrees on a single source of truth even when half of them are burning down.
+39. Consistent Hashing
+- Focus: How load balancers distribute traffic across servers without remapping everything when a single server crashes.
+40. Gossip Protocols
+- Focus: How decentralized systems like Cassandra communicate state globally using the exact same math as a viral epidemic.
+41. Event Sourcing
+- Focus: Why modern banking doesn't update your balance row in a database, but stores an immutable log of every transaction you've ever made.
+42. CQRS (Command Query Responsibility Segregation)
+- Focus: Separating your read paths from your write paths to scale enterprise applications.
+43. MapReduce
+- Focus: The algorithm that built Google. How to process petabytes of data by splitting it up, working locally, and combining the results.
+44. Two-Phase Commit (2PC)
+- Focus: The nightmare of distributed transactions. How to ensure an operation succeeds across microservices, or completely rolls back.
+45. Vector Clocks
+- Focus: How distributed databases order events in a world without a single, synchronized global clock.
+46. Apache Kafka Architecture
+- Focus: Why Kafka isn't just a message queue, but an immutable, distributed commit log built for extreme throughput.
+47. Service Mesh (Istio/Linkerd)
+- Focus: Why microservices need a dedicated infrastructure layer for routing, security, and observability (the sidecar pattern).
+48. Bloom Filters
+- Focus: The probabilistic data structure that can tell you "definitely no" or "probably yes" while using a fraction of the memory.
+49. Heartbeat Mechanisms
+- Focus: The simple pinging systems that keep massive distributed clusters aware of dead nodes.
+50. Leader Election
+- Focus: The automated politics of clusters. How nodes vote for a coordinator when the main database goes down.
+51. Circuit Breakers
+- Focus: Preventing cascading failures. How Netflix designed software to fail fast instead of overloading struggling services.
+52. Data Sharding Strategies
+- Focus: Horizontal scaling. How to split a massive database without creating hot spots or ruining join queries.
+53. The Paxos Algorithm
+- Focus: The legendary, impossibly complex consensus algorithm that predates Raft and secures Google's Spanner database.
+54. Merkle Trees
+- Focus: The data structure powering Git and blockchains, enabling rapid cryptographic verification of massive datasets.
+55. Actor Model (Erlang/Akka)
+- Focus: Concurrent computation. Treating everything as an independent "actor" that communicates only by passing messages.
+56. Epidemic Broadcast Trees
+- Focus: Optimizing the spread of data across thousands of nodes in a CDN or blockchain network.
+
+--- DATABASES & STORAGE (57-76) ---
+57. B-Trees vs LSM Trees
+- Focus: The showdown between read-optimized relational databases (Postgres) and write-optimized NoSQL (Cassandra).
+58. Time-Series Databases
+- Focus: Why monitoring systems like Prometheus need specialized databases to handle millions of data points per second.
+59. ACID vs BASE
+- Focus: The philosophy of consistency. Strict relational safety vs "Eventually Consistent" scalability.
+60. Graph Databases (Neo4j)
+- Focus: Why finding friends-of-friends in SQL requires massive JOINs, but takes milliseconds when traversing edges in a graph.
+61. Column-Oriented Storage (Parquet)
+- Focus: Why analytics databases store data by columns, not rows, to compress data and speed up aggregation queries.
+62. WAL (Write-Ahead Logging)
+- Focus: The unsung hero of database recovery. Why every database writes to a simple append-only file before touching actual data.
+63. HyperLogLog
+- Focus: Counting to a billion using less than 2KB of memory. The math behind estimating unique visitors at global scale.
+64. Database Isolation Levels
+- Focus: Dirty reads, non-repeatable reads, and phantom reads. The chaotic realities of concurrent SQL transactions.
+65. MVCC (Multi-Version Concurrency Control)
+- Focus: How Postgres allows readers to read while writers write, without locking the entire table.
+66. NewSQL (Google Spanner, CockroachDB)
+- Focus: Getting the infinite scalability of NoSQL with the strict ACID guarantees of a relational database.
+67. In-Memory Databases (Redis/Memcached)
+- Focus: The architecture of caching. How serving data from RAM transforms application latency.
+68. Document Databases (MongoDB)
+- Focus: The rise of unstructured data and why saving JSON blobs revolutionized agile web development.
+69. Spatial Databases (PostGIS)
+- Focus: Indexing geography. How Uber and Google Maps query millions of coordinates in milliseconds using R-Trees.
+70. Immutable Databases (Datomic)
+- Focus: Databases that never delete or update data, treating the database as a growing ledger of facts over time.
+71. DynamoDB Partitioning
+- Focus: How AWS spreads your data across SSDs behind the scenes, and why poorly chosen partition keys ruin performance.
+72. SnowFlake Architecture
+- Focus: The separation of compute and storage in modern data warehouses.
+73. Search Engines (Elasticsearch)
+- Focus: Inverted indexes. How full-text search engines map words back to documents instantly.
+74. ZFS File System
+- Focus: The legendary 128-bit file system that ensures cryptographic data integrity against bit rot.
+75. Ceph Object Storage
+- Focus: How to build a highly scalable object, block, and file storage cluster out of commodity hardware.
+76. Sharding vs Partitioning
+- Focus: The nuanced difference between splitting tables internally vs distributing them across entirely different machines.
+
+--- HARDWARE & SILICON (77-96) ---
+77. CPU vs GPU Architecture
+- Focus: Why a CPU has 8 powerful cores built for complex logic, while a GPU has 8,000 simple cores built for matrix math.
+78. TPUs (Tensor Processing Units)
+- Focus: Google's custom silicon specifically designed to multiply matrices for neural networks faster than GPUs.
+79. High Bandwidth Memory (HBM3e)
+- Focus: The memory chips stacked directly on top of GPUs. Why bandwidth, not compute, is the bottleneck for AI.
+80. Chiplets & Advanced Packaging
+- Focus: Why Moore's Law is dying, and how AMD and Intel are stitching smaller "chiplets" together to build massive processors.
+81. Instruction Set Architectures (x86 vs ARM)
+- Focus: CISC vs RISC. Why the mobile architecture that powers iPhones is now taking over datacenter servers.
+82. ASIC Development
+- Focus: Application-Specific Integrated Circuits. Why Bitcoin miners and AI inference companies eventually build their own custom silicon.
+83. NVLink & PCIe
+- Focus: The massive interconnect highways that allow 8 GPUs in a server to act as one giant mega-GPU.
+84. Lithography (EUV)
+- Focus: Extreme Ultraviolet Lithography. The alien technology ASML uses to print transistors smaller than viruses.
+85. The Memory Wall
+- Focus: Processor speed has scaled 1000x faster than RAM latency. How massive L3 caches are trying to fix the gap.
+86. SSDs vs NVMe
+- Focus: The evolution from spinning disks to SATA SSDs, to bypassing the storage controller entirely with NVMe over PCIe.
+87. FPGAs (Field-Programmable Gate Arrays)
+- Focus: Hardware you can rewire with software. Used in high-frequency trading and low-latency network processing.
+88. RISC-V
+- Focus: The open-source instruction set architecture that threatens to disrupt ARM's monopoly.
+89. Quantum Qubits
+- Focus: Superconducting loops and trapped ions. The delicate physical hardware required to maintain quantum superposition.
+90. Silicon Photonics
+- Focus: Replacing copper wires with lasers inside the datacenter to dramatically increase bandwidth and reduce heat.
+91. Hardware Security Modules (HSMs)
+- Focus: The physical safes of the internet. Tamper-proof chips that store the root cryptographic keys for banks and CAs.
+92. Graviton Processors
+- Focus: How AWS designed custom ARM silicon to lower cloud computing costs by 20% for the entire industry.
+93. Thermal Design Power (TDP)
+- Focus: The physics of heat. Why modern 1000W GPUs are forcing data centers to adopt liquid cooling.
+94. Speculative Execution & Spectre
+- Focus: How CPUs guess the future to run faster, and how that feature created the worst hardware security flaw in history.
+95. Systolic Arrays
+- Focus: The specific hardware layout inside AI chips that keeps data flowing continuously to maximize matrix multiplication.
+96. LPDDR vs GDDR
+- Focus: The trade-offs between low-power RAM for mobile devices and high-bandwidth RAM for graphics cards.
+
+--- CYBERSECURITY & CRYPTOGRAPHY (97-116) ---
+97. Public Key Cryptography (RSA/ECC)
+- Focus: The math that secures the internet. How you can encrypt a message without ever sharing the secret key.
+98. OAuth 2.0 & OIDC
+- Focus: The complex dance of tokens that happens when you click "Sign in with Google."
+99. JWT (JSON Web Tokens)
+- Focus: Stateless authentication. How servers verify users cryptographically without looking them up in a database.
+100. Hash Functions (SHA-256)
+- Focus: The one-way mathematical meat grinder that secures passwords, blockchains, and file integrity.
+101. Man-in-the-Middle (MitM) Attacks
+- Focus: How TLS prevents attackers from intercepting and altering internet traffic at coffee shops and ISPs.
+102. Zero-Day Vulnerabilities
+- Focus: The economics of exploits. Why governments and hackers pay millions for undisclosed software flaws.
+103. Multi-Factor Authentication (FIDO2)
+- Focus: Why SMS 2FA is broken, and how physical security keys (YubiKey) mathematically eliminate phishing.
+104. Ransomware Architecture
+- Focus: How modern ransomware operates as a massive, organized SaaS business, complete with help desks and payment portals.
+105. Cross-Site Scripting (XSS)
+- Focus: The classic frontend vulnerability. How treating user input as executable code leads to account takeovers.
+106. SQL Injection
+- Focus: Why parameterizing queries is the only way to stop attackers from treating text fields as database commands.
+107. The Dark Web & Tor
+- Focus: Onion routing. How traffic is wrapped in layers of encryption and bounced globally to guarantee anonymity.
+108. Cryptographic Salts
+- Focus: Why hashing passwords isn't enough, and how adding random data defeats precomputed rainbow table attacks.
+109. Distributed Denial of Service (DDoS)
+- Focus: Botnets and amplification attacks. How attackers generate terabits of trash traffic to knock services offline.
+110. Penetration Testing (Red Teaming)
+- Focus: The methodology of ethical hacking. How security engineers systematically break into networks to secure them.
+111. Security Information and Event Management (SIEM)
+- Focus: How SOC analysts use AI to find the one anomalous log entry out of billions.
+112. Buffer Overflows
+- Focus: The classic C/C++ vulnerability. How writing too much data into memory allows attackers to execute arbitrary code.
+113. Supply Chain Attacks (SolarWinds)
+- Focus: Why hacking a vendor's update server is the most devastating way to compromise thousands of corporations at once.
+114. Sandboxing & Virtualization Security
+- Focus: How hypervisors prevent malicious code in one virtual machine from escaping into the host operating system.
+115. Post-Quantum Cryptography
+- Focus: Lattice-based cryptography. The new algorithms designed to withstand attacks from future quantum computers.
+116. Stuxnet
+- Focus: The legendary cyberweapon that crossed the airgap to physically destroy Iranian nuclear centrifuges.
+
+--- NETWORKING & PROTOCOLS (117-136) ---
+117. How DNS Actually Works
+- Focus: The phonebook of the internet. The hierarchy of root servers, TLDs, and caching that resolves google.com to an IP.
+118. BGP (Border Gateway Protocol)
+- Focus: The glue of the internet. How autonomous systems announce routes, and why BGP hijacking can take down entire countries.
+119. TCP vs UDP
+- Focus: Reliability vs Speed. Why web browsing uses a handshake, and video games fire packets into the void.
+120. HTTP/3 and QUIC
+- Focus: Rebuilding the web on UDP. How multiplexing solves the head-of-line blocking problem of TCP.
+121. WebSockets & Server-Sent Events
+- Focus: Real-time web. Maintaining open TCP connections for instant chat apps versus unidirectional data streams.
+122. Load Balancing Algorithms
+- Focus: Round Robin, Least Connections, and Consistent Hashing. How massive traffic is distributed cleanly.
+123. IPv6 Adoption
+- Focus: Why we ran out of IPv4 addresses, and the painful, decades-long migration to a 128-bit address space.
+124. Anycast Routing
+- Focus: How Cloudflare uses network magic to route users to the nearest physical datacenter using the exact same IP address.
+125. CDN Architecture
+- Focus: Content Delivery Networks. Caching static assets at the "edge" to beat the speed of light.
+126. NAT (Network Address Translation)
+- Focus: The hack that saved the internet. How your home router hides 20 devices behind a single public IP address.
+127. WebRTC
+- Focus: Peer-to-peer web. The complex signaling and NAT traversal required to establish a direct video call in a browser.
+128. gRPC & Protocol Buffers
+- Focus: Google's high-performance RPC framework. Why microservices communicate using compressed binary instead of bloated JSON.
+129. Zero-Tier & Mesh VPNs
+- Focus: Replacing centralized corporate VPNs with peer-to-peer, encrypted overlay networks (Tailscale/WireGuard).
+130. SD-WAN
+- Focus: Software-Defined Networking. Decoupling the control plane from the physical hardware switches.
+131. Submarine Cables
+- Focus: The physical internet. The massive, fragile fiber optic cables at the bottom of the ocean connecting continents.
+132. The OSI Model
+- Focus: Layer 1 to 7. The mental model engineers use to isolate network problems from physical cables to application bugs.
+133. TLS Handshake
+- Focus: The milliseconds before a secure website loads where client and server agree on encryption keys.
+134. Torrents & BitTorrent Protocol
+- Focus: Decentralized file sharing. How swarms distribute bandwidth costs across thousands of seeders.
+135. MAC Addresses & ARP
+- Focus: Layer 2 networking. How local devices find each other using physical hardware addresses before IP routing kicks in.
+136. Multipath TCP
+- Focus: Utilizing both Wi-Fi and Cellular connections simultaneously to ensure seamless mobile connectivity.
+
+--- DEVOPS & CLOUD INFRASTRUCTURE (137-156) ---
+137. Docker & Containerization
+- Focus: cgroups and namespaces. How Docker packages applications into lightweight, isolated environments without full VMs.
+138. Kubernetes Architecture
+- Focus: Pods, Nodes, and the Control Plane. The orchestration engine that runs the modern cloud.
+139. Continuous Integration (CI)
+- Focus: Automated testing. How tools like GitHub Actions ensure code merges don't break the main branch.
+140. Terraform State Management
+- Focus: The dangers of IaC. Why the terraform.tfstate file is the most critical and dangerous file in your infrastructure.
+141. Blue-Green Deployments
+- Focus: Zero-downtime updates. Spinning up a parallel production environment and shifting the load balancer in a single click.
+142. Canary Releases
+- Focus: Testing in production. Routing 1% of live traffic to a new update to monitor error rates before a full rollout.
+143. Observability vs Monitoring
+- Focus: Logs, Metrics, and Traces. Why monitoring tells you a system is broken, but observability tells you *why*.
+144. Chaos Engineering
+- Focus: Netflix's Chaos Monkey. Intentionally shutting down production servers to ensure the architecture actually auto-heals.
+145. FinOps in the Cloud
+- Focus: Cloud economics. Why companies are repatriating workloads from AWS to bare metal to escape egress fees.
+146. Serverless Architecture (AWS Lambda)
+- Focus: Ephemeral compute. Building massive applications where you only pay for the exact milliseconds your code executes.
+147. Infrastructure Drifting
+- Focus: The operational nightmare of manual changes. When the reality of the cloud no longer matches the Terraform code.
+148. Spot Instances
+- Focus: Buying AWS compute at a 90% discount, with the caveat that they can terminate your server with a 2-minute warning.
+149. The Sidecar Pattern
+- Focus: Injecting logging, security, and routing proxies into the same pod as your application without changing app code.
+150. SRE (Site Reliability Engineering)
+- Focus: Error budgets and SLIs. Google's philosophy of treating operations as a software engineering problem.
+151. Immutable Infrastructure
+- Focus: The golden rule of modern ops: never SSH into a server to patch it. Destroy it and deploy a new, updated image.
+152. Cloud Native Buildpacks
+- Focus: Turning source code into OCI-compliant docker images without ever writing a Dockerfile.
+153. Edge Computing (Cloudflare Workers)
+- Focus: V8 Isolates. Running javascript functions globally in 5ms without the overhead of heavy containers.
+154. Multi-Cloud Strategies
+- Focus: Avoiding vendor lock-in versus exploiting native AWS/GCP features. The cost and complexity of agnosticism.
+155. Stateful vs Stateless Apps
+- Focus: Why stateless web servers are easy to scale infinitely, and why databases remain the hardest part of distributed systems.
+156. API Gateways
+- Focus: The front door to microservices. Handling rate limiting, authentication, and routing in a single unified layer.
+
+--- WEB & FRONTEND ARCHITECTURE (157-176) ---
+157. React Virtual DOM
+- Focus: Why updating the actual browser DOM is slow, and how React uses a lightweight memory representation to batch updates.
+158. Server-Side Rendering (SSR) vs Client-Side (CSR)
+- Focus: SEO, Time to Interactive, and the pendulum swinging back to servers with Next.js.
+159. Hydration
+- Focus: The frontend tax. Shipping HTML from the server, then shipping JavaScript to attach event listeners and make it interactive.
+160. GraphQL vs REST
+- Focus: Solving over-fetching. Letting the client dictate exactly the shape of the data they need in a single request.
+161. Micro-Frontends
+- Focus: Breaking monolith frontends into independent, deployable pieces so massive teams don't step on each other's toes.
+162. Web Workers
+- Focus: Multithreading the browser. Offloading heavy cryptography or data parsing so the main UI thread doesn't freeze.
+163. IndexedDB & Offline-First
+- Focus: How apps like Linear sync locally first, making them feel instantly responsive before eventually syncing to the server.
+164. Jamstack
+- Focus: JavaScript, APIs, and Markup. Prebuilding static sites to edge CDNs for maximum security and performance.
+165. CSS-in-JS vs Tailwind
+- Focus: The philosophical war of styling. Runtime component injection versus atomic utility classes.
+166. Content Security Policy (CSP)
+- Focus: The HTTP headers that lock down a web app and prevent XSS attacks by restricting where scripts can load from.
+167. Progressive Web Apps (PWAs)
+- Focus: Service workers and manifests. Making a website installable and usable offline like a native mobile app.
+168. Single Page Applications (SPAs)
+- Focus: Hijacking the browser's router to load content dynamically without ever triggering a full page refresh.
+169. Module Bundlers (Webpack/Vite)
+- Focus: How modern tools compile thousands of JS/TS files, CSS, and images into optimized, minified chunks for the browser.
+170. Event Loop in JavaScript
+- Focus: How Node.js handles millions of concurrent requests on a single thread using asynchronous callbacks and the call stack.
+171. WebGL & WebGPU
+- Focus: Unlocking the power of the user's graphics card directly inside the browser for 3D rendering and ML inference.
+172. Shadow DOM
+- Focus: Web Components encapsulation. How to build custom HTML elements where CSS styles cannot leak in or out.
+173. Core Web Vitals
+- Focus: LCP, FID, and CLS. The exact metrics Google uses to measure user experience and rank search results.
+174. State Management (Redux/Zustand)
+- Focus: The complexity of global state. How to avoid prop-drilling in deeply nested component trees.
+175. React Server Components
+- Focus: Executing React components exclusively on the server to send zero JavaScript to the client.
+176. Websocket Fallbacks (Long Polling)
+- Focus: The messy reality of enterprise firewalls that block WebSockets, and how Socket.io gracefully degrades to HTTP polling.
+
+--- ADVANCED ALGORITHMS & MATH (177-200) ---
+177. A* Search Algorithm
+- Focus: Pathfinding in games and maps. Combining Dijkstra's guaranteed shortest path with a heuristic compass.
+178. RSA Encryption Math
+- Focus: Prime factorization. Why multiplying two massive prime numbers is easy, but finding them from the result takes a billion years.
+179. Kalman Filters
+- Focus: The algorithm that guided the Apollo missions. Fusing noisy sensor data to predict the true state of a system.
+180. Monte Carlo Tree Search
+- Focus: The statistical approach to game theory that allowed AlphaGo to evaluate billions of possible futures without brute-forcing them.
+181. Fast Fourier Transform (FFT)
+- Focus: The most important algorithm of the 20th century. Decomposing complex signals into sine waves for audio and radio.
+182. PageRank Algorithm
+- Focus: How Larry Page modeled the internet as a giant graph of links to objectively rank the importance of a webpage.
+183. Simplex Algorithm
+- Focus: Linear programming. How airlines and logistics companies mathematically optimize massive multi-variable supply chains.
+184. Timsort
+- Focus: The hybrid sorting algorithm built for real-world data. Why Python and Java abandoned QuickSort for a mix of Merge and Insertion sort.
+185. Gradient Descent
+- Focus: The engine of machine learning. Using calculus to blindly step down a multidimensional mountain to find the minimum loss.
+186. Traveling Salesman Problem (TSP)
+- Focus: NP-Hardness. Why finding the absolute shortest route between 50 cities is mathematically impossible to solve efficiently.
+187. Bloom Filters (Math focus)
+- Focus: The power of multiple hash functions to represent large datasets probabilistically in a tiny bit array.
+188. LZW Compression
+- Focus: The dictionary-based algorithm behind GIFs and PDFs that compresses data on the fly without losing information.
+189. Dynamic Programming
+- Focus: Memoization. Breaking complex recursive problems into smaller subproblems and remembering the answers.
+190. B-Tree Algorithms
+- Focus: Disk geometry. Why balancing trees with massive nodes perfectly aligns with the physics of spinning hard drives.
+191. Backpropagation
+- Focus: The chain rule applied to neural networks. How errors flow backwards to adjust billions of weights simultaneously.
+192. RSA vs Elliptic Curve Cryptography (ECC)
+- Focus: Why a 256-bit ECC key provides the exact same security as a 3072-bit RSA key, transforming mobile security.
+193. Shamir's Secret Sharing
+- Focus: Cryptographic splitting. How to divide a master key among 5 people, requiring exactly 3 of them to reconstruct it.
+194. Paxos (The Math)
+- Focus: The formal proof of consensus in an asynchronous network where messages can be lost, delayed, or duplicated.
+195. Singular Value Decomposition (SVD)
+- Focus: Linear algebra in AI. How compressing massive matrices drives recommendation engines like Netflix.
+196. The Viterbi Algorithm
+- Focus: Hidden Markov Models. The math behind early speech recognition and decoding error-prone signals from space probes.
+197. Concurrency: The Dining Philosophers Problem
+- Focus: Deadlocks and starvation. The classic thought experiment that defines the challenges of multithreaded programming.
+198. Quicksort vs Mergesort
+- Focus: Cache locality. Why an algorithm with worse worst-case time complexity (Quicksort) runs faster in the real world.
+199. Consistent Hashing (Ring Topology)
+- Focus: The modulus math that allows distributed caches to scale dynamically without shuffling the entire dataset.
+200. HyperLogLog Math
+- Focus: Flajolet-Martin algorithms. Using the distribution of leading zeros in hashed data to estimate cardinality instantly.

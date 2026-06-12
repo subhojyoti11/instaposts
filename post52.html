@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlashAttention — Post 52</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;700&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f1f0ed;
+    --card: #ffffff;
+    --ink: #1a1614;
+    --ink2: #5a524c;
+    --dim: #a09890;
+    --teal: #0f766e;
+    --amber: #b45309;
+    --rose: #be123c;
+    --border: rgba(26,22,20,.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'Nunito Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(26,22,20,.06);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .bl { color: var(--teal); }
+  .slide h2 .pu { color: var(--amber); }
+  .slide h2 .gn { color: var(--rose); }
+
+  .slide p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .slide p.lead {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 8px 24px 14px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    margin-bottom: 10px;
+  }
+  .ftr .left {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+  }
+
+  .code {
+    background: #f3f1ec;
+    border: 1px solid rgba(26,22,20,.09);
+    border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .bl { color: var(--teal); font-weight: 700; }
+  .code .pu { color: var(--amber); font-weight: 700; }
+  .code .gn { color: var(--rose); font-weight: 700; }
+  .code .dm { color: #8a7a72; }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 56px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.bl { color: var(--teal); }
+  .st-v.pu { color: var(--amber); }
+  .st-v.gn { color: var(--rose); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.bl-c { background: rgba(15,118,110,.05);  border: 1px solid rgba(15,118,110,.14); }
+  .gcard.pu-c { background: rgba(180,83,9,.05);    border: 1px solid rgba(180,83,9,.14); }
+  .gcard.gn-c { background: rgba(190,18,60,.05);   border: 1px solid rgba(190,18,60,.14); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(15,118,110,.2);
+    color: var(--teal);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--teal); color: #fff; }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--teal); color: var(--teal); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(15,118,110,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--teal); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--teal); color: var(--teal); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(26,22,20,.1); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--teal); width: 22px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Flash<span class="bl">Attention</span>.<br>Fewer Reads.<br><span class="pu">Much Faster.</span></h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — The HBM Bottleneck -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="bl">HBM</span><br>Bottleneck.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">HBM</span>
+            <div class="st-t"><strong>~2 TB/s bandwidth, 40–80 GB capacity.</strong> Slow storage where all tensors live. Every matrix read and write goes through here.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">SRAM</span>
+            <div class="st-t"><strong>~20 TB/s bandwidth, 20 MB on A100.</strong> On-chip fast memory. Ten times faster than HBM but 2000x smaller.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pu">N²</span>
+            <div class="st-t"><strong>Standard attention materializes an N×N matrix.</strong> At N=8K, that's 128 MB per layer — far larger than all SRAM combined.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">Bound</span>
+            <div class="st-t"><strong>Standard attention is memory-bandwidth-bound.</strong> Not compute-bound. The GPU waits on HBM reads, not ALU utilization.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — Three Trips to Slow Memory -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Three Trips to<br><span class="pu">Slow Memory.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Standard attention: 3 HBM round trips</span><br>
+          S = Q @ K.T    <span class="dm"># O(N²) — write S to HBM</span><br>
+          P = softmax(S) <span class="dm"># O(N²) — read S, write P</span><br>
+          O = P @ V      <span class="dm"># O(N²) — read P, write O</span><br>
+          <br>
+          <span class="dm"># N=8192, float16, 96 layers:</span><br>
+          <span class="dm"># S per layer = 128 MB</span><br>
+          <span class="dm"># Total intermediate writes ≈ 12 GB</span><br>
+          <span class="dm"># All of it avoidable</span>
+        </div>
+        <div class="gcard pu-c">
+          <p>The compute takes microseconds. The HBM reads take milliseconds. FlashAttention eliminates the reads.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — Tile. Stay in SRAM. -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Tile. Stay<br>in <span class="bl">SRAM.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v bl">Block Q</span>
+            <div class="st-t"><strong>Split the Q matrix into tiles small enough for SRAM.</strong> Load one Q tile at a time, never the full matrix.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pu">Block K/V</span>
+            <div class="st-t"><strong>Stream K and V blocks across all Q tiles.</strong> For each Q tile, visit every K/V block once and compute partial attention.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Fused</span>
+            <div class="st-t"><strong>Compute QK^T, softmax, and PV entirely in SRAM</strong> for each tile pair. S and P are never written to HBM.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">HBM cost</span>
+            <div class="st-t"><strong>Read Q, K, V once. Write O once.</strong> No intermediate materialization. Memory cost is O(N), not O(N²).</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — Online Softmax -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Online<br><span class="bl">Softmax.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># softmax needs full row — can't tile naively</span><br>
+          <span class="dm"># online softmax: track running max and sum</span><br>
+          <br>
+          for each K/V tile j:<br>
+          &nbsp;&nbsp;m = max(m_prev, rowmax(<span class="bl">S_ij</span>))<br>
+          &nbsp;&nbsp;l = e^(m_prev-m)*l_prev<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;+ rowsum(e^(<span class="bl">S_ij</span>-m))<br>
+          &nbsp;&nbsp;O = diag(e^(m_prev-m))*O_prev<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;+ e^(<span class="bl">S_ij</span>-m) * V_j
+        </div>
+        <div class="gcard bl-c">
+          <p><strong>The key insight:</strong> rescale the accumulated output at each tile using the updated running max. Numerically stable. No second pass needed.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — What It Unlocks -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What It<br><span class="bl">Unlocks.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v bl">2–4x</span>
+            <div class="st-t"><strong>Wall-clock speedup on A100</strong> versus standard PyTorch attention. No model architecture change required.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pu">O(N)</span>
+            <div class="st-t"><strong>Memory scales linearly with sequence length,</strong> not quadratically. 16K context uses the same GPU memory as standard 4K attention.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">FA-2</span>
+            <div class="st-t"><strong>FlashAttention-2 (2023) adds 2x further speedup</strong> via better GPU thread partitioning and parallelism across the sequence dimension.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">128K+</span>
+            <div class="st-t"><strong>GPT-4, Llama 3.1, Mistral, Gemini</strong> all use FlashAttention. It is the reason 100K context windows are practical today.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="bl">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">HBM</span>
+            <div class="st-t"><strong>High Bandwidth Memory.</strong> ~2 TB/s. Default tensor storage. Where standard attention writes all its intermediate matrices.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">SRAM</span>
+            <div class="st-t"><strong>On-chip fast memory.</strong> ~20 TB/s. 20 MB on A100. FlashAttention keeps all tile computations here.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pu">Tiling</span>
+            <div class="st-t"><strong>Split Q, K, V into blocks that fit in SRAM.</strong> Fuse S, P, O into one kernel. Never materialize N×N in HBM.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Online</span>
+            <div class="st-t"><strong>Online softmax enables tiling.</strong> Tracks running max and normalizer per tile. Single-pass, numerically stable.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">FA-2</span>
+            <div class="st-t"><strong>FlashAttention-2 (Tri Dao, 2023).</strong> ~9x faster than standard PyTorch attention. Used by every major LLM lab.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  async function cap(s) {
+    return await html2canvas(s, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    try {
+      dl(await cap(slides[cur]), 'flashattn-' + String(cur + 1).padStart(2, '0') + '.png');
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'flashattn-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

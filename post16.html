@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Memory Wall — Why AI is Starving for Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Code+Pro:wght@400;500;600&family=Libre+Franklin:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111;
+  --cream:#faf8f4;
+  --ink:#1d1d1f;
+  --ink2:#48484a;
+  --dim:#8e8e93;
+  --ir:#e8372d;
+  --blue:#2563eb;
+  --teal:#0d9488;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Libre Franklin',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+
+.slide{
+  flex:0 0 min(92vw,520px);
+  aspect-ratio:4/5;
+  scroll-snap-align:center;
+  background:var(--cream);
+  color:var(--ink);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.slide::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ir)}
+.slide .ghost-num{position:absolute;top:15px;right:20px;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(90px,18vw,150px);line-height:.75;color:rgba(29,29,31,.04);pointer-events:none;z-index:0;user-select:none}
+
+/* ── HEADER — pinned top ── */
+.hdr{
+  flex-shrink:0;
+  padding:24px 30px 8px 34px;
+  /* padding:12px 30px 20px 34px; */
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(29,29,31,.06);
+
+}
+.hdr .num{font-family:'Source Code Pro',monospace;font-size:11px;letter-spacing:.06em;color:var(--dim)}
+.hdr .brand{font-family:'Source Code Pro',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+
+/* ── BODY — scrollable middle ── */
+.body{
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+  padding:8px 30px 0 34px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Section label */
+.sec{font-family:'Source Code Pro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ir);margin-bottom:10px;font-weight:500;flex-shrink:0}
+
+/* Headings */
+/* Headings */
+.slide h1{
+  font-family:'Playfair Display',serif;
+  font-weight:400;
+  font-size:clamp(38px,5vw,52px);
+  line-height:.94;
+  letter-spacing:-.01em;
+  margin-bottom:14px;
+  color:var(--ink);
+  flex-shrink:0;
+}
+.slide h1 .ir{color:var(--ir)}
+.slide h1 .bl{color:var(--blue)}
+.slide h1 .tl{color:var(--teal)}
+.slide h1 em{font-style:italic;font-weight:700}
+
+.slide h2{
+  font-family:'Playfair Display',serif;
+  font-weight:400;
+  font-size:clamp(26px,5vw,42px);
+  line-height:.94;
+  letter-spacing:-.01em;
+  margin-bottom:14px;
+  color:var(--ink);
+  flex-shrink:0;
+}
+.slide h2 .ir{color:var(--ir)}
+.slide h2 .bl{color:var(--blue)}
+.slide h2 .tl{color:var(--teal)}
+.slide h2 em{font-style:italic;font-weight:700}
+
+/* Body text */
+.slide p{font-size:13px;line-height:1.6;color:var(--ink2);margin-bottom:8px;font-weight:300}
+.slide p.lead{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--ink);line-height:1.4}
+
+/* ── FOOTER — pinned bottom ── */
+.ftr{
+  flex-shrink:0;
+  padding:8px 30px 20px 34px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  border-top:1px solid rgba(29,29,31,.06);
+  margin-top:auto;
+}
+.ftr .left{font-family:'Source Code Pro',monospace;font-size:9px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.ftr .right{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:var(--ir)}
+
+/* ── Code panel ── */
+.code{
+  background:var(--ink);color:var(--cream);
+  font-family:'Source Code Pro',monospace;font-size:10.5px;
+  padding:14px 16px;margin:4px 0;line-height:1.8;
+  border-left:3px solid var(--ir);
+  flex-shrink:0;
+}
+.code .ir{color:#ff6961;font-weight:600}
+.code .bl{color:#64b5f6;font-weight:600}
+.code .tl{color:#4db6ac;font-weight:600}
+.code .gd{color:#ffd54f;font-weight:600}
+.code .dm{color:rgba(250,248,244,.3)}
+.code .vl{color:#ffd54f;font-weight:500}
+
+/* ── Info card ── */
+.card{padding:12px 14px;margin:4px 0;flex-shrink:0}
+.card.ir-c{border-left:2px solid var(--ir);background:rgba(232,55,45,.04)}
+.card.bl-c{border-left:2px solid var(--blue);background:rgba(37,99,235,.03)}
+.card.tl-c{border-left:2px solid var(--teal);background:rgba(13,148,136,.03)}
+.card p{font-size:12.5px;line-height:1.5;margin-bottom:3px;color:var(--ink2)}
+.card p:last-child{margin-bottom:0}
+.card strong{font-family:'Playfair Display',serif;font-weight:700;font-style:italic;color:var(--ink)}
+
+/* ── Steps ── */
+.steps{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.stp{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid rgba(29,29,31,.06)}
+.stp:last-child{border-bottom:none}
+.stp-n{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--ir);min-width:22px;line-height:1;padding-top:1px}
+.stp-b strong{font-family:'Libre Franklin',sans-serif;font-weight:500;font-size:13px;color:var(--ink);display:block;margin-bottom:1px}
+.stp-b span{font-size:11px;color:var(--dim);line-height:1.4;font-weight:300}
+
+/* ── Metrics ── */
+.mets{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:10px 0;background:rgba(29,29,31,.06);flex-shrink:0}
+.met{background:var(--cream);padding:12px 8px;text-align:center}
+.met .v{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);display:block;margin-bottom:2px;font-style:italic}
+.met .l{font-family:'Source Code Pro',monospace;font-size:8px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+
+/* ── Download button on slide ── */
+.slide .dlb{position:absolute;top:20px;right:26px;width:24px;height:24px;border:1px solid rgba(29,29,31,.1);background:var(--cream);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .25s}
+.slide:hover .dlb{opacity:1}
+.slide .dlb:hover{border-color:var(--ir);color:var(--ir)}
+.slide .dlb svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* ── Bottom controls ── */
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Source Code Pro',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(250,248,244,.12);color:rgba(250,248,244,.4);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px}
+.dl-btn:hover{border-color:var(--ir);color:var(--ir)}
+.dl-btn.pri{border-color:var(--ir);color:var(--ir)}.dl-btn.pri:hover{background:var(--ir);color:#fff}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(232,55,45,.1);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--ir);transition:width .3s}
+
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(250,248,244,.1);color:rgba(250,248,244,.35);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;transition:all .25s}
+.nav button:hover{border-color:var(--ir);color:var(--ir)}
+.dots{display:flex;gap:8px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(250,248,244,.1);cursor:pointer;transition:all .35s}
+.dot.active{background:var(--ir);width:22px;border-radius:2px}
+
+@media(max-width:600px){
+  .hdr{padding:18px 22px 0 26px}
+  .body{padding:12px 22px 0 26px}
+  .ftr{padding:10px 22px 16px 26px}
+  .slide h2{font-size:28px}
+  .mets{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- 01 -->
+    <div class="slide">
+      <div class="ghost-num">01</div>
+      <div class="hdr"><span class="num">01 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">AI Infrastructure</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h1>The<br><span class="ir">Memory</span><br>Wall.</h1>
+        <p class="lead">Processors are getting faster. Memory isn't keeping up. This is the single biggest bottleneck in modern AI and it's physics, not engineering.</p>
+        <!-- <p>Think of a massive V12 engine being fed fuel through a tiny plastic straw. That's what happens when a 4,500 TFLOPS GPU waits for data from memory.</p> -->
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 02 -->
+    <div class="slide">
+      <div class="ghost-num">02</div>
+      <div class="hdr"><span class="num">02 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">The Bottleneck</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>The <span class="ir">V12 Engine</span><br>and the <span class="bl">Straw.</span></h2>
+        <p class="lead">GPU compute grew 1,000× in a decade. Memory bandwidth? Only 16×.</p>
+        <div class="code">
+<span class="dm">Compute (2015 → 2025):</span><br>
+<span class="ir">GPU TFLOPS:</span> <span class="vl">7 → 9,000</span> <span class="dm">~1,285×</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="dm">Memory bandwidth:</span><br>
+<span class="bl">HBM BW:</span>    <span class="vl">512 → 8,000 GB/s</span> <span class="dm">~16×</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="ir">The gap widens every generation.</span>
+        </div>
+        <div class="card ir-c">
+          <p><strong>Von Neumann bottleneck: </strong> Compute and memory are physically separated. Every piece of data travels across a bus. As compute accelerates, that bus becomes the straw.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 03 -->
+    <div class="slide">
+      <div class="ghost-num">03</div>
+      <div class="hdr"><span class="num">03 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">The Hierarchy</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>Three <em>layers</em><br>of memory.</h2>
+        <div class="steps">
+          <div class="stp"><span class="stp-n" style="color:var(--teal)">1</span><div class="stp-b"><strong>SRAM (On-chip)</strong><span>~150 TB/s effective. 128–384 MB. On the die. Near-zero latency. Where KV cache lives in TPU 8i. ~100× pricier than DRAM.</span></div></div>
+          <div class="stp"><span class="stp-n" style="color:var(--blue)">2</span><div class="stp-b"><strong>HBM3e (Stacked)</strong><span>8 TB/s. 192 GB/chip. DRAM stacked via TSVs on interposer next to GPU die. Short wires = high bandwidth.</span></div></div>
+          <div class="stp"><span class="stp-n">3</span><div class="stp-b"><strong>DRAM (Off-chip, DDR5)</strong><span>~100 GB/s. Up to TBs. Far from processor, narrow bus. The real bottleneck.</span></div></div>
+        </div>
+        <div class="code">
+<span class="tl">SRAM:</span>   <span class="vl">150 TB/s</span>  <span class="dm">← on the die</span><br>
+<span class="bl">HBM3e:</span>  <span class="vl">8 TB/s</span>    <span class="dm">← stacked next to die</span><br>
+<span class="ir">DDR5:</span>   <span class="vl">0.1 TB/s</span>  <span class="dm">← across the board</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="tl">SRAM is 1,500× faster than DDR5.</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 04 -->
+    <div class="slide">
+      <div class="ghost-num">04</div>
+      <div class="hdr"><span class="num">04 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">The Solution</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>Stacking memory<br><span class="bl">vertically.</span></h2>
+        <p class="lead">HBM's breakthrough: stack DRAM directly next to the processor instead of spreading it across a board.</p>
+        <div class="code">
+<span class="dm">Traditional (DDR5):</span><br>
+<span class="ir">[CPU] ─── long traces ─── [DRAM]</span><br>
+<span class="dm">    narrow bus, high latency</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="dm">HBM Architecture:</span><br>
+<span class="bl">      ┌── DRAM die ──┐</span><br>
+<span class="bl">      ├── DRAM die ──┤</span><br>
+<span class="bl">      ├── DRAM die ──┤ ← TSVs</span><br>
+<span class="bl">      ├── DRAM die ──┤</span><br>
+<span class="bl">[GPU]─┴── base die ──┘</span><br>
+<span class="dm">interposer · 1024-bit · ~3mm</span>
+        </div>
+        <div class="card bl-c">
+          <p><strong>Why it works </strong>→ shorter wires = less energy. 1024-bit bus (vs DDR5's 64-bit) = 16× data per cycle. TSVs punch thousands of holes through silicon. Result: 80× more bandwidth.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 05 -->
+    <div class="slide">
+      <div class="ghost-num">05</div>
+      <div class="hdr"><span class="num">05 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">HBM4 · 2026</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>HBM4 doubles<br><span class="bl">everything.</span></h2>
+        <p style="font-size:13px;color:var(--dim)">2,048-bit interface. 3.3 TB/s per stack. 64 GB per stack. Mass production: early 2026.</p>
+        <div class="mets">
+          <div class="met"><span class="v" style="color:var(--blue)">2,048</span><span class="l">bit interface</span></div>
+          <div class="met"><span class="v" style="color:var(--blue)">3.3 TB/s</span><span class="l">per stack</span></div>
+          <div class="met"><span class="v" style="color:var(--blue)">64 GB</span><span class="l">per stack</span></div>
+        </div>
+        <div class="steps">
+          <div class="stp"><span class="stp-n" style="color:var(--blue)">1</span><div class="stp-b"><strong>Custom base die</strong><span>Logic die tailored per accelerator. Google, AMD, NVIDIA each get custom silicon.</span></div></div>
+          <div class="stp"><span class="stp-n" style="color:var(--blue)">2</span><div class="stp-b"><strong>Already sold out</strong><span>2026 supply allocated to Rubin, MI450, TPU 8t. Didn't order in 2025? Wait until 2027.</span></div></div>
+          <div class="stp"><span class="stp-n" style="color:var(--ir)">3</span><div class="stp-b"><strong>$58B market</strong><span>$38B (2025) → $58B (2026). SK Hynix 62%, Micron 21%, Samsung 17%.</span></div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 06 -->
+    <div class="slide">
+      <div class="ghost-num">06</div>
+      <div class="hdr"><span class="num">06 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">Why It Matters</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>Memory decides<br><span class="ir">everything.</span></h2>
+        <div class="steps">
+          <div class="stp"><span class="stp-n">1</span><div class="stp-b"><strong>KV Cache explosion</strong><span>Each token reads full KV cache. 128K+ contexts = 40+ GB HBM per request.</span></div></div>
+          <div class="stp"><span class="stp-n">2</span><div class="stp-b"><strong>Why quantization exists</strong><span>INT4 exists because FP16 weights don't fit. Quantization is a memory hack.</span></div></div>
+          <div class="stp"><span class="stp-n">3</span><div class="stp-b"><strong>Why inference is slow</strong><span>Each token loads entire model. 70B FP8 = 70 GB. At 8 TB/s = 8.75ms/token.</span></div></div>
+          <div class="stp"><span class="stp-n" style="color:var(--teal)">4</span><div class="stp-b"><strong>Why Groq's LPU is fast</strong><span>500 MB SRAM at 150 TB/s. 10× faster tokens; dodged the wall entirely.</span></div></div>
+          <div class="stp"><span class="stp-n" style="color:var(--teal)">5</span><div class="stp-b"><strong>Why TPU 8i has 384 MB SRAM</strong><span>KV cache on silicon. Zero stalls during chain-of-thought reasoning.</span></div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 07 -->
+    <div class="slide">
+      <div class="ghost-num">07</div>
+      <div class="hdr"><span class="num">07 — 07</span><span class="brand">Ravenex.tech</span></div>
+      <div class="body">
+        <div class="sec">The Takeaway</div>
+        <p class="lead"> </p>
+        <p class="lead"> </p>
+        <h2>The future is<br><span class="bl">memory,</span><br>not <span class="ir">compute.</span></h2>
+        <div class="card ir-c">
+          <p><strong>The bottleneck has shifted:</strong> We can build 12.6 PetaFLOPS chips. But if we can't feed them data fast enough, those FLOPS sit idle. Memory now defines AI's pace.</p>
+        </div>
+        <div class="card bl-c">
+          <p><strong>Solutions converging:</strong></p>
+          <p>HBM4: 2× bandwidth, custom base dies<br>
+          More SRAM: TPU 8i (384 MB), Groq 3 (500 MB)<br>
+          Processing-in-Memory: compute inside DRAM<br>
+          Optical interconnects: photons over copper<br>
+          Chiplets: shorter wires, parallel paths</p>
+        </div>
+        <p style="font-size:13px;margin-top:8px;font-family:'Playfair Display',serif;font-style:italic;color:var(--dim);line-height:1.5">The next trillion-dollar company won't build the fastest chip. It'll build the fastest pipe between memory and compute.</p>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+  </div>
+
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn pri" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+slides.forEach(s=>{const b=document.createElement('button');b.className='dlb';b.innerHTML=dlSVG;b.onclick=function(){dlS(this)};s.querySelector('.hdr').appendChild(b)});
+let cur=0;
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);
+slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));
+document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};
+async function cap(s){const b=s.querySelector('.dlb');if(b)b.style.display='none';const c=await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false});if(b)b.style.display='';return c}
+function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}
+async function dlS(b){const s=b.closest('.slide'),i=Array.from(slides).indexOf(s)+1;b.disabled=true;try{dl(await cap(s),'memory-wall-'+String(i).padStart(2,'0')+'.png')}catch(e){}b.disabled=false}
+async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'memory-wall-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}
+async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'memory-wall-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

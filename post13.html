@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Every Claude "Secret Code" — Real vs Myth</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1a1714;
+  --card:#f4f0ea;
+  --ink:#1a1714;
+  --ink-dim:#6b6560;
+  --accent:#d45a1a;
+  --green:#1a7a42;
+  --red:#c42b2b;
+  --purple:#6b4fa0;
+  --bar:#2a2520;
+  --card-border:rgba(26,23,20,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:#f4f0ea;font-family:'Inter Tight',sans-serif;min-height:100vh;overflow-x:hidden}
+body{padding:40px 20px 80px}
+
+.page-head{max-width:1100px;margin:0 auto 36px;padding:0 10px}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+h1.main{font-family:'Inter Tight',sans-serif;font-weight:300;font-size:clamp(30px,4.8vw,56px);line-height:.96;letter-spacing:-.02em;margin-bottom:14px;color:#f4f0ea}
+h1.main em{font-weight:900;font-style:normal;color:var(--accent)}
+.dek{font-weight:300;font-size:16px;color:rgba(244,240,234,.5);max-width:620px;line-height:1.55}
+
+.carousel-wrap{max-width:1100px;margin:0 auto;position:relative}
+.carousel{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 4px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+
+.slide{
+  flex:0 0 min(90vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  background:var(--card);color:var(--ink);
+  position:relative;overflow:hidden;
+  padding:0;display:flex;flex-direction:column;
+}
+/* Top dark bar like the reference */
+.slide-bar{background:var(--bar);height:6px;width:100%}
+.slide-inner{padding:32px 36px;display:flex;flex-direction:column;flex:1}
+
+.sm{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--ink-dim);display:flex;justify-content:space-between;margin-bottom:12px}
+.sm .handle{color:var(--ink-dim)}
+
+/* Kicker badge */
+.kicker-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;margin-bottom:14px;border:1px solid var(--ink);color:var(--ink);font-weight:500}
+
+.slide h2{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:clamp(28px,5vw,48px);line-height:.92;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:14px;color:var(--ink)}
+.slide h2 .acc{color:var(--accent)}
+.slide h2 .gr{color:var(--green)}
+.slide h2 .rd{color:var(--red)}
+.slide h2 .pr{color:var(--purple)}
+
+.slide p{font-size:14px;line-height:1.55;color:var(--ink-dim);margin-bottom:4px}
+.slide p.lead{font-size:15px;color:var(--ink);font-weight:400}
+
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding-top:12px}
+.foot .handle{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim)}
+.foot .swipe{font-family:'Inter Tight',sans-serif;font-size:13px;color:var(--ink-dim)}
+
+/* Category badges inline */
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;padding:2px 7px;letter-spacing:.06em;text-transform:uppercase;vertical-align:middle;margin-right:4px}
+.badge-real{background:rgba(212,90,26,.12);color:var(--accent);border:1px solid rgba(212,90,26,.3)}
+.badge-trick{background:rgba(107,79,160,.1);color:var(--purple);border:1px solid rgba(107,79,160,.25)}
+.badge-myth{background:rgba(196,43,43,.08);color:var(--red);border:1px solid rgba(196,43,43,.2)}
+.badge-works{background:rgba(26,122,66,.1);color:var(--green);border:1px solid rgba(26,122,66,.25)}
+
+/* Code trace */
+.trace{background:var(--ink);color:var(--card);font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:12px 14px;margin:4px 0;line-height:1.8}
+.trace .acc{color:#f5923a;font-weight:600}.trace .gr{color:#4ade80;font-weight:600}.trace .rd{color:#f87171;font-weight:600}.trace .pr{color:#a78bfa;font-weight:600}.trace .dim{color:rgba(244,240,234,.35)}.trace .val{color:#fbbf24;font-weight:700}
+
+/* Info box */
+.info{padding:12px 14px;margin:4px 0;font-size:12.5px;line-height:1.5}
+.info.real-box{border-left:3px solid var(--accent);background:rgba(212,90,26,.06)}
+.info.trick-box{border-left:3px solid var(--purple);background:rgba(107,79,160,.05)}
+.info.myth-box{border-left:3px solid var(--red);background:rgba(196,43,43,.05)}
+.info.ok-box{border-left:3px solid var(--green);background:rgba(26,122,66,.05)}
+.info p{color:var(--ink);margin-bottom:4px}.info p:last-child{margin-bottom:0}
+.info strong{font-weight:700}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:2px;margin:8px 0}.step{display:flex;gap:8px;align-items:flex-start;padding:2px 0;border-bottom:1px solid rgba(26,23,20,.08)}.step:last-child{border-bottom:none}
+.snum{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;min-width:46px;padding-top:2px}
+.sbody strong{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13px;color:var(--ink)}.sbody span{display:block;font-size:10.5px;color:var(--ink-dim);margin-top:1px;line-height:1.4}
+
+/* Download */
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.dl-btn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:12px 28px;background:transparent;border:1px solid var(--accent);color:var(--accent);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px}.dl-btn:hover{background:var(--accent);color:#fff}.dl-btn.alt{border-color:rgba(244,240,234,.3);color:rgba(244,240,234,.6)}.dl-btn.alt:hover{background:rgba(244,240,234,.1)}.dl-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.dl-btn:disabled{opacity:.4;cursor:wait}
+.slide .dl-slide-btn{position:absolute;top:14px;right:12px;width:28px;height:28px;border:1px solid var(--card-border);background:rgba(244,240,234,.9);color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;opacity:0}.slide:hover .dl-slide-btn{opacity:1}.slide .dl-slide-btn:hover{border-color:var(--accent);color:var(--accent)}.slide .dl-slide-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.progress-bar{width:200px;height:3px;background:rgba(212,90,26,.15);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--accent);transition:width .3s}
+
+.nav{display:flex;justify-content:center;gap:14px;margin-top:18px;align-items:center}.nav button{background:transparent;border:1px solid rgba(244,240,234,.15);color:rgba(244,240,234,.6);width:42px;height:42px;cursor:pointer;font-size:16px;transition:all .2s;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}.nav button:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.dots{display:flex;gap:6px;align-items:center}.dot{width:6px;height:6px;border-radius:50%;background:rgba(244,240,234,.15);cursor:pointer;transition:all .3s}.dot.active{background:var(--accent);width:22px;border-radius:3px}
+
+@media(max-width:600px){.slide-inner{padding:24px 26px}.slide h2{font-size:28px}}
+</style>
+</head>
+<body>
+<header class="page-head">
+  <div class="kicker">▲ Claude · Prompt Engineering · Debunked</div>
+  <h1 class="main">Every Claude <em>"secret code"</em> tested against 512K lines of leaked source.</h1>
+  <p class="dek">ULTRATHINK, L99, /ghost, OODA, BEASTMODE — the internet swears by them. We checked the codebase. Here's what's real, what's a trick, and what's a total myth.</p>
+</header>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1: Cover -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>01 / 08</span><span class="handle">ravenex.tech</span></div>
+        <div class="kicker-badge">▲ CLAUDE AI · EXPOSED</div>
+        <h2><span class="acc">CLAUDE'S</span><br>"SECRET<br>CODES"</h2>
+        <p class="lead" style="max-width:360px">8 architectural patterns every AI builder needs to know.</p>
+        <!-- <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+          <span class="badge badge-real">REAL FEATURE</span>
+          <span class="badge badge-trick">PROMPT TRICK</span>
+          <span class="badge badge-myth">MYTH</span>
+        </div> -->
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">Swipe to Start →</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: The Source Leak -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>02 / 08</span><span class="handle">ravenex.tech</span></div>
+        <div class="kicker-badge">▲ THE EVIDENCE</div>
+        <h2>THE <span class="acc">SOURCE CODE</span> LEAK.</h2>
+        <p class="lead">On March 31, 2026, Anthropic accidentally shipped their entire Claude Code source on npm. 512,000 lines. Researchers tore through it.</p>
+        <div class="info real-box">
+          <p><strong>Found:</strong> 330+ utility files, 55 slash commands, 44 feature flags, ~200 environment variables.</p>
+        </div>
+        <div class="info myth-box">
+          <p><strong>NOT found:</strong> L99, /ghost, /godmode, BEASTMODE appear <strong>nowhere</strong> in the codebase. No hidden parser. No secret unlock system. Zero evidence.</p>
+        </div>
+        <div class="info ok-box">
+          <p><strong>The truth:</strong> Claude is trained on developer docs and technical writing. When you type "L99," it recognizes the <em>intent</em> for expert-depth response. The label isn't magic. The instruction clarity is.</p>
+        </div>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: REAL — Extended Thinking -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>03 / 08</span><span class="handle">ravenex.tech</span></div>
+        <span class="badge badge-real">REAL FEATURE</span>
+        <h2>EXTENDED<br><span class="acc">THINKING.</span></h2>
+        <p style="font-size:12px;color:var(--ink-dim)">The only verified "thinking codes"; Claude Code CLI only, NOT claude.ai.</p>
+        <div class="trace">
+<span class="acc">"think"</span>       <span class="dim">→</span> <span class="val">~4,000 thinking tokens</span><br>
+<span class="acc">"megathink"</span>    <span class="dim">→</span> <span class="val">~10,000 tokens</span><br>
+<span class="acc">"ultrathink"</span>   <span class="dim">→</span> <span class="val">~31,999 tokens</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="gr">UPDATE (Jan 2026):</span><br>
+<span class="dim">ultrathink = DEPRECATED</span><br>
+<span class="dim">thinking now ON by default</span><br>
+<span class="dim">every prompt → 31,999 tokens auto</span>
+        </div>
+        <div class="info myth-box">
+          <p><strong style="color:var(--red)">Critical:</strong> Typing "ultrathink" in claude.ai does NOTHING special. It only worked in Claude Code's CLI preprocessor. Now it's deprecated even there, thinking is automatic.</p>
+        </div>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: REAL — Actual Features -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>04 / 08</span><span class="handle">ravenex.tech</span></div>
+        <span class="badge badge-real">REAL FEATURE</span>
+        <h2>ACTUAL<br><span class="acc">FEATURES.</span></h2>
+        <p style="font-size:11px;color:var(--ink-dim)">Documented, shipped, real product features not "codes":</p>
+        <div class="steps">
+          <div class="step"><span class="snum" style="color:var(--accent)">01</span><div class="sbody"><strong>Artifacts</strong><span>Side-panel code, docs, React apps. Launched 2024. All plans. Persistent storage, MCP integration, Live Artifacts (Apr 2026).</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--accent)">02</span><div class="sbody"><strong>Projects & Memory</strong><span>Organize chats with shared context. Memory persists info across conversations. Both in Settings.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--accent)">03</span><div class="sbody"><strong>Claude Code: /effort, /init, /compact, /clear, /cost</strong><span>Real slash commands. /effort sets thinking level (low→max). All documented by Anthropic.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--accent)">04</span><div class="sbody"><strong>Computer Use & MCP</strong><span>Computer Use controls a virtual desktop. MCP connects to Gmail, Drive, Slack. Documented features.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--accent)">05</span><div class="sbody"><strong>XML Tags</strong><span>Anthropic's #1 prompting recommendation. &lt;instructions&gt;, &lt;context&gt;, &lt;examples&gt; tags genuinely improve output.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--accent)">06</span><div class="sbody"><strong>1M Context Window</strong><span>GA since March 13, 2026 for Opus 4.6 & Sonnet 4.6. No surcharge. Highest MRCR v2 score at 1M tokens.</span></div></div>
+        </div>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: PROMPT TRICKS -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>05 / 08</span><span class="handle">ravenex.tech</span></div>
+        <span class="badge badge-trick">PROMPT TRICK</span>
+        <h2>CODES THAT<br><span class="pr">"WORK."</span></h2>
+        <p style="font-size:11px;color:var(--ink-dim)">Real behavioral shifts, but via intent recognition, not hidden parsers:</p>
+        <div class="steps">
+          <div class="step"><span class="snum" style="color:var(--purple)">L99</span><div class="sbody"><strong>Forces decisive, expert answers</strong><span>Kills "it depends" hedging. Same result: "Give a firm, expert-level recommendation with specific trade-offs."</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--purple)">/ghost</span><div class="sbody"><strong>Strips AI-sounding filler</strong><span>Removes "Certainly!", em-dashes, balanced hedging. Same result: "Write like a human, no AI filler phrases."</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--purple)">OODA</span><div class="sbody"><strong>Observe-Orient-Decide-Act framework</strong><span>Forces structured decision-making. Claude recognizes Boyd's framework from training data. Same as "Apply the OODA loop."</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--purple)">PERSONA</span><div class="sbody"><strong>Domain-expert framing</strong><span>"PERSONA: Senior DBA at Stripe, 15 years." Primes specialized knowledge. Just good prompting; context = better output.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--purple)">SCAFFOLD</span><div class="sbody"><strong>Full project scaffolding</strong><span>Signals you want complete file structure, configs, CI/CD. Clear intent = clear output. No hidden feature involved.</span></div></div>
+        </div>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: MYTHS -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>06 / 08</span><span class="handle">ravenex.tech</span></div>
+        <span class="badge badge-myth">MYTH</span>
+        <h2>CODES THAT<br><span class="rd">DON'T WORK.</span></h2>
+        <p style="font-size:11px;color:var(--ink-dim)">Tested in Claude Code CLI with JSON output and cost tracking:</p>
+        <div class="trace">
+<span class="rd">/godmode</span><br>
+<span class="dim">→ "Unknown skill: godmode"</span><br>
+<span class="dim">→ 0 tokens · 0 API calls · $0.00</span><br>
+<span class="dim">→ prompt never left the machine</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="rd">/ghost (in CLI)</span><br>
+<span class="dim">→ "Unknown skill: ghost"</span><br>
+<span class="dim">→ 12ms · $0.00 · zero tokens</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="rd">BEASTMODE</span><br>
+<span class="dim">→ slight tone shift (less hedging)</span><br>
+<span class="dim">→ zero capability unlock</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="rd">L99 (in Claude Code CLI)</span><br>
+<span class="dim">→ Claude asked: "What do you</span><br>
+<span class="dim">   mean by L99?"</span>
+        </div>
+        <p style="font-size:10.5px;color:var(--ink-dim);margin-top:8px">Slash commands get intercepted as skill lookups. They fail because these skills don't exist. Uppercase keywords are just text, no hidden parser activating secret modes.</p>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: What ACTUALLY works -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>07 / 08</span><span class="handle">ravenex.tech</span></div>
+        <span class="badge badge-works">WHAT WORKS</span>
+        <h2>WHAT <span class="gr">ACTUALLY</span><br>WORKS.</h2>
+        <p style="font-size:11px;color:var(--ink-dim)">Forget the codes. These are what Anthropic themselves recommends:</p>
+        <div class="steps">
+          <div class="step"><span class="snum" style="color:var(--green)">01</span><div class="sbody"><strong>XML tags for structure</strong><span>&lt;instructions&gt;, &lt;context&gt;, &lt;examples&gt;, &lt;output_format&gt;. Anthropic's #1 tip. Dramatically improves instruction following.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--green)">02</span><div class="sbody"><strong>Give examples (few-shot)</strong><span>2-3 examples of desired output. Works better than any prefix because the model learns the pattern, not just intent.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--green)">03</span><div class="sbody"><strong>Be specific about the role</strong><span>"You are a senior backend engineer at Stripe reviewing for production" beats "PERSONA: expert" every time.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--green)">04</span><div class="sbody"><strong>Define success criteria</strong><span>"A good response includes: 1) root cause 2) fix 3) prevention." Explicit criteria beats any thinking keyword.</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--green)">05</span><div class="sbody"><strong>Use Projects for context</strong><span>Add files to a Project instead of re-explaining every chat. Claude reads them automatically. The real "memory hack."</span></div></div>
+          <div class="step"><span class="snum" style="color:var(--green)">06</span><div class="sbody"><strong>System prompts (API)</strong><span>The professional version of every "code" combined. Persistent role, format, behavior — in one place.</span></div></div>
+        </div>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">→</span></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Cheatsheet -->
+    <div class="slide">
+      <div class="slide-bar"></div>
+      <div class="slide-inner">
+        <div class="sm"><span>08 / 08</span><span class="handle">ravenex.tech</span></div>
+        <div class="kicker-badge">▲ THE HONEST CHEATSHEET</div>
+        <h2>THE <span class="acc">TRUTH.</span></h2>
+        <div class="info real-box">
+          <p><strong style="color:var(--accent)">REAL (documented features):</strong></p>
+          <p>• Artifacts · Projects · Memory · MCP</p>
+          <p>• Extended thinking (auto in Claude Code)</p>
+          <p>• /effort · /init · /compact · /clear · /cost</p>
+          <p>• XML tags · Computer Use · 1M context</p>
+        </div>
+        <div class="info trick-box">
+          <p><strong style="color:var(--purple)">TRICKS (work via intent, not parsing):</strong></p>
+          <p>• L99 · OODA · PERSONA · SCAFFOLD · /ghost</p>
+          <p>• "Think step by step" (chain-of-thought)</p>
+          <p>• Same results with clear plain-English instructions</p>
+        </div>
+        <div class="info myth-box">
+          <p><strong style="color:var(--red)">MYTHS (zero evidence in source):</strong></p>
+          <p>• /godmode · BEASTMODE · /jailbreak</p>
+          <p>• No incognito mode · No hidden unlock</p>
+          <p>• "ultrathink" in claude.ai → does nothing</p>
+        </div>
+        <p style="font-size:11px;margin-top:8px;color:var(--ink-dim);line-height:1.5">The real "secret" is that there are no secrets. Claude gets better when your instructions are clearer not when you type magic words.</p>
+        <div class="foot"><span class="handle">@ravenextechnologies</span><span class="swipe">↻ Save & Share</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="nav">
+    <button id="prev" aria-label="Previous">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next" aria-label="Next">→</button>
+  </div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlIconSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+slides.forEach(s=>{const btn=document.createElement('button');btn.className='dl-slide-btn';btn.title='Download this slide';btn.innerHTML=dlIconSVG;btn.onclick=function(){downloadSlide(this)};s.prepend(btn)});
+let currentSlideIndex=0;
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot');
+const scrollByDir=dir=>{const w=slides[0].offsetWidth+20;carousel.scrollBy({left:dir*w,behavior:'smooth'})};
+prev.addEventListener('click',()=>scrollByDir(-1));next.addEventListener('click',()=>scrollByDir(1));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const idx=Array.from(slides).indexOf(e.target);currentSlideIndex=idx;dots.forEach((d,i)=>d.classList.toggle('active',i===idx))}})},{root:carousel,threshold:.6});
+slides.forEach(s=>io.observe(s));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')scrollByDir(1);if(e.key==='ArrowLeft')scrollByDir(-1)});
+async function captureSlide(slide,scale=2){const dlBtn=slide.querySelector('.dl-slide-btn');if(dlBtn)dlBtn.style.display='none';const canvas=await html2canvas(slide,{backgroundColor:null,scale,useCORS:true,allowTaint:true,logging:false});if(dlBtn)dlBtn.style.display='';return canvas}
+function triggerDownload(canvas,filename){const link=document.createElement('a');link.download=filename;link.href=canvas.toDataURL('image/png');link.click()}
+async function downloadSlide(btn){const slide=btn.closest('.slide');const idx=Array.from(slides).indexOf(slide)+1;btn.disabled=true;try{const canvas=await captureSlide(slide);triggerDownload(canvas,'claude-codes-slide-'+String(idx).padStart(2,'0')+'.png')}catch(err){console.error(err)}btn.disabled=false}
+async function downloadCurrentSlide(){const btn=document.getElementById('dlCurrent');btn.disabled=true;btn.textContent='Capturing...';try{const canvas=await captureSlide(slides[currentSlideIndex]);triggerDownload(canvas,'claude-codes-slide-'+String(currentSlideIndex+1).padStart(2,'0')+'.png')}catch(err){console.error(err)}btn.innerHTML=dlIconSVG+'Download Current Slide';btn.disabled=false}
+async function downloadAllSlides(){const btn=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');btn.disabled=true;btn.textContent='Downloading...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';const canvas=await captureSlide(slides[i]);triggerDownload(canvas,'claude-codes-slide-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(err){console.error(err)}btn.innerHTML=dlIconSVG+'Download All Slides';btn.disabled=false;setTimeout(()=>{bar.style.display='none';fill.style.width='0%'},1000)}
+</script>
+</body>
+</html>

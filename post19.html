@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 1-Bit Revolution — Extreme Quantization</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b10;
+  --card: rgba(22, 24, 38, 0.7);
+  --border: rgba(255, 255, 255, 0.05);
+  --ink: #f8fafc;
+  --dim: #64748b;
+  --bit: #38bdf8; /* Soft blue */
+  --fp: #a855f7;  /* Muted purple */
+  --hot: #fb7185; /* Soft coral */
+  --bar: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.03) 0px, transparent 50%);
+  font-family: 'Inter Tight', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 40px 20px 80px;
+}
+
+.carousel-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.carousel {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 24px 4px 48px;
+  scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  flex: 0 0 min(90vw, 500px);
+  aspect-ratio: 4/5;
+  scroll-snap-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(56, 189, 248, 0.05), 0 12px 30px rgba(0, 0, 0, 0.7);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+.slide-bar {
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--fp), var(--bit));
+}
+
+.si {
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.si::-webkit-scrollbar { display: none; }
+
+.sm {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .12em;
+  color: var(--dim);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding:0px 0px 10px;
+}
+
+.ki {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  font-weight: 600;
+}
+
+.slide h2 {
+  font-weight: 800;
+  font-size: clamp(24px, 4.5vw, 38px);
+  line-height: .92;
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.slide h2 .bt { color: var(--bit); }
+.slide h2 .fp { color: var(--fp); }
+.slide h2 .ht { color: var(--hot); }
+
+.slide p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--dim);
+  margin-bottom: 10px;
+}
+
+.slide p.lead {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.foot span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--dim);
+}
+
+.trace {
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  padding: 10px 18px;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.trace .bt { color: #38bdf8; font-weight: 600; }
+.trace .fp { color: #c084fc; font-weight: 600; }
+.trace .ht { color: #fb7185; font-weight: 600; }
+.trace .dim { color: #5e6f86; }
+.trace .val { color: #facc15; font-weight: 700; }
+
+.info {
+  padding: 10px 12px;
+  margin: 4px 0;
+  font-size: 10px;
+  line-height: 1.45;
+  border-radius: 10px;
+}
+
+.info.bt-box {
+  border-left: 3px solid var(--bit);
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.info.fp-box {
+  border-left: 3px solid var(--fp);
+  background: rgba(168, 85, 247, 0.04);
+}
+
+.info p { color: #e2e8f0; margin-bottom: 4px; }
+.info p:last-child { margin-bottom: 0; }
+.info strong { font-weight: 600; color: #fff; }
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.step {
+  display: flex;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.step:last-child { border-bottom: none; }
+
+.snum {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 20px;
+  padding-top: 1px;
+}
+
+.sbody strong {
+  font-weight: 600;
+  font-size: 12px;
+  color: #fff;
+}
+
+.sbody span {
+  display: block;
+  font-size: 10px;
+  color: var(--dim);
+  margin-top: 1px;
+  line-height: 1.4;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.metric {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.metric .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.metric .lbl {
+  font-size: 8.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Pixel blocks for ternary visualization */
+.ternary {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tval {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s;
+}
+
+.tval.neg {
+  background: rgba(251, 113, 133, 0.1);
+  border-color: rgba(251, 113, 133, 0.2);
+  color: var(--hot);
+}
+
+.tval.zero {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--dim);
+}
+
+.tval.pos {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.2);
+  color: var(--bit);
+}
+
+.slide .dl-slide-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  background: rgba(22, 24, 38, 0.8);
+  backdrop-filter: blur(8px);
+  color: var(--dim);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide:hover .dl-slide-btn { opacity: 1; }
+.slide .dl-slide-btn:hover {
+  color: var(--bit);
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--bit);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.slide .dl-slide-btn svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.dl-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.dl-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  color: var(--bit);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.dl-btn:hover {
+  background: var(--bit);
+  color: #0a0b10;
+  border-color: var(--bit);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+  transform: translateY(-2px);
+}
+
+.dl-btn.alt {
+  color: var(--fp);
+}
+
+.dl-btn.alt:hover {
+  background: var(--fp);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.2);
+}
+
+.dl-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.dl-btn:disabled { opacity: .4; transform: none; box-shadow: none; }
+
+.progress-bar {
+  width: 180px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  display: none;
+}
+
+.progress-bar .fill {
+  height: 100%;
+  width: 0%;
+  background: var(--bit);
+  transition: width .3s ease;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 22px;
+  align-items: center;
+}
+
+.nav button {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav button:hover {
+  background: var(--bit);
+  border-color: var(--bit);
+  color: #0a0b10;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+  transform: translateY(-1px);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dot.active {
+  background: var(--bit);
+  width: 24px;
+  border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+  .si { padding: 20px 22px; }
+  .slide h2 { font-size: 24px; }
+  .metrics { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>01 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <p class="lead"> </p>
+      <h2>THE<br><span class="bt">1-BIT</span><br>REVOLUTION.</h2>
+      <p class="lead">How do you run a 100-billion parameter model on a laptop CPU?</p>
+      <p>Microsoft's BitNet uses weights of just -1, 0, and +1. No floating-point multiplication. Just addition.</p>
+      <div class="foot"><span>@ravenextechnologies</span><span>Swipe to Start →</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>02 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>FROM <span class="fp">32 BITS</span><br>TO <span class="bt">1.58.</span></h2>
+      <p class="lead">Every weight in a neural network is a number. The question is: how many bits does that number need?</p>
+      <div class="trace">
+<span class="fp">FP32:</span> <span class="val">32 bits</span> <span class="dim">full precision float</span><br>
+<span class="dim">  3.14159265358979... (every decimal)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="fp">FP16:</span> <span class="val">16 bits</span> <span class="dim">half precision</span><br>
+<span class="dim">  3.14159... (fewer decimals)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="ht">INT8:</span> <span class="val">8 bits</span>  <span class="dim">integer quantization</span><br>
+<span class="dim">  3 (just the whole number)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="bt">INT4:</span> <span class="val">4 bits</span>  <span class="dim">aggressive quantization</span><br>
+<span class="dim">  3 (from only 16 possible values)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="bt">1.58 bit:</span> <span class="val">TERNARY</span> <span class="dim">← BitNet</span><br>
+<span class="dim">  just: -1, 0, or +1. That's it.</span>
+      </div>
+      <p style="font-size:10.5px;color:var(--dim)">Think of it like a 4K photo pixelating down to 8-bit retro art, yet the AI can still recognize everything. 90% less storage, same understanding.</p>
+      <div class="foot"><span>@ravenextechnologies</span><span>→</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>03 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>JUST<br><span class="ht">-1,</span> <span class="dim" style="color:var(--dim)">0,</span> <span class="bt">+1.</span></h2>
+      <p class="lead">Every weight in a BitNet model is one of three values. That's log₂(3) = 1.58 bits per parameter.</p>
+      <div class="ternary">
+        <div class="tval neg">-1</div><div class="tval pos">+1</div><div class="tval zero">0</div><div class="tval pos">+1</div><div class="tval neg">-1</div><div class="tval neg">-1</div><div class="tval zero">0</div><div class="tval pos">+1</div>
+        <div class="tval pos">+1</div><div class="tval zero">0</div><div class="tval neg">-1</div><div class="tval pos">+1</div><div class="tval zero">0</div><div class="tval pos">+1</div><div class="tval neg">-1</div><div class="tval zero">0</div>
+      </div>
+      <div class="trace">
+<span class="dim">Traditional weight computation:</span><br>
+<span class="fp">0.7832 × activation</span> <span class="dim">= multiply (expensive)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="dim">BitNet computation:</span><br>
+<span class="bt">weight = +1:</span> <span class="val">ADD activation</span><br>
+<span class="bt">weight = -1:</span> <span class="val">SUBTRACT activation</span><br>
+<span class="bt">weight =  0:</span> <span class="val">SKIP (do nothing)</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="bt">No multiplication. Just add/subtract/skip.</span><br>
+<span class="dim">Multiplication costs ~30× more energy than addition.</span>
+      </div>
+      <div class="foot"><span>@ravenextechnologies</span><span>→</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>04 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>TRAINED<br><span class="bt">NATIVELY</span><br>AT 1.58 BITS.</h2>
+      <p class="lead">This is NOT post-training quantization (like GPTQ/AWQ). BitNet trains from scratch with ternary weights. The model learns to compensate for reduced precision from day one.</p>
+      <div class="steps">
+        <div class="step"><span class="snum" style="color:var(--fp)">OLD</span><div class="sbody"><strong>Post-training quantization (PTQ)</strong><span>Train in FP16 → compress to INT8/INT4 after training → accuracy degrades, especially below 4 bits. Retrofitting precision onto an architecture designed for floats.</span></div></div>
+        <div class="step"><span class="snum" style="color:var(--bit)">NEW</span><div class="sbody"><strong>Quantization-aware training (BitNet)</strong><span>Replace nn.Linear with BitLinear → train directly with ternary constraints → model learns to work with -1/0/+1 from the start. No precision loss because there's nothing to lose.</span></div></div>
+      </div>
+      <div class="info bt-box">
+        <p><strong>The key insight:</strong> The BitLinear layer uses absmean quantization: divide each weight by the mean of absolute values, then round to nearest of {-1, 0, +1}. Activations stay at 8-bit. This preserves enough signal for the model to learn rich representations with ternary weights.</p>
+      </div>
+      <div class="foot"><span>@ravenextechnologies</span><span>→</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>05 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>MICROSOFT'S<br><span class="bt">PROOF.</span></h2>
+      <p class="lead">April 2025: Microsoft released BitNet b1.58 2B4T, the first natively trained 1-bit LLM. MIT license. Open weights.</p>
+      <div class="metrics">
+        <div class="metric"><span class="val" style="color:var(--bit)">2B</span><span class="lbl">parameters</span></div>
+        <div class="metric"><span class="val" style="color:var(--bit)">4T</span><span class="lbl">training tokens</span></div>
+        <div class="metric"><span class="val" style="color:var(--bit)">1.58</span><span class="lbl">bits per weight</span></div>
+      </div>
+      <div class="trace">
+<span class="dim">Performance vs full-precision 2B models:</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="bt">Memory:</span>     <span class="val">3.55× less</span> <span class="dim">than FP16</span><br>
+<span class="bt">Speed:</span>      <span class="val">2.71× faster</span> <span class="dim">inference</span><br>
+<span class="bt">Energy:</span>     <span class="val">38.8× less</span> <span class="dim">at 30B scale</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="dim">GSM8K (math reasoning):</span><br>
+<span class="bt">BitNet:</span> <span class="val">58.38</span> <span class="dim">vs Qwen2.5:</span> <span class="fp">54.36</span><br>
+<span class="bt">BitNet wins on math. At 1.58 bits.</span>
+      </div>
+      <p style="font-size:10.5px;color:var(--dim)">Jan 2026: CPU optimization update added 1.15-2.1× further speedup. Inference runs via bitnet.cpp (based on llama.cpp).</p>
+      <div class="foot"><span>@ravenextechnologies</span><span>→</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>06 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>A <span class="bt">TRILLION</span><br>PARAMS ON<br>YOUR LAPTOP.</h2>
+      <p class="lead">At 1.58 bits, a 100B parameter model takes ~20 GB. That fits in a MacBook Pro's RAM. No GPU. No cloud. Just a CPU doing additions.</p>
+      <div class="trace">
+<span class="dim">Model size at different precisions:</span><br>
+<span class="dim">100B parameter model:</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="fp">FP16:</span>    <span class="val">200 GB</span>  <span class="dim">← needs 3× A100 80GB</span><br>
+<span class="ht">INT8:</span>    <span class="val">100 GB</span>  <span class="dim">← needs 2× A100</span><br>
+<span class="ht">INT4:</span>    <span class="val">50 GB</span>   <span class="dim">← needs 1× A100</span><br>
+<span class="bt">1.58bit:</span> <span class="val">~20 GB</span>  <span class="dim">← fits in laptop RAM</span><br>
+<span class="dim">────────────────────────────</span><br>
+<span class="bt">5-7 tokens/sec on CPU alone</span><br>
+<span class="dim">Human reading speed. No GPU required.</span>
+      </div>
+      <div class="info bt-box">
+        <p><strong>Why addition matters:</strong> On modern CPUs, multiplication consumes ~30× more energy than addition. BitNet replaces every single multiplication in the forward pass with addition or subtraction. At 100B parameters, that's trillions of multiplications eliminated per inference.</p>
+      </div>
+      <div class="foot"><span>@ravenextechnologies</span><span>→</span></div>
+    </div></div>
+
+    <div class="slide"><div class="si">
+      <div class="sm"><span>07 / 07</span><span>ravenex.tech</span></div>
+      <p class="lead"> </p>
+      <h2>MAKE THE<br>MATH <span class="bt">FUZZIER.</span><br>KEEP THE <span class="fp">BRAIN.</span></h2>
+      <div class="info bt-box">
+        <p><strong>What BitNet proves:</strong> Neural networks don't need 32-bit precision. They don't need 16. They don't even need 4. Three values — subtract, skip, add — are enough for a model to learn language, math, and reasoning. The information lives in the connections, not the precision of individual weights.</p>
+      </div>
+      <div class="info fp-box">
+        <p><strong>What's coming:</strong></p>
+        <p>• BitNet distillation: convert existing FP16 models to 1.58-bit without retraining from scratch (10× memory savings, 2.65× faster)</p>
+        <p>• Custom BitNet hardware: chips with native ternary ALUs (no floating-point units needed)</p>
+        <p>• Edge AI: trillion-parameter reasoning on phones, cars, glasses</p>
+        <p>• TII's Falcon adopted BitNet architecture for their next generation</p>
+      </div>
+      <p style="font-size:11.5px;margin-top:8px;color:var(--dim);line-height:1.45">The 1-bit revolution isn't about making AI worse. It's about discovering how little precision AI actually needs and using that discovery to put intelligence everywhere.</p>
+      <div class="foot"><span>@ravenextechnologies</span><span>↻ Save & Share</span></div>
+    </div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Current</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download All</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+slides.forEach(s=>{const b=document.createElement('button');b.className='dl-slide-btn';b.innerHTML=dlSVG;b.onclick=function(){dlSlide(this)};s.prepend(b)});
+let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot'),sc=dir=>{carousel.scrollBy({left:dir*(slides[0].offsetWidth+24),behavior:'smooth'})};
+prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);
+slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));
+document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};
+
+async function cap(s) {
+  const b = s.querySelector('.dl-slide-btn');
+  if (b) b.style.display = 'none';
+
+  // Store original styles to remove the boundary
+  const originalBorder = s.style.border;
+  const originalBoxShadow = s.style.boxShadow;
+  
+  s.style.border = 'none';
+  s.style.boxShadow = 'none';
+
+  const c = await html2canvas(s, {
+    backgroundColor: '#0a0b10', // Set to background color for exact color matching
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    logging: false
+  });
+
+  // Restore styles
+  s.style.border = originalBorder;
+  s.style.boxShadow = originalBoxShadow;
+
+  if (b) b.style.display = '';
+  return c;
+}
+
+function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}
+async function dlSlide(b){const s=b.closest('.slide'),i=Array.from(slides).indexOf(s)+1;b.disabled=true;try{dl(await cap(s),'bitnet-'+String(i).padStart(2,'0')+'.png')}catch(e){}b.disabled=false}
+async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'bitnet-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Download Current';b.disabled=false}
+async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'bitnet-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'Download All';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

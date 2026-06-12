@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Attention Mechanism</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,400;1,600&family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#1a0a30;--ink2:#4a3a5e;--dim:#9a8aaa;--purple:#7c3aed;--deep:#4c1d95;--rose:#ec4899;--border:rgba(76,29,149,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 2px 8px rgba(76,29,149,.03)}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--deep),var(--purple),var(--rose))} */
+.ghost{position:absolute;top:8px;right:12px;font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:140px;line-height:.7;color:rgba(76,29,149,.025);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:22px 26px 0 28px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Fira Code',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:10px 26px 0 28px;display:flex;flex-direction:column}
+.tag{display:inline-block;font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;font-weight:600;flex-shrink:0;border-bottom:2px solid var(--purple);padding-bottom:3px;width:fit-content}
+.slide h2{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(26px,5.2vw,42px);line-height:.92;letter-spacing:-.02em;margin-bottom:12px;flex-shrink:0}
+.slide h2 .p{color:var(--purple)}.slide h2 .d{color:var(--deep)}.slide h2 .r{color:var(--rose)}.slide h2 em{font-style:italic;font-weight:400}
+.slide p{font-size:13px;line-height:1.6;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--ink);line-height:1.4}
+.ftr{flex-shrink:0;padding:10px 26px 18px 28px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.ftr .left{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--purple)}
+.code{background:var(--ink);color:#e8e0f4;font-family:'Fira Code',monospace;font-size:10.5px;padding:14px 16px;margin:8px 0;line-height:1.75;border-radius:4px;flex-shrink:0}
+.code .p{color:#c084fc;font-weight:600}.code .r{color:#f472b6;font-weight:600}.code .g{color:#86efac;font-weight:600}.code .y{color:#fde047;font-weight:600}.code .dm{color:rgba(232, 224, 244, 0.911)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Fira Code',monospace;font-size:12px;font-weight:600;min-width:36px;text-align:right;flex-shrink:0;color:var(--purple)}
+.st-t{font-size:13px;color:var(--ink2);line-height:1.4;font-weight:300}.st-t strong{font-weight:600;color:var(--ink)}
+.card{padding:12px 14px;margin:8px 0;font-size:11.5px;line-height:1.5;border-radius:4px;flex-shrink:0}
+.card.p-c{border-left:3px solid var(--purple);background:rgba(124,58,237,.04)}
+.card.r-c{border-left:3px solid var(--rose);background:rgba(236,72,153,.04)}
+.card.d-c{border-left:3px solid var(--deep);background:rgba(76,29,149,.04)}
+.card p{color:var(--ink2);margin-bottom:2px}.card p:last-child{margin-bottom:0}
+.card strong{font-family:'Fraunces',serif;font-weight:700;font-style:italic;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid var(--purple);color:var(--purple);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:4px}.dl-btn:hover{background:var(--purple);color:#fff}.dl-btn.alt{border-color:var(--border);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--purple);color:var(--purple)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(124,58,237,.08);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--purple);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;border-radius:4px;transition:all .25s}.nav button:hover{border-color:var(--purple);color:var(--purple)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(76,29,149,.1);cursor:pointer;transition:all .35s}.dot.active{background:var(--purple);width:22px;border-radius:3px}
+@media(max-width:600px){.slide h2{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">Transformer Core</div> -->
+       <p style="margin-bottom: 40px;"> </p>
+       <p style="margin-bottom: 40px;"> </p>
+       <p style="margin-bottom: 40px;"> </p>
+       <p style="margin-bottom: 40px;"> </p>
+      <h2>The <span class="p">Attention</span><br>Mechanism.</h2>
+      <p class="lead">The single most important invention in modern AI.</p>
+      <!-- <p>"Attention Is All You Need" was published by Google in 2017. Eight researchers. One paper. It replaced everything that came before and launched the entire transformer revolution.</p> -->
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">The Core Idea</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>Every word<br><em>looks at</em><br>every <span class="p">other</span> word.</h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <p class="lead">"The cat sat on the mat because it was tired."</p>
+      <p style="margin-bottom: 10px;"> </p>
+      <p>What does "it" refer to? The cat or the mat? Humans know instantly. Previous AI models couldn't figure this out reliably.</p>
+      <p style="margin-bottom: 10px;"> </p>
+      <p>Attention solves this by letting every word compute a relevance score with every other word. "it" attends strongly to "cat" (high score) and weakly to "mat" (low score). The model learns these patterns from billions of examples.</p>
+      <p style="margin-bottom: 110px;"> </p>
+      <div class="card p-c">
+        <p><strong>Self-attention —</strong> means the sentence attends to itself. Each word asks: "Which other words in this sentence are relevant to understanding ME?" Then it adjusts its representation based on the answer.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">Q, K, V</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>Query, Key,<br><span class="d">Value.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <p class="lead">Three matrices. That's the entire mechanism.</p>
+      <div class="code">
+<span class="dm">For each token, create 3 vectors:</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="p">Q (Query):</span> <span class="dm">"What am I looking for?"</span><br>
+<span class="y">K (Key):</span>   <span class="dm">"What do I contain?"</span><br>
+<span class="g">V (Value):</span> <span class="dm">"What info do I carry?"</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">Step 1: Q × K^T = attention scores</span><br>
+<span class="dm">  "How relevant is each word to me?"</span><br>
+<span class="dm">Step 2: softmax(scores) = weights</span><br>
+<span class="dm">  Normalize to probabilities (sum = 1)</span><br>
+<span class="dm">Step 3: weights × V = output</span><br>
+<span class="dm">  Blend the Values by relevance</span>
+      </div>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="card d-c">
+        <p><strong>Library analogy —</strong> Q is your search query. K is the label on each book. V is the content inside. You match your query against all labels (Q×K), then read the most relevant books (weighted V).</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">The Formula</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>One<br><em>equation.</em></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="code">
+<span class="p">Attention(Q,K,V) = softmax(QK^T / √d_k) × V</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="p">Q × K^T</span><br>
+<span class="dm">  Dot product of every Query with every Key</span><br>
+<span class="dm">  Creates an N×N attention matrix</span><br>
+<span class="dm">  (N = number of tokens)</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="y">÷ √d_k</span><br>
+<span class="dm">  Scale by square root of key dimension</span><br>
+<span class="dm">  Prevents dot products from getting too large</span><br>
+<span class="dm">  Without this, softmax saturates → no gradients</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="r">softmax</span><br>
+<span class="dm">  Convert scores to probabilities (0 to 1)</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="g">× V</span><br>
+<span class="dm">  Weighted sum of Value vectors</span>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">Multi-Head</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>Why <span class="r">multiple</span><br>heads?</h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <p class="lead">One attention head can only learn one type of relationship. Multiple heads learn different patterns simultaneously.</p>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v">H1</span><div class="st-t"><strong>Syntactic head.</strong> Learns subject-verb agreement. "The dogs [that the boy feeds] are happy" — links "dogs" to "are"</div></div>
+        <div class="st"><span class="st-v">H2</span><div class="st-t"><strong>Coreference head.</strong> Learns pronoun resolution. "Sarah told John she was leaving" — links "she" to "Sarah"</div></div>
+        <div class="st"><span class="st-v">H3</span><div class="st-t"><strong>Positional head.</strong> Tracks word distance. Adjacent words, sentence boundaries, paragraph structure</div></div>
+        <div class="st"><span class="st-v">H4</span><div class="st-t"><strong>Semantic head.</strong> Groups related concepts. "Doctor prescribed medicine for the patient" — clusters medical terms</div></div>
+      </div>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="card p-c">
+        <p><strong>GPT-4:</strong> 96 attention heads per layer × 120 layers = 11,520 attention operations for every token. Each one learning a different linguistic relationship.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">The Cost</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>Attention is<br><span class="r">O(n²).</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <p class="lead">Every token attends to every other token. Double the context length? Quadruple the compute.</p>
+      <p style="margin-bottom: 8px;"> </p>
+      <div class="code">
+<span class="dm">Tokens    Attention operations</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="p">1K</span>        <span class="y">1,000,000</span>      <span class="dm">(1M)</span><br>
+<span class="p">4K</span>        <span class="y">16,000,000</span>     <span class="dm">(16M)</span><br>
+<span class="p">32K</span>       <span class="y">1,024,000,000</span>  <span class="dm">(1B)</span><br>
+<span class="r">128K</span>      <span class="r">16,384,000,000</span> <span class="dm">(16B)</span><br>
+<span class="r">1M</span>        <span class="r">1,000,000,000,000</span> <span class="dm">(1T)</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="r">1M context = 1 TRILLION operations.</span><br>
+<span class="dm">Per layer. Per head. Per token generated.</span>
+      </div>
+      <div class="card r-c">
+        <p><strong>This is why long context is expensive.</strong> Flash Attention, Ring Attention, and sparse attention all exist to reduce this O(n²) bottleneck. Without these optimizations, 1M context windows would be computationally impossible.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">Before vs After</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>What attention<br><span class="p">replaced.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v">RNNs</span><div class="st-t"><strong>Processed words sequentially.</strong> Token 100 barely "remembered" token 1. Couldn't parallelize. Training took weeks for small models</div></div>
+        <div class="st"><span class="st-v">LSTMs</span><div class="st-t"><strong>Added memory gates.</strong> Better at long sequences but still sequential. Maximum practical context: ~1,000 tokens</div></div>
+        <div class="st"><span class="st-v">CNNs</span><div class="st-t"><strong>Parallel but local.</strong> Could only see fixed-size windows (5-10 words). Missed long-range dependencies entirely</div></div>
+      </div>
+      <p style="margin-bottom: 80px;"> </p>
+      <div class="card p-c">
+        <p><strong>Attention changed everything:</strong> Parallel processing (train on entire sequence at once). Global context (every token sees every token). Scalable (add more layers, more heads, more data). This is why we went from BERT (2018, 110M params) to GPT-4 (2023, ~1.8T params) in 5 years.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="tag">The Takeaway</div> -->
+       <p style="margin-bottom: 20px;"> </p>
+      <h2>One idea<br>changed<br><em>everything.</em></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="card d-c">
+        <p><strong>Attention is not a model.</strong> It's a mechanism. A way for neural networks to dynamically focus on relevant information. It works in language (GPT), vision (ViT), audio (Whisper), protein folding (AlphaFold), and robotics.</p>
+      </div>
+      <div class="card p-c">
+        <p><strong>The key insight:</strong> Instead of processing information in a fixed order (sequentially) or fixed window (locally), let the model LEARN which parts of the input are relevant to each output. Let it attend to what matters.</p>
+      </div>
+      <div class="card r-c">
+        <p><strong>The remaining challenge:</strong> O(n²) scaling. Every improvement in context length requires either more compute or a breakthrough in efficient attention (Flash Attention, linear attention, SSMs like Mamba). The race to solve this defines the next era of AI.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'attention-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'attention-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

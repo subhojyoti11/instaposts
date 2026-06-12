@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speculative Decoding — Post 47</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060a0c;
+      --card: #0c1014;
+      --ink: #e2e8f0;
+      --ink2: #64748b;
+      --dim: #95a8be;
+      --lime: #22c55e;
+      --indigo: #818cf8;
+      --amber: #f59e0b;
+      --border: rgba(34, 197, 94, .06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+    }
+
+    .ghost {
+      display: none;
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 18px 24px 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hdr .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .hdr .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 24px 0 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: .92;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .li {
+      color: var(--lime);
+    }
+
+    .slide h2 .in {
+      color: var(--indigo);
+    }
+
+    .slide h2 .am {
+      color: var(--amber);
+    }
+
+    .slide p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin-bottom: 6px;
+      font-weight: 300;
+    }
+
+    .slide p.lead {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 10px 24px 16px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .ftr .left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--dim);
+    }
+
+    .ftr .right {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--lime);
+    }
+
+    .code {
+      background: rgba(0, 0, 0, .5);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      line-height: 1.8;
+      flex-shrink: 0;
+    }
+
+    .code .li {
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .code .in {
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+
+    .code .am {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .code .dm {
+      color: rgba(226, 232, 240, .6);
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0;
+    }
+
+    .st {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .st:last-child {
+      border-bottom: none;
+    }
+
+    .st-v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 56px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .st-v.li {
+      color: var(--lime);
+    }
+
+    .st-v.in {
+      color: var(--indigo);
+    }
+
+    .st-v.am {
+      color: var(--amber);
+    }
+
+    .st-t {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.35;
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+
+    .gcard.li-c {
+      background: rgba(34, 197, 94, .05);
+      border: 1px solid rgba(34, 197, 94, .12);
+    }
+
+    .gcard.in-c {
+      background: rgba(129, 140, 248, .05);
+      border: 1px solid rgba(129, 140, 248, .12);
+    }
+
+    .gcard.am-c {
+      background: rgba(245, 158, 11, .05);
+      border: 1px solid rgba(245, 158, 11, .12);
+    }
+
+    .gcard p {
+      color: var(--ink2);
+      margin-bottom: 2px;
+    }
+
+    .gcard p:last-child {
+      margin-bottom: 0;
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Cover stats */
+    .cover-stat {
+      display: flex;
+      gap: 28px;
+      margin-top: 20px;
+      flex-shrink: 0;
+    }
+
+    .cs-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .cs-lbl {
+      font-size: 11px;
+      color: var(--ink2);
+      margin-top: 4px;
+    }
+
+    /* Download UI */
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .dl-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(34, 197, 94, .2);
+      color: var(--lime);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    .dl-btn:hover {
+      background: var(--lime);
+      color: var(--bg);
+    }
+
+    .dl-btn.alt {
+      border-color: rgba(226, 232, 240, .06);
+      color: var(--dim);
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .dl-btn:disabled {
+      opacity: .3;
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(34, 197, 94, .06);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px;
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--lime);
+      transition: width .3s;
+    }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid rgba(226, 232, 240, .06);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 6px;
+      transition: all .25s;
+    }
+
+    .nav button:hover {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(226, 232, 240, .06);
+      cursor: pointer;
+      transition: all .35s;
+    }
+
+    .dot.active {
+      background: var(--lime);
+      width: 22px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <!-- SLIDE 1 — Cover -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:clamp(30px,8vw,54px);line-height:.9">How LLMs<br>Got <span
+              class="li">3×</span><br>Faster.</h2>
+          <p style="margin-top:14px" class="lead">The hidden inference trick, a small model drafts, a big model
+            verifies. Zero extra hardware.</p>
+          <div class="cover-stat">
+            <div>
+              <div class="cs-num" style="color:var(--lime)">~3×</div>
+              <div class="cs-lbl">throughput gain</div>
+            </div>
+            <div>
+              <div class="cs-num" style="color:var(--indigo)">0</div>
+              <div class="cs-lbl">extra hardware</div>
+            </div>
+            <div>
+              <div class="cs-num" style="color:var(--amber)">lossless</div>
+              <div class="cs-lbl">output quality</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <!-- SLIDE 2 — The Sequential Trap -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Sequential<br><span class="li">Trap.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v li">1 token</span>
+              <div class="st-t"><strong>One full forward pass.</strong> Every parameter, every step. No shortcuts, no
+                batching.</div>
+            </div>
+            <div class="st">
+              <span class="st-v in">Mem BW</span>
+              <div class="st-t"><strong>Not compute, memory bandwidth</strong> is the real bottleneck. Weights must
+                stream from HBM each step.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">~97%</span>
+              <div class="st-t"><strong>GPU compute sits idle</strong> waiting for the next memory round-trip to
+                complete.</div>
+            </div>
+          </div>
+          <div class="gcard li-c">
+            <p>Generating 100 tokens = 100 sequential passes. The model isn't slow. The <strong>memory access
+                pattern</strong> is.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 3 — Draft First. Verify Later. -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Draft First.<br><span class="li">Verify Later.</span></h2>
+          <div style="height:14px"></div>
+          <div class="gcard in-c">
+            <p><strong>Draft Model | small &amp; fast</strong><br>Generates K candidate tokens autoregressively. Cheap.
+              Approximate. Good enough.</p>
+          </div>
+          <div class="gcard li-c">
+            <p><strong>Target Model | big &amp; accurate</strong><br>Runs <em>one</em> forward pass over all K
+              candidates simultaneously. In parallel.</p>
+          </div>
+          <div class="gcard am-c">
+            <p>The large model verifies K tokens in the same wall-clock time it takes to generate <em>one</em>. That's
+              the entire trick.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 4 — Step by Step -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Algorithm,<br><span class="li">Step by Step.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v li">01</span>
+              <div class="st-t"><strong>Draft model</strong> generates K tokens autoregressively (fast, small model)
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v in">02</span>
+              <div class="st-t"><strong>Target model</strong> scores all K+1 positions in one forward pass (parallel)
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v am">03</span>
+              <div class="st-t"><strong>Accept token i</strong> if target prob ≥ draft prob or with probability ratio
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v li">04</span>
+              <div class="st-t"><strong>On first rejection,</strong> resample from target and discard remaining drafts
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v in">05</span>
+              <div class="st-t"><strong>Append accepted tokens.</strong> Repeat from step 01.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 5 — Why It Speeds Up -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Why It<br><span class="li">Speeds Up.</span></h2>
+          <div style="height:10px"></div>
+          <div class="code">
+            <span class="dm"># Expected tokens per target model call</span><br>
+            <span class="dm"># α = acceptance rate K = draft length</span><br>
+            <br>
+            E[tokens] = (1 - α^(K+1)) / (1 - α)<br>
+            <br>
+            <span class="dm"># Example: α = 0.8, K = 4</span><br>
+            E[tokens] = (1 - 0.8⁵) / 0.2 ≈ <span class="li">3.36 tokens</span><br>
+            <br>
+            <span class="dm"># vs standard = 1 token per call</span><br>
+            <span class="dm"># Speedup ≈ 3.36× same FLOPs, better util</span>
+          </div>
+          <div class="gcard li-c">
+            <p>Total FLOPs stay roughly the same. The gain is pure <strong>hardware utilization</strong> - batching
+              verification means more tokens per memory round-trip.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 6 — In Production -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>In<br><span class="li">Production.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v li">Google</span>
+              <div class="st-t"><strong>Deployed in Gemini.</strong> Published the original 2023 speculative decoding
+                paper.</div>
+            </div>
+            <div class="st">
+              <span class="st-v in">Meta</span>
+              <div class="st-t"><strong>Llama production serving.</strong> Medusa variant attaches multiple draft heads
+                to the same model.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">Anthropic</span>
+              <div class="st-t"><strong>Claude inference pipeline.</strong> Contributes to fast, low-latency response
+                times.</div>
+            </div>
+            <div class="st">
+              <span class="st-v" style="color:var(--ink)">HF</span>
+              <div class="st-t"><strong>Transformers library.</strong> Native support via <code
+                  style="font-family:'JetBrains Mono',monospace;color:var(--lime)">assisted_generation</code>.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 7 — Quick Reference -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="li">Reference.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v li">Draft</span>
+              <div class="st-t"><strong>Small fast model</strong> that speculatively generates K candidate tokens
+                cheaply</div>
+            </div>
+            <div class="st">
+              <span class="st-v in">Target</span>
+              <div class="st-t"><strong>Large accurate model</strong> that verifies all K tokens in one forward pass
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v am">α</span>
+              <div class="st-t"><strong>Acceptance rate.</strong> How often draft matches target. Higher α = bigger
+                speedup.</div>
+            </div>
+            <div class="st">
+              <span class="st-v li">Medusa</span>
+              <div class="st-t"><strong>Multiple draft heads</strong> on the same model, no separate draft model needed
+              </div>
+            </div>
+            <div class="st">
+              <span class="st-v in">Self-Spec</span>
+              <div class="st-t"><strong>Skip early layers</strong> as the draft, single model, zero extra parameters
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div><!-- /carousel -->
+
+    <div class="nav">
+      <button id="prev">←</button>
+      <div class="dots" id="dots"></div>
+      <button id="next">→</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Current Slide
+        </button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          All Slides
+        </button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+
+  </div><!-- /carousel-wrap -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'),
+      slides = carousel.querySelectorAll('.slide'),
+      dotsC = document.getElementById('dots'),
+      prevBtn = document.getElementById('prev'),
+      nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      dotsC.appendChild(d);
+    });
+
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1);
+    nextBtn.onclick = () => sc(1);
+
+    slides.forEach(s => new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting) {
+          cur = Array.from(slides).indexOf(e.target);
+          dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+        }
+      });
+    }, { root: carousel, threshold: .6 }).observe(s));
+
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+    async function cap(s) {
+      return await html2canvas(s, {
+        backgroundColor: '#0c1014',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+    }
+
+    function dl(c, f) {
+      const a = document.createElement('a');
+      a.download = f;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      try {
+        dl(await cap(slides[cur]), 'specdec-' + String(cur + 1).padStart(2, '0') + '.png');
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'Current Slide';
+      b.disabled = false;
+    }
+
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'),
+        bar = document.getElementById('progressBar'),
+        fill = document.getElementById('progressFill');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      bar.style.display = 'block';
+      fill.style.width = '0%';
+      try {
+        const origScroll = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto';
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          dl(await cap(slides[i]), 'specdec-' + String(i + 1).padStart(2, '0') + '.png');
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+        carousel.style.scrollBehavior = 'smooth';
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'All Slides';
+      b.disabled = false;
+      bar.style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

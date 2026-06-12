@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vector Databases — The Memory of AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f2f0ed;
+      --card: #ffffff;
+      --ink: #141420;
+      --ink2: #565672;
+      --dim: #9898b0;
+      --indigo: #5b4cf5;
+      --teal: #0d9488;
+      --amber: #d97706;
+      --border: rgba(20, 20, 32, .07)
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px
+    }
+
+    .cw {
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(20, 20, 32, .06)
+    }
+
+    .ghost {
+      display: none
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 18px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .hdr .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim)
+    }
+
+    .hdr .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim)
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 24px 0 26px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .pill {
+      display: inline-flex;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+      font-weight: 500;
+      width: fit-content
+    }
+
+    .pill.vi {
+      background: rgba(91, 76, 245, .08);
+      color: var(--indigo);
+      border: 1px solid rgba(91, 76, 245, .18)
+    }
+
+    .pill.te {
+      background: rgba(13, 148, 136, .08);
+      color: var(--teal);
+      border: 1px solid rgba(13, 148, 136, .18)
+    }
+
+    .pill.am {
+      background: rgba(217, 119, 6, .08);
+      color: var(--amber);
+      border: 1px solid rgba(217, 119, 6, .18)
+    }
+
+    h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 38px);
+      line-height: .95;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0
+    }
+
+    h2 .vi {
+      color: var(--indigo)
+    }
+
+    h2 .te {
+      color: var(--teal)
+    }
+
+    h2 .am {
+      color: var(--amber)
+    }
+
+    p {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin-bottom: 6px;
+      font-weight: 300
+    }
+
+    p.lead {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 8px 24px 14px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: auto;
+      margin-bottom: 10px;
+      border-top: 1px solid var(--border)
+    }
+
+    .ftr .left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim)
+    }
+
+    .ftr .right {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--indigo)
+    }
+
+    .code {
+      background: #f7f6fa;
+      border: 1px solid rgba(91, 76, 245, .1);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      line-height: 1.85;
+      flex-shrink: 0
+    }
+
+    .code .vi {
+      color: #5b4cf5;
+      font-weight: 600
+    }
+
+    .code .te {
+      color: #0d9488;
+      font-weight: 600
+    }
+
+    .code .am {
+      color: #d97706;
+      font-weight: 600
+    }
+
+    .code .dm {
+      color: #565672
+    }
+
+    .code .rd {
+      color: #dc2626;
+      font-weight: 600
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0
+    }
+
+    .st {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .st:last-child {
+      border-bottom: none
+    }
+
+    .st-v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      min-width: 52px;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .st-v.vi {
+      color: var(--indigo)
+    }
+
+    .st-v.te {
+      color: var(--teal)
+    }
+
+    .st-v.am {
+      color: var(--amber)
+    }
+
+    .st-t {
+      font-size: 12.5px;
+      color: var(--ink2);
+      line-height: 1.35
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      flex-shrink: 0
+    }
+
+    .gcard.vi-c {
+      background: rgba(91, 76, 245, .05);
+      border: 1px solid rgba(91, 76, 245, .14)
+    }
+
+    .gcard.te-c {
+      background: rgba(13, 148, 136, .05);
+      border: 1px solid rgba(13, 148, 136, .14)
+    }
+
+    .gcard.am-c {
+      background: rgba(217, 119, 6, .05);
+      border: 1px solid rgba(217, 119, 6, .14)
+    }
+
+    .gcard p {
+      color: var(--ink2);
+      margin-bottom: 2px
+    }
+
+    .gcard p:last-child {
+      margin-bottom: 0
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px
+    }
+
+    .dl-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(91, 76, 245, .2);
+      color: var(--indigo);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px
+    }
+
+    .dl-btn:hover {
+      background: var(--indigo);
+      color: #fff
+    }
+
+    .dl-btn.alt {
+      border-color: var(--border);
+      color: var(--dim)
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--indigo);
+      color: var(--indigo)
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round
+    }
+
+    .dl-btn:disabled {
+      opacity: .3
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(91, 76, 245, .08);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--indigo);
+      transition: width .3s
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 6px;
+      transition: all .25s
+    }
+
+    .nav button:hover {
+      border-color: var(--indigo);
+      color: var(--indigo)
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(20, 20, 32, .1);
+      cursor: pointer;
+      transition: all .35s
+    }
+
+    .dot.active {
+      background: var(--indigo);
+      width: 22px;
+      border-radius: 3px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cw">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:90px"> </p>
+          <h2 style="font-size:50px;line-height:.9">Vector<br>Databases.<br><span class="vi">The Memory</span><br>of AI.
+          </h2>
+          <p style="margin-top:18px" class="lead">How embeddings are stored and searched at scale and why Pinecone,
+            Chroma, and Weaviate exist.</p>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:18px"> </p>
+          <h2>Regular DBs can't<br>think about <span class="am">meaning.</span></h2>
+          <div style="height:60px"></div>
+          <div class="code">
+            <span class="dm">-- SQL can only match exact words</span><br>
+            <span class="rd">SELECT</span> <span class="dm">* FROM docs</span><br>
+            <span class="rd">WHERE</span> <span class="dm">text LIKE </span><span class="am">'%refund%'</span><br>
+            <span class="dm">-- Misses: "return", "money back", "reimbursement"</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="dm">-- Vector DB matches by meaning</span><br>
+            <span class="vi">search</span><span class="dm">(embed(</span><span class="am">"I want my money
+              back"</span><span class="dm">))</span><br>
+            <span class="te">→ refund_policy.md </span><span class="dm">sim: 0.91</span><br>
+            <span class="te">→ return_process.md </span><span class="dm">sim: 0.88</span><br>
+            <span class="te">→ billing_faq.md </span><span class="dm">sim: 0.82</span>
+          </div>
+          <div class="gcard vi-c">
+            <p><strong>The core problem:</strong> AI works with meaning, not keywords. A vector database stores float
+              arrays and finds the nearest neighbors — that's what bridges language and math.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:18px"> </p>
+          <h2>Embed →<br>Index →<br><span class="te">Search.</span></h2>
+          <div style="height:18px"></div>
+          <div class="code">
+            <span class="dm">① EMBED (at ingest time)</span><br>
+            <span class="dm"> "refund policy" → </span><span class="vi">[0.21, -0.84, 0.55, ...]</span><br>
+            <span class="dm"> 1,536 floats stored in vector DB</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="dm">② INDEX</span><br>
+            <span class="dm"> DB builds HNSW graph over all</span><br>
+            <span class="dm"> vectors for fast approximate search</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="dm">③ QUERY (at runtime)</span><br>
+            <span class="dm"> "money back" → </span><span class="te">[0.19, -0.81, 0.58, ...]</span><br>
+            <span class="te"> ANN search → top-k nearest → docs</span>
+          </div>
+          <div class="gcard te-c">
+            <p><strong>Key insight:</strong> The vector DB never sees your text — only float arrays. The semantic
+              understanding lives in the embedding model. The DB just stores and retrieves those floats fast.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>HNSW — the index<br>that makes it <span class="vi">fast.</span></h2>
+          <div style="height:60px"></div>
+          <div class="code">
+            <span class="am">Brute force: </span><span class="dm">compare query to ALL 100M vectors</span><br>
+            <span class="dm">→ 100M dot products. ~10 seconds. </span><span class="rd">Unusable.</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="vi">HNSW (Hierarchical Navigable Small World)</span><br>
+            <span class="dm">Layer 2 (top) ─── few nodes, long shortcuts</span><br>
+            <span class="dm">Layer 1 (mid) ─── more nodes, medium links</span><br>
+            <span class="dm">Layer 0 (base) ── all nodes, fine-grained</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="te">Search: enter at top, greedily descend</span><br>
+            <span class="te">→ finds ~nearest in O(log n)</span><br>
+            <span class="vi">→ 100M vectors in ~5ms. Usable.</span>
+          </div>
+          <div class="gcard vi-c">
+            <p><strong>ANN = Approximate Nearest Neighbor.</strong> HNSW doesn't guarantee the absolute closest vector —
+              it finds one very close, very fast. In practice: 95-99% recall. The speed trade-off is almost always worth
+              it.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Three ways to<br>measure <span class="te">similarity.</span></h2>
+          <div style="height:60px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v vi">cos</span>
+              <div class="st-t"><strong>Cosine similarity.</strong> Measures the angle between vectors. Ignores
+                magnitude — same meaning regardless of text length. Best for sentence embeddings. Range: -1 to 1</div>
+            </div>
+            <div class="st"><span class="st-v te">dot</span>
+              <div class="st-t"><strong>Dot product.</strong> Cosine × magnitude. Fast when vectors are normalized (unit
+                length). OpenAI embeddings are pre-normalized — use this for speed. Range: -∞ to ∞</div>
+            </div>
+            <div class="st"><span class="st-v am">L2</span>
+              <div class="st-t"><strong>Euclidean distance.</strong> Straight-line distance in N-D space. Good for
+                images and spatial data where magnitude matters. Lower = more similar</div>
+            </div>
+          </div>
+          <p style="margin-bottom:6px"> </p>
+          <div class="gcard te-c">
+            <p><strong>Default choice:</strong> Cosine for text. Dot product if embeddings are normalized (slightly
+              faster). L2 only for vision or spatial use cases.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Pick the right<br><span class="vi">tool.</span></h2>
+          <div style="height:60px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v vi">Chroma</span>
+              <div class="st-t"><strong>Start here.</strong> Open-source, runs in-process, zero infra. Perfect for
+                prototypes. pip install chromadb and go</div>
+            </div>
+            <div class="st"><span class="st-v te">pgvec</span>
+              <div class="st-t"><strong>Already on Postgres?</strong> pgvector adds a vector column. No new infra.
+                Scales cleanly to ~1M vectors before ANN quality degrades</div>
+            </div>
+            <div class="st"><span class="st-v am">Pine</span>
+              <div class="st-t"><strong>Serverless scale.</strong> Pinecone manages sharding, replication, and HNSW
+                tuning. $0 up to 2M vectors. Best for production RAG with zero ops overhead</div>
+            </div>
+            <div class="st"><span class="st-v vi">Wvt</span>
+              <div class="st-t"><strong>Multi-modal + hybrid.</strong> Weaviate handles text, images, and audio.
+                Built-in BM25 + vector hybrid search. Good for complex schemas</div>
+            </div>
+            <div class="st"><span class="st-v te">Qdrant</span>
+              <div class="st-t"><strong>Open-source, no lock-in.</strong> Rust core, fast, payload filtering. Self-host
+                or managed cloud. Pinecone-like features, fully open</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The practical<br><span class="vi">cheatsheet.</span></h2>
+          <div style="height:60px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v vi">01</span>
+              <div class="st-t"><strong>Chunk at 200-500 tokens.</strong> Too small = no context. Too large = diluted
+                meaning. Overlap 10-20%</div>
+            </div>
+            <div class="st"><span class="st-v te">02</span>
+              <div class="st-t"><strong>Start with text-embedding-3-small.</strong> $0.02/MTok, 1,536 dims. Good enough
+                for 90% of use cases</div>
+            </div>
+            <div class="st"><span class="st-v am">03</span>
+              <div class="st-t"><strong>Threshold: 0.75+ signal, 0.85+ strong.</strong> Below 0.75 is noise. Tune per
+                domain</div>
+            </div>
+            <div class="st"><span class="st-v vi">04</span>
+              <div class="st-t"><strong>Re-embed when switching models.</strong> Model A ≠ Model B. Switching =
+                reprocess everything</div>
+            </div>
+            <div class="st"><span class="st-v te">05</span>
+              <div class="st-t"><strong>Hybrid search beats pure vector.</strong> BM25 + vector catches names and codes
+                embeddings smooth away</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prev = document.getElementById('prev'), next = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      dotsC.appendChild(d)
+    });
+
+    const dots = dotsC.querySelectorAll('.dot'), sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prev.onclick = () => sc(-1);
+    next.onclick = () => sc(1);
+
+    slides.forEach(s => new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting) {
+          cur = Array.from(slides).indexOf(e.target);
+          dots.forEach((d, i) => d.classList.toggle('active', i === cur))
+        }
+      })
+    }, { root: carousel, threshold: .6 }).observe(s));
+
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1) };
+
+    async function cap(s) {
+      return await html2canvas(s, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+    }
+
+    function dl(c, f) {
+      const a = document.createElement('a');
+      a.download = f;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      try {
+        dl(await cap(slides[cur]), 'vectordb-' + String(cur + 1).padStart(2, '0') + '.png');
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'Current Slide';
+      b.disabled = false;
+    }
+
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      bar.style.display = 'block';
+      fill.style.width = '0%';
+      try {
+        const origScroll = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto';
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          dl(await cap(slides[i]), 'vectordb-' + String(i + 1).padStart(2, '0') + '.png');
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+        carousel.style.scrollBehavior = 'smooth';
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'All Slides';
+      b.disabled = false;
+      setTimeout(() => { bar.style.display = 'none' }, 1000);
+    }
+  </script>
+</body>
+
+</html>

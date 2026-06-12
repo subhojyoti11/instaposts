@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitNet — Post 54</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a090f;
+    --card: #120f1a;
+    --ink: #e2e8f0;
+    --ink2: #64748b;
+    --dim: #8899aa;
+    --fuchsia: #e879f9;
+    --yellow: #fde047;
+    --cyan: #67e8f9;
+    --border: rgba(232,121,249,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .fc { color: var(--fuchsia); }
+  .slide h2 .yl { color: var(--yellow); }
+  .slide h2 .cy { color: var(--cyan); }
+
+  .slide p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .slide p.lead {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 10px 24px 16px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .ftr .left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fuchsia);
+  }
+
+  .code {
+    background: rgba(0,0,0,.45);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .fc { color: #f0abfc; font-weight: 400; }
+  .code .yl { color: #fef08a; font-weight: 400; }
+  .code .cy { color: #a5f3fc; font-weight: 400; }
+  .code .dm { color: rgba(226,232,240,.5); }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    min-width: 62px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.fc { color: var(--fuchsia); }
+  .st-v.yl { color: var(--yellow); }
+  .st-v.cy { color: var(--cyan); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.fc-c { background: rgba(232,121,249,.06); border: 1px solid rgba(232,121,249,.15); }
+  .gcard.yl-c { background: rgba(253,224,71,.06);  border: 1px solid rgba(253,224,71,.15); }
+  .gcard.cy-c { background: rgba(103,232,249,.06); border: 1px solid rgba(103,232,249,.15); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(232,121,249,.2);
+    color: var(--fuchsia);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--fuchsia); color: var(--bg); }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--fuchsia); color: var(--fuchsia); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(232,121,249,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--fuchsia); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--fuchsia); color: var(--fuchsia); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(226,232,240,.06); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--fuchsia); width: 22px; border-radius: 3px; }
+
+  .caption-section {
+    max-width: min(92vw, 520px);
+    margin: 28px auto 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .caption-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .caption-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(232,121,249,.2);
+    color: var(--fuchsia);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+  }
+  .copy-btn:hover { background: var(--fuchsia); color: var(--bg); }
+  .copy-btn.copied { border-color: var(--cyan); color: var(--cyan); }
+  .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .caption-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink2);
+    padding: 14px 16px;
+    white-space: pre-wrap;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Bit<span class="fc">Net</span>.<br>1.58 Bits<br>per <span class="yl">Weight</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — The Quantization Ladder -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>From 32 Bits<br>to <span class="fc">1.58</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">float32</span>
+            <div class="st-t"><strong>32 bits per weight. Training standard.</strong> Full precision. 4 bytes per parameter. A 7B model = 28 GB.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">float16</span>
+            <div class="st-t"><strong>16 bits. Inference standard.</strong> Half the memory. Same multiply hardware. A 7B model = 14 GB.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">int8/4</span>
+            <div class="st-t"><strong>8 or 4 bits via post-training quantization.</strong> Reduces memory 2–4x. Still uses integer multiplications. Quality degrades at int4.</div>
+          </div>
+          <div class="st">
+            <span class="st-v fc">1.58-bit</span>
+            <div class="st-t"><strong>Ternary weights: {-1, 0, +1}.</strong> log2(3) = 1.58. No multiplications at inference. Hardware changes fundamentally.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — Weights as -1, 0, +1 -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Weights as<br><span class="fc">-1, 0, +1</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Standard matmul: multiply-accumulate</span><br>
+          output = x @ <span class="yl">W</span>       <span class="dm"># W: float16 or int8</span><br>
+          <span class="dm"># requires N*M multiply ops</span><br>
+          <br>
+          <span class="dm"># BitNet b1.58: ternary weights</span><br>
+          <span class="fc">W</span> in {-1, 0, +1}      <span class="dm"># no fractions</span><br>
+          output = sum(<span class="cy">x[i]</span> if <span class="fc">W[i]</span>==+1)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- sum(<span class="cy">x[i]</span> if <span class="fc">W[i]</span>==-1)<br>
+          <span class="dm"># W[i]==0: skip — free computation</span>
+        </div>
+        <div class="gcard fc-c">
+          <p><strong>1.58 bits = log2(3).</strong> Three states: amplify (+1), suppress (-1), ignore (0). Matrix multiplication becomes addition and subtraction only. Zero multiplies at inference.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — Why Hardware Changes -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Why Hardware<br><span class="fc">Changes.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v yl">Multiply</span>
+            <div class="st-t"><strong>Floating-point multiply requires ~28 transistor ops.</strong> Integer add requires ~3. Eliminating multiplications is a ~10x energy gain per operation.</div>
+          </div>
+          <div class="st">
+            <span class="st-v fc">Memory</span>
+            <div class="st-t"><strong>1.58-bit weights cut memory ~10x vs float16.</strong> A 7B model fits in ~1.6 GB. Runs in a phone's RAM. No GPU required.</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">CPU-first</span>
+            <div class="st-t"><strong>Ternary math maps to SIMD integer instructions.</strong> ARM NEON and x86 AVX run 1.58-bit inference faster than float16 on GPU at batch size 1.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Future</span>
+            <div class="st-t"><strong>Purpose-built 1.58-bit hardware does not yet exist.</strong> When it does, today's GPU instruction sets become unnecessary for inference entirely.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — Training with Ternary Weights -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Full Precision In,<br><span class="fc">Ternary Out</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Weights kept full-precision during training</span><br>
+          <span class="cy">W_fp</span> = initialize()   <span class="dm"># float32, trains normally</span><br>
+          <br>
+          <span class="dm"># Quantize to ternary each forward pass:</span><br>
+          scale  = mean(abs(<span class="cy">W_fp</span>))<br>
+          <span class="fc">W_tern</span> = round(<span class="cy">W_fp</span> / scale)<br>
+          <span class="fc">W_tern</span> = clamp(<span class="fc">W_tern</span>, -1, 1)<br>
+          <br>
+          <span class="dm"># Straight-through estimator (backward):</span><br>
+          <span class="dm"># dL/dW_fp ≈ dL/dW_tern (pass-through)</span>
+        </div>
+        <div class="gcard cy-c">
+          <p><strong>Quantization only happens in the forward pass.</strong> Gradients flow through it unchanged — this is the straight-through estimator. Without it, ternary weights would zero out every gradient.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — What It Delivers -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What It<br><span class="fc">Delivers.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v fc">Quality</span>
+            <div class="st-t"><strong>BitNet b1.58 at 3B+ parameters matches full float16 models</strong> of the same size on standard language benchmarks.</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">Memory</span>
+            <div class="st-t"><strong>7B model: float16 = 14 GB, BitNet b1.58 = ~1.6 GB.</strong> An 8.5x reduction. Fits on a phone with room to spare.</div>
+          </div>
+          <div class="st">
+            <span class="st-v yl">Energy</span>
+            <div class="st-t"><strong>~10x less energy per token</strong> than float16 on equivalent hardware. The difference that makes always-on AI economically viable.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Latency</span>
+            <div class="st-t"><strong>On ARM CPU with NEON SIMD,</strong> 1.58-bit inference matches or beats float16 GPU throughput at batch size 1 — the critical edge serving scenario.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="fc">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Quant</span>
+            <div class="st-t"><strong>Quantization.</strong> Reducing weight precision. float32 → float16 → int8 → int4 → 1.58-bit. Each step trades memory for fidelity.</div>
+          </div>
+          <div class="st">
+            <span class="st-v fc">BitNet</span>
+            <div class="st-t"><strong>Microsoft Research, 2023.</strong> Binary weights {-1, +1}. Matrix multiply becomes XOR + popcount. Foundation for b1.58.</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">b1.58</span>
+            <div class="st-t"><strong>Ternary extension: {-1, 0, +1}.</strong> log2(3) = 1.58 bits. Better accuracy than binary. Zero multiplications at inference.</div>
+          </div>
+          <div class="st">
+            <span class="st-v yl">STE</span>
+            <div class="st-t"><strong>Straight-Through Estimator.</strong> Passes gradient through quantization unchanged. Required for training — without it, ternary models cannot learn.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Use when</span>
+            <div class="st-t"><strong>Edge, mobile, CPU-only, energy-constrained.</strong> Anywhere a 7B float16 model is too large or too expensive to run continuously.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="caption-section">
+    <div class="caption-hdr">
+      <span class="caption-label">Caption</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCaption()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+    </div>
+    <div class="caption-text" id="captionText">A 7 billion parameter model that fits in 1.6 gigabytes.
+
+No GPU. No data center. Runs on your phone.
+
+Standard neural network weights are stored as 16-bit floating-point numbers. Each one is a fraction. Each one requires a multiplication to use. A 7B parameter model holds 7 billion of them. Running it means 7 billion floating-point multiplications per token, per layer. That is why serving large language models requires expensive GPU clusters and consumes enough electricity to power a small building.
+
+BitNet asks a different question. What if the weights were not fractions at all?
+
+Microsoft Research published BitNet in 2023. The idea: replace every weight in every linear layer with a binary value — either -1 or +1. Nothing else. No fractions. No floating-point arithmetic. A matrix multiplication becomes a sequence of additions and subtractions. On modern hardware, that is roughly 10 times cheaper per operation in both energy and transistor count.
+
+BitNet b1.58 extended this to ternary weights: -1, 0, or +1. Three states. Log2 of 3 is 1.58, hence the name. The zero state adds something binary could not offer — the ability to skip a weight entirely, contributing nothing to the output. Ternary weights match the accuracy of binary models while being easier to train, and at 3 billion parameters and above they match the quality of full float16 models on standard benchmarks.
+
+The training trick is subtle. The weights are stored in full float32 precision during training and updated normally by the optimizer. Only in the forward pass are they quantized to -1, 0, or +1 for the actual computation. Gradients flow back through the quantization step unchanged — this is called the straight-through estimator. Without it, the discrete step function would zero out every gradient and the model could never learn.
+
+The result is a model that is 8 to 10 times smaller, uses a tenth of the energy per token, and runs faster on a CPU than a float16 model runs on a GPU — for the single-request batch sizes that matter most for edge and mobile deployment.
+
+We have been building AI infrastructure around the assumption that weights are floats. BitNet suggests that assumption was never necessary.
+
+Swipe to see how the quantization ladder works, what the ternary math actually computes, and why the straight-through estimator is the trick that makes it all trainable.
+
+#machinelearning #llm #ai #deeplearning #ravenextechnologies</div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  async function cap(s) {
+    return await html2canvas(s, {
+      backgroundColor: '#120f1a',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    try {
+      dl(await cap(slides[cur]), 'bitnet-' + String(cur + 1).padStart(2, '0') + '.png');
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+  }
+
+  const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  async function copyCaption() {
+    const text = document.getElementById('captionText').innerText;
+    const btn  = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch(e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    btn.classList.add('copied');
+    btn.innerHTML = copySVG + 'Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'bitnet-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

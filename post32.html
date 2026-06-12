@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Embeddings Visualized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=300;400;500;600;700&family=Fira+Code:wght=400;500;600&family=Figtree:wght=300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+<style>
+:root{--bg:#06060c;--card:#0c0c16;--ink:#e0e4f0;--ink2:#7880a0;--dim:#a0a3b3;--blue:#4f8eff;--purple:#9f5fff;--pink:#ff5faa;--border:rgba(79,142,255,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Figtree',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+body{background-color:var(--bg)} 
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+
+.slide{flex:0 0 92vw;max-width:520px;height:650px;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)}
+@media(max-width:560px) { .slide { height: 125vw; } }
+
+/* FIX: Disabled background-gradient on the empty .ghost text container to stop the Canvas Gradient crash */
+.ghost{display:none}
+
+.hdr{flex-shrink:0;padding:20px 24px 0 26px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Fira Code',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:12px 24px 0 26px;display:flex;flex-direction:column}
+
+/* FIX: Converted to solid rgba background color so html2canvas doesn't miscalculate vector stops */
+.pill{display:inline-flex;font-family:'Fira Code',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;flex-shrink:0;font-weight:500;width:fit-content;background:rgba(79,142,255,.1);color:var(--blue);border:1px solid rgba(79,142,255,.15)}
+
+.slide h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;line-height:.92;letter-spacing:-.03em;margin-bottom:12px;flex-shrink:0}
+.slide h2 .bl{color:var(--blue)}.slide h2 .pr{color:var(--purple)}.slide h2 .pk{color:var(--pink)}
+.slide p{font-size:12.5px;line-height:1.55;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-size:14px;color:var(--ink);font-weight:500}
+.ftr{flex-shrink:0;padding:10px 24px 16px 26px;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--border);margin-top:auto}
+.ftr .left{font-family:'Fira Code',monospace;font-size:13px;color:var(--dim)}.ftr .right{font-size:14px;color:var(--blue);font-weight:500}
+.code{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;font-family:'Fira Code',monospace;font-size:11px;padding:14px 16px;margin:8px 0;line-height:1.8;flex-shrink:0}
+.code .bl{color:#6eaaff;font-weight:600}.code .pr{color:#b88aff;font-weight:600}.code .pk{color:#ff88cc;font-weight:600}.code .yl{color:#ffd54f;font-weight:600}.code .dm{color:rgba(224, 228, 240, 0.801)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Fira Code',monospace;font-size:12px;font-weight:600;min-width:44px;text-align:right;flex-shrink:0}
+.st-v.bl{color:var(--blue)}.st-v.pr{color:var(--purple)}.st-v.pk{color:var(--pink)}
+.st-t{font-size:13px;color:var(--ink2);line-height:1.35}.st-t strong{font-weight:600;color:var(--ink)}
+.gcard{padding:12px 14px;margin:8px 0;border-radius:8px;font-size:11px;line-height:1.45;flex-shrink:0}
+.gcard.bl-c{background:rgba(79,142,255,.05);border:1px solid rgba(79,142,255,.12)}
+.gcard.pr-c{background:rgba(159,95,255,.05);border:1px solid rgba(159,95,255,.12)}
+.gcard.pk-c{background:rgba(255,95,170,.05);border:1px solid rgba(255,95,170,.12)}
+.gcard p{color:var(--ink2);margin-bottom:2px}.gcard p:last-child{margin-bottom:0}.gcard strong{font-weight:600;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(79,142,255,.2);color:var(--blue);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--blue);color:var(--bg)}.dl-btn.alt{border-color:rgba(224,228,240,.06);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--blue);color:var(--blue)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(79,142,255,.06);overflow:hidden;display:none;margin-top:12px;border-radius:2px}.progress-bar .fill{height:100%;width:0%;background:var(--blue);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(224,228,240,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--blue);color:var(--blue)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(224,228,240,.06);cursor:pointer;transition:all .35s}.dot.active{background:var(--blue);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+       <p style="margin-bottom: 140px;"> </p>
+      <h2 style="font-size: 58px; line-height: 60px;">Embeddings<br><span class="bl">visualized.</span></h2>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <p style="margin-bottom: 20px;"> </p>
+      <h2 style="line-height: 50px;">Every word becomes a <span class="pr">coordinate.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="code">
+<span class="dm">embed("king")  →</span> <span class="bl">[0.21, -0.84, 0.55, ...]</span><br>
+<span class="dm">embed("queen") →</span> <span class="pk">[0.19, -0.81, 0.58, ...]</span><br>
+<span class="dm">embed("car")   →</span> <span class="yl">[-0.72, 0.33, -0.12, ...]</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">Each word is a point in space.</span><br>
+<span class="bl">Similar meaning = nearby points.</span><br>
+<span class="yl">Different meaning = far apart.</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">OpenAI's text-embedding-3:</span><br>
+<span class="pr">3,072 dimensions per word</span><br>
+<span class="dm">A point in 3,072-dimensional space.</span>
+      </div>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="gcard bl-c">
+        <p><strong>You can't visualize 3,072 dimensions.</strong> But the principle is the same as 2D or 3D: similar things cluster together. "Paris" is near "London" and "Tokyo." All three are far from "bicycle."</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <p style="margin-bottom: 20px;"> </p>
+      <h2 style="line-height: 50px;">King − Man + Woman = <span class="pk">Queen.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="code">
+<span class="bl">embed("king")</span> <span class="dm">- embed("man")</span><br>
+<span class="dm">              + embed("woman")</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">= a point VERY close to</span><br>
+<span class="pk">  embed("queen")</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">What happened?</span><br>
+<span class="dm">"king" - "man" = the concept of</span><br>
+<span class="pr">  ROYALTY (without gender)</span><br>
+<span class="dm">"royalty" + "woman" =</span><br>
+<span class="pk">  "queen"</span>
+      </div>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="gcard pr-c">
+        <p><strong>This isn't programmed.</strong> Nobody told the model that king-man+woman=queen. It LEARNED this structure from reading billions of sentences. The relationships are emergent. The vector space organizes itself around meaning.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+       <p style="margin-bottom: 20px;"> </p>
+      <h2 style="line-height: 50px;">How to measure <span class="bl">similarity.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="code">
+<span class="dm">Cosine similarity = angle between vectors</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="bl">cos("happy", "joyful")  = 0.92</span> <span class="dm">← very similar</span><br>
+<span class="bl">cos("happy", "sad")     = 0.38</span> <span class="dm">← related (emotions)</span><br>
+<span class="pr">cos("happy", "table")   = 0.05</span> <span class="dm">← unrelated</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">1.0 = identical meaning</span><br>
+<span class="dm">0.0 = no relationship</span><br>
+<span class="dm">-1.0 = opposite meaning</span>
+      </div>
+      <p style="margin-bottom: 100px;"> </p>
+      <div class="gcard bl-c">
+        <p><strong>Why cosine, not distance?</strong> Cosine measures direction, not magnitude. Two sentences about dogs should be similar whether they're 5 words or 500 words long. Direction captures meaning. Distance captures length.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+       <p style="margin-bottom: 20px;"> </p>
+      <h2 style="line-height: 50px;">Embeddings power <span class="pk">everything.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v bl">RAG</span><div class="st-t"><strong>Semantic search.</strong> User asks "refund policy" — embeddings find the doc about "return process" even though the words differ. Meaning match, not keyword match</div></div>
+        <div class="st"><span class="st-v pr">Rec</span><div class="st-t"><strong>Recommendations.</strong> Netflix, Spotify, Amazon all embed users and items into the same space. Similar users = similar taste. Nearest items = recommendations</div></div>
+        <div class="st"><span class="st-v pk">Clu</span><div class="st-t"><strong>Clustering.</strong> Group 100,000 support tickets by meaning automatically. No labels needed. Similar tickets land near each other in vector space</div></div>
+        <div class="st"><span class="st-v bl">Dup</span><div class="st-t"><strong>Deduplication.</strong> "How do I reset my password?" and "I forgot my login credentials" have cosine similarity 0.89. Same question, different words. Merge them</div></div>
+        <div class="st"><span class="st-v pr">Mod</span><div class="st-t"><strong>Moderation.</strong> Embed toxic content examples. Flag anything with cosine > 0.8 to any example. Catches paraphrased abuse that keyword filters miss</div></div>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+       <p style="margin-bottom: 20px;"> </p>
+      <h2 style="line-height: 50px;">The practical <span class="bl">cheatsheet.</span></h2>
+      <p style="margin-bottom: 20px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v bl">01</span><div class="st-t"><strong>OpenAI text-embedding-3-small.</strong> $0.02/MTok. 1,536 dims. Good enough for 90% of use cases. Start here</div></div>
+        <div class="st"><span class="st-v bl">02</span><div class="st-t"><strong>Store in a vector database.</strong> Pinecone, Weaviate, Chroma, pgvector. This is where your embeddings live for fast retrieval</div></div>
+        <div class="st"><span class="st-v bl">03</span><div class="st-t"><strong>Chunk your documents.</strong> 200-500 tokens per chunk. Too small = no context. Too large = diluted meaning. Overlap 10-20%</div></div>
+        <div class="st"><span class="st-v bl">04</span><div class="st-t"><strong>Cosine similarity > 0.75.</strong> Below this threshold, the match is too weak to trust. Above 0.85, it's a strong match. Tune for your data</div></div>
+      </div>
+      <p style="margin-bottom: 80px;"> </p>
+      <div class="gcard pr-c">
+        <p><strong>The key insight:</strong> Embeddings bridge the gap between human language and machine math. They let computers understand that "I'm starving" and "I need food" mean the same thing — without being told. This is the foundation of everything from ChatGPT to Google Search.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div></div>
+
+  </div>
+  
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+let cur=0;
+
+slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    dotsC.appendChild(d)
+});
+
+const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+prev.onclick=()=>sc(-1);
+next.onclick=()=>sc(1);
+
+slides.forEach(s=>new IntersectionObserver(es=>{
+    es.forEach(e=>{
+        if(e.isIntersecting){
+            cur=Array.from(slides).indexOf(e.target);
+            dots.forEach((d,i)=>d.classList.toggle('active',i===cur))
+        }
+    })
+},{root:carousel,threshold:.6}).observe(s));
+
+document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};
+
+async function cap(s){
+    return await html2canvas(s, {
+        backgroundColor: '#0c0c16',
+        scale: 2, 
+        useCORS: true,
+        logging: false 
+    });
+}
+
+function dl(c,f){
+    const a=document.createElement('a');
+    a.download=f;
+    a.href=c.toDataURL('image/png');
+    a.click();
+}
+
+async function downloadCurrentSlide(){
+    const b=document.getElementById('dlCurrent');
+    b.disabled=true;
+    b.innerHTML = dlSVG + 'Capturing...'; 
+    try {
+        dl(await cap(slides[cur]),'embeddings-'+String(cur+1).padStart(2,'0')+'.png');
+    } catch(e) {
+        console.error(e);
+        alert("Download failed: " + e.message + "\n\nIf you are opening this file locally (file://), try running it on a local web server.");
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+}
+
+async function downloadAllSlides(){
+    const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');
+    b.disabled=true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display='block';
+    fill.style.width='0%';
+    try {
+        const origScroll = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto'; 
+        
+        for(let i=0; i<slides.length; i++){
+            slides[i].scrollIntoView({behavior: 'instant', inline: 'center'});
+            await new Promise(r=>setTimeout(r, 150)); 
+            
+            fill.style.width = ((i+1)/slides.length*100)+'%';
+            dl(await cap(slides[i]), 'embeddings-'+String(i+1).padStart(2,'0')+'.png');
+            
+            await new Promise(r=>setTimeout(r, 400)); 
+        }
+        
+        carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+        carousel.style.scrollBehavior = 'smooth';
+    } catch(e) {
+        console.error(e);
+        alert("Download failed: " + e.message + "\n\nIf you are opening this file locally (file://), try running it on a local web server.");
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    setTimeout(()=>{bar.style.display='none'}, 1000);
+}
+</script>
+</body>
+</html>

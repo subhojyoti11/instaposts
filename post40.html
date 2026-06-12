@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Real Tech Stack of $1B Startups</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0ece4;--card:#faf6f0;--ink:#2a2420;--ink2:#5a5248;--dim:#9a9088;--burg:#8b2252;--forest:#1a5c3a;--steel:#2d5f8a;--amber:#b8860b;--border:rgba(42,36,32,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.cw{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 1px 4px rgba(42,36,32,.04);background-image:radial-gradient(rgba(42,36,32,.04) 1px,transparent 1px);background-size:20px 20px}
+.ghost{position:absolute;top:6px;right:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:130px;line-height:.7;color:rgba(139,34,82,.02);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:18px 24px 0;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Source Code Pro',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'Source Code Pro',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:8px 22px 0 24px;display:flex;flex-direction:column}
+.kicker{font-family:'Source Code Pro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--burg);margin-bottom:8px;flex-shrink:0;font-weight:600}
+h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(24px,5vw,38px);line-height:.9;letter-spacing:-.03em;margin-bottom:12px;flex-shrink:0}
+h2 .bg{color:var(--burg)}h2 .fr{color:var(--forest)}h2 .st{color:var(--steel)}h2 .am{color:var(--amber)}
+p{font-size:12px;line-height:1.55;color:var(--ink2);margin-bottom:5px;font-weight:300}
+p.lead{font-size:14px;color:var(--ink);font-weight:500;line-height:1.4}
+p.val{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--dim);margin-bottom:8px}
+.ftr{flex-shrink:0;padding:8px 24px 14px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;color:var(--burg);font-weight:600}
+/* Tech tag pills */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;flex-shrink:0}
+.tag{font-family:'Source Code Pro',monospace;font-size:10px;padding:4px 10px;border-radius:4px;font-weight:500;letter-spacing:.02em}
+.tag.fe{background:rgba(45,95,138,.06);color:var(--steel);border:1px solid rgba(45,95,138,.15)}
+.tag.be{background:rgba(26,92,58,.06);color:var(--forest);border:1px solid rgba(26,92,58,.15)}
+.tag.db{background:rgba(184,134,11,.06);color:var(--amber);border:1px solid rgba(184,134,11,.15)}
+.tag.infra{background:rgba(139,34,82,.06);color:var(--burg);border:1px solid rgba(139,34,82,.15)}
+/* Stack section */
+.stack-section{margin:8px 0;flex-shrink:0}
+.stack-label{font-family:'Source Code Pro',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;font-weight:600}
+.stack-label.fe-l{color:var(--steel)}.stack-label.be-l{color:var(--forest)}.stack-label.db-l{color:var(--amber)}.stack-label.infra-l{color:var(--burg)}
+.note{padding:10px 14px;margin:5px 0;font-size:11px;line-height:1.5;border-radius:6px;flex-shrink:0}
+.note.bg-c{border-left:3px solid var(--burg);background:rgba(139,34,82,.04)}
+.note.fr-c{border-left:3px solid var(--forest);background:rgba(26,92,58,.04)}
+.note.st-c{border-left:3px solid var(--steel);background:rgba(45,95,138,.04)}
+.note p{color:var(--ink2);margin-bottom:2px}.note p:last-child{margin-bottom:0}.note strong{font-weight:600;color:var(--ink)}
+.stats{display:flex;flex-direction:column;gap:0;margin:4px 0;flex-shrink:0}
+.stt{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.stt:last-child{border-bottom:none}
+.stt-v{font-family:'Source Code Pro',monospace;font-size:12px;font-weight:600;min-width:54px;text-align:right;flex-shrink:0}
+.stt-v.bg{color:var(--burg)}.stt-v.fr{color:var(--forest)}.stt-v.st{color:var(--steel)}.stt-v.am{color:var(--amber)}
+.stt-t{font-size:12px;color:var(--ink2);line-height:1.35}.stt-t strong{font-weight:600;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Source Code Pro',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(139,34,82,.2);color:var(--burg);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--burg);color:#fff}.dl-btn.alt{border-color:var(--border);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--burg);color:var(--burg)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(139,34,82,.06);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--burg);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--burg);color:var(--burg)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(42,36,32,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--burg);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="cw">
+  <div class="carousel" id="carousel">
+
+    <!-- 01 HERO COVER -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 06</span><span class="brand"> </span></div>
+      <div class="body" style="justify-content:center;">
+        <!-- <div class="kicker">Real Production Stacks · 2026</div> -->
+        <h2 style="font-size:clamp(30px,6.5vw,50px);line-height:.86;margin-bottom:16px">The real tech stack of a <span class="bg">$1B</span> startup.</h2>
+        <p class="lead" style="margin-bottom:160px"> </p>
+        <!-- <p class="lead" style="margin-bottom:160px">Not what they say in blog posts. What they actually run in production. Figma, Discord, Notion, Linear. The languages, databases, and architecture decisions behind four of the most loved dev tools on earth.</p> -->
+        <!-- <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:'Source Code Pro',monospace;font-size:22px;font-weight:700;color:var(--burg);line-height:1">4 / 4</span>
+            <span style="font-family:'Source Code Pro',monospace;font-size:8px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase">use React</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:'Source Code Pro',monospace;font-size:22px;font-weight:700;color:var(--forest);line-height:1">4 / 4</span>
+            <span style="font-family:'Source Code Pro',monospace;font-size:8px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase">use Postgres</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:'Source Code Pro',monospace;font-size:22px;font-weight:700;color:var(--steel);line-height:1">2 / 4</span>
+            <span style="font-family:'Source Code Pro',monospace;font-size:8px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase">use Rust</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:'Source Code Pro',monospace;font-size:22px;font-weight:700;color:var(--amber);line-height:1">0 / 4</span>
+            <span style="font-family:'Source Code Pro',monospace;font-size:8px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase">use MongoDB</span>
+          </div>
+        </div> -->
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 02 FIGMA -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">$20B Valuation</div> -->
+         <p class="lead" style="margin-bottom:20px"> </p>
+         <p class="lead" style="margin-bottom:20px"> </p>
+        <h2><span class="bg">Figma.</span></h2>
+        <p class="val">Design tool that beat Adobe. 4M+ users. Browser-based. Feels like a native app.</p>
+        <div class="stack-section">
+          <div class="stack-label fe-l">Frontend / Rendering</div>
+          <div class="tags">
+            <span class="tag fe">C++ (Canvas Engine)</span>
+            <span class="tag fe">WebAssembly</span>
+            <span class="tag fe">WebGL (GPU Rendering)</span>
+            <span class="tag fe">React + TypeScript (UI)</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label be-l">Backend / Multiplayer</div>
+          <div class="tags">
+            <span class="tag be">Rust (Multiplayer Server)</span>
+            <span class="tag be">Node.js (Services)</span>
+            <span class="tag be">CRDTs (Real-time Sync)</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label db-l">Data / Infra</div>
+          <div class="tags">
+            <span class="tag db">PostgreSQL</span>
+            <span class="tag db">Redis</span>
+            <span class="tag infra">AWS</span>
+            <span class="tag infra">Kubernetes</span>
+          </div>
+        </div>
+        <p class="lead" style="margin-bottom:40px"> </p>
+        <div class="note bg-c">
+          <p><strong>The surprise:</strong> Figma's canvas is written in C++, compiled to WebAssembly. It's closer to a game engine than a web app. The UI around the canvas is React. Multiplayer sync was ported from TypeScript to Rust for stability.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 03 DISCORD -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">$15B Valuation · 150M+ MAU</div> -->
+         <p class="lead" style="margin-bottom:20px"> </p>
+         <p class="lead" style="margin-bottom:20px"> </p>
+        <h2><span class="st">Discord.</span></h2>
+        <p class="val">Real-time messaging for 150M users. Sub-100ms latency. Voice, video, text at scale.</p>
+        <div class="stack-section">
+          <div class="stack-label fe-l">Frontend / Clients</div>
+          <div class="tags">
+            <span class="tag fe">React + TypeScript (Web)</span>
+            <span class="tag fe">Electron (Desktop)</span>
+            <span class="tag fe">Swift (iOS Native)</span>
+            <span class="tag fe">Kotlin (Android Native)</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label be-l">Backend / Core</div>
+          <div class="tags">
+            <span class="tag be">Python (Services)</span>
+            <span class="tag be">Rust (Performance Critical)</span>
+            <span class="tag be">Elixir (Voice/Real-time)</span>
+            <span class="tag be">WebSocket Gateway</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label db-l">Data / Infra</div>
+          <div class="tags">
+            <span class="tag db">PostgreSQL (Users)</span>
+            <span class="tag db">Cassandra (Messages)</span>
+            <span class="tag db">Redis (Cache/Sessions)</span>
+            <span class="tag infra">GCP + Cloudflare</span>
+          </div>
+        </div>
+        <p class="lead" style="margin-bottom:10px"> </p>
+        <div class="note st-c">
+          <p><strong>The surprise:</strong> Started in Python, then rewrote hot paths in Rust when they needed microsecond-level performance. Messages are stored in Cassandra (time-series), not Postgres. Elixir handles real-time voice routing for millions of concurrent streams.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 04 NOTION -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">$10B Valuation · 100M+ Users</div> -->
+         <p class="lead" style="margin-bottom:20px"> </p>
+         <p class="lead" style="margin-bottom:20px"> </p>
+        <h2><span class="fr">Notion.</span></h2>
+        <p class="val">The everything-workspace. Docs, wikis, databases, projects. Real-time collaboration at massive scale.</p>
+        <div class="stack-section">
+          <div class="stack-label fe-l">Frontend</div>
+          <div class="tags">
+            <span class="tag fe">React + TypeScript</span>
+            <span class="tag fe">Custom Block Editor</span>
+            <span class="tag fe">WebSocket (Live Sync)</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label be-l">Backend</div>
+          <div class="tags">
+            <span class="tag be">Node.js (API Layer)</span>
+            <span class="tag be">CRDTs (Collaboration)</span>
+            <span class="tag be">Custom OT Engine</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label db-l">Data / Infra</div>
+          <div class="tags">
+            <span class="tag db">PostgreSQL (Core)</span>
+            <span class="tag db">Redis (Cache)</span>
+            <span class="tag db">S3 (File Storage)</span>
+            <span class="tag infra">AWS + Kubernetes</span>
+            <span class="tag infra">Cloudflare CDN</span>
+          </div>
+        </div>
+        <p class="lead" style="margin-bottom:68px"> </p>
+        <div class="note fr-c">
+          <p><strong>The surprise:</strong> Everything in Notion is a "block." Each block is a row in Postgres. A single page with 100 elements = 100 database rows. This sounds insane, but it makes the block editor infinitely flexible. Real-time sync uses CRDTs so edits never conflict.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 05 LINEAR -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">$400M Valuation · The Dev's Favorite</div> -->
+         <p class="lead" style="margin-bottom:20px"> </p>
+         <p class="lead" style="margin-bottom:20px"> </p>
+        <h2><span class="am">Linear.</span></h2>
+        <p class="val">Issue tracking that developers actually love. Keyboard-first. Sub-50ms interactions. The anti-Jira.</p>
+        <div class="stack-section">
+          <div class="stack-label fe-l">Frontend</div>
+          <div class="tags">
+            <span class="tag fe">React + TypeScript</span>
+            <span class="tag fe">Sync Engine (Offline-first)</span>
+            <span class="tag fe">IndexedDB (Local Cache)</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label be-l">Backend</div>
+          <div class="tags">
+            <span class="tag be">Node.js + TypeScript</span>
+            <span class="tag be">GraphQL API</span>
+            <span class="tag be">Real-time Sync Protocol</span>
+          </div>
+        </div>
+        <div class="stack-section">
+          <div class="stack-label db-l">Data / Infra</div>
+          <div class="tags">
+            <span class="tag db">PostgreSQL</span>
+            <span class="tag db">Redis</span>
+            <span class="tag infra">GCP</span>
+            <span class="tag infra">Vercel (Marketing)</span>
+          </div>
+        </div>
+        <p class="lead" style="margin-bottom:68px"> </p>
+        <div class="note bg-c">
+          <p><strong>The surprise:</strong> Linear feels instant because it's offline-first. Your entire workspace syncs to IndexedDB in your browser. Every click reads from local storage first, then syncs with the server. That's why it feels faster than Jira, which round-trips every action to the server.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 06 PATTERNS -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The Pattern</div> -->
+         <p class="lead" style="margin-bottom:20px"> </p>
+         <p class="lead" style="margin-bottom:20px"> </p>
+        <h2>What $1B startups<br>have in <span class="bg">common.</span></h2>
+        <div class="stats">
+          <div class="stt"><span class="stt-v st">React</span><div class="stt-t"><strong>4 out of 4 use React + TypeScript.</strong> Not Vue, not Svelte, not Angular. React is the default for serious product engineering in 2026</div></div>
+          <div class="stt"><span class="stt-v fr">Postgres</span><div class="stt-t"><strong>4 out of 4 use PostgreSQL.</strong> The boring database wins again. Not MongoDB, not DynamoDB. Postgres handles everything from blocks to messages</div></div>
+          <div class="stt"><span class="stt-v bg">Rust</span><div class="stt-t"><strong>Figma + Discord adopted Rust for performance-critical paths.</strong> Not the first language, but the one you reach for when Python or Node.js hits a wall</div></div>
+          <div class="stt"><span class="stt-v am">Offline</span><div class="stt-t"><strong>Linear + Notion sync locally first.</strong> Offline-first architecture is why these tools feel instant. The secret is local reads with async server sync</div></div>
+          <div class="stt"><span class="stt-v bg">Boring</span><div class="stt-t"><strong>No exotic stacks.</strong> React, Postgres, Redis, Node, AWS/GCP. The magic is in the architecture (CRDTs, sync engines, WASM), not the framework choice</div></div>
+        </div>
+        <p class="lead" style="margin-bottom:15px"> </p>
+        <div class="note bg-c">
+          <p><strong>The lesson:</strong> $1B startups don't win with exotic tech stacks. They win with boring foundations and exceptional architecture decisions. React + Postgres + Redis is the stack. CRDTs, offline-first sync, and WebAssembly are the differentiators.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'tech-stack-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'tech-stack-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}</script>
+</body>
+</html>

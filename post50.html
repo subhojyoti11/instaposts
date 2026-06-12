@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PagedAttention — Post 50</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Overpass+Mono:wght@400;500;600&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060810;
+      --card: #0c1018;
+      --ink: #e2e8f0;
+      --ink2: #64748b;
+      --dim: #8899aa;
+      --sky: #38bdf8;
+      --rose: #fb7185;
+      --amber: #fbbf24;
+      --border: rgba(56, 189, 248, .06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'Nunito Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+    }
+
+    .ghost {
+      display: none;
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 18px 24px 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hdr .num {
+      font-family: 'Overpass Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .hdr .brand {
+      font-family: 'Overpass Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 24px 0 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide h2 {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: .92;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .sk {
+      color: var(--sky);
+    }
+
+    .slide h2 .ro {
+      color: var(--rose);
+    }
+
+    .slide h2 .am {
+      color: var(--amber);
+    }
+
+    .slide p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin-bottom: 6px;
+      font-weight: 300;
+    }
+
+    .slide p.lead {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 10px 24px 16px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .ftr .left {
+      font-family: 'Overpass Mono', monospace;
+      font-size: 13px;
+      color: var(--dim);
+    }
+
+    .ftr .right {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sky);
+    }
+
+    .code {
+      background: rgba(0, 0, 0, .45);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Overpass Mono', monospace;
+      font-size: 14px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      line-height: 1.8;
+      flex-shrink: 0;
+    }
+
+    .code .sk {
+      color: #7dd3fc;
+      font-weight: 600;
+    }
+
+    .code .ro {
+      color: #fda4af;
+      font-weight: 600;
+    }
+
+    .code .am {
+      color: #fcd34d;
+      font-weight: 600;
+    }
+
+    .code .dm {
+      color: rgba(226, 232, 240, .55);
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0;
+    }
+
+    .st {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .st:last-child {
+      border-bottom: none;
+    }
+
+    .st-v {
+      font-family: 'Overpass Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 62px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .st-v.sk {
+      color: var(--sky);
+    }
+
+    .st-v.ro {
+      color: var(--rose);
+    }
+
+    .st-v.am {
+      color: var(--amber);
+    }
+
+    .st-t {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.35;
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+
+    .gcard.sk-c {
+      background: rgba(56, 189, 248, .06);
+      border: 1px solid rgba(56, 189, 248, .15);
+    }
+
+    .gcard.ro-c {
+      background: rgba(251, 113, 133, .06);
+      border: 1px solid rgba(251, 113, 133, .15);
+    }
+
+    .gcard.am-c {
+      background: rgba(251, 191, 36, .06);
+      border: 1px solid rgba(251, 191, 36, .15);
+    }
+
+    .gcard p {
+      color: var(--ink2);
+      margin-bottom: 2px;
+    }
+
+    .gcard p:last-child {
+      margin-bottom: 0;
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Download UI */
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .dl-btn {
+      font-family: 'Overpass Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(56, 189, 248, .2);
+      color: var(--sky);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    .dl-btn:hover {
+      background: var(--sky);
+      color: var(--bg);
+    }
+
+    .dl-btn.alt {
+      border-color: var(--border);
+      color: var(--dim);
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--sky);
+      color: var(--sky);
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .dl-btn:disabled {
+      opacity: .3;
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(56, 189, 248, .08);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px;
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--sky);
+      transition: width .3s;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Overpass Mono', monospace;
+      border-radius: 6px;
+      transition: all .25s;
+    }
+
+    .nav button:hover {
+      border-color: var(--sky);
+      color: var(--sky);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(226, 232, 240, .06);
+      cursor: pointer;
+      transition: all .35s;
+    }
+
+    .dot.active {
+      background: var(--sky);
+      width: 22px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <!-- SLIDE 1 — Cover -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:80px"> </p>
+          <h2 style="font-size:54px;line-height:.98">Paged<br>Attention.<br><span class="sk">The KV
+              Cache,</span><br>Fixed.</h2>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <!-- SLIDE 2 — The KV Cache -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>What Is the<br><span class="sk">KV Cache?</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v sk">K + V</span>
+              <div class="st-t"><strong>Every input token produces a key and value vector</strong> at each attention
+                layer. These are the KV pairs.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">Why cache</span>
+              <div class="st-t"><strong>Recomputing all past KV pairs on every new token</strong> is O(n²) in time. The
+                cache makes it O(n).</div>
+            </div>
+            <div class="st">
+              <span class="st-v ro">Grows fast</span>
+              <div class="st-t"><strong>KV cache size = seq_len × layers × 2 × d_head.</strong> A single 13B model
+                request can consume gigabytes.</div>
+            </div>
+            <div class="st">
+              <span class="st-v" style="color:var(--dim)">Bottleneck</span>
+              <div class="st-t"><strong>At batch size 100, the KV cache,</strong> not the model weights, becomes the
+                primary GPU memory consumer.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 3 — The Fragmentation Problem -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Memory<br><span class="ro">Waste Problem.</span></h2>
+          <div style="height:14px"></div>
+          <div class="code">
+            <span class="dm"># Standard KV cache allocation</span><br>
+            max_seq_len = 2048 <span class="dm"># pre-allocated</span><br>
+            actual_avg = 256 <span class="dm"># typical request</span><br>
+            waste = <span class="ro">87.5%</span> <span class="dm"># per request</span><br>
+            <br>
+            <span class="dm"># At 100 concurrent requests:</span><br>
+            reserved = 100 × 2048 = <span class="ro">204,800 slots</span><br>
+            used = 100 × 256 = <span class="sk">25,600 slots</span><br>
+            <span class="dm"># GPU is 87.5% idle on KV memory</span>
+          </div>
+          <div class="gcard ro-c">
+            <p><strong>Pre-allocation forces worst-case sizing.</strong> You reserve for the longest possible sequence,
+              whether or not you use it. Fragmentation makes it worse.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 4 — The OS Analogy -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Borrowed From<br><span class="am">the OS.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v am">OS pages</span>
+              <div class="st-t"><strong>Virtual memory splits RAM into fixed 4KB blocks.</strong> Process sees
+                contiguous space; physical layout is scattered.</div>
+            </div>
+            <div class="st">
+              <span class="st-v sk">Page table</span>
+              <div class="st-t"><strong>Maps virtual addresses → physical pages.</strong> The OS manages placement; the
+                process never knows.</div>
+            </div>
+            <div class="st">
+              <span class="st-v ro">KV blocks</span>
+              <div class="st-t"><strong>PagedAttention splits the KV cache into fixed-size blocks.</strong> Each block
+                holds a fixed number of token KV pairs.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">Block table</span>
+              <div class="st-t"><strong>Maps sequence positions → physical GPU memory blocks.</strong> Same principle as
+                a page table, one level down.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 5 — PagedAttention -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>How Paged<br><span class="sk">Attention Works.</span></h2>
+          <div style="height:14px"></div>
+          <div class="code">
+            <span class="dm"># Logical view (what the model sees)</span><br>
+            seq = [t0, t1, t2, ... t255]<br>
+            <br>
+            <span class="dm"># Physical layout (GPU memory)</span><br>
+            block_table = {<br>
+            &nbsp; 0: <span class="sk">block_7</span>, <span class="dm"># t0–t15</span><br>
+            &nbsp; 1: <span class="ro">block_2</span>, <span class="dm"># t16–t31</span><br>
+            &nbsp; 2: <span class="am">block_14</span>, <span class="dm"># t32–t47</span><br>
+            } <span class="dm"># non-contiguous, zero waste</span>
+          </div>
+          <div class="gcard sk-c">
+            <p><strong>Copy-on-write enables free beam search.</strong> Multiple beams share physical blocks until they
+              diverge, with no duplication until necessary.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 6 — Results -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>What vLLM<br><span class="sk">Unlocked.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v sk">2–4×</span>
+              <div class="st-t"><strong>Throughput vs. HuggingFace Transformers.</strong> More concurrent requests
+                served on the same GPU.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">&lt;4%</span>
+              <div class="st-t"><strong>Memory waste.</strong> vs. 60–80% waste in standard pre-allocated contiguous KV
+                caching.</div>
+            </div>
+            <div class="st">
+              <span class="st-v ro">Zero copy</span>
+              <div class="st-t"><strong>Prefix caching ships for free.</strong> Shared system prompts across requests
+                map to the same physical blocks.</div>
+            </div>
+            <div class="st">
+              <span class="st-v" style="color:var(--dim)">vLLM</span>
+              <div class="st-t"><strong>Open-sourced by Anyscale in 2023.</strong> Now the de facto standard for
+                production LLM serving. Powers Mistral, Llama, and more.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <!-- SLIDE 7 — Quick Reference -->
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="sk">Reference.</span></h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st">
+              <span class="st-v sk">KV Cache</span>
+              <div class="st-t"><strong>Stores K/V pairs from attention layers.</strong> Avoids O(n²) recomputation.
+                Grows with sequence length.</div>
+            </div>
+            <div class="st">
+              <span class="st-v ro">Frag.</span>
+              <div class="st-t"><strong>Contiguous pre-allocation wastes 60–80%</strong> of GPU memory reserving for
+                worst-case sequence lengths.</div>
+            </div>
+            <div class="st">
+              <span class="st-v sk">PagedAttn</span>
+              <div class="st-t"><strong>Non-contiguous KV blocks</strong> mapped via a block table. Eliminates
+                fragmentation and internal waste.</div>
+            </div>
+            <div class="st">
+              <span class="st-v am">Block table</span>
+              <div class="st-t"><strong>Maps logical sequence positions → physical GPU blocks.</strong> Direct analogy
+                to an OS page table.</div>
+            </div>
+            <div class="st">
+              <span class="st-v" style="color:var(--dim)">vLLM</span>
+              <div class="st-t"><strong>First production implementation.</strong> 2–4× throughput gains. Standard for
+                high-throughput LLM serving.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div><!-- /carousel -->
+
+    <div class="nav">
+      <button id="prev">←</button>
+      <div class="dots" id="dots"></div>
+      <button id="next">→</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Current Slide
+        </button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          All Slides
+        </button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+
+  </div><!-- /carousel-wrap -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'),
+      slides = carousel.querySelectorAll('.slide'),
+      dotsC = document.getElementById('dots'),
+      prevBtn = document.getElementById('prev'),
+      nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      dotsC.appendChild(d);
+    });
+
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1);
+    nextBtn.onclick = () => sc(1);
+
+    slides.forEach(s => new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting) {
+          cur = Array.from(slides).indexOf(e.target);
+          dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+        }
+      });
+    }, { root: carousel, threshold: .6 }).observe(s));
+
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+    async function cap(s) {
+      return await html2canvas(s, {
+        backgroundColor: '#0c1018',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+    }
+
+    function dl(c, f) {
+      const a = document.createElement('a');
+      a.download = f;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      try {
+        dl(await cap(slides[cur]), 'pagedattn-' + String(cur + 1).padStart(2, '0') + '.png');
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'Current Slide';
+      b.disabled = false;
+    }
+
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'),
+        bar = document.getElementById('progressBar'),
+        fill = document.getElementById('progressFill');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      bar.style.display = 'block';
+      fill.style.width = '0%';
+      try {
+        const origScroll = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto';
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          dl(await cap(slides[i]), 'pagedattn-' + String(i + 1).padStart(2, '0') + '.png');
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+        carousel.style.scrollBehavior = 'smooth';
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'All Slides';
+      b.disabled = false;
+      bar.style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

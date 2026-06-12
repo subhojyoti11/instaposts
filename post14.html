@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Every Claude Code That Actually Works — Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1714;--card:#f4f0ea;--ink:#1a1714;--dim:#6b6560;--acc:#d45a1a;--green:#1a7a42;--purple:#6b4fa0;--blue:#2563eb;--bar:#2a2520}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Inter Tight',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:40px 20px 80px}
+.poster{width:min(92vw,540px);background:var(--card);color:var(--ink);position:relative;overflow:hidden}
+.top-bar{background:var(--bar);height:6px;width:100%}
+.inner{padding:32px 34px 28px}
+.sm{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--dim);display:flex;justify-content:space-between;margin-bottom:18px;border-bottom: 1px solid rgba(26,23,20,.08);padding:0px 0px 4px;}
+.kicker{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;border:1px solid var(--ink);color:var(--ink);font-weight:500}
+h1{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:38px;line-height:.9;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:6px;color:var(--ink)}
+h1 .acc{color:var(--acc)}
+.subtitle{font-size:13px;color:var(--dim);margin-bottom:14px;line-height:1.4}
+.section{margin-bottom:14px}
+.sec-head{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;padding-bottom:5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec-head .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.sec-head.orange{color:var(--acc);border-bottom:1px solid rgba(212,90,26,.2)}.sec-head.orange .dot{background:var(--acc)}
+.sec-head.purple{color:var(--purple);border-bottom:1px solid rgba(107,79,160,.2)}.sec-head.purple .dot{background:var(--purple)}
+.sec-head.green{color:var(--green);border-bottom:1px solid rgba(26,122,66,.2)}.sec-head.green .dot{background:var(--green)}
+.sec-head.blue{color:var(--blue);border-bottom:1px solid rgba(37,99,235,.2)}.sec-head.blue .dot{background:var(--blue)}
+.row{display:flex;gap:4px;align-items:baseline;padding:2px 0;font-size:12px;line-height:1.4}
+.code{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;min-width:90px;flex-shrink:0}
+.code.orange{color:var(--acc)}.code.purple{color:var(--purple)}.code.green{color:var(--green)}.code.blue{color:var(--blue)}
+.desc{color:var(--dim);font-size:11.5px}
+.note{font-size:10px;color:var(--dim);line-height:1.45;margin-top:12px;padding:10px 12px;background:rgba(26,23,20,.03);border-left:2px solid var(--acc)}
+.footer{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid rgba(26,23,20,.08);margin-top:11px}
+.footer .handle{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim)}
+.footer .save{font-size:12px;color:var(--dim)}
+.dl-wrap{display:flex;justify-content:center;margin-top:24px}
+.dl-btn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:12px 28px;background:transparent;border:1px solid var(--acc);color:var(--acc);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px}.dl-btn:hover{background:var(--acc);color:#fff}.dl-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.dl-btn:disabled{opacity:.4;cursor:wait}
+</style>
+</head>
+<body>
+<div>
+<div class="poster" id="poster">
+  <div class="top-bar"></div>
+  <div class="inner">
+    <div class="sm"><span>CHEATSHEET · 2026</span><span>ravenex.tech</span></div>
+    <!-- <div class="kicker">▲ CLAUDE AI · PROMPT CODES</div> -->
+    <!-- <h1>EVERY <span class="acc">CLAUDE</span><br>CODE THAT<br>WORKS.</h1>
+    <p class="subtitle">Community-tested prompt prefixes that produce real behavioral shifts. Not secret features, just good prompting in shorthand.</p> -->
+    <div class="section">
+      <div class="sec-head orange"><span class="dot"></span>THINKING & REASONING</div>
+      <div class="row"><span class="code orange">ULTRATHINK</span><span class="desc">Maximum reasoning depth. 800+ word analysis, zero hedging. (Claude Code CLI only)</span></div>
+      <div class="row"><span class="code orange">/deepthink</span><span class="desc">Multi-step layered reasoning. Hypothesizes, evaluates, then answers</span></div>
+      <div class="row"><span class="code orange">think step</span><span class="desc">Classic chain-of-thought. Forces sequential reasoning before answering</span></div>
+      <div class="row"><span class="code orange">OODA</span><span class="desc">Observe → Orient → Decide → Act. Forces a committed decision, not "it depends"</span></div>
+      <div class="row"><span class="code orange">/skeptic</span><span class="desc">Challenges your premise first. Catches the "wrong question" problem</span></div>
+      <div class="row"><span class="code orange">PARETO</span><span class="desc">Identifies the 20% of actions driving 80% of results. Cuts noise to priorities</span></div>
+    </div>
+    <div class="section">
+      <div class="sec-head purple"><span class="dot"></span>WRITING & STYLE</div>
+      <div class="row"><span class="code purple">/ghost</span><span class="desc">Strips every AI tell. "Certainly!", em-dashes, hedging. Reads human-written</span></div>
+      <div class="row"><span class="code purple">/mirror</span><span class="desc">Matches YOUR exact writing style from a sample. Voice, rhythm, vocabulary</span></div>
+      <div class="row"><span class="code purple">/noyap</span><span class="desc">Maximum compression. Shortest possible answer. Zero filler</span></div>
+      <div class="row"><span class="code purple">/punch</span><span class="desc">Short, punchy sentences. High energy. Great for social media and ad copy</span></div>
+      <div class="row"><span class="code purple">ELI5</span><span class="desc">Explain Like I'm 5. Simplest possible language. Analogies over jargon</span></div>
+    </div>
+    <div class="section">
+      <div class="sec-head green"><span class="dot"></span>EXPERT & DOMAIN</div>
+      <div class="row"><span class="code green">L99</span><span class="desc">Forces decisive, expert-depth response. Firm recommendations with trade-offs</span></div>
+      <div class="row"><span class="code green">PERSONA:</span><span class="desc">Respond as [specific expert]. More specificity = dramatically better output</span></div>
+      <div class="row"><span class="code green">SCAFFOLD</span><span class="desc">Full project setup; file structure, configs, CI/CD, tests in one shot</span></div>
+      <div class="row"><span class="code green">ARTIFACTS</span><span class="desc">Structures output as numbered deliverables. Lists then produces each one</span></div>
+      <div class="row"><span class="code green">AUDIT</span><span class="desc">Critical review mode. Finds flaws, security issues, edge cases</span></div>
+    </div>
+    <div class="section">
+      <div class="sec-head blue"><span class="dot"></span>REAL COMMANDS (CLAUDE CODE CLI)</div>
+      <div class="row"><span class="code blue">/effort max</span><span class="desc">Sets thinking to maximum for the session. Also: /effort low, high</span></div>
+      <div class="row"><span class="code blue">/init</span><span class="desc">Generates CLAUDE.md project context file. Run once per new project</span></div>
+      <div class="row"><span class="code blue">/compact</span><span class="desc">Compresses conversation context. Frees tokens at context limits</span></div>
+      <div class="row"><span class="code blue">/clear</span><span class="desc">Clears conversation history. Fresh start without restarting session</span></div>
+      <div class="row"><span class="code blue">/cost</span><span class="desc">Shows token usage and cost for the current session</span></div>
+      <div class="row"><span class="code blue">/model</span><span class="desc">Switch Opus / Sonnet / Haiku mid-session without restarting</span></div>
+    </div>
+    <div class="note"><strong>Honest note:</strong> Orange, purple, and green codes are community conventions, not hidden Anthropic features. They work because Claude recognizes the intent from training data. Blue commands are real, documented Claude Code CLI features. None of these "unlock" hidden capabilities.</div>
+    <div class="footer"><span class="handle">@ravenextechnologies</span><span class="save">↻ Save this post</span></div>
+  </div>
+</div>
+<div class="dl-wrap">
+  <button class="dl-btn" id="dlBtn" onclick="downloadPoster()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Image</button>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function downloadPoster(){const btn=document.getElementById('dlBtn');btn.disabled=true;btn.textContent='Capturing...';try{const canvas=await html2canvas(document.getElementById('poster'),{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false});const link=document.createElement('a');link.download='claude-codes-cheatsheet.png';link.href=canvas.toDataURL('image/png');link.click()}catch(err){console.error(err)}btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Image';btn.disabled=false}
+</script>
+</body>
+</html>

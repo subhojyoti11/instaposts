@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents Explained</title>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&family=Public+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#f8fafb;--ink:#1e3a5f;--ink2:#4a6078;--dim:#8a9ab0;--navy:#1e3a5f;--sky:#0284c7;--orange:#ea580c;--border:rgba(30,58,95,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Public Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+body{background-image:linear-gradient(rgba(30,58,95,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(30,58,95,.02) 1px,transparent 1px);background-size:20px 20px}
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 1px 4px rgba(30,58,95,.04)}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--navy)} */
+.ghost{position:absolute;top:8px;right:12px;font-family:'Azeret Mono',monospace;font-weight:700;font-size:120px;line-height:.7;color:rgba(30,58,95,.025);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:22px 26px 0 28px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--dim)}.hdr .brand{font-family:'Source Code Pro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:10px 26px 0 28px;display:flex;flex-direction:column}
+.tag{display:inline-block;font-family:'Azeret Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--sky);margin-bottom:8px;font-weight:600;flex-shrink:0;padding:3px 8px;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.12);width:fit-content}
+.slide h2{font-family:'Azeret Mono',monospace;font-weight:700;font-size:clamp(22px,4.5vw,34px);line-height:.95;letter-spacing:-.02em;margin-bottom:12px;flex-shrink:0}
+.slide h2 .nv{color:var(--navy)}.slide h2 .sk{color:var(--sky)}.slide h2 .or{color:var(--orange)}
+.slide p{font-size:13px;line-height:1.6;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-size:14px;color:var(--ink);font-weight:500}
+.ftr{flex-shrink:0;padding:10px 26px 18px 28px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto; margin-bottom: 10px;}
+.ftr .left{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-family:'Azeret Mono',monospace;font-size:11px;color:var(--sky);font-weight:600}
+.code{background:var(--ink);color:#d0dae8;font-family:'Source Code Pro',monospace;font-size:10.2px;padding:14px 16px;margin:8px 0;line-height:1.75;border-radius:4px;flex-shrink:0}
+.code .sk{color:#38bdf8;font-weight:600}.code .or{color:#fb923c;font-weight:600}.code .gn{color:#86efac;font-weight:600}.code .yl{color:#fde047;font-weight:600}.code .dm{color:rgb(208, 218, 232)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Source Code Pro',monospace;font-size:12px;font-weight:600;min-width:56px;text-align:right;flex-shrink:0}
+.st-v.sk{color:var(--sky)}.st-v.or{color:var(--orange)}.st-v.nv{color:var(--navy)}
+.st-t{font-size:14px;color:var(--ink2);line-height:1.4;font-weight:300}.st-t strong{font-weight:600;color:var(--ink)}
+.card{padding:8px 14px;margin:4px 0;font-size:11.5px;line-height:1.5;border-radius:4px;flex-shrink:0}
+.card.sk-c{border-left:3px solid var(--sky);background:rgba(2,132,199,.04)}
+.card.or-c{border-left:3px solid var(--orange);background:rgba(234,88,12,.04)}
+.card.nv-c{border-left:3px solid var(--navy);background:rgba(30,58,95,.04)}
+.card p{color:var(--ink2);margin-bottom:2px}.card p:last-child{margin-bottom:0}
+.card strong{font-weight:700;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Source Code Pro',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid var(--sky);color:var(--sky);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:4px}.dl-btn:hover{background:var(--sky);color:#fff}.dl-btn.alt{border-color:var(--border);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--sky);color:var(--sky)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(2,132,199,.08);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--sky);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;border-radius:4px;transition:all .25s}.nav button:hover{border-color:var(--sky);color:var(--sky)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(30,58,95,.1);cursor:pointer;transition:all .35s}.dot.active{background:var(--sky);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">01 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">Agentic AI · 2026</div> -->
+       <p style="margin-bottom: 40px;"> </p>
+      <p style="margin-bottom: 40px;"> </p>
+      <p style="margin-bottom: 40px;"> </p>
+      <p style="margin-bottom: 40px;"> </p>
+      <h2>AI <span class="sk">Agents</span><br>Explained.</h2>
+      
+      <p class="lead">A chatbot answers questions. An agent takes actions. It reads your email, books a meeting, deploys code, and files a bug report. Without you touching anything.</p>
+      <!-- <p>2026 is the year agents go from demos to production. Gartner predicts 40% of enterprise apps will have task-specific agents by year end. Here's how they actually work under the hood.</p> -->
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">02 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">The ReAct Loop</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-15px;">Reason, Act,<span class="sk"> Observe.</span></h2>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="code">
+<span class="dm">User: "Book a 30min meeting with Sarah tomorrow"</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="sk">THINK:</span> <span class="dm">I need to check Sarah's calendar</span><br>
+<span class="dm">       and find a free 30min slot tomorrow</span><br>
+<span class="yl">ACT:</span>   <span class="dm">call calendar.getFreeSlots(sarah, tomorrow)</span><br>
+<span class="gn">OBS:</span>   <span class="dm">[10:00-10:30, 14:00-14:30, 16:00-16:30]</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="sk">THINK:</span> <span class="dm">3 slots available. Pick earliest.</span><br>
+<span class="yl">ACT:</span>   <span class="dm">call calendar.createEvent(sarah, 10:00)</span><br>
+<span class="gn">OBS:</span>   <span class="dm">✓ event created, invite sent</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="sk">RESPOND:</span> <span class="dm">"Booked with Sarah at 10am"</span>
+      </div>
+      <p style="margin-bottom: 97px;"> </p>
+      <div class="card sk-c">
+        <p><strong>ReAct = Reasoning + Acting.</strong> The LLM thinks about what to do, calls a tool, observes the result, then thinks again. This loop repeats until the task is complete. The model decides WHEN to stop.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">03 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">The Four Components</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-10px;">What makes an <span class="nv">agent.</span></h2>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v sk">LLM</span><div class="st-t"><strong>The brain.</strong> Reads context, reasons about the task, decides next action. GPT-4o, Claude, Gemini. The model IS the decision engine</div></div>
+        <div class="st"><span class="st-v sk">Tools</span><div class="st-t"><strong>The hands.</strong> APIs the agent can call. Calendar, email, database, code execution, web search, file system. Each tool = a function definition</div></div>
+        <div class="st"><span class="st-v sk">Memory</span><div class="st-t"><strong>Short-term:</strong> conversation context. <strong>Long-term:</strong> vector DB storing past interactions, user preferences, learned facts. Persists between sessions</div></div>
+        <div class="st"><span class="st-v sk">Planning</span><div class="st-t"><strong>The strategy.</strong> Break complex tasks into subtasks. "Deploy to production" becomes: run tests → build → stage → verify → deploy → notify team</div></div>
+      </div>
+      <p style="margin-bottom: 48px;"> </p>
+      <div class="card nv-c">
+        <p><strong>Agent = LLM + Tools + Memory + Planning.</strong> Remove any one component and you have a chatbot, not an agent. The LLM without tools can only talk. Tools without planning just execute blindly.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">04 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">Tool Calling</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-10px;">How tools actually <span class="sk">work.</span></h2>
+      <div class="code">
+<span class="dm">You register tools as function definitions:</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="sk">tools: [</span><br>
+<span class="dm">  {name: "search_web",</span><br>
+<span class="dm">   params: {query: string}},</span><br>
+<span class="dm">  {name: "send_email",</span><br>
+<span class="dm">   params: {to, subject, body}},</span><br>
+<span class="dm">  {name: "run_sql",</span><br>
+<span class="dm">   params: {query: string}}</span><br>
+<span class="sk">]</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="dm">The LLM doesn't execute tools.</span><br>
+<span class="or">It outputs structured JSON saying WHICH tool to call with WHAT params.</span><br>
+<span class="dm">Your code executes the call.</span><br>
+<span class="dm">You return the result to the LLM.</span>
+      </div>
+      <div class="card sk-c">
+        <p><strong>The LLM is the router, not the executor.</strong> It decides which tool fits the user's request and formats the parameters. Your backend handles the actual API call, validation, and error handling. The model never touches your infrastructure directly.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">05 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">Real Agents in 2026</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-5px;">Who's shipping <span class="sk">agents.</span></h2>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v sk">Devin</span><div class="st-t"><strong>Cognition.</strong> Autonomous coding agent. Reads codebase, plans changes, writes code, runs tests, fixes bugs. Acquired Windsurf's IP</div></div>
+        <div class="st"><span class="st-v sk">Claude</span><div class="st-t"><strong>Anthropic.</strong> Claude Code runs in your terminal. Reads files, writes code, runs commands, commits to git. Computer use for GUI tasks</div></div>
+        <div class="st"><span class="st-v sk">Codex</span><div class="st-t"><strong>OpenAI.</strong> Cloud-based coding agent. Takes GitHub issues, writes PRs, runs tests in sandboxed environments. Async multi-task</div></div>
+        <div class="st"><span class="st-v sk">Gems</span><div class="st-t"><strong>Google.</strong> Gemini agents integrated into Workspace. Read Gmail, summarize Docs, update Sheets, draft responses. Built into the tools you already use</div></div>
+      </div>
+      <p style="margin-bottom: 20px;"> </p>
+      <p style="margin-bottom: 26px;"> </p>
+      <div class="card nv-c">
+        <p><strong>The pattern:</strong> Every major AI company is shifting from "model as product" to "agent as product." The model becomes invisible infrastructure. The agent is the interface.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">06 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">Why Agents Fail</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-5px;">The failure <span class="or">modes.</span></h2>
+      <p style="margin-bottom: 10px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v or">loop</span><div class="st-t"><strong>Infinite loops.</strong> Agent calls tool, gets error, retries same tool, gets error, retries... Burns tokens endlessly. Always set a max_iterations cap</div></div>
+        <div class="st"><span class="st-v or">ghost</span><div class="st-t"><strong>Hallucinated tool calls.</strong> Agent invents a tool that doesn't exist. Or passes wrong parameters. "run_sql" with natural language instead of SQL</div></div>
+        <div class="st"><span class="st-v or">scope</span><div class="st-t"><strong>Scope creep.</strong> Asked to "clean up the code." Deletes files, refactors the architecture, changes the database schema. No boundaries defined</div></div>
+        <div class="st"><span class="st-v or">cost</span><div class="st-t"><strong>Token explosion.</strong> A 15-step agent workflow with tool results at each step can consume 50K+ tokens. One complex task = $0.50-$2.00</div></div>
+      </div>
+      <p style="margin-bottom: 25px;"> </p>
+      <div class="card or-c">
+        <p><strong>Claude Code + terraform destroy.</strong> An AI agent ran a destructive command on a production database. 1.94M rows deleted. The agent didn't understand the consequences of the tool it was calling. This is the #1 risk of agentic AI in 2026.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→ NEXT</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num">07 / 07</span><span class="brand">ravenex.tech</span></div><div class="body">
+      <!-- <div class="tag">Building Safe Agents</div> -->
+       <p style="margin-bottom: 30px;"> </p>
+      <h2 style="word-spacing:-15px;"><span class="sk">Rules</span> for production.</h2>
+      <!-- <p style="margin-bottom: 10px;"> </p> -->
+      <div class="stats">
+        <div class="st"><span class="st-v sk" style="min-width: 5px;">01</span><div class="st-t"><strong>Human-in-the-loop.</strong> For destructive actions (delete, deploy, send), require explicit human approval. Never auto-execute irreversible actions</div></div>
+        <div class="st"><span class="st-v sk" style="min-width: 5px;">02</span><div class="st-t"><strong>Sandboxing.</strong> Agents run in isolated environments. No access to production databases, credentials, or infrastructure without explicit grants</div></div>
+        <div class="st"><span class="st-v sk" style="min-width: 5px;">03</span><div class="st-t"><strong>Max iterations.</strong> Cap the ReAct loop at 10-15 steps. If the agent hasn't solved it by then, escalate to a human. Prevents infinite loops and token burn</div></div>
+        <div class="st"><span class="st-v sk" style="min-width: 5px;">04</span><div class="st-t"><strong>Tool permissions.</strong> Read-only by default. Write access requires explicit scope. "Read email" ≠ "send email." Principle of least privilege</div></div>
+        <div class="st"><span class="st-v sk" style="min-width: 5px;">05</span><div class="st-t"><strong>Audit logging.</strong> Log every tool call, every parameter, every result. When something goes wrong (and it will), you need the full trace</div></div>
+      </div>
+      <!-- <p style="margin-bottom: 10px;"> </p> -->
+      <div class="card sk-c">
+        <p><strong>The 2026 truth:</strong> Agents are the most powerful and most dangerous AI pattern. They can 10× your team's output. They can also delete your production database. The difference is guardrails, not intelligence.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ SAVE</span></div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'ai-agents-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'ai-agents-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

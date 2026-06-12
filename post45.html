@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP - How AI Agents Connect to the World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b10;
+      --card: #0f1318;
+      --ink: #e4ecf8;
+      --ink2: #7888a8;
+      --dim: #95a8be;
+      --cyan: #06b6d4;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --border: rgba(6, 182, 212, .06)
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px
+    }
+
+    .carousel-wrap {
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border)
+    }
+
+    .ghost {
+      display: none
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 20px 24px 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .hdr .num {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      color: var(--dim)
+    }
+
+    .hdr .brand {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim)
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 12px 24px 0 26px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .slide h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: .95;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0
+    }
+
+    .slide h2 .cy {
+      color: var(--cyan)
+    }
+
+    .slide h2 .vi {
+      color: var(--violet)
+    }
+
+    .slide h2 .am {
+      color: var(--amber)
+    }
+
+    .slide p {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin-bottom: 6px;
+      font-weight: 300
+    }
+
+    .slide p.lead {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 10px 24px 16px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      margin-top: auto
+    }
+
+    .ftr .left {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      color: var(--dim)
+    }
+
+    .ftr .right {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cyan)
+    }
+
+    .code {
+      background: rgba(0, 0, 0, .4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      line-height: 1.8;
+      flex-shrink: 0
+    }
+
+    .code .cy {
+      color: #22d3ee;
+      font-weight: 600
+    }
+
+    .code .vi {
+      color: #a78bfa;
+      font-weight: 600
+    }
+
+    .code .am {
+      color: #fbbf24;
+      font-weight: 600
+    }
+
+    .code .gn {
+      color: #4ade80;
+      font-weight: 600
+    }
+
+    .code .rd {
+      color: #f87171;
+      font-weight: 600
+    }
+
+    .code .dm {
+      color: rgba(228, 236, 248, 0.84)
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0
+    }
+
+    .st {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .st:last-child {
+      border-bottom: none
+    }
+
+    .st-v {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 60px;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .st-v.cy {
+      color: var(--cyan)
+    }
+
+    .st-v.vi {
+      color: var(--violet)
+    }
+
+    .st-v.am {
+      color: var(--amber)
+    }
+
+    .st-v.gn {
+      color: #4ade80
+    }
+
+    .st-t {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.35
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      flex-shrink: 0
+    }
+
+    .gcard.cy-c {
+      background: rgba(6, 182, 212, .05);
+      border: 1px solid rgba(6, 182, 212, .12)
+    }
+
+    .gcard.vi-c {
+      background: rgba(139, 92, 246, .05);
+      border: 1px solid rgba(139, 92, 246, .12)
+    }
+
+    .gcard.am-c {
+      background: rgba(245, 158, 11, .05);
+      border: 1px solid rgba(245, 158, 11, .12)
+    }
+
+    .gcard p {
+      color: var(--ink2);
+      margin-bottom: 2px
+    }
+
+    .gcard p:last-child {
+      margin-bottom: 0
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px
+    }
+
+    .dl-btn {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(6, 182, 212, .2);
+      color: var(--cyan);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px
+    }
+
+    .dl-btn:hover {
+      background: var(--cyan);
+      color: var(--bg)
+    }
+
+    .dl-btn.alt {
+      border-color: rgba(228, 236, 248, .06);
+      color: var(--dim)
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--cyan);
+      color: var(--cyan)
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round
+    }
+
+    .dl-btn:disabled {
+      opacity: .3
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(6, 182, 212, .06);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--cyan);
+      transition: width .3s
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid rgba(228, 236, 248, .06);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Geist Mono', monospace;
+      border-radius: 6px;
+      transition: all .25s
+    }
+
+    .nav button:hover {
+      border-color: var(--cyan);
+      color: var(--cyan)
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(228, 236, 248, .06);
+      cursor: pointer;
+      transition: all .35s
+    }
+
+    .dot.active {
+      background: var(--cyan);
+      width: 22px;
+      border-radius: 3px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:80px"> </p>
+          <h2 style="font-size:54px;line-height:.88">MCP.<br><span class="cy">How AI Agents</span><br>Connect to<br>the
+            World.</h2>
+          <!-- <p style="margin-top:18px" class="lead">The open protocol that lets models call tools, read files, and hit
+            APIs, the glue behind every agentic system.</p> -->
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:20px"> </p>
+          <h2>Before MCP:<br>the <span class="am">N×M problem.</span></h2>
+          <div style="height:20px"></div>
+          <div class="code">
+            <span class="dm">5 AI apps × 10 data sources</span><br>
+            <span class="am">= 50 custom integrations to build</span><br>
+            <span class="am">= 50 integrations to maintain</span><br>
+            <span class="am">= every update breaks 5 things</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="dm">Claude needs GitHub? Write a connector.</span><br>
+            <span class="dm">Cursor needs GitHub? Write it again.</span><br>
+            <span class="dm">Windsurf needs GitHub? Write it again.</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="cy">After MCP: N + M</span><br>
+            <span class="gn">GitHub writes 1 MCP server.</span><br>
+            <span class="gn">Every AI app gets GitHub for free.</span>
+          </div>
+          <div class="gcard cy-c">
+            <p><strong>MCP is the USB-C of AI.</strong> Before USB-C, every device needed its own charger. Before MCP,
+              every AI tool needed its own connectors. One standard. Universal compatibility.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:20px"> </p>
+          <h2>Host → Client<br>→ Server → <span class="cy">Tool.</span></h2>
+          <div style="height:50px"></div>
+          <div class="code">
+            <span class="cy">Host</span> <span class="dm">(Claude Desktop, Cursor, VS Code)</span><br>
+            <span class="dm"> └─ </span><span class="vi">MCP Client</span> <span class="dm">(speaks the
+              protocol)</span><br>
+            <span class="dm"> ├─ </span><span class="gn">MCP Server: filesystem</span><br>
+            <span class="dm"> │ └─ read_file, write_file, list_dir</span><br>
+            <span class="dm"> ├─ </span><span class="gn">MCP Server: github</span><br>
+            <span class="dm"> │ └─ get_pr, create_issue, push_code</span><br>
+            <span class="dm"> └─ </span><span class="gn">MCP Server: postgres</span><br>
+            <span class="dm"> └─ query, describe_table, explain</span>
+          </div>
+          <p style="margin-bottom:6px"> </p>
+          <div class="gcard vi-c">
+            <p><strong>The key separation:</strong> The Host is the AI app. The Client is the protocol adapter. The
+              Server is the integration. The model never calls your tools directly, it routes everything through MCP.
+            </p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:16px"> </p>
+          <h2>Three things MCP<br>servers <span class="vi">expose.</span></h2>
+          <div style="height:60px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v cy">Tools</span>
+              <div class="st-t"><strong>Functions the model can call.</strong> Name, description, JSON schema. The model
+                decides when to invoke them. run_query, send_email, search_web</div>
+            </div>
+            <div class="st"><span class="st-v vi">Rsrcs</span>
+              <div class="st-t"><strong>Data the model can read.</strong> Files, DB rows, API payloads, addressed by
+                URI. file://main.py or db://users/42. Fetched on demand, not pushed into context</div>
+            </div>
+            <div class="st"><span class="st-v am">Prompts</span>
+              <div class="st-t"><strong>Reusable prompt templates.</strong> Pre-built instructions invokable by name.
+                "code-review", "summarize-pr". Consistent every time, baked into the server</div>
+            </div>
+          </div>
+          <p style="margin-bottom:8px"> </p>
+          <div class="gcard cy-c">
+            <p><strong>Most servers only use Tools.</strong> Resources are for browsable data. Prompts are for teams
+              that want standardized AI behaviors. Start with Tools, they cover 90% of use cases.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:16px"> </p>
+          <h2>How messages<br>actually <span class="am">travel.</span></h2>
+          <div style="height:20px"></div>
+          <div class="code">
+            <span class="dm">Wire format: </span><span class="cy">JSON-RPC 2.0</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="gn" style="font-size: 14px;">stdio</span> <span class="dm">← local tools
+              (recommended)</span><br>
+            <span class="dm"> Host spawns server as subprocess.</span><br>
+            <span class="dm"> Talks via stdin / stdout.</span><br>
+            <span class="dm"> Zero network. Secure by default.</span><br>
+            <span class="dm"> Used by: filesystem, git, sqlite</span><br>
+            <span class="dm">────────────────────────────</span><br>
+            <span class="vi" style="font-size: 14px;">SSE</span> <span class="dm">← remote tools</span><br>
+            <span class="dm"> Server runs as HTTP service.</span><br>
+            <span class="dm"> Client connects via EventSource.</span><br>
+            <span class="dm"> Multi-client, cross-machine.</span><br>
+            <span class="dm"> Used by: Slack, GitHub API, SaaS</span>
+          </div>
+          <div class="gcard am-c">
+            <p><strong>stdio is safer.</strong> No tokens over the wire, no open ports. For SSE-based remote tools,
+              treat auth like any API, OAuth 2.0 support is being standardized into the protocol now.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The ecosystem<br><span class="cy">today.</span></h2>
+          <div style="height:40px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v cy">Files</span>
+              <div class="st-t"><strong>Filesystem (Anthropic official).</strong> Read, write, search files. Most-used
+                server. Ships with Claude Code by default</div>
+            </div>
+            <div class="st"><span class="st-v gn">GitHub</span>
+              <div class="st-t"><strong>GitHub (official).</strong> Read repos, create PRs, comment on issues, push
+                code. Core to every agentic coding workflow</div>
+            </div>
+            <div class="st"><span class="st-v vi">DB</span>
+              <div class="st-t"><strong>PostgreSQL / SQLite.</strong> Query databases, describe schemas, explain query
+                plans. Read-only mode strongly recommended for production</div>
+            </div>
+            <div class="st"><span class="st-v am">Web</span>
+              <div class="st-t"><strong>Fetch / Browser.</strong> Hit any URL or run JS in a headless browser. Agents
+                can scrape, test UIs, and fill forms</div>
+            </div>
+            <div class="st"><span class="st-v cy">Mem</span>
+              <div class="st-t"><strong>Memory (Anthropic).</strong> Persistent key-value store across sessions. The
+                agent remembers facts about you between conversations</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The practical<br><span class="cy">cheatsheet.</span></h2>
+          <div style="height:40px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v cy">01</span>
+              <div class="st-t"><strong>MCP ≠ tool calling.</strong> Tool calling is model-specific JSON. MCP is a
+                universal protocol, one server works with Claude, GPT-5, Gemini</div>
+            </div>
+            <div class="st"><span class="st-v vi">02</span>
+              <div class="st-t"><strong>Start with stdio.</strong> Local, no network, no auth. Ship in an afternoon. Add
+                SSE when you need remote multi-client access</div>
+            </div>
+            <div class="st"><span class="st-v am">03</span>
+              <div class="st-t"><strong>Write good tool descriptions.</strong> The model reads the description to decide
+                when to call it. Vague description = wrong calls = broken agent</div>
+            </div>
+            <div class="st"><span class="st-v cy">04</span>
+              <div class="st-t"><strong>Read-only first.</strong> Validate the plan before granting write access.
+                Destructive tools need human-in-the-loop confirmation</div>
+            </div>
+            <div class="st"><span class="st-v vi">05</span>
+              <div class="st-t"><strong>MCP is not auth.</strong> The protocol carries the message. You still own
+                security, what your tool does with the call is your responsibility</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prev = document.getElementById('prev'), next = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      dotsC.appendChild(d)
+    });
+
+    const dots = dotsC.querySelectorAll('.dot'), sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prev.onclick = () => sc(-1);
+    next.onclick = () => sc(1);
+
+    slides.forEach(s => new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting) {
+          cur = Array.from(slides).indexOf(e.target);
+          dots.forEach((d, i) => d.classList.toggle('active', i === cur))
+        }
+      })
+    }, { root: carousel, threshold: .6 }).observe(s));
+
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1) };
+
+    async function cap(s) {
+      return await html2canvas(s, {
+        backgroundColor: '#0f1318',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      });
+    }
+
+    function dl(c, f) {
+      const a = document.createElement('a');
+      a.download = f;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      try {
+        dl(await cap(slides[cur]), 'mcp-' + String(cur + 1).padStart(2, '0') + '.png');
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'Current Slide';
+      b.disabled = false;
+    }
+
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true;
+      b.innerHTML = dlSVG + 'Capturing...';
+      bar.style.display = 'block';
+      fill.style.width = '0%';
+      try {
+        const origScroll = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto';
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          dl(await cap(slides[i]), 'mcp-' + String(i + 1).padStart(2, '0') + '.png');
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+        carousel.style.scrollBehavior = 'smooth';
+      } catch (e) {
+        console.error(e);
+        alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+      }
+      b.innerHTML = dlSVG + 'All Slides';
+      b.disabled = false;
+      setTimeout(() => { bar.style.display = 'none' }, 1000);
+    }
+  </script>
+</body>
+
+</html>

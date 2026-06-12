@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature, Top-K, Top-P — The Three Knobs</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c14;--ink:#f0f0f8;--ink2:#9090a8;--dim:#9898a5;--cold:#3b82f6;--warm:#f59e0b;--hot:#ef4444;--border:rgba(59,130,246,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)}
+.slide.s-cold{background:linear-gradient(180deg,#0a1628,#0c1020)}.slide.s-cover{background:linear-gradient(135deg,#0a1628,#1a0c10,#140a08)}.slide.s-warm{background:linear-gradient(180deg,#1a1008,#140c06)}.slide.s-hot{background:linear-gradient(180deg,#1a0808,#140606)}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px} */
+.slide.s-cold::before{background:var(--cold)}.slide.s-cover::before{background:linear-gradient(90deg,var(--cold),var(--warm),var(--hot))}.slide.s-warm::before{background:var(--warm)}.slide.s-hot::before{background:var(--hot)}
+.ghost{position:absolute;top:50px;right:18px;font-family:'Instrument Serif',serif;font-style:italic;font-size:140px;line-height:.7;color:rgba(240,240,248,.02);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:20px 24px 0 26px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:12px 24px 0 26px;display:flex;flex-direction:column}
+.pill{display:inline-flex;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;flex-shrink:0;font-weight:500;width:fit-content}
+.pill.cd{background:rgba(59,130,246,.1);color:var(--cold);border:1px solid rgba(59,130,246,.2)}
+.pill.wm{background:rgba(245,158,11,.1);color:var(--warm);border:1px solid rgba(245,158,11,.2)}
+.pill.ht{background:rgba(239,68,68,.1);color:var(--hot);border:1px solid rgba(239,68,68,.2)}
+.pill.mx{background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.2)}
+.slide h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(28px,5.5vw,44px);line-height:.92;margin-bottom:12px;flex-shrink:0}
+.slide h2 .cd{color:var(--cold)}.slide h2 .wm{color:var(--warm)}.slide h2 .ht{color:var(--hot)}
+.slide h2 em{font-style:italic;font-weight:400}
+.slide p{font-size:12.5px;line-height:1.55;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;color:var(--ink);line-height:1.4}
+.ftr{flex-shrink:0;padding:10px 24px 16px 26px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-size:12px;font-weight:500}
+.code{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:14px 16px;margin:4px 0;line-height:1.8;flex-shrink:0}
+.code .cd{color:#60a5fa;font-weight:600}.code .wm{color:#fbbf24;font-weight:600}.code .ht{color:#f87171;font-weight:600}.code .dm{color:rgba(240, 240, 248, 0.836)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;min-width:44px;text-align:right;flex-shrink:0}
+.st-v.cd{color:var(--cold)}.st-v.wm{color:var(--warm)}.st-v.ht{color:var(--hot)}
+.st-t{font-size:11px;color:var(--ink2);line-height:1.35}.st-t strong{font-weight:600;color:var(--ink)}
+.gcard{padding:12px 14px;margin:8px 0;border-radius:8px;font-size:11px;line-height:1.45;flex-shrink:0}
+.gcard.cd-c{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15)}
+.gcard.wm-c{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15)}
+.gcard.ht-c{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15)}
+.gcard p{color:var(--ink2);margin-bottom:2px}.gcard p:last-child{margin-bottom:0}.gcard strong{font-weight:600;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(59,130,246,.25);color:var(--cold);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--cold);color:var(--bg)}.dl-btn.alt{border-color:rgba(240,240,248,.06);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--cold);color:var(--cold)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(59,130,246,.08);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--cold);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(240,240,248,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--cold);color:var(--cold)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(240,240,248,.06);cursor:pointer;transition:all .35s}.dot.active{background:var(--cold);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide s-cover"><div class="ghost">01</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill mx">● LLM Parameters</div> -->
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+      <h2 style="font-size: 64px; line-height: 70px;"><em>Temperature,</em><br><span class="wm">Top-K,</span><br><span class="ht">Top-P.</span></h2>
+      <!-- <p class="lead" style="font-size: 22px;">Three knobs that control how "creative" vs "predictable" your AI is. Every API user sets these. Almost nobody understands what they actually do.</p> -->
+      <p style="font-size: 18px;">They all modify the same thing: the probability distribution over the next token. They just do it in different ways.</p>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right" style="color:var(--warm)">Swipe →</span></div></div>
+
+    <div class="slide s-cold"><div class="ghost">02</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill cd">● Temperature</div> -->
+       <p class="lead" style="margin-bottom: 30px;"> </p>
+      <h2 style="line-height: 50px;"><em>Temperature</em> controls <span class="cd">randomness.</span></h2>
+      <div class="code">
+<span class="dm">Prompt: "The capital of France is ___"</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="cd">temp = 0:</span>   <span class="cd">Paris 99.9%</span><br>
+<span class="dm">             Lyon 0.05%, Marseille 0.03%</span><br>
+<span class="dm">             → always picks "Paris"</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="wm">temp = 1:</span>   <span class="wm">Paris 72%</span><br>
+<span class="dm">             Lyon 12%, Marseille 8%</span><br>
+<span class="dm">             → usually Paris, sometimes not</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="ht">temp = 2:</span>   <span class="ht">Paris 35%</span><br>
+<span class="dm">             Lyon 18%, Marseille 15%...</span><br>
+<span class="dm">             → anything goes. Chaos mode</span>
+      </div>
+      <p class="lead" style="margin-bottom: 5px;"> </p>
+      <div class="gcard cd-c">
+        <p><strong>Temp 0</strong> = deterministic, factual, predictable. Use for code, math, classification.</p>
+        <p><strong>Temp 0.7</strong> = balanced. Use for general chat, writing.</p>
+        <p><strong>Temp 1.5+</strong> = creative, wild, unreliable. Use for brainstorming, poetry.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right" style="color:var(--cold)">→</span></div></div>
+
+    <div class="slide s-warm"><div class="ghost">03</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill wm">● Top-K</div> -->
+       <p class="lead" style="margin-bottom: 30px;"> </p>
+      <h2 style="line-height: 50px;"><em>Top-K</em> limits<br>the <span class="wm">candidates.</span></h2>
+      <p >Before sampling, only keep the K most likely tokens. Discard everything else.</p>
+      <div class="code">
+<span class="dm">Next token probabilities (sorted):</span><br>
+<span class="wm">Paris</span>    <span class="dm">40%</span><br>
+<span class="wm">Lyon</span>     <span class="dm">15%</span><br>
+<span class="wm">Nice</span>     <span class="dm">10%</span><br>
+<span class="dm">Marseille  8%  ← cut off at K=3</span><br>
+<span class="dm">Bordeaux   5%  ← discarded</span><br>
+<span class="dm">...200 more    ← all discarded</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="wm">K=3: only Paris, Lyon, Nice remain</span><br>
+<span class="dm">Then sample from these three</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="wm">K=1: always pick the top token</span><br>
+<span class="wm">K=100: barely any filtering</span>
+      </div>
+      <div class="gcard wm-c">
+        <p><strong>The problem with Top-K:</strong> K is fixed regardless of the distribution. Sometimes 3 tokens are clearly right (K=3 works). Sometimes 50 are valid (K=3 cuts too aggressively). Top-P solves this.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right" style="color:var(--warm)">→</span></div></div>
+
+    <div class="slide s-hot"><div class="ghost">04</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill ht">● Top-P (Nucleus)</div> -->
+       <p class="lead" style="margin-bottom: 30px;"> </p>
+      <h2 style="line-height: 50px;"><em>Top-P</em> is <span class="ht">adaptive.</span></h2>
+      <p >Keep the smallest set of tokens whose cumulative probability exceeds P. The candidate pool resizes dynamically.</p>
+      <div class="code">
+<span class="dm">Confident prediction (factual):</span><br>
+<span class="ht">Paris 92%</span> <span class="dm">← cumulative > 0.9</span><br>
+<span class="dm">P=0.9: only 1 token passes</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="dm">Uncertain prediction (creative):</span><br>
+<span class="ht">dark 15% + cold 12% + quiet 11%</span><br>
+<span class="ht">+ still 10% + deep 9% + vast 8%</span><br>
+<span class="dm">cumulative = 65%... keep going...</span><br>
+<span class="ht">+ empty 7% + long 6% = 78%...</span><br>
+<span class="dm">P=0.9: 12 tokens pass. Wide pool</span>
+      </div>
+      <p class="lead" style="margin-bottom: 85px;"> </p>
+      <div class="gcard ht-c">
+        <p><strong>Top-P adapts to context.</strong> When the model is confident, the pool shrinks to 1-2 tokens. When it's uncertain, the pool expands to dozens. This is why Top-P is generally preferred over Top-K in production.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right" style="color:var(--hot)">→</span></div></div>
+
+    <div class="slide s-cover"><div class="ghost">05</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill mx">● The Cheatsheet</div> -->
+       <p class="lead" style="margin-bottom: 30px;"> </p>
+      <h2 style="line-height: 50px;">What to set <em>in practice.</em></h2>
+      <div class="stats">
+        <div class="st"><span class="st-v cd">code</span><div class="st-t"><strong>temp=0, top_p=1.</strong> Deterministic. Same input = same output. No creativity needed</div></div>
+        <div class="st"><span class="st-v cd">data</span><div class="st-t"><strong>temp=0, top_p=1.</strong> Classification, extraction, structured output. Precision over creativity</div></div>
+        <div class="st"><span class="st-v wm">chat</span><div class="st-t"><strong>temp=0.7, top_p=0.9.</strong> Natural, varied responses. Human-like. The default sweet spot</div></div>
+        <div class="st"><span class="st-v wm">write</span><div class="st-t"><strong>temp=0.8, top_p=0.95.</strong> Blog posts, emails, marketing. Creative but coherent</div></div>
+        <div class="st"><span class="st-v ht">brain</span><div class="st-t"><strong>temp=1.2, top_p=0.95.</strong> Brainstorming, poetry, wild ideas. Accept occasional nonsense</div></div>
+      </div>
+      <p class="lead" style="margin-bottom: 22px;"> </p>
+      <div class="gcard cd-c">
+        <p><strong>OpenAI recommends:</strong> Adjust temperature OR top_p, not both. They interact unpredictably when modified together. Pick one knob and leave the other at default.</p>
+      </div>
+      <div class="gcard ht-c">
+        <p><strong>The real insight:</strong> These settings don't make the model "smarter" or "dumber." They change which tokens get selected from the same probability distribution. The knowledge is identical. Only the sampling strategy changes.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right" style="color:#a855f7">↻ Save & Share</span></div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'temperature-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'temperature-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

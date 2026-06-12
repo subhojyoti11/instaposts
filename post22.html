@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding - Midnight Grid Style</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #e2e8f0; 
+        --slide-bg: #ffffff;
+        --ink: #141b2d; 
+        --accent: #3b82f6; 
+        --alert: #e11d48; 
+        --border: 3px solid var(--ink);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+        background: var(--bg);
+        font-family: 'Archivo', sans-serif;
+        color: var(--ink);
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .carousel {
+        display: flex;
+        gap: 24px;
+        width: 100%;
+        max-width: 1200px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+    
+    .slide {
+        flex: 0 0 min(90vw, 450px);
+        aspect-ratio: 4/5;
+        background: var(--slide-bg);
+        border: var(--border);
+        scroll-snap-align: center;
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+    }
+
+    .slide-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: var(--border);
+        padding: 12px 16px;
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        background: var(--ink);
+        color: #fff;
+    }
+
+    .slide-header span.accent { color: var(--accent); }
+
+    .grid-body { display: grid; height: 100%; }
+    
+    h1 {
+        font-size: 46px;
+        font-weight: 900;
+        line-height: 0.95;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        padding: 24px;
+    }
+    h1 span { color: var(--alert); }
+    h1.blue span { color: var(--accent); }
+
+    .lead {
+        font-size: 18px;
+        font-weight: 700;
+        padding: 0 24px 24px 24px;
+        border-bottom: var(--border);
+    }
+
+    .data-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-bottom: var(--border);
+    }
+    .data-row:last-child { border-bottom: none; }
+    
+    .data-box {
+        padding: 20px;
+        border-right: var(--border);
+    }
+    .data-box:last-child { border-right: none; }
+    
+    .data-num {
+        font-family: 'Space Mono', monospace;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .data-text { font-size: 13px; line-height: 1.4; font-weight: 700;}
+    .data-desc { font-size: 12px; line-height: 1.4; padding: 16px 24px; }
+    
+    .list-item {
+        padding: 16px 24px;
+        border-bottom: var(--border);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 16px;
+        align-items: center;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-label {
+        font-family: 'Space Mono', monospace;
+        background: var(--ink);
+        color: #fff;
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    /* Fixed styling for perfect html2canvas rendering */
+    .huge-statement {
+        padding: 32px 24px;
+        font-size: 25px;
+        font-weight: 900;
+        line-height: 1.2;
+        border-bottom: var(--border);
+    }
+    
+    .huge-statement span { 
+        background: var(--accent); 
+        color: white; 
+        padding: 4px 8px; 
+        display: inline-block; 
+        margin-top: 6px; 
+    }
+
+    .slide-footer {
+        padding: 16px 24px;
+        border-top: var(--border);
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        display: flex;
+        justify-content: space-between;
+        background: #f8fafc;
+    }
+
+    .controls {
+        display: flex;
+        gap: 16px;
+        margin-top: 20px;
+    }
+    
+    .btn {
+        font-family: 'Space Mono', monospace;
+        background: var(--ink);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-transform: uppercase;
+        border-radius: 4px;
+        transition: 0.2s;
+    }
+    .btn:hover { background: var(--accent); }
+
+</style>
+</head>
+<body>
+
+<div class="carousel" id="carousel">
+    
+    <div class="slide">
+        <div class="slide-header">
+            <span>Ravenex.Tech</span>
+            <span>01/04</span>
+        </div>
+        <div class="grid-body" style="grid-template-rows: auto auto 1fr;">
+            <h1>Vibe Coding<br>Startups<br>Are <span>Burning.</span></h1>
+            <p class="lead">Not the tools. The companies built with them.</p>
+            <div class="data-row" style="grid-template-columns: 1fr; border-bottom: none;">
+                <div class="data-box" style="border-right: none; border-bottom: var(--border);">
+                    <span class="data-num" style="color: var(--alert)">$600B</span>
+                    <p class="data-text">The AI Revenue Gap. The chasm between AI infrastructure spend and actual generated revenue. (Sequoia)</p>
+                </div>
+                <div class="data-box" style="border-right: none; background: #f8fafc;">
+                    <span class="data-num">30%</span>
+                    <p class="data-text">Of generative AI projects will be abandoned post-proof-of-concept due to escalating costs. (Gartner)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="slide-header">
+            <span>The Margin Trap</span>
+            <span>02/04</span>
+        </div>
+        <div class="grid-body" style="grid-template-rows: auto auto 1fr;">
+            <div class="data-row">
+                <div class="data-box" style="background: var(--ink); color: #fff;">
+                    <span class="data-num">$0.05</span>
+                    <p class="data-text">Traditional SaaS<br>Cost per user</p>
+                </div>
+                <div class="data-box" style="background: var(--alert); color: #fff;">
+                    <span class="data-num">$5.00+</span>
+                    <p class="data-text">AI Wrappers<br>Cost per user</p>
+                </div>
+            </div>
+            <p class="data-desc" style="border-bottom: var(--border); font-weight: 700;">You literally lose money by growing. This is dismantling unicorns.</p>
+            
+            <div style="display: flex; flex-direction: column;">
+                <div class="list-item">
+                    <span class="list-label">WINDSURF</span>
+                    <p class="data-text">Valued at $1.25B. $3B deal collapsed. Dismantled in months due to abysmal margins.</p>
+                </div>
+                <div class="list-item">
+                    <span class="list-label">INFLECTION</span>
+                    <p class="data-text">Raised $1.3B. Compute math failed. Absorbed by Microsoft for parts.</p>
+                </div>
+                <div class="list-item">
+                    <span class="list-label">JASPER AI</span>
+                    <p class="data-text">Raised $125M at a $1.5B valuation, then gutted team.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="slide-header">
+            <span>Production Wreckage</span>
+            <span>03/04</span>
+        </div>
+        <div class="grid-body" style="grid-template-rows: auto 1fr;">
+            <h1 class="blue">SECURITY<br><span>DEBT.</span></h1>
+            <div style="display: flex; flex-direction: column; border-top: var(--border);">
+                <div class="list-item">
+                    <span class="list-label" style="background: var(--alert)">MOLTBOOK</span>
+                    <p class="data-text">Shipped a platform without code. 1.5M API keys exposed.</p>
+                </div>
+                <div class="list-item">
+                    <span class="list-label" style="background: var(--alert)">CLAUDE CODE</span>
+                    <p class="data-text">Ran terraform destroy on 2.5 years of prod data. 1.94M rows deleted.</p>
+                </div>
+                <div class="list-item" style="background: #f8fafc;">
+                    <span class="list-label" style="background: var(--ink)">STANFORD</span>
+                    <p class="data-text">Study reveals devs using AI wrote less secure code, but confidently believed it was more secure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <div class="slide-header">
+            <span>The Reality</span>
+            <span>04/04</span>
+        </div>
+        <div class="grid-body" style="grid-template-rows: auto 1fr;">
+            <div class="huge-statement">
+                THE HOTTEST DISCIPLINE IN TECH IS NOW<br><span>RESCUE ENGINEERING.</span>
+            </div>
+            <div style="padding: 24px;">
+                <p class="data-text" style="font-size: 15px; margin-bottom: 16px;">The job of fixing vibe-coded production disasters, securing exposed APIs, and rebuilding architecture that was never built to scale.</p>
+                <p class="data-text" style="font-size: 15px;">AI didn't kill the developer.<br>It proved exactly why real engineers exist.</p>
+            </div>
+        </div>
+        <div class="slide-footer">
+            <span>@RavenexTechnologies</span>
+            <span>Build fast. But build right.</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="controls">
+    <button class="btn" onclick="downloadAll()">Download 4 Slides</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function downloadAll() {
+    const btn = document.querySelector('.btn');
+    const originalText = btn.innerText;
+    btn.innerText = "RENDERING...";
+    btn.disabled = true;
+    
+    await document.fonts.ready;
+    
+    const carousel = document.getElementById('carousel');
+    const slides = document.querySelectorAll('.slide');
+    const originalScroll = carousel.scrollLeft;
+    
+    for (let i = 0; i < slides.length; i++) {
+        // Use 'instant' scroll behavior to avoid capturing mid-animation
+        slides[i].scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        
+        // --- THE FIX: FREEZE DIMENSIONS ---
+        // Force explicit pixel widths/heights so layout doesn't shift during canvas cloning
+        const rect = slides[i].getBoundingClientRect();
+        const originalStyle = slides[i].getAttribute('style') || '';
+        slides[i].style.width = rect.width + 'px';
+        slides[i].style.height = rect.height + 'px';
+        slides[i].style.maxWidth = 'none';
+        slides[i].style.flex = 'none';
+        
+        const canvas = await html2canvas(slides[i], { 
+            scale: 3, 
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+        
+        // Restore dynamic styling
+        slides[i].setAttribute('style', originalStyle);
+        
+        const link = document.createElement('a');
+        link.download = `ravenex-vibe-coding-slide-0${i+1}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        await new Promise(r => setTimeout(r, 400));
+    }
+    
+    carousel.scrollLeft = originalScroll;
+    btn.innerText = originalText;
+    btn.disabled = false;
+}
+</script>
+
+</body>
+</html>

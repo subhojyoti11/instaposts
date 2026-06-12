@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RLHF | How LLMs Learn to Behave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f5f0;
+      --card: #ffffff;
+      --ink: #1a1614;
+      --ink2: #5a524c;
+      --dim: #474f5a;
+      --coral: #dc4326;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --border: rgba(26, 22, 20, .07)
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px
+    }
+
+    .cw {
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(26, 22, 20, .06)
+    }
+
+    .ghost {
+      display: none
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 18px 24px 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .hdr .num {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      color: var(--dim)
+    }
+
+    .hdr .brand {
+      font-family: 'Fira Code', monospace;
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim)
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 24px 0 26px;
+      display: flex;
+      flex-direction: column
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 38px);
+      line-height: .92;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0
+    }
+
+    h2 .co {
+      color: var(--coral)
+    }
+
+    h2 .bl {
+      color: var(--blue)
+    }
+
+    h2 .gn {
+      color: var(--green)
+    }
+
+    p {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin-bottom: 6px;
+      font-weight: 300
+    }
+
+    p.lead {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 8px 24px 14px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: auto;
+      margin-bottom: 10px;
+      border-top: 1px solid var(--border)
+    }
+
+    .ftr .left {
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: var(--dim)
+    }
+
+    .ftr .right {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--coral)
+    }
+
+    .code {
+      background: #f3f1ec;
+      border: 1px solid rgba(26, 22, 20, .09);
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      line-height: 1.6;
+      flex-shrink: 0
+    }
+
+    .code .co {
+      color: #dc4326;
+      font-weight: 600
+    }
+
+    .code .bl {
+      color: #2563eb;
+      font-weight: 600
+    }
+
+    .code .gn {
+      color: #16a34a;
+      font-weight: 600
+    }
+
+    .code .am {
+      color: #d97706;
+      font-weight: 600
+    }
+
+    .code .dm {
+      color: #5a524c
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0
+    }
+
+    .st {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .st:last-child {
+      border-bottom: none
+    }
+
+    .st-v {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 44px;
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .st-v.co {
+      color: var(--coral)
+    }
+
+    .st-v.bl {
+      color: var(--blue)
+    }
+
+    .st-v.gn {
+      color: var(--green)
+    }
+
+    .st-t {
+      font-size: 13px;
+      color: var(--ink2);
+      line-height: 1.35
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      flex-shrink: 0
+    }
+
+    .gcard.co-c {
+      background: rgba(220, 67, 38, .05);
+      border: 1px solid rgba(220, 67, 38, .14)
+    }
+
+    .gcard.bl-c {
+      background: rgba(37, 99, 235, .05);
+      border: 1px solid rgba(37, 99, 235, .14)
+    }
+
+    .gcard.gn-c {
+      background: rgba(22, 163, 74, .05);
+      border: 1px solid rgba(22, 163, 74, .14)
+    }
+
+    .gcard p {
+      color: var(--ink2);
+      margin-bottom: 2px
+    }
+
+    .gcard p:last-child {
+      margin-bottom: 0
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px
+    }
+
+    .dl-btn {
+      font-family: 'Fira Code', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(220, 67, 38, .2);
+      color: var(--coral);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px
+    }
+
+    .dl-btn:hover {
+      background: var(--coral);
+      color: #fff
+    }
+
+    .dl-btn.alt {
+      border-color: var(--border);
+      color: var(--dim)
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--coral);
+      color: var(--coral)
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round
+    }
+
+    .dl-btn:disabled {
+      opacity: .3
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(220, 67, 38, .08);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--coral);
+      transition: width .3s
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Code', monospace;
+      border-radius: 6px;
+      transition: all .25s
+    }
+
+    .nav button:hover {
+      border-color: var(--coral);
+      color: var(--coral)
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(26, 22, 20, .1);
+      cursor: pointer;
+      transition: all .35s
+    }
+
+    .dot.active {
+      background: var(--coral);
+      width: 22px;
+      border-radius: 3px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cw">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:90px"> </p>
+          <h2 style="font-size:52px;line-height:.88">RLHF.<br><span class="co">How LLMs</span><br>Learn to<br>Behave.
+          </h2>
+          <!-- <p style="margin-top:18px" class="lead">Why ChatGPT answers helpfully instead of just predicting the next token.</p> -->
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:16px"> </p>
+          <h2>Pretraining makes<br>a predictor. Not an<br><span class="co">assistant.</span></h2>
+          <div style="height:20px"></div>
+          <div class="code">
+            <span class="dm">Prompt: "How do I get into my neighbor's wifi?"</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="co">Base model:</span> <span class="dm">"...use aircrack-ng to capture</span><br>
+            <span class="dm"> handshake packets and run a</span><br>
+            <span class="dm"> dictionary attack..."</span><br>
+            <span class="dm"> (predicts what text follows. Nothing more.)</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="gn">RLHF model:</span> <span class="dm">"I can't help with</span><br>
+            <span class="dm"> unauthorized access. If it's your</span><br>
+            <span class="dm"> own router, here's how..."</span>
+          </div>
+          <div class="gcard co-c">
+            <p><strong>The pretrained model has all the knowledge.</strong> It has no values. RLHF is what teaches it to
+              be helpful, harmless, and honest, not by adding facts, but by shaping behavior.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Step 1:<br>Supervised<br><span class="bl">Fine-Tuning.</span></h2>
+          <div style="height:26px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v bl">Who</span>
+              <div class="st-t"><strong>Human labelers.</strong> Trained contractors who write high-quality (prompt,
+                ideal response) pairs from scratch following detailed guidelines</div>
+            </div>
+            <div class="st"><span class="st-v bl">What</span>
+              <div class="st-t"><strong>10K–100K examples.</strong> Covering coding, writing, factual Q&A, refusals, and
+                roleplay, a representative sample of real deployment</div>
+            </div>
+            <div class="st"><span class="st-v bl">How</span>
+              <div class="st-t"><strong>Standard fine-tuning.</strong> Cross-entropy loss on (prompt, ideal response)
+                pairs. Model learns to mimic the labeler's style and intent</div>
+            </div>
+            <div class="st"><span class="st-v bl">Gap</span>
+              <div class="st-t"><strong>SFT isn't enough.</strong> It teaches the format of helpfulness. It can't teach
+                the model to prefer better answers over worse ones</div>
+            </div>
+          </div>
+          <div class="gcard bl-c">
+            <p><strong>SFT creates the starting point.</strong> The model begins sounding like an assistant. But without
+              preference data, it can't distinguish "good" from "better."</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Step 2:<br>The Reward<br><span class="gn">Model.</span></h2>
+          <div style="height:20px"></div>
+          <div class="code">
+            <span class="dm">Same prompt → two responses (A and B)</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="gn">Human labeler: "A is better than B"</span><br>
+            <span class="dm"> (repeat for ~50K-500K comparisons)</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="bl">Reward model learns:</span><br>
+            <span class="dm"> RM(prompt, response) → score</span><br>
+            <span class="dm"> higher score = more preferred</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="gn">Result: a model that predicts</span><br>
+            <span class="gn">human preference without asking</span><br>
+            <span class="dm"> humans every single time</span>
+          </div>
+          <div class="gcard gn-c">
+            <p><strong>The reward model is the "bottled human."</strong> It replaces live feedback during RL training,
+              scoring millions of responses per hour so training doesn't need to wait for human raters.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Step 3: PPO |<br>the <span class="co">RL loop.</span></h2>
+          <div style="height:16px"></div>
+          <div class="code">
+            <span class="dm">Loop (thousands of iterations):</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="bl">①</span> <span class="dm">Policy (LLM) generates response</span><br>
+            <span class="gn">②</span> <span class="dm">Reward model scores it</span><br>
+            <span class="co">③</span> <span class="dm">PPO updates policy weights to</span><br>
+            <span class="dm"> maximize expected reward</span><br>
+            <span class="dm">──────────────────────────────</span><br>
+            <span class="dm">KL penalty keeps model close to SFT:</span><br>
+            <span class="dm"> loss = RM(s) </span><span class="co">- β · KL(π || π_SFT)</span><br>
+            <span class="dm"> (stops reward hacking)</span>
+          </div>
+          <div class="gcard co-c">
+            <p><strong>PPO = Proximal Policy Optimization.</strong> Updates the model in small, stable steps. The KL
+              penalty is what stops it from becoming incoherent while chasing a high reward score.</p>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The model<br>finds <span class="co">shortcuts.</span></h2>
+          <div style="height:40px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v co">Syco</span>
+              <div class="st-t"><strong>Sycophancy.</strong> Model agrees with the user's premise even when it's wrong.
+                Reward models rate confident-sounding agreement highly</div>
+            </div>
+            <div class="st"><span class="st-v co">Long</span>
+              <div class="st-t"><strong>Verbosity bias.</strong> Longer responses score higher in evals. Model learns to
+                pad answers rather than be concise</div>
+            </div>
+            <div class="st"><span class="st-v co">Safe</span>
+              <div class="st-t"><strong>Over-refusal.</strong> Refusing is always safe, never harmful. Model
+                over-learns to refuse borderline requests that are actually benign</div>
+            </div>
+            <div class="st"><span class="st-v co">Hack</span>
+              <div class="st-t"><strong>Reward exploitation.</strong> Model finds outputs that fool the RM without
+                satisfying the real intent. The RM is a proxy, not ground truth</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The practical<br><span class="co">cheatsheet.</span></h2>
+          <div style="height:40px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v co">01</span>
+              <div class="st-t"><strong>Three phases: SFT → RM → PPO.</strong> Each builds on the last. Skip SFT and PPO
+                starts from noise. Skip RM and you have no objective</div>
+            </div>
+            <div class="st"><span class="st-v bl">02</span>
+              <div class="st-t"><strong>RLHF doesn't add knowledge.</strong> It shapes behavior. The model knows the
+                same facts before and after, it just chooses differently</div>
+            </div>
+            <div class="st"><span class="st-v gn">03</span>
+              <div class="st-t"><strong>RLAIF extends this.</strong> AI feedback replaces human labelers. Constitutional
+                AI is Anthropic's version, Claude critiques Claude</div>
+            </div>
+            <div class="st"><span class="st-v co">04</span>
+              <div class="st-t"><strong>DPO is the leaner alternative.</strong> Direct Preference Optimization skips the
+                reward model entirely. Trains on preference pairs directly. Fewer steps, competitive results</div>
+            </div>
+            <div class="st"><span class="st-v bl">05</span>
+              <div class="st-t"><strong>The RM is the ceiling.</strong> Its quality limits the final model. Garbage
+                preference data in = misaligned model out</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prev = document.getElementById('prev'), next = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d) });
+    const dots = dotsC.querySelectorAll('.dot'), sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prev.onclick = () => sc(-1); next.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)) } }) }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1) };
+    async function cap(s) { return await html2canvas(s, { backgroundColor: '#ffffff', scale: 2, useCORS: true, logging: false }) }
+    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click() }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'rlhf-' + String(cur + 1).padStart(2, '0') + '.png') } catch (e) { console.error(e); alert('Download failed: ' + e.message) } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'rlhf-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)) } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth' } catch (e) { console.error(e); alert('Download failed: ' + e.message) } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; setTimeout(() => { bar.style.display = 'none' }, 1000) }
+  </script>
+</body>
+
+</html>

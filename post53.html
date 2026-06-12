@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mixture of Experts — Post 53</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --card: #0d0d18;
+    --ink: #e2e8f0;
+    --ink2: #64748b;
+    --dim: #8899aa;
+    --violet: #a78bfa;
+    --cyan: #22d3ee;
+    --orange: #fb923c;
+    --border: rgba(167,139,250,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .vt { color: var(--violet); }
+  .slide h2 .cy { color: var(--cyan); }
+  .slide h2 .or { color: var(--orange); }
+
+  .slide p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .slide p.lead {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 10px 24px 16px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .ftr .left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--violet);
+  }
+
+  .code {
+    background: rgba(0,0,0,.45);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .vt { color: #c4b5fd; font-weight: 400; }
+  .code .cy { color: #67e8f9; font-weight: 400; }
+  .code .or { color: #fdba74; font-weight: 400; }
+  .code .dm { color: rgba(226,232,240,.5); }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    min-width: 62px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.vt { color: var(--violet); }
+  .st-v.cy { color: var(--cyan); }
+  .st-v.or { color: var(--orange); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.vt-c { background: rgba(167,139,250,.06); border: 1px solid rgba(167,139,250,.15); }
+  .gcard.cy-c { background: rgba(34,211,238,.06);  border: 1px solid rgba(34,211,238,.15); }
+  .gcard.or-c { background: rgba(251,146,60,.06);  border: 1px solid rgba(251,146,60,.15); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(167,139,250,.2);
+    color: var(--violet);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--violet); color: var(--bg); }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--violet); color: var(--violet); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(167,139,250,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--violet); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--violet); color: var(--violet); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(226,232,240,.06); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--violet); width: 22px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Mixture<br>of <span class="vt">Experts</span>.<br><span class="cy">Sparse</span><br>by Design.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — Dense Models Don't Scale -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Dense Models<br><span class="or">Don't Scale.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v or">Dense</span>
+            <div class="st-t"><strong>Every parameter activates on every token.</strong> Llama 3 70B fires all 70 billion weights to predict the next word in "hello."</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">Cost</span>
+            <div class="st-t"><strong>Compute scales linearly with parameter count.</strong> Doubling model quality requires roughly 10x parameters. That math breaks fast.</div>
+          </div>
+          <div class="st">
+            <span class="st-v vt">175B</span>
+            <div class="st-t"><strong>GPT-3's dense parameter count.</strong> Training cost: ~$5M. Inference cost: ~6x a smaller model. Quality advantage: real but finite.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Ceiling</span>
+            <div class="st-t"><strong>Hitting GPT-4 quality with a dense model</strong> would require parameters in the trillions. No lab could serve that at any reasonable cost.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — Route. Activate. Skip. -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Route.<br><span class="vt">Activate. Skip.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Dense: all weights fire every token</span><br>
+          output = <span class="or">FFN</span>(x)         <span class="dm"># all weights active</span><br>
+          <br>
+          <span class="dm"># MoE: route to top-K of N experts</span><br>
+          scores = <span class="vt">Router</span>(x)      <span class="dm"># N learned logits</span><br>
+          top_k  = topk(scores, k=2)<br>
+          output = <span class="cy">expert_0</span>(x)*gate_0<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="cy">expert_1</span>(x)*gate_1<br>
+          <span class="dm"># N=8, K=2: 25% of FFN compute/token</span>
+        </div>
+        <div class="gcard vt-c">
+          <p>Experts are independent FFN layers. The router is a tiny linear projection. Only the top-K experts are computed — the rest are skipped entirely.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — The Gating Function -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Gating<br><span class="vt">Function.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v vt">Router</span>
+            <div class="st-t"><strong>A linear layer: hidden_dim to N expert logits.</strong> One forward pass produces N routing scores per token, per layer.</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">Top-K</span>
+            <div class="st-t"><strong>Usually K=2 from N=8 or N=64 experts.</strong> Smaller K means less compute. Larger N means more capacity. Both are tunable.</div>
+          </div>
+          <div class="st">
+            <span class="st-v or">Gate weight</span>
+            <div class="st-t"><strong>Softmax of top-K scores becomes the mixing weight.</strong> Each selected expert's output is scaled before summation.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Per token</span>
+            <div class="st-t"><strong>Routing is decided independently for each token.</strong> Two tokens in the same sentence can be sent to completely different experts.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — The Balancing Problem -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Balancing<br><span class="or">Problem.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Without load balancing:</span><br>
+          <span class="dm"># router collapses to 1-2 favorite experts</span><br>
+          <span class="dm"># others get no gradient and die</span><br>
+          <br>
+          <span class="dm"># Auxiliary balance loss (Switch Transformer):</span><br>
+          L_aux = α * sum(<span class="cy">f_i</span> * <span class="vt">P_i</span> for i in experts)<br>
+          <span class="dm"># f_i = token fraction routed to expert i</span><br>
+          <span class="dm"># P_i = mean router prob for expert i</span><br>
+          <span class="dm"># α   = small coefficient (~0.01)</span>
+        </div>
+        <div class="gcard or-c">
+          <p><strong>Expert collapse is the main MoE training failure.</strong> Without the auxiliary loss, the router routes everything to one expert and the others never learn.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — In Production -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="vt">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v cy">Mixtral</span>
+            <div class="st-t"><strong>8x7B: 46.7B total params, 12.9B active per token.</strong> Matches Llama 2 70B quality at one-fifth the inference compute.</div>
+          </div>
+          <div class="st">
+            <span class="st-v or">Grok-1</span>
+            <div class="st-t"><strong>314B total, 86B active per token.</strong> 8 experts, top-2 routing. Open weights. Released by xAI in 2024.</div>
+          </div>
+          <div class="st">
+            <span class="st-v vt">GPT-4</span>
+            <div class="st-t"><strong>Estimated ~1.8T params across ~8 expert groups,</strong> ~220B active per pass. Frontier quality without proportional inference cost.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Why it wins</span>
+            <div class="st-t"><strong>MoE decouples capacity from compute.</strong> Train on more data with more parameters. Serve at a fraction of the full model cost.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="vt">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Dense</span>
+            <div class="st-t"><strong>All parameters active per token.</strong> Compute scales linearly with parameter count. No routing overhead.</div>
+          </div>
+          <div class="st">
+            <span class="st-v vt">MoE</span>
+            <div class="st-t"><strong>N total experts, K active per token.</strong> Compute scales with K × FFN_size, not N × FFN_size. Capacity without cost.</div>
+          </div>
+          <div class="st">
+            <span class="st-v cy">Router</span>
+            <div class="st-t"><strong>Linear projection to N logits.</strong> Top-K selection with softmax-weighted output combination. Per token, per layer.</div>
+          </div>
+          <div class="st">
+            <span class="st-v or">Balance</span>
+            <div class="st-t"><strong>Auxiliary loss prevents expert collapse.</strong> Encourages uniform token distribution so all experts receive gradient and learn.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Drop</span>
+            <div class="st-t"><strong>Token dropping is a failure mode.</strong> When an expert's buffer fills, excess tokens are skipped. Capacity limits must be tuned carefully.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  async function cap(s) {
+    return await html2canvas(s, {
+      backgroundColor: '#0d0d18',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    try {
+      dl(await cap(slides[cur]), 'moe-' + String(cur + 1).padStart(2, '0') + '.png');
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'moe-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

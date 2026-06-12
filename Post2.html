@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAP Theorem — Pick Two, Regret One</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Code+Pro:wght@400;500;600&family=Libre+Franklin:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2;
+  --ink:#1a1a1a;
+  --ink-dim:#6b6560;
+  --accent:#c2410c;
+  --accent-2:#365314;
+  --accent-3:#264874;
+  --card-bg:#ffffff;
+  --card-border:rgba(26,26,26,.1);
+  --warm-tint:rgba(194,65,12,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Libre Franklin',sans-serif;min-height:100vh;overflow-x:hidden}
+body{
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 10%, rgba(194,65,12,.06), transparent),
+    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(30,58,95,.04), transparent);
+  padding:40px 20px 80px;
+}
+
+.page-head{max-width:1100px;margin:0 auto 36px;padding:0 10px}
+.kicker{font-family:'Source Code Pro',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.kicker::before{content:"";width:0;height:0;border-left:8px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+h1.main{font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(34px,5.5vw,66px);line-height:.94;letter-spacing:-.02em;margin-bottom:14px}
+h1.main em{font-style:italic;font-weight:900;color:var(--accent)}
+h1.main .c{color:var(--accent)}
+h1.main .a{color:var(--accent-2)}
+h1.main .p{color:var(--accent-3)}
+.dek{font-weight:300;font-size:17px;color:var(--ink-dim);max-width:600px;line-height:1.55}
+
+.carousel-wrap{max-width:1100px;margin:0 auto;position:relative}
+.carousel{
+  display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;padding:16px 4px 36px;scrollbar-width:none;
+}
+.carousel::-webkit-scrollbar{display:none}
+
+.slide{
+  flex:0 0 min(90vw, 520px);
+  aspect-ratio:4/5;
+  scroll-snap-align:center;
+  background:var(--card-bg);color:var(--ink);
+  border:1px solid var(--card-border);
+  position:relative;overflow:hidden;
+  padding:38px;
+  display:flex;flex-direction:column;
+  box-shadow:0 20px 60px -15px rgba(0,0,0,.08);
+}
+.slide::after{
+  content:"";position:absolute;top:0;left:0;
+  width:0;height:0;
+  border-left:60px solid var(--warm-tint);
+  border-bottom:60px solid transparent;
+  pointer-events:none;
+}
+
+.slide-meta{
+  font-family:'Source Code Pro',monospace;font-size:10px;letter-spacing:.18em;
+  color:var(--ink-dim);text-transform:uppercase;
+  display:flex;justify-content:space-between;margin-bottom:auto;
+}
+.slide-meta .tag{color:var(--accent);font-weight:600}
+
+.slide h2{
+  font-family:'Playfair Display',serif;font-weight:400;
+  font-size:clamp(26px,4.2vw,40px);line-height:.96;letter-spacing:-.01em;
+  margin:18px 0 14px;
+}
+.slide h2 em{font-style:italic;font-weight:900;color:var(--accent)}
+.slide h2 .c{color:var(--accent)}
+.slide h2 .a{color:var(--accent-2)}
+.slide h2 .p{color:var(--accent-3)}
+
+.slide p{font-size:14px;line-height:1.6;color:var(--ink-dim);margin-bottom:10px}
+.slide p.lead{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;color:var(--ink);opacity:.85}
+
+.slide .foot{margin-top:auto;margin-bottom: 25px;display:flex;justify-content:space-between;align-items:flex-end;padding-top:14px;border-top:1px solid var(--card-border)}
+.slide .foot .brand{font-family:'Source Code Pro',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+.slide .foot .swipe{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:var(--accent)}
+
+/* Cover */
+.cover{background:var(--ink);color:var(--bg);
+  background-image:
+    radial-gradient(circle at 75% 25%, rgba(194,65,12,.2), transparent 50%),
+    radial-gradient(circle at 25% 75%, rgba(30,58,95,.15), transparent 50%);
+}
+.cover::after{border-left-color:rgba(194,65,12,.15)}
+.cover .slide-meta{color:rgba(250,247,242,.5)}
+.cover p{color:rgba(250,247,242,.6)}
+.cover .foot{border-top-color:rgba(250,247,242,.12)}
+.cover .foot .brand{color:rgba(250,247,242,.4)}
+
+.cover .big-type{font-family:'Playfair Display',serif;margin:8px 0;display:flex;flex-direction:column;gap:2px}
+.cover .big-type .word-row{display:flex;align-items:baseline;gap:0}
+.cover .big-type .letter{font-weight:900;font-size:clamp(52px,11vw,96px);line-height:.85;letter-spacing:-.04em}
+.cover .big-type .word{font-weight:300;font-size:clamp(20px,4.2vw,36px);line-height:.9;letter-spacing:-.01em;font-style:italic;color:rgba(250,247,242,.55);padding-left:4px}
+.cover .big-type .letter-c{color:var(--accent)}
+.cover .big-type .word-c{color:var(--accent)}
+.cover .big-type .letter-a{color:var(--accent-2)}
+.cover .big-type .word-a{color:var(--accent-2)}
+.cover .big-type .letter-p{color:var(--accent-3)}
+.cover .big-type .word-p{color:var(--accent-3)}
+.cover .subtitle{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(20px,3.5vw,32px);color:var(--bg);margin-top:8px;font-weight:400;letter-spacing:-.01em}
+.cover .mono-sub{font-family:'Source Code Pro',monospace;font-size:11px;letter-spacing:.12em;color:rgba(250,247,242,.45);text-transform:uppercase;margin-top:14px}
+
+/* Triangle diagram */
+.triangle-wrap{display:flex;justify-content:center;margin:14px 0}
+.triangle-wrap svg{max-width:280px;width:100%}
+
+/* Code/example box */
+.code-box{
+  background:var(--ink);color:var(--bg);
+  font-family:'Source Code Pro',monospace;font-size:11.5px;
+  padding:14px 16px;margin:10px 0;line-height:1.75;
+}
+.code-box .c{color:#fb923c;font-weight:500}
+.code-box .a{color:#84cc16;font-weight:500}
+.code-box .p{color:#60a5fa;font-weight:500}
+.code-box .arrow{color:#666}
+.code-box .result{color:#fbbf24;font-weight:600}
+.code-box .dim{color:#777}
+.code-box .err{color:#f87171;font-weight:600}
+
+/* Types / combos */
+.combos{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.combo{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--card-border);position:relative}
+.combo .badge{
+  font-family:'Source Code Pro',monospace;font-size:10px;font-weight:600;
+  padding:3px 8px;letter-spacing:.06em;min-width:36px;text-align:center;
+  color:#fff;
+}
+.badge-cp{background:var(--accent)}
+.badge-ap{background:var(--accent-2)}
+.badge-ca{background:var(--accent-3)}
+.combo .cbody strong{font-family:'Playfair Display',serif;font-weight:700;font-size:14px}
+.combo .cbody span{display:block;font-size:12px;color:var(--ink-dim);margin-top:2px;line-height:1.45}
+
+/* Uses grid */
+.uses{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.use-chip{padding:10px 12px;font-size:12px;line-height:1.45;color:var(--ink-dim);background:var(--warm-tint)}
+.use-chip strong{font-family:'Playfair Display',serif;display:block;font-size:13px;margin-bottom:2px;color:var(--ink);font-weight:700}
+.use-chip.cp{border-left:3px solid var(--accent)}
+.use-chip.ap{border-left:3px solid var(--accent-2)}
+.use-chip.ca{border-left:3px solid var(--accent-3)}
+
+/* Pizza analogy box */
+.pizza-box{background:var(--warm-tint);padding:16px;margin:10px 0;border-left:3px solid var(--accent)}
+.pizza-box p{color:var(--ink);font-size:13px;line-height:1.55;margin-bottom:6px}
+.pizza-box p:last-child{margin-bottom:0}
+.pizza-box strong{font-family:'Playfair Display',serif}
+
+/* Compare */
+.compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px;font-size:11px}
+.compare > div{padding:12px;border:1px solid var(--card-border)}
+.compare h4{font-family:'Playfair Display',serif;font-size:13px;margin-bottom:6px;font-weight:700}
+.compare ul{list-style:none;line-height:1.65;color:var(--ink-dim)}
+.compare .col-cp{border-top:3px solid var(--accent)}
+.compare .col-ap{border-top:3px solid var(--accent-2)}
+.compare .col-ca{border-top:3px solid var(--accent-3)}
+.compare li::before{content:"· ";font-weight:700}
+
+/* Download */
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.dl-btn{
+  font-family:'Source Code Pro',monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;padding:12px 28px;
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+  cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;
+}
+.dl-btn:hover{background:var(--accent);color:#fff}
+.dl-btn.alt{border-color:var(--accent-3);color:var(--accent-3)}
+.dl-btn.alt:hover{background:var(--accent-3);color:#fff}
+.dl-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dl-btn:disabled{opacity:.4;cursor:wait}
+
+.slide .dl-slide-btn{
+  position:absolute;top:12px;right:12px;
+  width:30px;height:30px;border:1px solid var(--card-border);
+  background:rgba(255,255,255,.85);backdrop-filter:blur(4px);
+  color:var(--ink-dim);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;z-index:5;opacity:0;
+}
+.cover .dl-slide-btn{background:rgba(26,26,26,.7);color:rgba(250,247,242,.6);border-color:rgba(250,247,242,.15)}
+.slide:hover .dl-slide-btn{opacity:1}
+.slide .dl-slide-btn:hover{border-color:var(--accent);color:var(--accent)}
+.slide .dl-slide-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.progress-bar{width:200px;height:3px;background:rgba(26,26,26,.08);overflow:hidden;display:none}
+.progress-bar .fill{height:100%;width:0%;background:var(--accent);transition:width .3s}
+
+/* Nav */
+.nav{display:flex;justify-content:center;gap:14px;margin-top:18px;align-items:center}
+.nav button{
+  background:transparent;border:1px solid var(--card-border);color:var(--ink);
+  width:42px;height:42px;cursor:pointer;font-size:16px;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;
+  font-family:'Source Code Pro',monospace;
+}
+.nav button:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(26,26,26,.15);cursor:pointer;transition:all .3s}
+.dot.active{background:var(--accent);width:22px;border-radius:3px}
+
+@media(max-width:600px){
+  .slide{padding:26px}
+  .slide h2{font-size:26px}
+  .uses{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <div class="kicker">Distributed Systems · Fundamentals</div>
+  <h1 class="main"><span class="c">Consistency,</span> <span class="a">Availability,</span> <span class="p">Partition Tolerance</span> — pick <em>two.</em></h1>
+  <p class="dek">The most important theorem in distributed systems, explained with a pizza delivery analogy. Every database you've ever used made this trade-off. Here's what they chose.</p>
+</header>
+
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1: Cover -->
+    <div class="slide cover">
+      <div class="slide-meta"><span>01 / 10</span></div>
+      <div class="big-type">
+        <div class="word-row"><span class="letter letter-c">C</span><span class="word word-c">onsistency</span></div>
+        <div class="word-row"><span class="letter letter-a">A</span><span class="word word-a">vailability</span></div>
+        <div class="word-row"><span class="letter letter-p">P</span><span class="word word-p">artition Tolerance</span></div>
+      </div>
+      <div class="subtitle">Pick two, regret one.</div>
+      <p class="mono-sub">the theorem · the trade-offs · every combination</p>
+      <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;margin-top:14px;max-width:360px">The impossible triangle that governs every distributed database ever built.</p>
+      <div class="foot">
+        <span class="brand">// #RavenexTechnologies</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: The Setup -->
+    <div class="slide">
+      <div class="slide-meta"><span>02 / 10</span><span class="tag">● THE THEOREM</span></div>
+      <h2>You can't have <em>all three.</em></h2>
+      <p class="lead">In 2000, Eric Brewer proposed: any distributed data store can only guarantee two of three properties at the same time.</p>
+      <div class="triangle-wrap">
+        <svg viewBox="0 0 280 250" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="140,40 40,210 240,210" fill="none" stroke="#1a1a1a" stroke-width="1.5" opacity=".2"/>
+          <circle cx="140" cy="40" r="40" fill="#c2410c" opacity=".12"/>
+          <circle cx="40" cy="210" r="40" fill="#365314" opacity=".12"/>
+          <circle cx="240" cy="210" r="40" fill="#1e3a5f" opacity=".12"/>
+          <text x="140" y="43" text-anchor="middle" font-family="Playfair Display" font-size="13" font-weight="700" fill="#c2410c">Consistency</text>
+          <text x="40" y="215" text-anchor="middle" font-family="Playfair Display" font-size="13" font-weight="700" fill="#365314">Availability</text>
+          <text x="240" y="208" text-anchor="middle" font-family="Playfair Display" font-size="13" font-weight="700" fill="#1e3a5f">Partition</text>
+          <text x="240" y="223" text-anchor="middle" font-family="Playfair Display" font-size="13" font-weight="700" fill="#1e3a5f">Tolerance</text>
+          <text x="140" y="150" text-anchor="middle" font-family="Source Code Pro" font-size="11" fill="#999" letter-spacing=".1em">PICK TWO</text>
+        </svg>
+      </div>
+      <p style="font-size:13px">Network partitions <strong>will</strong> happen. So the real question is: when they do, do you sacrifice <strong style="color:var(--accent)">consistency</strong> or <strong style="color:var(--accent-2)">availability</strong>?</p>
+      <div class="foot">
+        <span class="brand">// brewer's conjecture, 2000</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Define each -->
+    <div class="slide">
+      <div class="slide-meta"><span>03 / 10</span><span class="tag">● DEFINITIONS</span></div>
+      <h2>What <span class="c">C,</span> <span class="a">A,</span> <span class="p">P</span> <em>mean</em></h2>
+      <div class="combos">
+        <div class="combo">
+          <span class="badge badge-cp">C</span>
+          <div class="cbody"><strong>Consistency</strong><span>Every read gets the most recent write. All nodes see the same data at the same time. No stale reads, ever.</span></div>
+        </div>
+        <div class="combo">
+          <span class="badge badge-ap">A</span>
+          <div class="cbody"><strong>Availability</strong><span>Every request gets a response, even if it's not the latest data. The system never refuses to answer.</span></div>
+        </div>
+        <div class="combo">
+          <span class="badge badge-ca">P</span>
+          <div class="cbody"><strong>Partition Tolerance</strong><span>The system keeps running even when network links between nodes break. Messages get lost or delayed.</span></div>
+        </div>
+      </div>
+      <p style="font-size:12px;margin-top:10px;font-style:italic;color:var(--ink-dim)">In any real distributed system, P is non-negotiable, networks always partition. So the choice is always C vs A.</p>
+      <div class="foot">
+        <span class="brand">// three promises, two kept</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Pizza Analogy -->
+    <div class="slide">
+      <div class="slide-meta"><span>04 / 10</span><span class="tag">● THE ANALOGY</span></div>
+      <h2>The <em>pizza</em> explanation</h2>
+      <p class="lead">You run two pizza shops across town. They share the same menu and prices.</p>
+      <div class="pizza-box">
+        <p>One day, the phone line between your two shops goes down. <strong>(Partition!)</strong></p>
+        <p>A customer at Shop A wants to order. But Shop B just changed the price of a Margherita from ₹200 to ₹250. Shop A doesn't know yet.</p>
+        <p><strong style="color:var(--accent)">Option 1 (CP):</strong> Shop A says "Sorry, I can't serve you until I confirm the price." Consistent, but unavailable.</p>
+        <p><strong style="color:var(--accent-2)">Option 2 (AP):</strong> Shop A serves the old ₹200 price. Available, but inconsistent.</p>
+      </div>
+      <p style="font-size:12px">You <strong>can't</strong> serve the right price <strong>and</strong> always be open <strong>and</strong> survive phone outages. Pick two.</p>
+      <div class="foot">
+        <span class="brand">// pizza explains everything</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: CP Systems -->
+    <div class="slide">
+      <div class="slide-meta"><span>05 / 10</span><span class="tag">● CP SYSTEMS</span></div>
+      <h2><span class="c">C</span> + <span class="p">P</span> — <em>correct or nothing</em></h2>
+      <p class="lead">Sacrifice availability. When partitioned, block requests until consistency is restored.</p>
+      <div class="code-box">
+<span class="dim">// network partition happens</span><br>
+<span class="c">node_A</span> <span class="arrow">←✕→</span> <span class="p">node_B</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">client writes to node_A:</span><br>
+<span class="c">SET price = 250</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">client reads from node_B:</span><br>
+<span class="err">ERROR: cannot guarantee consistency</span><br>
+<span class="err">→ request blocked until partition heals</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent)">You get:</strong> Every read is guaranteed accurate.<br><strong style="color:var(--ink-dim)">You lose:</strong> The system goes down during network issues.</p>
+      <div class="foot">
+        <span class="brand">// rather be right than fast</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: AP Systems -->
+    <div class="slide">
+      <div class="slide-meta"><span>06 / 10</span><span class="tag">● AP SYSTEMS</span></div>
+      <h2><span class="a">A</span> + <span class="p">P</span> — <em>always answer</em></h2>
+      <p class="lead">Sacrifice consistency. Always respond, even with potentially stale data.</p>
+      <div class="code-box">
+<span class="dim">// network partition happens</span><br>
+<span class="a">node_A</span> <span class="arrow">←✕→</span> <span class="p">node_B</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">client writes to node_A:</span><br>
+<span class="a">SET price = 250</span> <span class="result">✓ accepted</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">client reads from node_B:</span><br>
+<span class="a">GET price → 200</span> <span class="err">⚠ stale!</span><br>
+<span class="dim">→ will sync when partition heals</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent-2)">You get:</strong> 100% uptime, always a response.<br><strong style="color:var(--ink-dim)">You lose:</strong> Different nodes may return different answers.</p>
+      <div class="foot">
+        <span class="brand">// better wrong than down</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: CA Systems -->
+    <div class="slide">
+      <div class="slide-meta"><span>07 / 10</span><span class="tag">● CA SYSTEMS</span></div>
+      <h2><span class="c">C</span> + <span class="a">A</span> — <em>the unicorn</em></h2>
+      <p class="lead">Sacrifice partition tolerance. Consistent and available, but only if the network never fails.</p>
+      <div class="code-box">
+<span class="dim">// no partition (everything is fine)</span><br>
+<span class="c">node_A</span> <span class="arrow">←——→</span> <span class="p">node_B</span> <span class="result">✓ connected</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="dim">write:</span> <span class="c">SET price = 250</span> <span class="result">✓ synced</span><br>
+<span class="dim">read:</span>  <span class="a">GET price → 250</span> <span class="result">✓ correct</span><br>
+<span class="dim">────────────────────────</span><br>
+<span class="err">⚠ but if network partitions...</span><br>
+<span class="err">→ entire system goes down</span>
+      </div>
+      <p style="font-size:12px"><strong style="color:var(--accent-3)">In practice:</strong> This is a single-node database. PostgreSQL, MySQL traditional RDBMS. They don't distribute, so partitions aren't a concern. But they also don't scale horizontally.</p>
+      <div class="foot">
+        <span class="brand">// only works on one machine</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Real-World Database Map -->
+    <div class="slide">
+      <div class="slide-meta"><span>08 / 10</span><span class="tag">● IN THE WILD</span></div>
+      <h2>Every database <em>picked</em> a side</h2>
+      <p style="font-size:13px">Here's where the systems you use actually land:</p>
+      <div class="uses">
+        <div class="use-chip cp"><strong>MongoDB</strong>CP by default. Blocks reads during elections to stay consistent.</div>
+        <div class="use-chip cp"><strong>Redis Cluster</strong>CP. Rejects writes during partitions if quorum is lost.</div>
+        <div class="use-chip ap"><strong>Cassandra</strong>AP. Tunable consistency but default is availability-first.</div>
+        <div class="use-chip ap"><strong>DynamoDB</strong>AP. Eventually consistent reads by default. Fast, always up.</div>
+        <div class="use-chip ca"><strong>PostgreSQL</strong>CA. Single-node, strongly consistent. No partition tolerance.</div>
+        <div class="use-chip ap"><strong>CouchDB</strong>AP. Multi-master replication. Conflict resolution on merge.</div>
+      </div>
+      <div class="foot">
+        <span class="brand">// know what your DB chose</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: The Nuance -->
+    <div class="slide">
+      <div class="slide-meta"><span>09 / 10</span><span class="tag">● THE NUANCE</span></div>
+      <h2>It's not <em>binary</em></h2>
+      <p class="lead">Modern systems don't just "pick two", they tune the dial.</p>
+      <p>Real systems offer a <strong>spectrum</strong> between C and A, adjustable per query:</p>
+      <div class="code-box">
+<span class="dim">// Cassandra: tune per query</span><br>
+<span class="a">SELECT * FROM orders</span><br>
+<span class="dim">  WITH CONSISTENCY</span> <span class="result">ONE</span>;      <span class="dim">← fast, AP</span><br>
+<br>
+<span class="a">SELECT * FROM payments</span><br>
+<span class="dim">  WITH CONSISTENCY</span> <span class="result">QUORUM</span>;   <span class="dim">← safe, CP</span><br>
+<br>
+<span class="a">SELECT * FROM audit_log</span><br>
+<span class="dim">  WITH CONSISTENCY</span> <span class="result">ALL</span>;      <span class="dim">← strict CP</span>
+      </div>
+      <p style="font-size:12px">This is <strong>"tunable consistency"</strong>, you pick the trade-off for each operation. Orders can be eventually consistent. Payments can't. Same database, different guarantees.</p>
+      <div class="foot">
+        <span class="brand">// it's a spectrum, not a switch</span>
+        <span class="swipe">swipe →</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Cheatsheet -->
+    <div class="slide">
+      <div class="slide-meta"><span>10 / 10</span><span class="tag">● CHEATSHEET</span></div>
+      <h2>The <em>decision</em> matrix</h2>
+      <p style="font-size:13px">Match your system to the trade-off you can live with:</p>
+      <div class="compare">
+        <div class="col-cp">
+          <h4 style="color:var(--accent)">CP</h4>
+          <ul>
+            <li>Banking</li>
+            <li>Inventory</li>
+            <li>Auth systems</li>
+            <li>Leader election</li>
+            <li>MongoDB, HBase, Redis Cluster</li>
+          </ul>
+        </div>
+        <div class="col-ap">
+          <h4 style="color:var(--accent-2)">AP</h4>
+          <ul>
+            <li>Social feeds</li>
+            <li>Shopping carts</li>
+            <li>DNS</li>
+            <li>CDNs, caches</li>
+            <li>Cassandra, DynamoDB, CouchDB</li>
+          </ul>
+        </div>
+        <div class="col-ca">
+          <h4 style="color:var(--accent-3)">CA</h4>
+          <ul>
+            <li>Single-server apps</li>
+            <li>Local databases</li>
+            <li>Small-scale CRUD</li>
+            <li>Dev/staging</li>
+            <li>PostgreSQL, MySQL, SQLite</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size:13px;margin-top:12px;font-family:'Playfair Display',serif;font-style:italic;color:var(--ink-dim)">There is no right answer, only the right trade-off for your problem. Know what you're giving up.</p>
+      <div class="foot">
+        <span class="brand">// #RavenexTechnologies</span>
+        <span class="swipe">↻ save & share</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav">
+    <button id="prev" aria-label="Previous">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next" aria-label="Next">→</button>
+  </div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Current Slide
+    </button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download All Slides
+    </button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+
+const dlIconSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+slides.forEach(s=>{
+  const btn=document.createElement('button');
+  btn.className='dl-slide-btn';
+  btn.title='Download this slide';
+  btn.innerHTML=dlIconSVG;
+  btn.onclick=function(){downloadSlide(this)};
+  s.prepend(btn);
+});
+
+let currentSlideIndex=0;
+
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot');
+const scrollByDir=dir=>{const w=slides[0].offsetWidth+20;carousel.scrollBy({left:dir*w,behavior:'smooth'})};
+prev.addEventListener('click',()=>scrollByDir(-1));
+next.addEventListener('click',()=>scrollByDir(1));
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const idx=Array.from(slides).indexOf(e.target);currentSlideIndex=idx;dots.forEach((d,i)=>d.classList.toggle('active',i===idx))}})},{root:carousel,threshold:.6});
+slides.forEach(s=>io.observe(s));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')scrollByDir(1);if(e.key==='ArrowLeft')scrollByDir(-1)});
+
+async function captureSlide(slide,scale=2){
+  const dlBtn=slide.querySelector('.dl-slide-btn');
+  if(dlBtn) dlBtn.style.display='none';
+  const canvas=await html2canvas(slide,{backgroundColor:null,scale:scale,useCORS:true,allowTaint:true,logging:false});
+  if(dlBtn) dlBtn.style.display='';
+  return canvas;
+}
+
+function triggerDownload(canvas,filename){
+  const link=document.createElement('a');
+  link.download=filename;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function downloadSlide(btn){
+  const slide=btn.closest('.slide');
+  const idx=Array.from(slides).indexOf(slide)+1;
+  btn.disabled=true;
+  try{const canvas=await captureSlide(slide);triggerDownload(canvas,'cap-theorem-slide-'+String(idx).padStart(2,'0')+'.png')}catch(err){console.error(err)}
+  btn.disabled=false;
+}
+
+async function downloadCurrentSlide(){
+  const btn=document.getElementById('dlCurrent');
+  btn.disabled=true;btn.textContent='Capturing...';
+  try{const slide=slides[currentSlideIndex];const canvas=await captureSlide(slide);triggerDownload(canvas,'cap-theorem-slide-'+String(currentSlideIndex+1).padStart(2,'0')+'.png')}catch(err){console.error(err)}
+  btn.innerHTML=dlIconSVG+'Download Current Slide';btn.disabled=false;
+}
+
+async function downloadAllSlides(){
+  const btn=document.getElementById('dlAll');
+  const bar=document.getElementById('progressBar');
+  const fill=document.getElementById('progressFill');
+  btn.disabled=true;btn.textContent='Downloading...';
+  bar.style.display='block';fill.style.width='0%';
+  try{
+    for(let i=0;i<slides.length;i++){
+      fill.style.width=((i+1)/slides.length*100)+'%';
+      const canvas=await captureSlide(slides[i]);
+      triggerDownload(canvas,'cap-theorem-slide-'+String(i+1).padStart(2,'0')+'.png');
+      await new Promise(r=>setTimeout(r,400));
+    }
+  }catch(err){console.error(err)}
+  btn.innerHTML=dlIconSVG+'Download All Slides';btn.disabled=false;
+  setTimeout(()=>{bar.style.display='none';fill.style.width='0%'},1000);
+}
+</script>
+</body>
+</html>

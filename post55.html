@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ring Attention — Post 55</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;600&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf8f4;
+    --card: #ffffff;
+    --ink: #1a1614;
+    --ink2: #5a524c;
+    --dim: #a09890;
+    --amber: #d97706;
+    --blue: #2563eb;
+    --emerald: #059669;
+    --border: rgba(26,22,20,.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'Nunito Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(26,22,20,.06);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .am { color: var(--amber); }
+  .slide h2 .bl { color: var(--blue); }
+  .slide h2 .em { color: var(--emerald); }
+
+  .slide p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .slide p.lead {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 8px 24px 14px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    margin-bottom: 10px;
+  }
+  .ftr .left {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+  }
+
+  .code {
+    background: #fdf6ec;
+    border: 1px solid rgba(217,119,6,.12);
+    border-radius: 8px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .am { color: var(--amber); font-weight: 600; }
+  .code .bl { color: var(--blue); font-weight: 600; }
+  .code .em { color: var(--emerald); font-weight: 600; }
+  .code .dm { color: #9a8a7a; }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 58px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.am { color: var(--amber); }
+  .st-v.bl { color: var(--blue); }
+  .st-v.em { color: var(--emerald); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.am-c { background: rgba(217,119,6,.05);  border: 1px solid rgba(217,119,6,.14); }
+  .gcard.bl-c { background: rgba(37,99,235,.05);  border: 1px solid rgba(37,99,235,.14); }
+  .gcard.em-c { background: rgba(5,150,105,.05);  border: 1px solid rgba(5,150,105,.14); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(217,119,6,.2);
+    color: var(--amber);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--amber); color: #fff; }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--amber); color: var(--amber); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(217,119,6,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--amber); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Source Code Pro', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--amber); color: var(--amber); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(26,22,20,.1); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--amber); width: 22px; border-radius: 3px; }
+
+  .caption-section {
+    max-width: min(92vw, 520px);
+    margin: 28px auto 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(26,22,20,.06);
+  }
+  .caption-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .caption-label {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .copy-btn {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(217,119,6,.2);
+    color: var(--amber);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+  }
+  .copy-btn:hover { background: var(--amber); color: #fff; }
+  .copy-btn.copied { border-color: var(--emerald); color: var(--emerald); }
+  .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .caption-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink2);
+    padding: 14px 16px;
+    white-space: pre-wrap;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Ring<br><span class="am">Attention</span>.<br>Million-Token<br><span class="bl">Context</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — The Single-GPU Ceiling -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Single-GPU<br><span class="am">Ceiling.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v bl">O(N)</span>
+            <div class="st-t"><strong>FlashAttention makes attention O(N) memory.</strong> An 80 GB A100 handles ~200K tokens for a large model before hitting its limit.</div>
+          </div>
+          <div class="st">
+            <span class="st-v am">1M tokens</span>
+            <div class="st-t"><strong>At 1M tokens, KV alone exceeds 100 GB in float16</strong> — more than any single GPU holds. Add weights and activations: impossible.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Data parallel</span>
+            <div class="st-t"><strong>Standard data parallelism splits the batch across GPUs,</strong> not the sequence. More GPUs do not extend the context limit at all.</div>
+          </div>
+          <div class="st">
+            <span class="st-v em">Need</span>
+            <div class="st-t"><strong>A new algorithm is required.</strong> One that distributes a single long sequence across multiple GPUs — not just the batch.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — The Ring Topology -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Sequence Split.<br><span class="am">Ring Pass.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v am">Split</span>
+            <div class="st-t"><strong>Divide the N-token sequence evenly across GPUs.</strong> GPU i holds tokens [i*chunk : (i+1)*chunk] of Q, K, and V.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Q local</span>
+            <div class="st-t"><strong>Each GPU attends only for its local query tokens,</strong> but needs K and V from all other GPUs to compute full attention.</div>
+          </div>
+          <div class="st">
+            <span class="st-v am">Ring</span>
+            <div class="st-t"><strong>GPUs form a logical ring.</strong> K and V blocks rotate around the ring one step at a time — each GPU computes partial attention with the arriving block.</div>
+          </div>
+          <div class="st">
+            <span class="st-v em">Complete</span>
+            <div class="st-t"><strong>After N_GPUs ring steps,</strong> every local Q has attended to every K/V block in the full sequence. Attention is correct and complete.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — The Algorithm -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Ring<br><span class="am">Algorithm.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Each GPU: holds Q_i, K_block, V_block</span><br>
+          <span class="dm"># online softmax state: O, m, l</span><br>
+          for step in range(<span class="bl">N_GPUs</span>):<br>
+          &nbsp;&nbsp;O, m, l = <span class="am">flash_update</span>(Q_i,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K_block, V_block,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O, m, l)<br>
+          &nbsp;&nbsp;K_block, V_block = <span class="em">ring_shift</span>(...)<br>
+          <span class="dm"># O_i = correct full attention for Q_i</span>
+        </div>
+        <div class="gcard am-c">
+          <p><strong>ring_shift (communication) overlaps with flash_update (compute).</strong> Network latency is hidden inside GPU work — adding more GPUs does not proportionally increase wall-clock time.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — Why Online Softmax Makes It Work -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Incremental<br><span class="bl">Softmax.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v am">Problem</span>
+            <div class="st-t"><strong>Standard softmax needs the full row to compute its denominator.</strong> You cannot correctly accumulate partial attention results across ring steps.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Solution</span>
+            <div class="st-t"><strong>Online softmax tracks running max m and running sum l.</strong> Both are updated at each ring step without needing the full row at once.</div>
+          </div>
+          <div class="st">
+            <span class="st-v em">Rescale</span>
+            <div class="st-t"><strong>After each new K/V block arrives, the accumulated output O is rescaled</strong> using the updated m. The result stays numerically identical to single-GPU attention.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Exact</span>
+            <div class="st-t"><strong>No approximation.</strong> After all ring steps, O holds exactly the correct attention output — as if the full sequence had always been on one GPU.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — What It Unlocks -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What It<br><span class="am">Unlocks.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v am">Linear</span>
+            <div class="st-t"><strong>Context length scales linearly with GPU count.</strong> 8 GPUs = 8x longer sequences within the same per-GPU memory budget.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">1M tokens</span>
+            <div class="st-t"><strong>On 8 × 80 GB A100s,</strong> Ring Attention makes 1M-token context tractable for 7B-scale models that would otherwise be impossible to train.</div>
+          </div>
+          <div class="st">
+            <span class="st-v em">Overlap</span>
+            <div class="st-t"><strong>Communication and compute are pipelined.</strong> Scaling efficiency stays near linear even as the ring size grows to 64 or 128 GPUs.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Production</span>
+            <div class="st-t"><strong>Gemini 1.5 Pro (1M ctx), Yi-34B (200K ctx),</strong> and other long-context models use sequence parallelism techniques built on the Ring Attention principle.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="am">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Seq. par.</span>
+            <div class="st-t"><strong>Sequence parallelism.</strong> Distributing a single long sequence across GPUs. Ring Attention is the leading algorithm for this.</div>
+          </div>
+          <div class="st">
+            <span class="st-v am">Ring</span>
+            <div class="st-t"><strong>Logical GPU topology.</strong> K and V blocks rotate N_GPUs times. Each step: compute partial attention locally with the current block.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Online</span>
+            <div class="st-t"><strong>Online softmax (m, l, O) state.</strong> Enables exact accumulation of partial attention across ring steps without storing N×N.</div>
+          </div>
+          <div class="st">
+            <span class="st-v em">Overlap</span>
+            <div class="st-t"><strong>ring_shift runs concurrently with flash_update.</strong> Communication latency is hidden inside local computation — critical for scaling efficiency.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Use when</span>
+            <div class="st-t"><strong>Sequences too long for a single GPU,</strong> even with FlashAttention. Document-level tasks, genomics, long-video, million-token chat.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="caption-section">
+    <div class="caption-hdr">
+      <span class="caption-label">Caption</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCaption()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+    </div>
+    <div class="caption-text" id="captionText">The context limit was never about the model. It was about the GPU.
+
+FlashAttention made attention memory-efficient on a single GPU. But even with O(N) memory, a single 80 GB A100 runs out somewhere around 200,000 tokens for a large model. At one million tokens, the key and value matrices alone need more than 100 gigabytes. No single GPU holds that. And standard data parallelism, which splits the batch across GPUs, does nothing to help — it never splits the sequence.
+
+Ring Attention solves this by distributing the sequence itself.
+
+Divide the sequence evenly across a ring of GPUs. Each GPU holds its slice of Q, K, and V. To compute full attention, you need every K and V block — so you pass them around the ring. Each GPU receives a K/V block from its neighbor, computes partial attention between its local queries and that block, then passes the block forward. Repeat for every GPU in the ring. After N_GPUs passes, every query has attended to every key and value in the full sequence.
+
+The hard part is correctness. Standard softmax requires the full row of scores to compute the normalizing denominator. You cannot accumulate partial results naively. Ring Attention borrows the online softmax trick from FlashAttention — tracking a running maximum and a running normalizer at each step. The accumulated output is rescaled after every ring pass using the updated running maximum. The final result is numerically identical to computing attention on one GPU with the entire sequence in view.
+
+The other half of the design is efficiency. While each GPU computes local attention, the next K/V block is already in transit. Communication and computation overlap — the ring shift is hidden inside the GPU work. Scaling to 64 or 128 GPUs adds more context without proportionally increasing wall-clock time.
+
+Eight GPUs extend your context window by 8x. The limit stopped being the GPU. It became the number of GPUs in the ring.
+
+Swipe to see how the sequence is split, what the ring algorithm actually computes, and why online softmax is what makes the whole thing correct.
+
+#machinelearning #llm #deeplearning #ai #ravenextechnologies</div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  async function cap(s) {
+    return await html2canvas(s, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    try {
+      dl(await cap(slides[cur]), 'ringattn-' + String(cur + 1).padStart(2, '0') + '.png');
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+  }
+
+  const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  async function copyCaption() {
+    const text = document.getElementById('captionText').innerText;
+    const btn  = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch(e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    btn.classList.add('copied');
+    btn.innerHTML = copySVG + 'Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'ringattn-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

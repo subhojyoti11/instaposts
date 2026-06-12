@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRDT & HashChain — The Data Structures Powering the Modern Web</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;600&family=Inter+Tight:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Added html2canvas for downloading slides as images -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --ink: #f4f1ea;
+            --ink-dim: #9a968d;
+            --accent: #ff5e3a;
+            --accent-2: #5eead4;
+            --paper: #f4f1ea;
+            --paper-ink: #0a0a0f;
+            --grid: rgba(244, 241, 234, .06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter Tight', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        body {
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 94, 58, .15), transparent),
+                radial-gradient(ellipse 60% 50% at 80% 100%, rgba(94, 234, 212, .08), transparent);
+            padding: 40px 20px 80px;
+        }
+
+        .page-head {
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            padding: 0 10px
+        }
+
+        .kicker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px
+        }
+
+        .kicker::before {
+            content: "";
+            width: 30px;
+            height: 1px;
+            background: var(--accent)
+        }
+
+        h1.main {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(36px, 6vw, 72px);
+            line-height: .95;
+            letter-spacing: -.03em;
+            margin-bottom: 16px
+        }
+
+        h1.main em {
+            font-style: italic;
+            font-weight: 900;
+            color: var(--accent)
+        }
+
+        h1.main .amp {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-weight: 300;
+            color: var(--ink-dim)
+        }
+
+        .dek {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-style: italic;
+            color: var(--ink-dim);
+            max-width: 600px;
+            line-height: 1.5
+        }
+
+        .carousel-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative
+        }
+
+        .carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 20px 4px 40px;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none
+        }
+
+        .slide {
+            flex: 0 0 min(92vw, 540px);
+            aspect-ratio: 4/5;
+            scroll-snap-align: center;
+            background: var(--paper);
+            color: var(--paper-ink);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6), 0 0 0 1px rgba(244, 241, 234, .08);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(10, 10, 15, .05) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* --- NEW: Download Button Styles --- */
+        .download-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 10, 15, 0.05);
+            border: 1px solid rgba(10, 10, 15, 0.1);
+            color: var(--paper-ink);
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .download-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .cover .download-btn {
+            background: rgba(244, 241, 234, 0.1);
+            border: 1px solid rgba(244, 241, 234, 0.2);
+            color: var(--ink);
+        }
+
+        .cover .download-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ---------------------------------- */
+
+        .slide-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .15em;
+            color: var(--paper-ink);
+            opacity: .5;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: auto;
+            padding-right: 40px;
+            /* Space for download button */
+        }
+
+        .slide-num .tag {
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        .slide h2 {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(28px, 4.5vw, 44px);
+            line-height: .98;
+            letter-spacing: -.02em;
+            margin: 24px 0 16px;
+        }
+
+        .slide h2 em {
+            font-style: italic;
+            font-weight: 900;
+            color: var(--accent)
+        }
+
+        .slide p {
+            font-size: 15px;
+            line-height: 1.55;
+            color: #2a2a35;
+            margin-bottom: 12px
+        }
+
+        .slide p.lead {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 17px;
+            color: #4a4a55
+        }
+
+        .slide .footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid rgba(10, 10, 15, .12)
+        }
+
+        .slide .footer .brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            opacity: .6
+        }
+
+        .slide .footer .swipe {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 13px;
+            color: var(--accent)
+        }
+
+        /* Cover slide */
+        .cover {
+            background: var(--bg);
+            color: var(--ink);
+            background-image:
+                radial-gradient(ellipse at top right, rgba(255, 94, 58, .2), transparent 60%),
+                radial-gradient(ellipse at bottom left, rgba(94, 234, 212, .1), transparent 60%),
+                radial-gradient(circle at 1px 1px, rgba(244, 241, 234, .05) 1px, transparent 0);
+            background-size: auto, auto, 20px 20px;
+        }
+
+        .cover .slide-num {
+            color: var(--ink);
+            opacity: .6
+        }
+
+        .cover h2 {
+            color: var(--ink)
+        }
+
+        .cover p {
+            color: var(--ink-dim)
+        }
+
+        .cover .footer {
+            border-top-color: rgba(244, 241, 234, .15)
+        }
+
+        /* FIXED: Scaled down max-font size from 110px to 82px so HashChain fits */
+        .cover .cover-big {
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: clamp(40px, 9vw, 82px);
+            line-height: .85;
+            letter-spacing: -.04em;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .cover .cover-big .line1 {
+            color: var(--accent);
+            display: block
+        }
+
+        .cover .cover-big .vs {
+            font-family: 'JetBrains Mono', monospace;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            letter-spacing: .3em;
+            color: var(--ink-dim);
+            display: block;
+            margin: 12px 0;
+            text-transform: uppercase
+        }
+
+        .cover .cover-big .line2 {
+            color: var(--accent-2);
+            display: block;
+        }
+
+        /* Example boxes */
+        .example-box {
+            background: #0a0a0f;
+            color: #f4f1ea;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 16px;
+            border-radius: 2px;
+            margin: 12px 0;
+            line-height: 1.7;
+        }
+
+        .example-box .user {
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        .example-box .user2 {
+            color: var(--accent-2);
+            font-weight: 600
+        }
+
+        .example-box .arrow {
+            color: #666
+        }
+
+        .example-box .result {
+            color: #fff;
+            font-weight: 600
+        }
+
+        /* Type list */
+        .types {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .type-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(10, 10, 15, .15)
+        }
+
+        .type-item:last-child {
+            border-bottom: none
+        }
+
+        .type-item .tnum {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            padding-top: 3px;
+            min-width: 24px
+        }
+
+        .type-item .tbody strong {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 15px
+        }
+
+        .type-item .tbody span {
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-top: 2px;
+            line-height: 1.45
+        }
+
+        /* Uses grid */
+        .uses {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .use-chip {
+            background: rgba(10, 10, 15, .04);
+            border-left: 2px solid var(--accent);
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.4
+        }
+
+        .use-chip strong {
+            font-family: 'Fraunces', serif;
+            display: block;
+            font-size: 13px;
+            margin-bottom: 3px
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+            align-items: center
+        }
+
+        .nav button {
+            background: transparent;
+            border: 1px solid rgba(244, 241, 234, .2);
+            color: var(--ink);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg)
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(244, 241, 234, .2);
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 3px
+        }
+
+        /* Comparison slide */
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+            font-size: 12px
+        }
+
+        .compare>div {
+            padding: 14px;
+            border-radius: 2px
+        }
+
+        .compare .c-crdt {
+            background: rgba(255, 94, 58, .08);
+            border-left: 2px solid var(--accent)
+        }
+
+        .compare .c-hash {
+            background: rgba(94, 234, 212, .1);
+            border-left: 2px solid #0d9488
+        }
+
+        .compare h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            margin-bottom: 8px
+        }
+
+        .compare ul {
+            list-style: none;
+            font-size: 11px;
+            line-height: 1.6
+        }
+
+        .compare li::before {
+            content: "→ ";
+            color: var(--accent);
+            font-weight: 700
+        }
+
+        /* Diagram slide */
+        .diagram {
+            margin: 16px 0;
+            padding: 20px;
+            background: rgba(10, 10, 15, .03);
+            border-radius: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            line-height: 1.8;
+            color: #333
+        }
+
+        .diagram .block {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #fff;
+            border: 1px solid rgba(10, 10, 15, .2);
+            margin: 2px;
+            border-radius: 2px
+        }
+
+        .diagram .hash {
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        .diagram .arrow-down {
+            text-align: center;
+            color: #999;
+            margin: 4px 0
+        }
+
+        @media(max-width:600px) {
+            .slide {
+                padding: 28px
+            }
+
+            .slide h2 {
+                font-size: 30px
+            }
+
+            .uses {
+                grid-template-columns: 1fr
+            }
+
+            .compare {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="page-head">
+        <div class="kicker">Deep Dive · Distributed Systems</div>
+        <h1 class="main">Two data structures <em>quietly running</em><br>the collaborative internet.</h1>
+        <p class="dek">One lets you edit a Google Doc with twelve strangers without conflict. The other makes sure
+            nobody rewrites history on a blockchain. Here's how CRDTs and HashChains actually work; explained with the
+            same example.</p>
+    </header>
+
+    <div class="carousel-wrap">
+        <div class="carousel" id="carousel">
+
+            <!-- Slide 1: Cover -->
+            <div class="slide cover">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>01 / 10</span><span class="tag">● COVER</span></div>
+                <div class="cover-big">
+                    <span class="line1">CRDT</span>
+                    <span class="vs">— and —</span>
+                    <span class="line2">HashChain</span>
+                </div>
+                <p style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;max-width:380px">The invisible
+                    data structures powering every doc you edit and every coin you own.</p>
+                <div class="footer">
+                    <span class="brand">// A 10-slide field guide</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 2: What is a CRDT -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>02 / 10</span><span class="tag">● CRDT 101</span></div>
+                <h2>What <em>is</em> a CRDT?</h2>
+                <p class="lead">Conflict-free Replicated Data Type.</p>
+                <p>A CRDT is a data structure designed so that multiple copies of it, edited independently on different
+                    devices, can always be merged back together automatically, without a central server deciding who
+                    "wins."</p>
+                <p>The magic: the merge function is mathematical. No matter the order edits arrive in, everyone ends up
+                    with the exact same final state. Order-independent. Conflict-proof.</p>
+                <div class="footer">
+                    <span class="brand">// eventually consistent, always</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 3: CRDT example -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>03 / 10</span><span class="tag">● EXAMPLE</span></div>
+                <h2>Alice &amp; Bob write <em>"HELLO"</em></h2>
+                <p>Both are offline. Both edit the same shared document.</p>
+                <div class="example-box">
+                    <span class="user">alice:</span> inserts "HEL" at pos 0<br>
+                    <span class="user2">bob:</span>&nbsp;&nbsp; inserts "LO" at pos 0<br>
+                    <span class="arrow">→ they reconnect</span><br>
+                    <span class="arrow">→ CRDT merges by unique IDs + timestamps</span><br>
+                    <span class="result">result: "HELLO" ✓</span><br>
+                    <span class="arrow">(both devices now identical)</span>
+                </div>
+                <p style="font-size:13px">No server asked. No "resolve conflict" dialog. Each character has a unique ID,
+                    and the merge rules guarantee everyone converges to the same string.</p>
+                <div class="footer">
+                    <span class="brand">// math, not arbitration</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 4: CRDT types -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>04 / 10</span><span class="tag">● CRDT TYPES</span></div>
+                <h2>The <em>family tree</em></h2>
+                <p style="font-size:13px">CRDTs split into two big branches,then fan out into specialized structures:
+                </p>
+                <div class="types">
+                    <div class="type-item"><span class="tnum">01</span>
+                        <div class="tbody"><strong>State-based (CvRDT)</strong><span>Nodes send their full state. Merge
+                                = mathematical join. Simple, heavy on bandwidth.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">02</span>
+                        <div class="tbody"><strong>Operation-based (CmRDT)</strong><span>Nodes send only the operations.
+                                Lighter, but needs reliable delivery.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">03</span>
+                        <div class="tbody"><strong>G-Counter / PN-Counter</strong><span>Grow-only and
+                                increment/decrement counters. For likes, views, votes.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">04</span>
+                        <div class="tbody"><strong>G-Set / 2P-Set / OR-Set</strong><span>Sets you can add to (and
+                                sometimes remove from) across replicas.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">05</span>
+                        <div class="tbody"><strong>LWW-Register &amp; Sequence CRDTs</strong><span>Last-Writer-Wins
+                                values, and RGA/Logoot for collaborative text.</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <span class="brand">// pick your flavor</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 5: CRDT real-world -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>05 / 10</span><span class="tag">● IN THE WILD</span></div>
+                <h2>Where CRDTs <em>actually</em> live</h2>
+                <p style="font-size:13px">You use them every day without knowing it:</p>
+                <div class="uses">
+                    <div class="use-chip"><strong>Figma &amp; Linear</strong>Real-time multi-cursor editing across
+                        teammates.</div>
+                    <div class="use-chip"><strong>Google Docs / Notion</strong>Offline edits that merge cleanly when you
+                        reconnect.</div>
+                    <div class="use-chip"><strong>Apple Notes</strong>Syncing the same note across iPhone, iPad, Mac.
+                    </div>
+                    <div class="use-chip"><strong>Redis &amp; Riak</strong>Distributed databases using CRDTs for
+                        counters and sets.</div>
+                    <div class="use-chip"><strong>Automerge / Yjs</strong>The open-source libraries behind most
+                        collaborative apps.</div>
+                    <div class="use-chip"><strong>Shopping carts</strong>Amazon-style carts that never "lose" items
+                        during network splits.</div>
+                </div>
+                <div class="footer">
+                    <span class="brand">// invisible infrastructure</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 6: What is HashChain -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>06 / 10</span><span class="tag">● HASHCHAIN 101</span></div>
+                <h2>Now, what's a <em>HashChain?</em></h2>
+                <p class="lead">A tamper-evident ledger built from cryptographic breadcrumbs.</p>
+                <p>A HashChain is a sequence where each entry contains the cryptographic hash of the entry before it.
+                    Change any past record, and every hash downstream breaks; instantly visible to everyone.</p>
+                <p>Where CRDTs make edits <em>mergeable</em>, HashChains make history <em>unforgeable</em>. Different
+                    problem, opposite design philosophy.</p>
+                <div class="footer">
+                    <span class="brand">// history you can't rewrite</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 7: HashChain example -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>07 / 10</span><span class="tag">● SAME EXAMPLE</span></div>
+                <h2>Alice &amp; Bob, <em>chained up</em></h2>
+                <p>Same "HELLO" story, but this time every edit is a block linked to the one before.</p>
+                <div class="diagram">
+                    <div class="block">H<span class="hash">#a1f3</span></div> →
+                    <div class="block">E<span class="hash">#b7c2</span></div> →
+                    <div class="block">L<span class="hash">#c4e8</span></div><br>
+                    <div class="arrow-down">↓</div>
+                    <div class="block">L<span class="hash">#d9a1</span></div> →
+                    <div class="block">O<span class="hash">#e2f7</span></div>
+                </div>
+                <p style="font-size:13px">Each block stores <strong>hash(previous block + new data)</strong>. If Bob
+                    tries to sneak-edit the first "H" to a "J", every hash after it breaks. The tampering is
+                    mathematically obvious.</p>
+                <div class="footer">
+                    <span class="brand">// each link proves the last</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 8: HashChain types -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>08 / 10</span><span class="tag">● HASHCHAIN TYPES</span></div>
+                <h2>The <em>shapes</em> it takes</h2>
+                <div class="types">
+                    <div class="type-item"><span class="tnum">01</span>
+                        <div class="tbody"><strong>Linear Hash Chain</strong><span>The classic: one block points to one
+                                previous block. Simple, sequential, append-only.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">02</span>
+                        <div class="tbody"><strong>Merkle Tree (Hash Tree)</strong><span>Hashes arranged as a binary
+                                tree, verify huge datasets by checking just one root hash.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">03</span>
+                        <div class="tbody"><strong>Merkle DAG</strong><span>Directed acyclic graph of hashes. Powers
+                                IPFS, Git, and content-addressed storage.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">04</span>
+                        <div class="tbody"><strong>Blockchain</strong><span>Hash chain + consensus algorithm +
+                                incentives. Bitcoin, Ethereum, etc.</span></div>
+                    </div>
+                    <div class="type-item"><span class="tnum">05</span>
+                        <div class="tbody"><strong>Hash Time-Lock / One-Time Chains</strong><span>Lamport-style chains
+                                used for authentication, OTPs, and micropayment channels.</span></div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <span class="brand">// one idea, many shapes</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 9: HashChain real-world -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>09 / 10</span><span class="tag">● IN THE WILD</span></div>
+                <h2>Where HashChains <em>actually</em> live</h2>
+                <div class="uses">
+                    <div class="use-chip"><strong>Bitcoin &amp; Ethereum</strong>Every transaction hashed into an
+                        unbreakable ledger.</div>
+                    <div class="use-chip"><strong>Git</strong>Every commit is a hash of its parent, that's why SHAs
+                        matter.</div>
+                    <div class="use-chip"><strong>Certificate Transparency</strong>How browsers detect rogue HTTPS certs
+                        via Merkle logs.</div>
+                    <div class="use-chip"><strong>IPFS &amp; Filecoin</strong>Content-addressed files stored as Merkle
+                        DAGs.</div>
+                    <div class="use-chip"><strong>Audit logs</strong>Banks, hospitals, and courts use hash chains for
+                        tamper-evident records.</div>
+                    <div class="use-chip"><strong>Signal &amp; WhatsApp</strong>Ratcheting key chains built from hash
+                        chains for forward secrecy.</div>
+                </div>
+                <div class="footer">
+                    <span class="brand">// trust, without a referee</span>
+                    <span class="swipe">swipe →</span>
+                </div>
+            </div>
+
+            <!-- Slide 10: Comparison -->
+            <div class="slide">
+                <button class="download-btn" title="Download Image">⬇</button>
+                <div class="slide-num"><span>10 / 10</span><span class="tag">● TAKEAWAY</span></div>
+                <h2>So, <em>which</em> do you need?</h2>
+                <p style="font-size:13px">They solve opposite problems. Pick by the question you're asking:</p>
+                <div class="compare">
+                    <div class="c-crdt">
+                        <h4>Reach for a CRDT when…</h4>
+                        <ul>
+                            <li>Multiple users edit the same thing</li>
+                            <li>Offline-first matters</li>
+                            <li>You need automatic merge</li>
+                            <li>Eventual consistency is fine</li>
+                            <li>Think: <em>collaboration</em></li>
+                        </ul>
+                    </div>
+                    <div class="c-hash">
+                        <h4>Reach for a HashChain when…</h4>
+                        <ul>
+                            <li>History must be tamper-proof</li>
+                            <li>You need verifiable order</li>
+                            <li>Zero-trust environments</li>
+                            <li>Audit trails &amp; integrity</li>
+                            <li>Think: <em>provenance</em></li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="font-size:13px;margin-top:14px;font-style:italic;font-family:'Fraunces',serif">CRDTs answer
+                    "how do we agree?" HashChains answer "how do we remember?" The best modern systems use both.</p>
+                <div class="footer">
+                    <span class="brand">// end of carousel</span>
+                    <span class="swipe">↻ save &amp; share</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="nav">
+            <button id="prev" aria-label="Previous">←</button>
+            <div class="dots" id="dots"></div>
+            <button id="next" aria-label="Next">→</button>
+        </div>
+    </div>
+
+    <script>
+        const carousel = document.getElementById('carousel');
+        const slides = carousel.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('dots');
+        const prev = document.getElementById('prev');
+        const next = document.getElementById('next');
+
+        // Setup dots navigation
+        slides.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
+            dotsContainer.appendChild(d);
+        });
+        const dots = dotsContainer.querySelectorAll('.dot');
+
+        // Scroll logic
+        const scrollBy = (dir) => {
+            const w = slides[0].offsetWidth + 24;
+            carousel.scrollBy({ left: dir * w, behavior: 'smooth' });
+        };
+        prev.addEventListener('click', () => scrollBy(-1));
+        next.addEventListener('click', () => scrollBy(1));
+
+        // Intersection Observer for updating active dot
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = Array.from(slides).indexOf(entry.target);
+                    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+                }
+            });
+        }, { root: carousel, threshold: 0.6 });
+        slides.forEach(s => io.observe(s));
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') scrollBy(1);
+            if (e.key === 'ArrowLeft') scrollBy(-1);
+        });
+
+        // Setup Download Image functionality
+        const downloadBtns = document.querySelectorAll('.download-btn');
+        downloadBtns.forEach((btn, index) => {
+            btn.addEventListener('click', async (e) => {
+                const slide = e.target.closest('.slide');
+
+                // Temporarily hide the button so it isn't in the exported image
+                btn.style.display = 'none';
+
+                try {
+                    const canvas = await html2canvas(slide, {
+                        scale: 2, // 2x scale for higher resolution output
+                        useCORS: true,
+                        backgroundColor: null // Inherit from element
+                    });
+
+                    const link = document.createElement('a');
+                    link.download = `Slide_${index + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                } catch (error) {
+                    console.error('Could not generate image:', error);
+                    alert("Failed to download image. Check console for details.");
+                } finally {
+                    // Restore the button visibility
+                    btn.style.display = 'flex';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

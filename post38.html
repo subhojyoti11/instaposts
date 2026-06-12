@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Metrics — The Glossary</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eae6df;
+  --card:#faf8f4;
+  --ink:#1a2332;
+  --ink2:#4a5568;
+  --dim:#94a3b8;
+  --emerald:#10b981;
+  --coral:#ef4444;
+  --indigo:#6366f1;
+  --border:rgba(26,35,50,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.cw{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{
+  flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  background:var(--card);color:var(--ink);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid var(--border);box-shadow:0 1px 4px rgba(26,35,50,.04);
+  background-image:linear-gradient(rgba(26,35,50,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(26,35,50,.018) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.hdr{flex-shrink:0;padding:20px 28px 0;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim)}
+.hdr .brand{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:16px 23px 0;display:flex;flex-direction:column}
+.cat{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-top:12px;margin-bottom:2px;flex-shrink:0;padding-bottom:6px;}
+.cat.em{color:var(--emerald);border-color:var(--emerald)}
+.cat.cr{color:var(--coral);border-color:var(--coral)}
+.cat.in{color:var(--indigo);border-color:var(--indigo)}
+h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(28px,6vw,46px);line-height:.88;letter-spacing:-.03em;margin-bottom:10px;flex-shrink:0}
+h2 .em{color:var(--emerald)}h2 .cr{color:var(--coral)}h2 .in{color:var(--indigo)}
+.ftr{flex-shrink:0;padding:10px 28px 16px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.ftr .left{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--dim)}
+.ftr .right{font-family:'Bricolage Grotesque',sans-serif;font-size:13px;color:var(--indigo);font-weight:600}
+
+/* Term rows */
+.terms{display:flex;flex-direction:column;gap:0;flex:1;min-height:0}
+.term{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.term:last-child{border-bottom:none}
+.term-name{flex-shrink:0;width:90px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.02em;line-height:1.1}
+.term-name.em{color:var(--emerald)}.term-name.cr{color:var(--coral)}.term-name.in{color:var(--indigo)}
+.term-def{flex:1;font-size:12px;color:var(--ink2);line-height:1.4;font-weight:400;padding-top:2px}
+.term-def strong{color:var(--ink);font-weight:600}
+
+/* Download */
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(99,102,241,.2);color:var(--indigo);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--indigo);color:#fff}
+.dl-btn.alt{border-color:var(--border);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--indigo);color:var(--indigo)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(99,102,241,.06);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--indigo);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--indigo);color:var(--indigo)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(26,35,50,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--indigo);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="cw">
+  <div class="carousel" id="carousel">
+
+    <!-- ═══ SLIDE 1: HERO INTRO ═══ -->
+    <div class="slide">
+      <!-- <div class="hdr"><span class="num">01 / 04</span><span class="brand">ravenex.tech</span></div> -->
+      <div class="body" style="justify-content:center;align-items:flex-start;padding-top:60px">
+        <!-- <div class="cat in" style="border-bottom:none;margin-bottom:16px">SaaS Glossary · 2026</div> -->
+        <h2 style="font-size:clamp(32px,7vw,54px);line-height:.86;margin-bottom:12px">16 SaaS<br>metrics<br>every dev<br><span class="in">must know.</span></h2>
+        <!-- <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px">You can ship great code and still build a failing business. These are the numbers that decide if your SaaS survives — from revenue to retention to unit economics.</p> -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px;background:rgba(16,185,129,.06);color:var(--emerald);border:1px solid rgba(16,185,129,.6)">Revenue</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px;background:rgba(239,68,68,.06);color:var(--coral);border:1px solid rgba(239,68,68,.5)">Retention</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px;background:rgba(99,102,241,.06);color:var(--indigo);border:1px solid rgba(99,102,241,.5)">Unit Economics</span>
+        </div>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- ═══ SLIDE 2: REVENUE ═══ -->
+    <div class="slide">
+      <!-- <div class="hdr"><span class="num">02 / 04</span><span class="brand">ravenex.tech</span></div> -->
+      <div class="body">
+        <div class="cat em">Revenue Metrics</div>
+        <h2>Know your <span class="em">money.</span></h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <div class="terms">
+          <div class="term">
+            <div class="term-name em">ARR</div>
+            <div class="term-def"><strong>Annual Recurring Revenue.</strong> Total yearly revenue from active subscriptions. The north star metric for every SaaS.<br>ARR = MRR × 12.</div>
+          </div>
+          <div class="term">
+            <div class="term-name em">MRR</div>
+            <div class="term-def"><strong>Monthly Recurring Revenue.</strong> What customers pay you every month. Excludes one-time fees, services, and setup charges. Only predictable, recurring income.</div>
+          </div>
+          <div class="term">
+            <div class="term-name em">ARPU</div>
+            <div class="term-def"><strong>Average Revenue Per User.</strong> Total revenue divided by total customers. Tells you how much each customer is worth. Rising ARPU = healthy upsell motion.</div>
+          </div>
+          <div class="term">
+            <div class="term-name em">Burn Rate</div>
+            <div class="term-def"><strong>Cash spent per month.</strong> If you have $5M in the bank and burn $250K/month, you have 20 months of runway. Investors ask this first.</div>
+          </div>
+          <div class="term">
+            <div class="term-name em">Burn Multiple</div>
+            <div class="term-def"><strong>Net burn ÷ net new ARR.</strong> Measures how efficiently you turn spending into growth. Below 2× is great. Above 4× means you're burning cash without enough return.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- ═══ SLIDE 2: RETENTION ═══ -->
+    <div class="slide">
+      <!-- <div class="hdr"><span class="num">03 / 04</span><span class="brand">ravenex.tech</span></div> -->
+      <div class="body">
+        <div class="cat cr">Retention & Growth</div>
+        <h2>Keep your <span class="cr">customers.</span></h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <div class="terms">
+          <div class="term">
+            <div class="term-name cr">Churn</div>
+            <div class="term-def"><strong>Percentage of customers or revenue lost</strong> per month/year. 5% monthly churn = 46% annual loss. The silent killer of every SaaS business.</div>
+          </div>
+          <div class="term">
+            <div class="term-name cr">NDR</div>
+            <div class="term-def"><strong>Net Dollar Retention.</strong> Revenue from existing customers after expansion, contraction, and churn. Above 100% = you grow even without new sales. Elite is 120%+.</div>
+          </div>
+          <div class="term">
+            <div class="term-name cr">GDR</div>
+            <div class="term-def"><strong>Gross Dollar Retention.</strong> Same as NDR but without expansion. Pure retention. Measures how much revenue you keep. Max is 100%. Below 85% is a red flag.</div>
+          </div>
+          <div class="term">
+            <div class="term-name cr">DAU/MAU</div>
+            <div class="term-def"><strong>Daily Active Users ÷ Monthly Active Users.</strong> Measures product stickiness. Above 40% = daily habit (like Slack). Below 15% = occasional use.</div>
+          </div>
+          <div class="term">
+            <div class="term-name cr">Activation</div>
+            <div class="term-def"><strong>% of signups who reach the "aha moment."</strong> If users don't activate, they churn. Improving activation from 20% to 40% doubles your effective growth rate overnight.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- ═══ SLIDE 3: EFFICIENCY ═══ -->
+    <div class="slide">
+      <!-- <div class="hdr"><span class="num">04 / 04</span><span class="brand">ravenex.tech</span></div> -->
+      <div class="body">
+        <div class="cat in">Efficiency & Unit Economics</div>
+        <h2>Make the math <span class="in">work.</span></h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 20px;"> </p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top: 10px;"> </p>
+        <div class="terms">
+          <div class="term">
+            <div class="term-name in">LTV</div>
+            <div class="term-def"><strong>Customer Lifetime Value.</strong> Total revenue a customer generates before churning. LTV = ARPU × gross margin ÷ churn rate. The ceiling of what you can spend to acquire them.</div>
+          </div>
+          <div class="term">
+            <div class="term-name in">CAC</div>
+            <div class="term-def"><strong>Customer Acquisition Cost.</strong> Total sales + marketing spend ÷ new customers acquired. The floor of your growth investment. Must be far below LTV.</div>
+          </div>
+          <div class="term">
+            <div class="term-name in">LTV/CAC</div>
+            <div class="term-def"><strong>The efficiency ratio.</strong> Must be 3× or higher. Below 3× = burning cash. Above 5× = underinvesting in growth. Sweet spot is 3-5×.</div>
+          </div>
+          <div class="term">
+            <div class="term-name in">CAC Payback</div>
+            <div class="term-def"><strong>Months to recover acquisition cost.</strong> Under 12 months = healthy. Over 18 = cash flow problem. Determines how fast you can reinvest in growth.</div>
+          </div>
+          <div class="term">
+            <div class="term-name in">Rule of 40</div>
+            <div class="term-def"><strong>Growth rate + profit margin ≥ 40%.</strong> The single number VCs use to evaluate SaaS health. Growing 60% at -20% margins? 60 + (-20) = 40. You pass.</div>
+          </div>
+          <div class="term">
+            <div class="term-name in">Gross Margin</div>
+            <div class="term-def"><strong>Revenue minus cost of delivery.</strong> SaaS should be 70-85%. Below 60% means your infrastructure costs are too high or you're selling services, not software.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+   <!-- ═══ SLIDE 5: CTA ═══ -->
+    <div class="slide">
+      <div class="body" style="justify-content:center;align-items:center;text-align:center;padding:40px 32px">
+        <p style="font-size:14px;color:var(--ink2);line-height:1.5;max-width:380px;margin-top:20px"> </p>
+        <h2 style="font-size:clamp(28px,6vw,44px);line-height:.9;margin-bottom:20px;text-align:center">Found this useful? <span class="in">Save it.</span></h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.6;max-width:360px;margin-bottom:24px">Share this with your co-founder, PM, or anyone building a SaaS who still thinks revenue = growth.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:300px">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.12)">
+            <span style="font-size:18px">📑</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500;text-align:left">Save this post for your next pitch deck review</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.12)">
+            <span style="font-size:18px">📤</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500;text-align:left">Share with your co-founder who only tracks signups</span>
+          </div>
+          
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.12)">
+            <span style="font-size:18px">🔔</span>
+            <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500;text-align:left">Follow <strong>@ravenextechnologies</strong> for more like this</span>
+          </div>
+        </div>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:28px">Tech that matters · Explained simply</p>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+ 
+  </div>
+
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+let cur=0;
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);
+slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));
+document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};
+async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}
+function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}
+async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'saas-glossary-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}
+async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'saas-glossary-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

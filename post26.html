@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Source vs Closed Source AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a10;--card:#111118;--ink:#e4e4ef;--ink2:#8888a0;--dim:#55556a;--open:#a855f7;--closed:#14b8a6;--warn:#f59e0b;--border:rgba(168,85,247,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--open),var(--closed))} */
+.ghost{position:absolute;top:10px;right:14px;font-family:'Syne',sans-serif;font-weight:800;font-size:120px;line-height:.75;color:rgba(168,85,247,.03);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:20px 24px 0 26px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Fira Code',monospace;font-size:10px;color:var(--dim)}.hdr .brand{font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:12px 24px 0 26px;display:flex;flex-direction:column}
+.pill{display:inline-flex;font-family:'Fira Code',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;flex-shrink:0;font-weight:500;width:fit-content}
+.pill.op{background:rgba(168,85,247,.1);color:var(--open);border:1px solid rgba(168,85,247,.2)}
+.pill.cl{background:rgba(20,184,166,.1);color:var(--closed);border:1px solid rgba(20,184,166,.2)}
+.pill.vs{background:rgba(245,158,11,.1);color:var(--warn);border:1px solid rgba(245,158,11,.2)}
+.slide h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(24px,5vw,38px);line-height: 1.1em;;letter-spacing:-.02em;margin-bottom:12px;flex-shrink:0}
+.slide h2 .op{color:var(--open)}.slide h2 .cl{color:var(--closed)}.slide h2 .wr{color:var(--warn)}
+.slide p{font-size:12.5px;line-height:1.55;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-size:14px;color:var(--ink);font-weight:500}
+.ftr{flex-shrink:0;padding:10px 24px 16px 26px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-size:12px;color:var(--open);font-weight:500}
+.code{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;font-family:'Fira Code',monospace;font-size:10px;padding:12px 18px;margin:2px 0;line-height:1.6;flex-shrink:0}
+.code .op{color:#c084fc;font-weight:600}.code .cl{color:#5eead4;font-weight:600}.code .wr{color:#fbbf24;font-weight:600}.code .dm{color:rgba(228,228,239,.25)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Fira Code',monospace;font-size:11px;font-weight:600;min-width:50px;text-align:right;flex-shrink:0}
+.st-v.op{color:var(--open)}.st-v.cl{color:var(--closed)}.st-v.wr{color:var(--warn)}
+.st-t{font-size:11px;color:var(--ink2);line-height:1.35}.st-t strong{font-weight:600;color:var(--ink)}
+.gcard{padding:8px 10px;margin:4px 0;border-radius:8px;font-size:11px;line-height:1.45;flex-shrink:0;backdrop-filter:blur(4px)}
+.gcard.op-c{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.12)}
+.gcard.cl-c{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.12)}
+.gcard.wr-c{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12)}
+.gcard p{color:var(--ink2);margin-bottom:2px}.gcard p:last-child{margin-bottom:0}.gcard strong{font-weight:600;color:var(--ink)}
+/* Versus row */
+.vs-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:8px 0;flex-shrink:0;background:var(--border)}
+.vs-cell{padding:10px;font-size:10.5px;line-height:1.4}
+.vs-cell.op-bg{background:rgba(168,85,247,.06);color:var(--ink2)}.vs-cell.cl-bg{background:rgba(20,184,166,.06);color:var(--ink2)}
+.vs-cell strong{display:block;font-weight:600;color:var(--ink);margin-bottom:2px;font-size:11px}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(168,85,247,.2);color:var(--open);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--open);color:var(--bg)}.dl-btn.alt{border-color:rgba(228,228,239,.08);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--open);color:var(--open)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(168,85,247,.08);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--open);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(228,228,239,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;transition:all .25s;border-radius:6px}.nav button:hover{border-color:var(--open);color:var(--open)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(228,228,239,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--open);width:22px;border-radius:3px}
+@media(max-width:600px){.slide h2{font-size:26px}.vs-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- <div class="slide"><div class="ghost">01</div><div class="hdr"><span class="num">01 / 08</span><span class="brand">ravenex.tech</span></div><div class="body"> -->
+      <div class="slide"><div class="ghost">01</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill vs">● Open vs Closed · 2026</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+      <h2><span class="op">Open</span> vs <span class="cl">Closed</span><br>Source AI.</h2>
+      <p class="lead">Llama, Mistral, DeepSeek, and Qwen are free. GPT, Claude, and Gemini cost billions to access. <br>Meta even launched a closed model now, Muse Spark. The lines are blurring.</p>
+      <!-- <p>The answer isn't charity. It's strategy. And the choice between open and closed determines your cost, control, privacy, and lock-in for the next decade.</p> -->
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div></div>
+
+    <div class="slide"><div class="ghost">02</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill op">● The Players</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+      <h2>The <span class="op">open</span> ecosystem.</h2>
+      <div class="stats">
+        <div class="st"><span class="st-v op">Llama 4</span><div class="st-t"><strong>Meta.</strong> Scout (17B/109B MoE, 10M context) + Maverick (17B/400B, 128 experts). Behemoth still training. Natively multimodal. 200 languages</div></div>
+        <div class="st"><span class="st-v op">Mistral</span><div class="st-t"><strong>France.</strong> Large 3 (41B/675B MoE, Apache 2.0). Small 4 (6B/119B, 128 experts). Unifies reasoning + vision + coding. $0.15/MTok input</div></div>
+        <div class="st"><span class="st-v op">Qwen 3.6</span><div class="st-t"><strong>Alibaba.</strong> Plus claims parity with Claude Opus 4.5 on SWE-bench. Dual thinking/non-thinking modes. 100+ languages. Apache 2.0</div></div>
+        <div class="st"><span class="st-v op">DeepSeek</span><div class="st-t"><strong>China.</strong> V4 Pro (Apr 2026): 80%+ SWE-bench Verified. Strongest open-weight coding model. $1.74/$3.48 per MTok. MIT license</div></div>
+        <div class="st"><span class="st-v op">Gemma 4</span><div class="st-t"><strong>Google.</strong> Released Apr 2026. Upgraded from Gemma 3. Runs on a single GPU. Free weights for research and commercial use</div></div>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">03</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill cl">● The Players</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+      <h2>The <span class="cl">closed</span><br>ecosystem.</h2>
+      <div class="stats">
+        <div class="st"><span class="st-v cl">GPT-5.5</span><div class="st-t"><strong>OpenAI.</strong> Released Apr 2026. 88.7% SWE-bench. $5/$25 per MTok. Agentic workflows, multimodal, computer use. Nano at $0.10/MTok</div></div>
+        <div class="st"><span class="st-v cl">Claude</span><div class="st-t"><strong>Anthropic.</strong> Opus 4.7 (Apr 2026): 87.6% SWE-bench, 94.2% GPQA. $5/$25 per MTok. 1M context. Strongest coding model available</div></div>
+        <div class="st"><span class="st-v cl">Gemini</span><div class="st-t"><strong>Google.</strong> 3.1 Pro: $2/$12 per MTok. 1M context. Best abstract reasoning (ARC-AGI-2). Flash 3 at $0.50/$3 for budget workloads</div></div>
+        <div class="st"><span class="st-v cl">Grok</span><div class="st-t"><strong>xAI.</strong> Grok 4.3 (Apr 2026): $0.20/$0.50 per MTok. Video input. Cheapest frontier model. SuperGrok Heavy at $300/mo</div></div>
+      </div>
+      <div class="gcard cl-c">
+        <p><strong>The gap is narrowing fast.</strong> DeepSeek V4 Pro hit 80%+ SWE-bench, within striking distance of GPT-5.5 (88.7%) and Opus 4.7 (87.6%). Open-source is no longer 18 months behind. More like 3-6 months.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">04</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill vs">● Head to Head</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 5px;"> </p>
+      <h2>The real<br><span class="wr">trade-offs.</span></h2>
+      <div class="vs-row">
+        <div class="vs-cell op-bg"><strong>Open Source</strong>Free weights. Self-host. Full control. Modify, fine-tune, distill freely</div>
+        <div class="vs-cell cl-bg"><strong>Closed Source</strong>API only. Pay per token. No modification. Vendor controls updates</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-cell op-bg"><strong>Privacy</strong>Data never leaves your servers. HIPAA/GDPR compliant by default</div>
+        <div class="vs-cell cl-bg"><strong>Privacy</strong>Data sent to third-party API. Trust their privacy policy. Enterprise agreements exist</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-cell op-bg"><strong>Cost at scale</strong>GPU rental: $2-8/hr. Fixed cost. 100K queries/day = same price</div>
+        <div class="vs-cell cl-bg"><strong>Cost at scale</strong>Per-token billing. 100K queries/day = massive bill. Scales linearly with usage</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-cell op-bg"><strong>Quality</strong>3-6 months behind frontier. DeepSeek V4 at 80%+ SWE-bench. Gap closing fast</div>
+        <div class="vs-cell cl-bg"><strong>Quality</strong>Still ahead. Opus 4.7 at 87.6% SWE-bench, GPT-5.5 at 88.7%. Best reasoning + agentic</div>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">05</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill op">● The Strategy</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 10px;"> </p>
+      <h2>Why Meta gives it away <span class="op">for free.</span></h2>
+      <p class="lead">Meta spent hundreds of millions training Llama 4. Then released the weights for free. Then launched Muse Spark, a closed model. Why both?</p>
+      <div class="stats">
+        <div class="st"><span class="st-v op">01</span><div class="st-t"><strong>Commoditize the complement.</strong> If AI models are free, the value shifts to data and distribution. Meta has 3.9B users. They own the data moat</div></div>
+        <div class="st"><span class="st-v op">02</span><div class="st-t"><strong>Community R&D.</strong> 500,000+ developers improve Llama for free. Fine-tunes, optimizations, bug fixes. Meta gets the innovation without paying for it</div></div>
+        <div class="st"><span class="st-v op">03</span><div class="st-t"><strong>Two-track strategy.</strong> Llama (open) builds ecosystem + developer trust. Muse Spark (closed) captures commercial revenue. Meta wants both moats</div></div>
+        <div class="st"><span class="st-v op">04</span><div class="st-t"><strong>Starve competitors.</strong> If Llama is free and good enough, why pay OpenAI? Every Llama deployment is one fewer GPT customer</div></div>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">06</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill wr">● The Cost Math</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 5px;"> </p>
+      <h2>When open<br>beats closed<br>on <span class="wr">price.</span></h2>
+      <div class="code">
+<span class="dm">Customer support bot: 50K queries/day</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="cl">Closed (GPT-5.5 API):</span><br>
+<span class="wr">~$7,500/month</span> <span class="dm">at $5/$25 per MTok</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="cl">Closed (Grok 4.3 API):</span><br>
+<span class="wr">~$600/month</span> <span class="dm">at $0.20/$0.50 per MTok</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="op">Open (Llama 4 Scout self-hosted):</span><br>
+<span class="wr">~$1,800/month</span> <span class="dm">fixed GPU cost</span><br>
+<span class="dm">50K or 500K queries = same price</span><br>
+<span class="dm">──────────────────────────</span><br>
+<span class="op">Breakeven vs GPT-5.5: ~12K queries/day</span><br>
+<span class="dm">Above that, self-hosting wins big.</span>
+      </div>
+      <div class="gcard wr-c">
+        <p><strong>The hidden cost of open:</strong> You need MLOps engineers ($150K+/yr), GPU infra management, model updates, monitoring, and security. "Free weights" doesn't mean free deployment.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">07</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill wr">● The Risk</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+      <h2>The <span class="wr">lock-in</span><br>problem.</h2>
+      <p class="lead">Every closed-source API can change pricing, deprecate models, or kill products without warning.</p>
+      <div class="stats">
+        <div class="st"><span class="st-v wr">GPT-4</span><div class="st-t"><strong>Fully deprecated.</strong> Code that worked in 2023 breaks in 2026. Three generations later (4o → 5.4 → 5.5), no rollback possible</div></div>
+        <div class="st"><span class="st-v wr">Pricing</span><div class="st-t"><strong>Shifts overnight.</strong> Grok 4.3 undercuts everyone at $0.20/MTok. OpenAI responded with Nano at $0.10. Your unit economics change without warning</div></div>
+        <div class="st"><span class="st-v wr">Sora</span><div class="st-t"><strong>Shut down Apr 2026.</strong> OpenAI killed the Sora app entirely. Devs who built on it got nothing. API shutting down Sep 2026</div></div>
+      </div>
+      <div class="gcard op-c">
+        <p><strong>Open source = insurance.</strong> You own the weights. Nobody can deprecate your model. Nobody can change the pricing. Nobody can read your data. That stability has real business value.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost">08</div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="pill vs">● The Verdict</div> -->
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 20px;"> </p>
+       <p class="lead" style="margin-top: 10px;"> </p>
+      <h2>The smart<br>play is<br><span class="wr">both.</span></h2>
+      <div class="gcard cl-c">
+        <p><strong>Use closed for:</strong> Cutting-edge agentic coding (Opus 4.7, GPT-5.5), rapid prototyping, low-volume high-complexity queries. When 87%+ SWE-bench matters more than cost.</p>
+      </div>
+      <div class="gcard op-c">
+        <p><strong>Use open for:</strong> High-volume inference (DeepSeek V4, Llama 4 Scout), data-sensitive workloads (healthcare/legal/finance), fine-tuning on proprietary data. Zero vendor lock-in.</p>
+      </div>
+      <div class="gcard wr-c">
+        <p><strong>The 2026 pattern:</strong> Prototype on Claude/GPT. Validate the use case. Then distill or fine-tune DeepSeek V4 or Llama 4 for production. Best quality during development, lowest cost at scale.</p>
+      </div>
+      <p style="font-size:12px;margin-top:6px;color:var(--dim);font-weight:500">Even Meta runs both now, Llama (open) + Muse Spark (closed). The future isn't open OR closed. It's both, deployed strategically.</p>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'open-vs-closed-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'open-vs-closed-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

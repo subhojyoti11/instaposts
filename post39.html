@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Happens When You Tap Pay</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d14;--card:#0d1117;--ink:#e6edf3;--ink2:#8b949e;--dim:#484f58;--green:#00d68f;--amber:#ffa726;--rose:#ff5370;--blue:#58a6ff;--border:rgba(0,214,143,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.cw{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)}
+/* .slide::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--blue),var(--amber))} */
+.ghost{position:absolute;top:6px;right:10px;font-family:'Outfit',sans-serif;font-weight:800;font-size:130px;line-height:.7;color:rgba(0,214,143,.02);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:18px 24px 0;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}.hdr .brand{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:8px 22px 0 24px;display:flex;flex-direction:column}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:8px;flex-shrink:0;font-weight:600}
+h2{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(24px,5.2vw,40px);line-height:.9;letter-spacing:-.03em;margin-bottom:20px;flex-shrink:0}
+h2 .gr{color:var(--green)}h2 .am{color:var(--amber)}h2 .rs{color:var(--rose)}h2 .bl{color:var(--blue)}
+p{font-size:12px;line-height:1.55;color:var(--ink2);margin-bottom:5px;font-weight:300}
+p.lead{font-size:14px;color:var(--ink);font-weight:500;line-height:1.4}
+.ftr{flex-shrink:0;padding:8px 24px 14px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-family:'Outfit',sans-serif;font-size:14px;color:var(--green);font-weight:600}
+.chart{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:4px 0}
+.chart svg{width:100%;height:100%}
+.note{padding:10px 14px;margin:5px 0;font-size:11px;line-height:1.5;border-radius:8px;flex-shrink:0}
+.note.gr{background:rgba(0,214,143,.05);border:1px solid rgba(0,214,143,.12)}
+.note.am{background:rgba(255,167,38,.05);border:1px solid rgba(255,167,38,.12)}
+.note.rs{background:rgba(255,83,112,.05);border:1px solid rgba(255,83,112,.12)}
+.note p{color:var(--ink2);margin-bottom:2px}.note p:last-child{margin-bottom:0}.note strong{font-weight:600;color:var(--ink)}
+.note code{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);background:rgba(0,214,143,.08);padding:1px 4px;border-radius:3px}
+.stats{display:flex;flex-direction:column;gap:0;margin:4px 0;flex-shrink:0}
+.st{display:flex;gap:20px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none;}
+.st-v{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;min-width:68px;text-align:right;flex-shrink:0}
+.st-v.gr{color:var(--green)}.st-v.am{color:var(--amber)}.st-v.rs{color:var(--rose)}.st-v.bl{color:var(--blue)}
+.st-t{font-size:12px;color:var(--ink2);line-height:1.35}.st-t strong{font-weight:600;color:var(--ink)}
+.code{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:12px 24px;margin:5px 0;line-height:1.8;flex-shrink:0}
+.code .gr{color:#00d68f;font-weight:600}.code .am{color:#ffa726;font-weight:600}.code .rs{color:#ff5370;font-weight:600}.code .bl{color:#58a6ff;font-weight:600}.code .dm{color:rgb(230, 237, 243)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(0,214,143,.2);color:var(--green);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--green);color:var(--bg)}.dl-btn.alt{border-color:rgba(230,237,243,.06);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--green);color:var(--green)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(0,214,143,.06);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--green);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(230,237,243,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--green);color:var(--green)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(230,237,243,.06);cursor:pointer;transition:all .35s}.dot.active{background:var(--green);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="cw">
+  <div class="carousel" id="carousel">
+
+    <!-- 01 COVER -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">Payments · Under The Hood</div> -->
+         <p class="lead" style="margin-top: 20px;"> </p>
+         <p class="lead" style="margin-top: 20px;"> </p>
+         <p class="lead" style="margin-top: 20px;"> </p>
+         <p class="lead" style="margin-top: 20px;"> </p>
+         <p class="lead" style="margin-top: 20px;"> </p>
+        <h2 style="line-height: 50px; text-align: center;">What happens when <br>you tap <span class="gr">"Pay."</span></h2>
+        <!-- <p class="lead">You tap a button. $47.99 leaves your account. A coffee shop in Bangalore gets paid. It takes 2 seconds. Behind those 2 seconds? Seven companies, four networks, three currencies, and six fees you never see.</p> -->
+        <div class="chart" style="flex:0 0 auto">
+          <svg viewBox="0 0 440 130" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#00d68f" stroke-width="1"/></marker></defs>
+            <!-- Flow: You → Phone → Stripe → Acquirer → Card Network → Issuer → ✓ -->
+            <circle cx="20" cy="50" r="18" fill="rgba(0,214,143,.08)" stroke="#00d68f" stroke-width="1.2"/>
+            <text x="20" y="54" text-anchor="middle" fill="#00d68f" font-family="'Outfit',sans-serif" font-size="9" font-weight="700">YOU</text>
+            <line x1="38" y1="50" x2="74" y2="50" stroke="#00d68f" stroke-width="1" marker-end="url(#a1)"/>
+            <rect x="75" y="36" width="42" height="28" rx="6" fill="rgba(88,166,255,.08)" stroke="#58a6ff" stroke-width="1"/>
+            <text x="96" y="54" text-anchor="middle" fill="#58a6ff" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">STRIPE</text>
+            <line x1="117" y1="50" x2="145" y2="50" stroke="#00d68f" stroke-width="1" marker-end="url(#a1)"/>
+            <rect x="147" y="36" width="52" height="28" rx="6" fill="rgba(255,167,38,.08)" stroke="#ffa726" stroke-width="1"/>
+            <text x="173" y="54" text-anchor="middle" fill="#ffa726" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">ACQUIRER</text>
+            <line x1="199" y1="50" x2="226" y2="50" stroke="#00d68f" stroke-width="1" marker-end="url(#a1)"/>
+            <rect x="228" y="36" width="56" height="28" rx="6" fill="rgba(255,83,112,.08)" stroke="#ff5370" stroke-width="1"/>
+            <text x="256" y="48" text-anchor="middle" fill="#ff5370" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">CARD</text>
+            <text x="256" y="58" text-anchor="middle" fill="#ff5370" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">NETWORK</text>
+            <line x1="284" y1="50" x2="314" y2="50" stroke="#00d68f" stroke-width="1" marker-end="url(#a1)"/>
+            <rect x="316" y="36" width="56" height="28" rx="6" fill="rgba(0,214,143,.08)" stroke="#00d68f" stroke-width="1"/>
+            <text x="345" y="54" text-anchor="middle" fill="#00d68f" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">ISSUER</text>
+            <line x1="373" y1="50" x2="400" y2="50" stroke="#00d68f" stroke-width="1" marker-end="url(#a1)"/>
+            <text x="408" y="54" fill="#00d68f" font-family="'Outfit',sans-serif" font-size="18" font-weight="800">✓</text>
+            <!-- Labels below -->
+            <text x="20" y="82" text-anchor="middle" fill="rgba(139,148,158,.9)" font-family="'JetBrains Mono',monospace" font-size="8">Customer</text>
+            <text x="96" y="82" text-anchor="middle" fill="rgba(139,148,158,.9)" font-family="'JetBrains Mono',monospace" font-size="8">Processor</text>
+            <text x="173" y="82" text-anchor="middle" fill="rgba(139,148,158,.9)" font-family="'JetBrains Mono',monospace" font-size="8">Merchant Bank</text>
+            <text x="256" y="82" text-anchor="middle" fill="rgba(139,148,158,.9)" font-family="'JetBrains Mono',monospace" font-size="8">Visa/MC</text>
+            <text x="345" y="82" text-anchor="middle" fill="rgba(139,148,158,.9)" font-family="'JetBrains Mono',monospace" font-size="8">Your Bank</text>
+            <!-- Time label -->
+            <text x="210" y="110" text-anchor="middle" fill="rgba(0,214,143,.3)" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing=".1em">← 1.8 SECONDS →</text>
+          </svg>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 02 THE 7 PARTIES -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The 7-Party Chain</div> -->
+         <p class="lead" style="margin-top: 20px;"> </p>
+        <h2 style="line-height: 45px;margin-bottom: 30px;">Seven companies<br>touch your <span class="am">$5</span> coffee.</h2>
+        <div class="stats">
+          <div class="st"><span class="st-v gr">1</span><div class="st-t"><strong>Cardholder (You).</strong> Taps phone or enters card number. Your device encrypts the card data before it leaves</div></div>
+          <div class="st"><span class="st-v gr">2</span><div class="st-t"><strong>Merchant.</strong> The coffee shop. Sends the charge request through their payment integration</div></div>
+          <div class="st"><span class="st-v bl">3</span><div class="st-t"><strong>Payment Gateway (Stripe/Razorpay).</strong> Encrypts, validates, routes the transaction. The API layer devs actually touch</div></div>
+          <div class="st"><span class="st-v bl">4</span><div class="st-t"><strong>Payment Processor.</strong> Formats the message for the card network. Often bundled into the gateway (Stripe does both)</div></div>
+          <div class="st"><span class="st-v am">5</span><div class="st-t"><strong>Acquirer (Merchant's Bank).</strong> The bank that receives money on behalf of the merchant. Underwrites the risk</div></div>
+          <div class="st"><span class="st-v rs">6</span><div class="st-t"><strong>Card Network (Visa/Mastercard/Rupay).</strong> Routes the authorization between acquirer and issuer. Sets interchange rates</div></div>
+          <div class="st"><span class="st-v gr">7</span><div class="st-t"><strong>Issuer (Your Bank).</strong> Checks your balance, approves/declines, puts a hold on funds. Sends back YES or NO</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 03 THE FLOW -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The Authorization Flow</div> -->
+         <p class="lead" style="margin-top: 20px;"> </p>
+        <h2 style="line-height: 45px;margin-bottom: 20px;">What happens<br>in those <span class="gr">1.8 seconds.</span></h2>
+        <div class="code">
+<span class="dm">YOU tap "Pay $47.99"</span><br>
+<span class="dm">━━━━━━━━━━━━━━━━━━━━━━━━━</span><br>
+<span class="gr">1.</span> <span class="dm">App encrypts card → sends to</span> <span class="bl">Stripe</span><br>
+<span class="gr">2.</span> <span class="bl">Stripe</span> <span class="dm">tokenizes card, checks fraud</span><br>
+<span class="dm" style="margin-left: 20px;">(Radar ML model, ~50ms)</span><br>
+<span class="gr">3.</span> <span class="bl">Stripe</span> <span class="dm">sends to</span> <span class="am">Acquirer bank</span><br>
+<span class="gr">4.</span> <span class="am">Acquirer</span> <span class="dm">forwards to</span> <span class="rs">Visa/MC</span><br>
+<span class="gr">5.</span> <span class="rs">Visa</span> <span class="dm">routes to</span> <span class="gr">Your bank (Issuer)</span><br>
+<span class="gr">6.</span> <span class="gr">Issuer</span> <span class="dm">checks: balance? fraud? limit?</span><br>
+<span class="gr">7.</span> <span class="gr">Issuer</span> <span class="dm">sends back:</span> <span class="gr">APPROVED</span><br>
+<span class="dm">━━━━━━━━━━━━━━━━━━━━━━━━━</span><br>
+<span class="dm">Same chain, reverse direction.</span><br>
+<span class="gr">Auth code reaches the merchant.</span><br>
+<span class="dm">You see <span class="gr">✓</span>. Total time: ~1.8 seconds.</span>
+        </div>
+        <div class="note am">
+          <p><strong>Authorization ≠ Settlement.</strong> The money doesn't actually move yet. Settlement happens 1-3 business days later in a separate batch process. The merchant gets an IOU, not cash.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 04 THE FEES -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">Where The Fees Go</div> -->
+         <p class="lead" style="margin-top: 20px;"> </p>
+        <h2 style="line-height: 45px;margin-bottom: 20px;">Who takes a cut of your <span class="am">$100</span> purchase.</h2>
+        <div class="chart" style="flex:0 0 auto">
+          <svg viewBox="0 0 440 140" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stacked horizontal bar -->
+            <text x="20" y="15" fill="var(--dim)" font-family="'JetBrains Mono',monospace" font-size="10" letter-spacing=".08em">$100 PURCHASE: WHO GETS WHAT</text>
+            <!-- Merchant: $97.10 -->
+            <rect x="20" y="28" width="310" height="28" rx="4" fill="rgba(0,214,143,.12)" stroke="#00d68f" stroke-width="1"/>
+            <text x="185" y="46" text-anchor="middle" fill="#00d68f" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="600">MERCHANT: $97.10</text>
+            <!-- Interchange: $1.80 -->
+            <rect x="332" y="28" width="45" height="28" rx="4" fill="rgba(255,83,112,.12)" stroke="#ff5370" stroke-width="1"/>
+            <text x="355" y="46" text-anchor="middle" fill="#ff5370" font-family="'JetBrains Mono',monospace" font-size="9" font-weight="600">$1.80</text>
+            <!-- Network: $0.10 -->
+            <rect x="378" y="28" width="24" height="28" rx="2" fill="rgba(255,167,38,.12)" stroke="#ffa726" stroke-width="1"/>
+            <!-- Stripe: $1.00 -->
+            <rect x="403" y="28" width="29" height="28" rx="4" fill="rgba(88,166,255,.12)" stroke="#58a6ff" stroke-width="1"/>
+            <!-- Labels below bar -->
+            <text x="354" y="70" text-anchor="middle" fill="#ff5370" font-family="'JetBrains Mono',monospace" font-size="8">Issuer</text>
+            <text x="354" y="80" text-anchor="middle" fill="#ff5370" font-family="'JetBrains Mono',monospace" font-size="8">1.8%</text>
+            <text x="388" y="70" text-anchor="middle" fill="#ffa726" font-family="'JetBrains Mono',monospace" font-size="8">Network</text>
+            <text x="388" y="80" text-anchor="middle" fill="#ffa726" font-family="'JetBrains Mono',monospace" font-size="8">0.1%</text>
+            <text x="422" y="70" text-anchor="middle" fill="#58a6ff" font-family="'JetBrains Mono',monospace" font-size="8">Stripe</text>
+            <text x="422" y="80" text-anchor="middle" fill="#58a6ff" font-family="'JetBrains Mono',monospace" font-size="8">1.0%</text>
+            <!-- Total fees callout -->
+            <rect x="10" y="95" width="422" height="42" rx="6" fill="rgba(255,167,38,.04)" stroke="rgba(255,167,38,.1)" stroke-width=".8"/>
+            <text x="226" y="112" text-anchor="middle" fill="var(--amber)" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="600">TOTAL FEES: $2.90 (2.9% + $0.30 per transaction)</text>
+            <text x="226" y="125" text-anchor="middle" fill="rgba(139,148,158,.5)" font-family="'JetBrains Mono',monospace" font-size="9">Interchange (1.8%) is the biggest chunk. It goes to YOUR bank, not Stripe.</text>
+          </svg>
+        </div>
+        <p class="lead" style="margin-top: 30px;"> </p>
+        <div class="stats">
+          <div class="st"><span class="st-v rs">1.5-3.5%</span><div class="st-t"><strong>Interchange fee.</strong> Goes to the issuing bank. Varies by card type: debit ~0.5%, credit ~1.8%, rewards cards ~2.5%, international ~3.5%</div></div>
+          <div class="st"><span class="st-v am">0.05-0.15%</span><div class="st-t"><strong>Network fee.</strong> Goes to Visa/Mastercard. They make money on every swipe worldwide. Pure profit at scale</div></div>
+          <div class="st"><span class="st-v bl">0.4-1.0%</span><div class="st-t"><strong>Processor markup.</strong> Goes to Stripe/Razorpay. This is their revenue. The only fee you can negotiate</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 05 STRIPE/RAZORPAY -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The Abstraction Layer</div> -->
+        <h2 style="line-height: 45px;margin-bottom: 10px;">What <span class="bl">Stripe</span> actually does for you.</h2>
+        <p class="lead" style="font-size: 12px;">Stripe/Razorpay hide all 7 parties behind one API call. That's their entire value proposition:</p>
+        <div class="code" style="font-size:9.5px; padding:8px 24px; margin: 0px;">
+<span class="bl" >// Your code. That's it. 4 lines.</span><br>
+<span class="gr">const</span> charge = <span class="gr">await</span> stripe.charges.create({<br>
+  <span class="am">amount:</span> 4799,<br>
+  <span class="am">currency:</span> <span class="gr">'usd'</span>,<br>
+  <span class="am">source:</span> <span class="gr">'tok_visa'</span>,<br>
+});<br>
+<br>
+<span class="dm">// What Stripe does behind those 4 lines:</span><br>
+<span class="dm">// 1. Encrypts + tokenizes card data</span><br>
+<span class="dm">// 2. Runs fraud detection (Radar ML)</span><br>
+<span class="dm">// 3. Routes to correct acquirer bank</span><br>
+<span class="dm">// 4. Formats ISO 8583 message for network</span><br>
+<span class="dm">// 5. Handles 3D Secure if required</span><br>
+<span class="dm">// 6. Manages retry logic on soft declines</span><br>
+<span class="dm">// 7. Returns auth code or decline reason</span><br>
+<span class="dm">// 8. Handles settlement batch 24h later</span><br>
+<span class="dm">// 9. Manages chargebacks + disputes</span><br>
+<span class="dm">// 10. Stays PCI-DSS compliant for you</span>
+        </div>
+        <div class="note gr">
+          <p style="font-size:12px; margin: 0px;"><strong>Without Stripe:</strong> You'd need PCI-DSS Level 1 compliance ($50K-500K/yr audit), direct bank integrations, fraud systems, settlement infrastructure, and a legal team. Stripe charges 2.9% to save you all of that.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 06 TAKEAWAY -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 06</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">What Devs Should Know</div> -->
+         <p class="lead" style="margin-top: 20px;"> </p>
+        <h2 style="line-height: 45px;">The payment <span class="gr">cheatsheet.</span></h2>
+        <div class="stats">
+          <div class="st"><span class="st-v gr">01</span><div class="st-t"><strong>Never touch raw card numbers.</strong> Use Stripe Elements or Razorpay Checkout. Let them handle PCI compliance. One breach costs more than your entire revenue</div></div>
+          <div class="st"><span class="st-v gr">02</span><div class="st-t"><strong>Authorization ≠ Capture.</strong> Auth puts a hold. Capture moves the money. For hotels/rentals, auth first, capture later. Cancel the auth if the customer no-shows</div></div>
+          <div class="st"><span class="st-v gr">03</span><div class="st-t"><strong>Idempotency keys.</strong> Network timeouts happen. Without idempotency keys, retries can double-charge customers. Always send one</div></div>
+          <div class="st"><span class="st-v gr">04</span><div class="st-t"><strong>Webhooks over polling.</strong> Don't poll for payment status. Use webhooks. Stripe sends events for every state change. Build your system to be event-driven</div></div>
+          <div class="st"><span class="st-v am">05</span><div class="st-t"><strong>Interchange is non-negotiable.</strong> You can negotiate Stripe's markup. You cannot negotiate Visa's interchange. That 1.8% is set by the card network, not your processor</div></div>
+        </div>
+        <p class="lead" style="margin-top: 20px;"> </p>
+        <div class="note gr">
+          <p><strong>Every tap of "Pay" is a 7-party relay race running in under 2 seconds.</strong> You don't need to build any of it. But understanding it makes you a better engineer, a better PM, and a better founder. The payment stack is invisible infrastructure that moves trillions.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'payment-flow-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'payment-flow-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}</script>
+</body>
+</html>

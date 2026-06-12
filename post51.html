@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State Space Models — Post 51</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080c;
+    --card: #0d0f14;
+    --ink: #e2e8f0;
+    --ink2: #64748b;
+    --dim: #8899aa;
+    --green: #4ade80;
+    --blue: #60a5fa;
+    --pink: #f472b6;
+    --border: rgba(74,222,128,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .gn { color: var(--green); }
+  .slide h2 .bl { color: var(--blue); }
+  .slide h2 .pk { color: var(--pink); }
+
+  .slide p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .slide p.lead {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 10px 24px 16px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .ftr .left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  .code {
+    background: rgba(0,0,0,.45);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 14px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .gn { color: #86efac; font-weight: 400; }
+  .code .bl { color: #93c5fd; font-weight: 400; }
+  .code .pk { color: #f9a8d4; font-weight: 400; }
+  .code .dm { color: rgba(226,232,240,.5); }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    min-width: 62px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.gn { color: var(--green); }
+  .st-v.bl { color: var(--blue); }
+  .st-v.pk { color: var(--pink); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.gn-c { background: rgba(74,222,128,.06);  border: 1px solid rgba(74,222,128,.15); }
+  .gcard.bl-c { background: rgba(96,165,250,.06);  border: 1px solid rgba(96,165,250,.15); }
+  .gcard.pk-c { background: rgba(244,114,182,.06); border: 1px solid rgba(244,114,182,.15); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(74,222,128,.2);
+    color: var(--green);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--green); color: var(--bg); }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--green); color: var(--green); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(74,222,128,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--green); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--green); color: var(--green); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(226,232,240,.06); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--green); width: 22px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">State Space<br>Models.<br><span class="gn">Beyond the<br>Transformer.</span></h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — The Transformer's Problem -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The O(n²)<br><span class="pk">Wall.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v pk">O(n²)</span>
+            <div class="st-t"><strong>Attention cost grows quadratically.</strong> Double the context length, pay four times the compute.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">Memory</span>
+            <div class="st-t"><strong>KV cache grows linearly with n.</strong> At 100K tokens, storing past context alone consumes gigabytes per request.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">1M tokens</span>
+            <div class="st-t"><strong>Standard attention at 1M context</strong> requires roughly 1TB of GPU memory. It is not a software limit. It is physics.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Root cause</span>
+            <div class="st-t"><strong>Every token attends to every other token.</strong> The Transformer was never designed for infinite sequence length.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — What is an SSM -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The State Space<br><span class="gn">Model.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Continuous-time formulation</span><br>
+          h'(t) = <span class="bl">A</span>·h(t) + <span class="gn">B</span>·x(t)<br>
+          y(t)  = <span class="pk">C</span>·h(t) + D·x(t)<br>
+          <br>
+          <span class="dm"># h(t) = compressed state (all past context)</span><br>
+          <span class="dm"># A    = state transition matrix</span><br>
+          <span class="dm"># B    = input projection</span><br>
+          <span class="dm"># C    = output projection</span><br>
+          <span class="dm"># O(n) time, O(1) memory per step</span>
+        </div>
+        <div class="gcard gn-c">
+          <p><strong>The state h(t) compresses the entire past into a fixed-size vector.</strong> No KV cache. No quadratic blowup. One matrix multiply per token.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — Mamba: Selective SSM -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Mamba:<br><span class="gn">Selective State.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># S4: fixed matrices (not input-aware)</span><br>
+          A, B, C = <span class="bl">learned_constants</span><br>
+          <br>
+          <span class="dm"># S6 (Mamba): input-dependent selection</span><br>
+          dt, B, C = <span class="gn">linear(x)</span>  <span class="dm"># per token</span><br>
+          A = -exp(A_log)         <span class="dm"># structured</span><br>
+          <br>
+          <span class="dm"># dt: how much to update state</span><br>
+          <span class="dm"># B:  what to write into state</span><br>
+          <span class="dm"># C:  what to read from state</span>
+        </div>
+        <div class="gcard bl-c">
+          <p><strong>Selective memory is the key insight.</strong> The model learns which tokens to remember and which to forget, per context. Standard SSMs apply the same filter to everything.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — Performance -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Linear Scaling<br><span class="gn">in Practice.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v gn">O(n)</span>
+            <div class="st-t"><strong>Mamba scales linearly with sequence length.</strong> A 1M token sequence costs the same per-step as a 1K token one.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">5× faster</span>
+            <div class="st-t"><strong>Mamba inference throughput vs. Transformer</strong> at sequence length 2K. Gap widens as context grows.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pk">Parallel scan</span>
+            <div class="st-t"><strong>Hardware-efficient parallel scan</strong> replaces sequential recurrence during training. GPU-friendly by design.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Tradeoff</span>
+            <div class="st-t"><strong>Fixed-size state compresses history.</strong> Precise recall of specific past tokens is harder than in attention-based models.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — Jamba -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Jamba:<br><span class="bl">Best of Both.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v bl">Hybrid</span>
+            <div class="st-t"><strong>Alternates Transformer attention and Mamba SSM layers.</strong> Not either/or. Uses each where it excels.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">Why mix</span>
+            <div class="st-t"><strong>Attention handles precise token recall.</strong> SSM layers provide long-range memory cheaply. Together they cover both failure modes.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pk">256K ctx</span>
+            <div class="st-t"><strong>Jamba-1.5 handles 256K token context</strong> with 3× less memory than a pure Transformer at the same scale.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">AI21</span>
+            <div class="st-t"><strong>Developed by AI21 Labs.</strong> 52B active parameters from a 398B total MoE model. Open weights available.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="gn">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">SSM</span>
+            <div class="st-t"><strong>State Space Model.</strong> Linear recurrence with structured matrices. O(n) time, O(1) memory per step.</div>
+          </div>
+          <div class="st">
+            <span class="st-v bl">S4</span>
+            <div class="st-t"><strong>Structured SSM.</strong> First practical SSM for deep learning. Fixed transition matrices. Foundation for Mamba.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">Mamba</span>
+            <div class="st-t"><strong>Selective SSM (S6).</strong> Input-dependent A, B, C. Hardware-efficient scan. Linear scaling. No attention needed.</div>
+          </div>
+          <div class="st">
+            <span class="st-v pk">Jamba</span>
+            <div class="st-t"><strong>Hybrid Transformer and Mamba.</strong> AI21 Labs. 256K context, 3× memory savings. Open weights.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gn">Use when</span>
+            <div class="st-t"><strong>Long sequences:</strong> genomics, audio, long documents, code. Wherever O(n²) attention is a hard constraint.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  async function cap(s) {
+    return await html2canvas(s, {
+      backgroundColor: '#0d0f14',
+      scale: 2,
+      useCORS: true,
+      logging: false
+    });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f;
+    a.href = c.toDataURL('image/png');
+    a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    try {
+      dl(await cap(slides[cur]), 'ssm-' + String(cur + 1).padStart(2, '0') + '.png');
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'Current Slide';
+    b.disabled = false;
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true;
+    b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block';
+    fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'ssm-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) {
+      console.error(e);
+      alert('Download failed: ' + e.message + '\n\nIf opening locally, try a local web server.');
+    }
+    b.innerHTML = dlSVG + 'All Slides';
+    b.disabled = false;
+    bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

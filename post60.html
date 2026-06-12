@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unified Memory Architecture — Post 60</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0c10;
+    --card: #151320;
+    --ink: #e2e8f0;
+    --ink2: #a0a0a0;
+    --dim: #8899aa;
+    --gold: #fcd34d;
+    --indigo: #818cf8;
+    --orange: #f97316;
+    --border: rgba(252,211,77,.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 16px 80px;
+  }
+
+  .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 16px 2px 36px;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .slide {
+    flex: 0 0 min(92vw, 520px);
+    aspect-ratio: 4/5;
+    scroll-snap-align: center;
+    background: var(--card);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+  }
+
+  .ghost { display: none; }
+
+  .hdr {
+    flex-shrink: 0;
+    padding: 18px 24px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hdr .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .hdr .brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 10px 24px 0 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: .92;
+    letter-spacing: -.03em;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .slide h2 .gd { color: var(--gold); }
+  .slide h2 .id { color: var(--indigo); }
+  .slide h2 .or { color: var(--orange); }
+
+  .ftr {
+    flex-shrink: 0;
+    padding: 10px 24px 16px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+  .ftr .left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .ftr .right {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .code {
+    background: rgb(136 136 136 / 15%);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 13px 16px;
+    margin: 8px 0;
+    line-height: 1.85;
+    flex-shrink: 0;
+  }
+  .code .gd { color: #fde68a; font-weight: 400; }
+  .code .id { color: #a5b4fc; font-weight: 400; }
+  .code .or { color: #fdba74; font-weight: 400; }
+  .code .dm { color: #a0a0a0; }
+
+  .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+  .st {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .st:last-child { border-bottom: none; }
+
+  .st-v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    min-width: 68px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .st-v.gd { color: var(--gold); }
+  .st-v.id { color: var(--indigo); }
+  .st-v.or { color: var(--orange); }
+
+  .st-t {
+    font-size: 14px;
+    color: var(--ink2);
+    line-height: 1.35;
+  }
+  .st-t strong { font-weight: 600; color: var(--ink); }
+
+  .gcard {
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .gcard.gd-c { background: rgba(252,211,77,.06);  border: 1px solid rgba(252,211,77,.15); }
+  .gcard.id-c { background: rgba(129,140,248,.06); border: 1px solid rgba(129,140,248,.15); }
+  .gcard.or-c { background: rgba(249,115,22,.06);  border: 1px solid rgba(249,115,22,.15); }
+  .gcard p { color: var(--ink2); margin-bottom: 2px; }
+  .gcard p:last-child { margin-bottom: 0; }
+  .gcard strong { font-weight: 600; color: var(--ink); }
+
+  /* Download UI */
+  .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+  .dl-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid rgba(252,211,77,.2);
+    color: var(--gold);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+  }
+  .dl-btn:hover { background: var(--gold); color: var(--bg); }
+  .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+  .dl-btn.alt:hover { border-color: var(--gold); color: var(--gold); }
+  .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .dl-btn:disabled { opacity: .3; }
+
+  .progress-bar {
+    width: 160px; height: 2px;
+    background: rgba(252,211,77,.08);
+    overflow: hidden; display: none;
+    margin-top: 12px; border-radius: 2px;
+  }
+  .progress-bar .fill { height: 100%; width: 0%; background: var(--gold); transition: width .3s; }
+
+  .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+  .nav button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    width: 38px; height: 38px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 6px; transition: all .25s;
+  }
+  .nav button:hover { border-color: var(--gold); color: var(--gold); }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(226,232,240,.06); cursor: pointer; transition: all .35s; }
+  .dot.active { background: var(--gold); width: 22px; border-radius: 3px; }
+
+  .caption-section {
+    max-width: min(92vw, 520px);
+    margin: 28px auto 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .caption-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .caption-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(252,211,77,.2);
+    color: var(--gold);
+    cursor: pointer;
+    transition: all .25s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+  }
+  .copy-btn:hover { background: var(--gold); color: var(--bg); }
+  .copy-btn.copied { border-color: var(--indigo); color: var(--indigo); }
+  .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .caption-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink2);
+    padding: 14px 16px;
+    white-space: pre-wrap;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- SLIDE 1 — Cover -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88">Unified<br><span class="gd">Memory</span>.<br>One <span class="id">Pool</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- SLIDE 2 — The PCIe Bottleneck -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="or">PCIe</span><br>Bottleneck.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v or">Discrete</span>
+            <div class="st-t"><strong>Traditional GPU systems: CPU has its own DRAM, GPU has its own VRAM.</strong> Connected by PCIe. Separate address spaces, separate physical memory, separate buses.</div>
+          </div>
+          <div class="st">
+            <span class="st-v or">Bandwidth</span>
+            <div class="st-t"><strong>PCIe 4.0 x16: ~32 GB/s.</strong> Your GPU's internal HBM bandwidth: 900+ GB/s. The bus is 28x slower than the memory it feeds. Every cudaMemcpy pays this cost.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Explicit</span>
+            <div class="st-t"><strong>Every ML operation that needs GPU compute requires an explicit copy: cudaMalloc, cudaMemcpy, then compute, then cudaMemcpy back.</strong> The programmer owns this overhead.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">CUDA UM</span>
+            <div class="st-t"><strong>NVIDIA's Unified Memory (cudaMallocManaged) makes copies transparent, but not free.</strong> Pages still migrate across PCIe on demand. The bus tax is real; it is just hidden.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 3 — Hardware Unified Memory -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>One Die.<br><span class="gd">One Pool.</span><br>No Bus.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v gd">On-die</span>
+            <div class="st-t"><strong>Apple's UMA puts CPU, GPU, Neural Engine, and ISP on the same die.</strong> All connected to a single shared LPDDR5/X memory pool. No PCIe. No discrete VRAM.</div>
+          </div>
+          <div class="st">
+            <span class="st-v id">Bandwidth</span>
+            <div class="st-t"><strong>M4 Max: 546 GB/s shared across all processors.</strong> Every compute unit on the chip sees the same memory at the same bandwidth. No partitioning.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">Pointer</span>
+            <div class="st-t"><strong>The CPU writes a tensor. The GPU reads it from the same physical address.</strong> No copy. No migration. Pass a pointer, not a matrix. The OS never moves the data.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Trade-off</span>
+            <div class="st-t"><strong>Memory cannot be upgraded after purchase.</strong> Every GB the OS uses is a GB the GPU does not have. Capacity is shared, not dedicated to any one processor.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 4 — Pass a Pointer -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Pass a Pointer,<br><span class="gd">Not a Matrix.</span></h2>
+        <div style="height:14px"></div>
+        <div class="code">
+          <span class="dm"># Discrete GPU (3 copies per forward pass):</span><br>
+          cpu_t = <span class="or">torch.tensor</span>(data)       <span class="dm"># CPU RAM</span><br>
+          gpu_t = cpu_t<span class="or">.to</span>(<span class="id">"cuda"</span>)       <span class="dm"># PCIe copy: ~32 GB/s</span><br>
+          out   = <span class="gd">model</span>(gpu_t)            <span class="dm"># GPU computes</span><br>
+          result = out<span class="or">.cpu</span>()              <span class="dm"># PCIe copy back</span><br>
+          <br>
+          <span class="dm"># Apple Silicon UMA (zero copies):</span><br>
+          <span class="id">import</span> mlx.core <span class="id">as</span> mx<br>
+          tensor = <span class="gd">mx.array</span>(data)         <span class="dm"># unified memory</span><br>
+          result = <span class="gd">model</span>(tensor)          <span class="dm"># CPU+GPU share address</span><br>
+                                            <span class="dm"># no copy at any step</span><br>
+                                            <span class="dm"># 546 GB/s to all cores</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 5 — The Numbers -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The<br><span class="gd">Numbers.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v or">PCIe 4.0</span>
+            <div class="st-t"><strong>32 GB/s</strong> peak bidirectional bandwidth between CPU and discrete GPU memory. The wall every cudaMemcpy hits.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">M4 Max</span>
+            <div class="st-t"><strong>546 GB/s</strong> shared memory bandwidth. Available to CPU, GPU, and Neural Engine simultaneously. 17x faster than the PCIe bus it replaces.</div>
+          </div>
+          <div class="st">
+            <span class="st-v id">70B model</span>
+            <div class="st-t"><strong>A 70B parameter model at 4-bit quantization (35 GB) fits entirely in M2 Ultra's 192 GB.</strong> The full context is always in fast memory. No GPU memory splitting needed.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">H100</span>
+            <div class="st-t"><strong>80 GB HBM3 at 3.35 TB/s,</strong> raw bandwidth still higher than M4 Max. For large batch training workloads, discrete GPUs maintain the advantage. UMA wins for single-machine inference.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 6 — In Production -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="gd">Production.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v gd">MLX</span>
+            <div class="st-t"><strong>Apple's ML framework designed from the ground up for UMA.</strong> Operations spanning CPU and GPU are zero-copy by design. No memcpy in the critical path, no boundary to cross.</div>
+          </div>
+          <div class="st">
+            <span class="st-v id">llama.cpp</span>
+            <div class="st-t"><strong>Runs faster on Apple Silicon than expected</strong> because large quantized models fit entirely in unified memory. No layer offloading, no CPU-GPU splits, no PCIe stalls mid-inference.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">Ollama</span>
+            <div class="st-t"><strong>Local model serving uses UMA to run 70B models on Mac Studio.</strong> The full model stays in fast memory throughout inference. No page swapping, no transfer latency between layers.</div>
+          </div>
+          <div class="st">
+            <span class="st-v" style="color:var(--dim)">Context</span>
+            <div class="st-t"><strong>Large context windows benefit most.</strong> A 200K-token KV cache that would overflow a discrete GPU's VRAM fits comfortably in M2 Ultra's 192 GB unified pool.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- SLIDE 7 — Quick Reference -->
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span class="brand"> </span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="gd">Reference.</span></h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st">
+            <span class="st-v gd">UMA</span>
+            <div class="st-t"><strong>Unified Memory Architecture.</strong> CPU, GPU, and Neural Engine on one die, sharing a single LPDDR5/X pool. No PCIe bus. No discrete VRAM. One address space.</div>
+          </div>
+          <div class="st">
+            <span class="st-v or">PCIe cost</span>
+            <div class="st-t"><strong>32 GB/s peak on PCIe 4.0 x16.</strong> Every cudaMemcpy on a discrete GPU pays this bandwidth tax. UMA eliminates the bus and the copy it necessitates.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">Bandwidth</span>
+            <div class="st-t"><strong>M4 Max: 546 GB/s shared.</strong> All processors access the same physical memory at the same speed. 17x the PCIe bandwidth it replaces for cross-processor data sharing.</div>
+          </div>
+          <div class="st">
+            <span class="st-v id">MLX</span>
+            <div class="st-t"><strong>Apple's ML framework built for UMA.</strong> Zero-copy between CPU and GPU by design. The fastest way to run inference and fine-tuning on Apple Silicon.</div>
+          </div>
+          <div class="st">
+            <span class="st-v gd">Limit</span>
+            <div class="st-t"><strong>Memory is fixed at purchase and shared with the OS.</strong> H100 still leads on raw bandwidth and capacity for large-batch training. UMA wins on single-machine inference at scale.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div><!-- /carousel -->
+
+  <div class="nav">
+    <button id="prev">←</button>
+    <div class="dots" id="dots"></div>
+    <button id="next">→</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Current Slide
+      </button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        All Slides
+      </button>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="caption-section">
+    <div class="caption-hdr">
+      <span class="caption-label">Caption</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCaption()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+    </div>
+    <div class="caption-text" id="captionText">Every time you call cudaMemcpy, you are waiting.
+
+Waiting for data to travel from CPU memory across the PCIe bus to GPU memory. At PCIe 4.0 speeds, that bus runs at about 32 gigabytes per second. Your GPU's internal memory bandwidth is 900 gigabytes per second. The bottleneck is not the GPU. It is the bus you use to feed it.
+
+Discrete GPU systems are built around a fundamental separation: the CPU has its own DRAM, the GPU has its own VRAM, and they are connected by PCIe. Every time the GPU needs data the CPU prepared, you copy it. Every time the CPU needs GPU results, you copy it back. NVIDIA's Unified Memory (cudaMallocManaged) makes this transparent but does not eliminate it. Pages still migrate across PCIe on demand. The bus tax is still real. It is just hidden.
+
+Apple's Unified Memory Architecture removes the bus. The CPU, GPU, Neural Engine, and ISP all live on the same die, connected to a single shared memory pool. There is no discrete VRAM. There is no PCIe link between processor and memory. On an M4 Max, every processor on the chip shares 546 gigabytes per second of memory bandwidth. The CPU writes a tensor. The GPU reads it from the same physical address, no copy, no migration, no latency. A pointer is enough.
+
+This is why llama.cpp runs faster on Apple Silicon than expected. It is why a 70 billion parameter model quantized to 4-bit fits in the 128 GB M2 Ultra and runs well, while a discrete GPU system with 80 GB of VRAM struggles with the same model. The memory is not partitioned. The full capacity is available to every processor at once.
+
+MLX, Apple's machine learning framework, was designed from the ground up for UMA. Operations that span CPU and GPU are zero-copy by design. There is no memcpy in the critical path because there is no boundary to cross. Ollama uses the same principle to serve 70B models on Mac Studio with no layer offloading and no PCIe stalls mid-inference.
+
+The trade-off is real: memory cannot be upgraded after purchase, and the H100 still leads on raw bandwidth for large-batch training at 3.35 TB/s. But for inference, fine-tuning, and running large context windows on a single machine, UMA changed the constraint entirely.
+
+We didn't make the GPU faster. We removed the wall between the GPU and everything else.
+
+Swipe to see how PCIe bandwidth compares to on-chip bandwidth, what zero-copy pointer passing actually looks like in code, and why M-series chips are unusually good at running large language models.
+
+#applesilicon #machinelearning #systemdesign #llm #ravenextechnologies</div>
+  </div>
+
+</div><!-- /carousel-wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel = document.getElementById('carousel'),
+        slides   = carousel.querySelectorAll('.slide'),
+        dotsC    = document.getElementById('dots'),
+        prevBtn  = document.getElementById('prev'),
+        nextBtn  = document.getElementById('next');
+  const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    dotsC.appendChild(d);
+  });
+
+  const dots = dotsC.querySelectorAll('.dot');
+  const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+  prevBtn.onclick = () => sc(-1);
+  nextBtn.onclick = () => sc(1);
+
+  slides.forEach(s => new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        cur = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+      }
+    });
+  }, { root: carousel, threshold: .6 }).observe(s));
+
+  document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+
+  const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  async function copyCaption() {
+    const text = document.getElementById('captionText').innerText;
+    const btn  = document.getElementById('copyBtn');
+    try { await navigator.clipboard.writeText(text); }
+    catch(e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    btn.classList.add('copied');
+    btn.innerHTML = copySVG + 'Copied!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+  }
+
+  async function cap(s) {
+    return await html2canvas(s, { backgroundColor: '#151320', scale: 2, useCORS: true, logging: false });
+  }
+
+  function dl(c, f) {
+    const a = document.createElement('a');
+    a.download = f; a.href = c.toDataURL('image/png'); a.click();
+  }
+
+  async function downloadCurrentSlide() {
+    const b = document.getElementById('dlCurrent');
+    b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+    try { dl(await cap(slides[cur]), 'uma-' + String(cur + 1).padStart(2, '0') + '.png'); }
+    catch (e) { console.error(e); alert('Download failed: ' + e.message); }
+    b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
+  }
+
+  async function downloadAllSlides() {
+    const b    = document.getElementById('dlAll'),
+          bar  = document.getElementById('progressBar'),
+          fill = document.getElementById('progressFill');
+    b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+    bar.style.display = 'block'; fill.style.width = '0%';
+    try {
+      const origScroll = carousel.scrollLeft;
+      carousel.style.scrollBehavior = 'auto';
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+        await new Promise(r => setTimeout(r, 150));
+        fill.style.width = ((i + 1) / slides.length * 100) + '%';
+        dl(await cap(slides[i]), 'uma-' + String(i + 1).padStart(2, '0') + '.png');
+        await new Promise(r => setTimeout(r, 400));
+      }
+      carousel.scrollTo({ left: origScroll, behavior: 'instant' });
+      carousel.style.scrollBehavior = 'smooth';
+    } catch (e) { console.error(e); alert('Download failed: ' + e.message); }
+    b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
+  }
+</script>
+</body>
+</html>

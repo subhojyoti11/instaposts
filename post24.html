@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Real Cost of a ChatGPT Query</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#12182b;
+  --card-border:rgba(0,245,160,.08);
+  --ink:#e8edf5;
+  --ink2:#8892a4;
+  --dim:#4a5568;
+  --mint:#00f5a0;
+  --coral:#ff6b6b;
+  --amber:#ffbe0b;
+  --blue:#4cc9f0;
+  --glass:rgba(18,24,43,.85);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+body{background-image:radial-gradient(ellipse 50% 40% at 20% 10%,rgba(0,245,160,.03),transparent),radial-gradient(ellipse 40% 40% at 80% 90%,rgba(76,201,240,.03),transparent)}
+
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+
+.slide{
+  flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  background:var(--card);color:var(--ink);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  border:1px solid var(--card-border);
+}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--mint),var(--blue),var(--mint))} */
+
+.ghost{position:absolute;top:10px;right:14px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:130px;line-height:.75;color:rgba(0,245,160,.03);pointer-events:none;user-select:none}
+
+.hdr{flex-shrink:0;padding:20px 24px 0 26px;display:flex;justify-content:space-between;align-items:center;margin-top: 10px;}
+.hdr .num{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--dim)}
+.hdr .brand{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+
+.body{flex:1;min-height:0;overflow:hidden;padding:12px 24px 0 26px;display:flex;flex-direction:column}
+
+/* Pill badge */
+.pill{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:10px;flex-shrink:0;font-weight:500;width:fit-content}
+.pill.mint{background:rgba(0,245,160,.08);color:var(--mint);border:1px solid rgba(0,245,160,.15)}
+.pill.coral{background:rgba(255,107,107,.08);color:var(--coral);border:1px solid rgba(255,107,107,.15)}
+.pill.amber{background:rgba(255,190,11,.08);color:var(--amber);border:1px solid rgba(255,190,11,.15)}
+
+.slide h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(24px,5vw,38px);line-height:1.1;letter-spacing:-.03em;margin-bottom:12px;flex-shrink:0}
+.slide h2 .mint{color:var(--mint)}.slide h2 .coral{color:var(--coral)}.slide h2 .amber{color:var(--amber)}.slide h2 .blue{color:var(--blue)}
+
+.slide p{font-size:12.5px;line-height:1.55;color:var(--ink2);margin-bottom:6px;font-weight:400}
+.slide p.lead{font-size:14px;color:var(--ink);font-weight:500}
+
+.ftr{flex-shrink:0;padding:10px 24px 16px 26px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+.ftr .right{font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--mint);font-weight:500}
+
+/* Code panel — frosted glass */
+.code{
+  background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
+  border:1px solid rgba(0,245,160,.1);border-radius:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:10.3px;
+  padding:14px 16px;margin:8px 0;line-height:1.8;
+  color:var(--ink);flex-shrink:0;
+}
+.code .mt{color:var(--mint);font-weight:600}
+.code .cr{color:var(--coral);font-weight:600}
+.code .bl{color:var(--blue);font-weight:600}
+.code .am{color:var(--amber);font-weight:600}
+.code .dm{color:rgba(232, 237, 245, 0.747)}
+
+/* Stats */
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(0,245,160,.04)}
+.st:last-child{border-bottom:none}
+.st-v{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;min-width:62px;text-align:right;flex-shrink:0}
+.st-v.mt{color:var(--mint)}.st-v.cr{color:var(--coral)}.st-v.am{color:var(--amber)}.st-v.bl{color:var(--blue)}
+.st-t{font-size:14px;color:var(--ink2);line-height:1.35}
+.st-t strong{font-weight:600;color:var(--ink)}
+.st-t .src{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--dim)}
+
+/* Glass card */
+.gcard{
+  padding:12px 14px;margin:8px 0;border-radius:8px;
+  font-size:11px;line-height:1.45;flex-shrink:0;
+  backdrop-filter:blur(4px);
+}
+.gcard.mt-c{background:rgba(0,245,160,.05);border:1px solid rgba(0,245,160,.12)}
+.gcard.cr-c{background:rgba(255,107,107,.05);border:1px solid rgba(255,107,107,.12)}
+.gcard.am-c{background:rgba(255,190,11,.05);border:1px solid rgba(255,190,11,.12)}
+.gcard p{color:var(--ink2);margin-bottom:2px}.gcard p:last-child{margin-bottom:0}
+.gcard strong{font-weight:600;color:var(--ink)}
+
+/* Download */
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(0,245,160,.2);color:var(--mint);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}
+.dl-btn:hover{background:var(--mint);color:var(--bg);border-color:var(--mint)}
+.dl-btn.alt{border-color:rgba(232,237,245,.08);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--mint);color:var(--mint)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(0,245,160,.08);overflow:hidden;display:none;border-radius:1px}.progress-bar .fill{height:100%;width:0%;background:var(--mint);transition:width .3s}
+
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(232,237,245,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;transition:all .25s;border-radius:6px}
+.nav button:hover{border-color:var(--mint);color:var(--mint)}
+.dots{display:flex;gap:8px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(232,237,245,.08);cursor:pointer;transition:all .35s}
+.dot.active{background:var(--mint);width:22px;border-radius:3px}
+
+@media(max-width:600px){.hdr{padding:16px 18px 0 20px}.body{padding:10px 18px 0 20px}.ftr{padding:8px 18px 14px 20px}.slide h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <!-- 01 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill mint">● AI Economics · 2026</div> -->
+         <p style="margin-bottom: 40px;"> </p>
+         <p style="margin-bottom: 40px;"> </p>
+         <p style="margin-bottom: 40px;"> </p>
+        <h2 style="font-size: 48px;">The real<br><span class="mint">cost</span> of a<br>ChatGPT query.</h2>
+        <!-- <p class="lead">You type "Explain quantum computing." You get an answer in 3 seconds. That answer cost OpenAI somewhere between $0.002 and $0.40.</p>
+        <p>Here's exactly what happens between pressing Enter and seeing the response — and what every step costs.</p> -->
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 02 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill mint">● The Pipeline</div> -->
+         <p style="margin-bottom: 10px;"> </p>
+        <h2>What happens when<br> you hit <span class="mint">send.</span></h2>
+        <div class="code">
+<span class="dm">You press Enter. Here's what fires:</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="mt">1. TOKENIZE</span> <span class="dm">(CPU)</span><br>
+<span class="dm">   "Explain quantum" → [849, 31137]</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="bl">2. PREFILL</span> <span class="dm">(GPU, compute-bound)</span><br>
+<span class="dm">   All input tokens in parallel</span><br>
+<span class="dm">   Builds internal representations</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="am">3. DECODE</span> <span class="dm">(GPU, memory-bound)</span><br>
+<span class="dm">   Generate tokens one by one</span><br>
+<span class="dm">   Each reads ENTIRE KV cache</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="cr">4. DETOKENIZE → stream to you</span>
+        </div>
+        <div class="gcard mt-c">
+          <p><strong>The bottleneck:</strong> Step 3 is where the cost lives. Each output token loads the full model weights + KV cache from HBM. That's why output tokens cost 3-4× more than input across every provider.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 03 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill amber">● Cost per Query</div> -->
+         <p style="margin-bottom: 10px;"> </p>
+        <h2>Same question.<br><span class="amber">Wildly</span> different cost.</h2>
+        <p class="lead">"Explain quantum computing in 500 words" (~100 input, ~700 output tokens):</p>
+        <div class="stats">
+          <div class="st"><span class="st-v mt">$0.0003</span><div class="st-t"><strong>GPT-4.1 Nano</strong> — $0.10/$0.40 per MTok. Cheapest "good enough"</div></div>
+          <div class="st"><span class="st-v mt">$0.0005</span><div class="st-t"><strong>GPT-4o Mini</strong> — $0.15/$0.60 per MTok. 16× cheaper than 4o</div></div>
+          <div class="st"><span class="st-v bl">$0.007</span><div class="st-t"><strong>GPT-4o</strong> — $2.50/$10 per MTok. The mainstream workhorse</div></div>
+          <div class="st"><span class="st-v am">$0.011</span><div class="st-t"><strong>GPT-5.4</strong> — $2.50/$15 per MTok. Current flagship</div></div>
+          <div class="st"><span class="st-v cr">$0.10+</span><div class="st-t"><strong>GPT-5.4 Pro</strong> — Extended thinking burns thousands of hidden reasoning tokens per query</div></div>
+        </div>
+        <p style="margin-bottom: 37px;"> </p>
+        <div class="gcard cr-c">
+          <p><strong>Hidden cost:</strong> Reasoning models generate "thinking tokens" you never see but still pay for. One complex math problem can consume 10,000+ internal tokens. One query, $0.40+.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 04 -->
+    <div class="slide"> <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill coral">● Input vs Output</div> -->
+         <p style="margin-bottom: 10px;"> </p>
+        <h2>Output tokens<br>cost <span class="coral">4×</span> more.</h2>
+        <p class="lead">The most important pricing detail nobody talks about.</p>
+        <div class="code">
+<span class="dm">GPT-4o pricing per 1M tokens:</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="mt">INPUT:</span>   <span class="am">$2.50</span>  <span class="dm">← your prompt</span><br>
+<span class="cr">OUTPUT:</span>  <span class="am">$10.00</span> <span class="dm">← the response</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="dm">Why?</span><br>
+<span class="mt">Input:</span>  <span class="dm">processed all at once (parallel)</span><br>
+<span class="cr">Output:</span> <span class="dm">generated one by one (sequential)</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="dm">Each output token requires:</span><br>
+<span class="dm">  • Loading full model from HBM</span><br>
+<span class="dm">  • Reading entire KV cache</span><br>
+<span class="dm">  • One GPU cycle PER token</span>
+        </div>
+        <p style="margin-bottom: 9px;"> </p>
+        <div class="gcard am-c">
+          <p><strong>Cost hack:</strong> "Think step by step" is great for quality. It's also expensive. A 200-token answer becomes 800 tokens. Your cost just 4×'d.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 05 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill coral">● Hidden Tax</div> -->
+        <p style="margin-bottom: 10px;"> </p>
+        <h2>The <span class="coral">conversation</span> tax.</h2>
+        <p style="margin-bottom: 10px;"> </p>
+        <p class="lead">Every message includes the ENTIRE chat history. Cost compounds with every turn.</p>
+        <p style="margin-bottom: 10px;"> </p>
+        <div class="code">
+<span class="dm">10-message conversation:</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="mt">Msg 1:</span>  <span class="am">500 tokens</span><br>
+<span class="mt">Msg 2:</span>  <span class="am">500 + prev = 1,500</span><br>
+<span class="mt">Msg 3:</span>  <span class="am">500 + prev = 3,000</span><br>
+<span class="mt">Msg 5:</span>  <span class="am">500 + prev = 7,500</span><br>
+<span class="cr">Msg 10:</span> <span class="cr">500 + prev = 25,000</span><br>
+<span class="dm">─────────────────────────</span><br>
+<span class="dm">Total input for 10 messages:</span><br>
+<span class="cr">~75,000 tokens</span> <span class="dm">(not 5,000)</span><br>
+<span class="cr">15× more than you'd expect.</span>
+        </div>
+        <p style="margin-bottom: 26px;"> </p>
+        <div class="gcard cr-c">
+          <p><strong>Plus system prompt:</strong> Your system prompt (2,000 tokens) is resent with EVERY request. 10 messages = 20,000 extra tokens. Prompt caching (50-90% off) fixes this, but most devs never enable it.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 06 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill coral">● At Scale</div> -->
+        <p style="margin-bottom: 10px;"> </p>
+        <h2>The math at <br><span class="coral">10,000</span> users.</h2>
+        <p class="lead">Customer support chatbot. 10K conversations/day. 15 messages each. 500 tokens avg.</p>
+        <div class="stats">
+          <div class="st"><span class="st-v mt">$5K</span><div class="st-t"><strong>per month — GPT-4o Mini.</strong> Cheap. Quality may suffer on complex queries</div></div>
+          <div class="st"><span class="st-v am">$56K</span><div class="st-t"><strong>per month — GPT-4o.</strong> A full-time engineer's salary. Every month. Just API calls</div></div>
+          <div class="st"><span class="st-v cr">$225K</span><div class="st-t"><strong>per month — GPT-5.4.</strong> Three senior engineers' annual salary. Per month. API alone</div></div>
+        </div>
+        <p style="margin-bottom: 2px;"> </p>
+        <div class="gcard cr-c">
+          <p><strong>Same chatbot. Same 10K conversations.</strong> Model choice alone = 45× cost difference. And this excludes infrastructure, monitoring, and engineering time.</p>
+        </div>
+        <div class="gcard mt-c">
+          <p><strong>Smart move:</strong> Route 80% to Mini, 15% to 4o, 5% to 5.4. Model routing cuts costs 70% with minimal quality loss.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 07 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill coral">● The Burn</div> -->
+         <p style="margin-bottom: 10px;"> </p>
+        <h2>Even <span class="coral">OpenAI</span><br>loses money.</h2>
+        <p class="lead">Every complex ChatGPT query loses money for OpenAI.</p>
+        <div class="stats">
+          <div class="st"><span class="st-v cr">$14B</span><div class="st-t"><strong>OpenAI burn in 2026.</strong> Up from $8-9B in 2025</div></div>
+          <div class="st"><span class="st-v cr">-$20</span><div class="st-t"><strong>Microsoft loses per user</strong> on some AI subscriptions</div></div>
+          <div class="st"><span class="st-v am">2.5B</span><div class="st-t"><strong>daily messages.</strong> At $0.003/query = $7.5M/day in compute costs</div></div>
+          <div class="st"><span class="st-v am">$20</span><div class="st-t"><strong>Plus subscription.</strong> Heavy users consume $40-80 in compute. OpenAI eats the difference</div></div>
+          <div class="st"><span class="st-v cr">-94%</span><div class="st-t"><strong>Anthropic margins in 2024.</strong> Recovered to +40% by 2025. Still pressured</div></div>
+        </div>
+        <p style="margin-bottom: 36px;"> </p>
+        <div class="gcard am-c">
+          <p><strong>The subsidy era is ending.</strong> VC-funded pricing works until IPO. The "renewal cliff" hits 2026 when pilots become real contracts and pricing must reflect cost, not promise.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 08 -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num">08 / 08</span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="pill mint">● Save 70%</div> -->
+        <!-- <p style="margin-bottom: 20px;"> </p> -->
+        <h2>How to cut your<br>AI bill by <span class="mint">70%.</span></h2>
+        <div class="stats">
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">01</span><div class="st-t"><strong>Model routing.</strong> Nano/Mini for 80% of queries. Flagship for the hard ones only</div></div>
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">02</span><div class="st-t"><strong>Prompt caching.</strong> Anthropic: 90% off. OpenAI: 50% off. Same system prompt = massive savings</div></div>
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">03</span><div class="st-t"><strong>Set max_tokens.</strong> Chatbot response rarely needs 2K tokens. Cap at 500. Kill runaway output</div></div>
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">04</span><div class="st-t"><strong>Cache responses.</strong> 1,000 users ask the same FAQ? Store the answer. Don't call the API 1,000 times</div></div>
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">05</span><div class="st-t"><strong>Batch API.</strong> Non-realtime work? OpenAI Batch = 50% off all tokens</div></div>
+          <div class="st"><span class="st-v mt" style="min-width: 20px;">06</span><div class="st-t"><strong>Trim history.</strong> Summarize old messages. Don't send the full transcript every turn</div></div>
+        </div>
+        <p style="margin-bottom: 2px;"> </p>
+        <div class="gcard mt-c">
+          <p><strong>The real lesson:</strong> AI costs aren't fixed. They're engineering decisions. $5K/month vs $225K/month is architecture, not capability. The model is the same. The bill depends on how you use it.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');
+const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+let cur=0;
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});
+const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);
+slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));
+document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};
+async function cap(s){const c=await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false});return c}
+function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}
+async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'chatgpt-cost-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}
+async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'chatgpt-cost-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>

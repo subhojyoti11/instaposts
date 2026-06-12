@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two's Complement — How Every Computer Handles Negative Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c12;--card:#12141a;--ink:#e8ecf4;--ink2:#8892a8;--dim:#484e60;--cyan:#22d3ee;--pink:#f472b6;--amber:#fbbf24;--green:#4ade80;--border:rgba(34,211,238,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+.cw{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border)}
+/* .slide::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--pink))} */
+.ghost{position:absolute;top:4px;right:10px;font-family:'Fira Code',monospace;font-weight:700;font-size:110px;line-height:.75;color:rgba(34,211,238,.02);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:18px 24px 0;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim)}.hdr .brand{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:8px 22px 0 24px;display:flex;flex-direction:column}
+.kicker{font-family:'Fira Code',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px;flex-shrink:0;font-weight:600}
+h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(24px,5vw,34px);line-height:40px;letter-spacing:-.01em;margin-bottom:12px;flex-shrink:0}
+h2 .cy{color:var(--cyan)}h2 .pk{color:var(--pink)}h2 .am{color:var(--amber)}h2 .gn{color:var(--green)}
+p{font-size:12px;line-height:1.55;color:var(--ink2);margin-bottom:5px;font-weight:300}
+p.lead{font-size:14px;color:var(--ink);font-weight:500;line-height:1.4}
+.ftr{flex-shrink:0;padding:8px 24px 14px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 8px;}
+.ftr .left{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim)}.ftr .right{font-family:'Syne',sans-serif;font-size:13px;color:var(--cyan);font-weight:600}
+.chart{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;margin:4px 0}
+.chart svg{width:100%;height:100%}
+.code{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;font-family:'Fira Code',monospace;font-size:10.5px;padding:8px 14px;margin:4px 0;line-height:1.8;flex-shrink:0}
+.code .cy{color:#22d3ee;font-weight:600}.code .pk{color:#f472b6;font-weight:600}.code .am{color:#fbbf24;font-weight:600}.code .gn{color:#4ade80;font-weight:600}.code .dm{color:rgba(232, 236, 244, 0.719)}
+.note{padding:8px 9px;margin:4px 0;font-size:11px;line-height:1.5;border-radius:8px;flex-shrink:0}
+.note.cy-c{background:rgba(34,211,238,.05);border:1px solid rgba(34,211,238,.12)}
+.note.pk-c{background:rgba(244,114,182,.05);border:1px solid rgba(244,114,182,.12)}
+.note.am-c{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.12)}
+.note.gn-c{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.12)}
+.note p{color:var(--ink2);margin-bottom:2px}.note p:last-child{margin-bottom:0}.note strong{font-weight:600;color:var(--ink)}
+.note code{font-family:'Fira Code',monospace;font-size:10px;color:var(--cyan);background:rgba(34,211,238,.08);padding:1px 4px;border-radius:3px}
+.stats{display:flex;flex-direction:column;gap:0;margin:4px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Fira Code',monospace;font-size:12px;font-weight:600;min-width:48px;text-align:right;flex-shrink:0}
+.st-v.cy{color:var(--cyan)}.st-v.pk{color:var(--pink)}.st-v.am{color:var(--amber)}.st-v.gn{color:var(--green)}
+.st-t{font-size:14px;color:var(--ink2);line-height:1.35}.st-t strong{font-weight:600;color:var(--ink)}
+/* Bit display */
+.bits{display:flex;justify-content:center;gap:3px;margin:8px 0;flex-shrink:0}
+.bit{width:36px;height:40px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:18px;font-weight:700;border-radius:6px}
+.bit.on{background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.bit.off{background:rgba(244,114,182,.1);color:var(--pink);border:1px solid rgba(244,114,182,.2)}
+.bit.sign{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+.bit-label{font-family:'Fira Code',monospace;font-size:7px;color:var(--dim);text-align:center;margin-top:2px}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(34,211,238,.2);color:var(--cyan);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;border-radius:6px}.dl-btn:hover{background:var(--cyan);color:var(--bg)}.dl-btn.alt{border-color:rgba(232,236,244,.06);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--cyan);color:var(--cyan)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(34,211,238,.06);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--cyan);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(232,236,244,.06);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--cyan);color:var(--cyan)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(232,236,244,.06);cursor:pointer;transition:all .35s}.dot.active{background:var(--cyan);width:22px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="cw">
+  <div class="carousel" id="carousel">
+
+    <!-- 01 COVER -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">Computer Fundamentals</div> -->
+         <p style="margin-bottom: 40px;"> </p>
+         <p style="margin-bottom: 40px;"> </p>
+         <p style="margin-bottom: 40px;"> </p>
+         <p style="margin-bottom: 40px;"> </p>
+        <h2 style="font-size: 42px;">Two's<br><span class="cy">Complement.</span></h2>
+        <p style="font-size: 16px;">Every subtraction your CPU performs is secretly an addition. And most engineers have no idea.</p>
+        <!-- <div class="bits">
+          <div class="bit sign">1</div>
+          <div class="bit off">1</div>
+          <div class="bit off">1</div>
+          <div class="bit on">1</div>
+          <div class="bit off">1</div>
+          <div class="bit on">0</div>
+          <div class="bit on">1</div>
+          <div class="bit off">1</div>
+        </div>
+        <div style="text-align:center;margin:4px 0">
+          <span style="font-family:'Fira Code',monospace;font-size:10px;color:var(--amber)">= -5 in 8-bit two's complement</span>
+        </div>
+        <div class="note am-c">
+          <p><strong>The trick:</strong> Flip every bit, add 1. That's it. This one idea eliminated the need for subtraction circuits in hardware, saving billions of transistors across every chip ever made.</p>
+        </div> -->
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <!-- 02 THE PROBLEM -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The Problem</div> -->
+        <h2>Why not just use a <span class="pk">sign bit?</span></h2>
+        <p class="lead">The obvious approach: reserve the leftmost bit as a sign flag. 0 = positive, 1 = negative. This is called sign-magnitude. Early computers used it. It failed.</p>
+        <div class="code">
+<span class="dm">Sign-magnitude (the naive approach):</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="cy">+5 = 0</span><span class="dm">0000101</span><br>
+<span class="pk">-5 = 1</span><span class="dm">0000101</span>  <span class="dm">← just flip sign bit</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="pk">Problem 1: TWO ZEROS</span><br>
+<span class="cy">+0 = 0</span><span class="dm">0000000</span><br>
+<span class="pk">-0 = 1</span><span class="dm">0000000</span>  <span class="am">← what is negative zero??</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="pk">Problem 2: ADDITION BREAKS</span><br>
+<span class="cy"> 0101</span>  <span class="dm">(+5)</span><br>
+<span class="pk">+1011</span>  <span class="dm">(-3)</span><br>
+<span class="pk">=10000</span>  <span class="am">← this is -0, not +2!</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="pk">The CPU needs SEPARATE circuits for</span>
+<span class="pk"> addition and subtraction. </span><br>
+<span class="pk">Doubles the hardware. Doubles the cost. Doubles bugs.</span>
+        </div>
+        <p style="margin-bottom: 10px;"> </p>
+        <div class="note pk-c">
+          <p><strong>Sign-magnitude failed because math doesn't work.</strong> You can't just add two sign-magnitude numbers with a simple adder circuit. You need to check signs first, compare magnitudes, then decide whether to add or subtract. Expensive, slow, error-prone.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 03 HOW IT WORKS -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">How It Works</div> -->
+        <h2>Flip every bit.<br>Add <span class="cy">one.</span></h2>
+        <p class="lead">To negate any number in two's complement: invert all bits, then add 1. That's the entire algorithm.</p>
+        <div class="code">
+<span class="dm">Convert +5 to -5 (8-bit):</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="cy">Step 1: Start with +5</span><br>
+<span class="cy">  0000 0101</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="pk">Step 2: Flip every bit</span><br>
+<span class="pk">  1111 1010</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="am">Step 3: Add 1</span><br>
+<span class="am">  1111 1011</span>  <span class="gn">← this is -5</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="dm">Verify: -128+64+32+16+8+0+2+1</span>
+<span class="dm">      = -128 + 123 =</span> <span class="gn">-5 ✓</span>
+        </div>
+        <p style="margin-bottom: 22px;"> </p>
+        <div class="note cy-c">
+          <p><strong>The leftmost bit has weight -128</strong> (in 8-bit), not just a sign flag. It actively contributes a negative value. That's why the math works automatically. <code>1111 1011</code> isn't "negative 0000 0101." It's a completely different number where the MSB contributes -128.</p>
+        </div>
+        <div class="note am-c">
+          <p><strong>Only ONE zero:</strong> <code>0000 0000</code> = 0. Flip all bits = <code>1111 1111</code>. Add 1 = <code>1 0000 0000</code>. The overflow bit is discarded. Result: <code>0000 0000</code> = 0 again. One zero. Problem solved.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 04 THE MAGIC -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">The Magic</div> -->
+        <h2>Subtraction <span class="am">doesn't exist.</span></h2>
+        <p class="lead">In two's complement, 5 - 3 is really 5 + (-3). The CPU only needs an adder circuit. No subtractor. One circuit does everything.</p>
+        <div class="code">
+<span class="dm">Compute: 5 - 3 = ?</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="dm">CPU converts to: 5 + (-3)</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="cy">  0000 0101</span>  <span class="dm">(+5)</span><br>
+<span class="pk">+ 1111 1101</span>  <span class="dm">(-3 in two's complement)</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="gn">= 0000 0010</span>  <span class="gn">(+2) ✓</span><br>
+<span class="dm">────────────────────────────</span><br>
+<span class="dm">The carry-out overflows and is discarded.</span><br>
+<span class="am">No sign checking. No magnitude comparison.</span><br>
+<span class="am">No special cases. Just addition.</span>
+        </div>
+        <p style="margin-bottom: 68px;"> </p>
+        <div class="note gn-c">
+          <p><strong>This is why two's complement won.</strong> One adder circuit handles positive + positive, positive + negative, negative + positive, and negative + negative. The hardware doesn't even know if the numbers are signed or unsigned. The same bits, the same circuit, correct result either way.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 05 THE NUMBER WHEEL -->
+    
+    <!-- <div class="slide"><div class="ghost">○</div>
+      <div class="hdr"><span class="num">05 / 07</span><span class="brand">ravenex.tech</span></div>
+      <div class="body">
+        <div class="kicker">The Number Wheel</div>
+        <h2>It's a <span class="cy">clock,</span><br>not a line.</h2>
+        <p>Two's complement works like clock arithmetic. In a 4-bit system, adding 1 to 0111 (+7) wraps around to 1000 (-8). It's modular arithmetic.</p>
+        <div class="chart">
+          <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
+            
+            <circle cx="180" cy="140" r="110" fill="none" stroke="rgba(34,211,238,.08)" stroke-width="1.5"/>
+            
+            <path d="M180,30 A110,110 0 0,1 290,140" fill="none" stroke="rgba(34,211,238,.15)" stroke-width="3"/>
+            
+            <path d="M180,30 A110,110 0 0,0 70,140" fill="none" stroke="rgba(244,114,182,.15)" stroke-width="3"/>
+           
+            <circle cx="180" cy="30" r="16" fill="rgba(251,191,36,.1)" stroke="#fbbf24" stroke-width="1.2"/>
+            <text x="180" y="34" text-anchor="middle" fill="#fbbf24" font-family="'Fira Code',monospace" font-size="9" font-weight="700">0</text>
+            <text x="180" y="14" text-anchor="middle" fill="rgba(251,191,36,.5)" font-family="'Fira Code',monospace" font-size="7">0000</text>
+            
+            <circle cx="235" cy="38" r="13" fill="rgba(34,211,238,.08)" stroke="#22d3ee" stroke-width="1"/>
+            <text x="235" y="42" text-anchor="middle" fill="#22d3ee" font-family="'Fira Code',monospace" font-size="8" font-weight="600">+1</text>
+         
+            <circle cx="272" cy="65" r="13" fill="rgba(34,211,238,.08)" stroke="#22d3ee" stroke-width="1"/>
+            <text x="272" y="69" text-anchor="middle" fill="#22d3ee" font-family="'Fira Code',monospace" font-size="8" font-weight="600">+2</text>
+          
+            <circle cx="290" cy="105" r="13" fill="rgba(34,211,238,.08)" stroke="#22d3ee" stroke-width="1"/>
+            <text x="290" y="109" text-anchor="middle" fill="#22d3ee" font-family="'Fira Code',monospace" font-size="8" font-weight="600">+3</text>
+            
+            <circle cx="290" cy="175" r="14" fill="rgba(34,211,238,.08)" stroke="#22d3ee" stroke-width="1.2"/>
+            <text x="290" y="179" text-anchor="middle" fill="#22d3ee" font-family="'Fira Code',monospace" font-size="8" font-weight="600">+7</text>
+            <text x="312" y="179" fill="rgba(34,211,238,.3)" font-family="'Fira Code',monospace" font-size="6">0111</text>
+          
+            <circle cx="125" cy="38" r="13" fill="rgba(244,114,182,.08)" stroke="#f472b6" stroke-width="1"/>
+            <text x="125" y="42" text-anchor="middle" fill="#f472b6" font-family="'Fira Code',monospace" font-size="8" font-weight="600">-1</text>
+          
+            <circle cx="88" cy="65" r="13" fill="rgba(244,114,182,.08)" stroke="#f472b6" stroke-width="1"/>
+            <text x="88" y="69" text-anchor="middle" fill="#f472b6" font-family="'Fira Code',monospace" font-size="8" font-weight="600">-2</text>
+          
+            <circle cx="70" cy="105" r="13" fill="rgba(244,114,182,.08)" stroke="#f472b6" stroke-width="1"/>
+            <text x="70" y="109" text-anchor="middle" fill="#f472b6" font-family="'Fira Code',monospace" font-size="8" font-weight="600">-3</text>
+         
+            <circle cx="70" cy="175" r="14" fill="rgba(244,114,182,.08)" stroke="#f472b6" stroke-width="1.2"/>
+            <text x="70" y="179" text-anchor="middle" fill="#f472b6" font-family="'Fira Code',monospace" font-size="8" font-weight="600">-8</text>
+            <text x="44" y="179" fill="rgba(244,114,182,.3)" font-family="'Fira Code',monospace" font-size="6">1000</text>
+            
+            <path d="M284,188 Q300,230 260,250 Q220,265 180,258" stroke="#fbbf24" stroke-width="1" fill="none" stroke-dasharray="3,3"/>
+            <text x="270" y="240" fill="rgba(251,191,36,.5)" font-family="'Fira Code',monospace" font-size="7">+7 + 1 = -8</text>
+            <text x="270" y="252" fill="rgba(251,191,36,.5)" font-family="'Fira Code',monospace" font-size="7">(overflow!)</text>
+            
+            <text x="260" y="140" text-anchor="middle" fill="rgba(34,211,238,.25)" font-family="'Fira Code',monospace" font-size="8">POSITIVE</text>
+            <text x="100" y="140" text-anchor="middle" fill="rgba(244,114,182,.25)" font-family="'Fira Code',monospace" font-size="8">NEGATIVE</text>
+          </svg>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div> -->
+
+
+    <!-- 06 WHERE IT HIDES -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">Where It Hides In Your Code</div> -->
+        <h2>You use it <span class="am">every day.</span></h2>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">int</span><div class="st-t"><strong>Every <code style="color:var(--cyan)">int</code> in C, Java, Rust, Go, Swift</strong> is a 32-bit two's complement number. Range: -2,147,483,648 to +2,147,483,647. The negative side has one extra number</div></div>
+          <div class="st"><span class="st-v pk">MIN</span><div class="st-t"><strong><code style="color:var(--pink)">Integer.MIN_VALUE</code></strong> in Java is -2,147,483,648. Negate it and you get... -2,147,483,648 again. Because +2,147,483,648 doesn't fit in 32 bits. The "weird number"</div></div>
+          <div class="st"><span class="st-v am">abs()</span><div class="st-t"><strong><code style="color:var(--amber)">Math.abs(Integer.MIN_VALUE)</code></strong> returns a NEGATIVE number. This is a real bug in production systems. Two's complement is why</div></div>
+          <div class="st"><span class="st-v gn">x86</span><div class="st-t"><strong>Your CPU's ADD instruction</strong> works for both signed and unsigned integers. Same circuit, same opcode. It literally cannot tell the difference. Two's complement makes this possible</div></div>
+          <div class="st"><span class="st-v cy">-x</span><div class="st-t"><strong>The unary minus operator <code style="color:var(--cyan)">-x</code></strong> in every language compiles to NOT(x) + 1. Flip all bits, add one. The compiler emits two's complement, not "make it negative"</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <!-- 07 WHY IT MATTERS -->
+    <div class="slide"><div class="ghost"> </div>
+      <div class="hdr"><span class="num"> </span><span class="brand"> </span></div>
+      <div class="body">
+        <!-- <div class="kicker">Why It Matters</div> -->
+        <h2>One circuit to rule them <span class="gn">all.</span></h2>
+        <div class="stats">
+          <div class="st"><span class="st-v gn" style="min-width: 12px;">1</span><div class="st-t"><strong>One adder circuit.</strong> Handles addition AND subtraction. No separate subtractor needed. Saves billions of transistors on every chip ever manufactured</div></div>
+          <div class="st"><span class="st-v gn" style="min-width: 12px;">2</span><div class="st-t"><strong>One zero.</strong> No +0 and -0 confusion. Comparison is a single operation. Branching logic is simpler</div></div>
+          <div class="st"><span class="st-v gn" style="min-width: 12px;">3</span><div class="st-t"><strong>No sign checking.</strong> The CPU doesn't check if a number is positive or negative before adding. It just adds. The result is correct regardless</div></div>
+          <div class="st"><span class="st-v gn" style="min-width: 12px;">4</span><div class="st-t"><strong>Overflow detection.</strong> One XOR of the two most significant carry bits. If they differ, overflow occurred. Simple, fast, one gate</div></div>
+        </div>
+        <p style="margin-bottom: 40px;"> </p>
+        <div class="note gn-c">
+          <p><strong>Two's complement has been the standard since the 1960s.</strong> Every x86, ARM, RISC-V, and MIPS processor uses it. Every programming language assumes it. Every signed integer on every device on Earth is stored this way. It's so fundamental that most engineers forget it's even a design choice.</p>
+        </div>
+        <div class="note am-c">
+          <p><strong>The lesson:</strong> The best engineering decisions are invisible. Two's complement is so good that 60 years later, nobody has found anything better. Flip the bits, add one. That's it. That's the whole trick that runs the modern world.</p>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save & Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'twos-complement-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'twos-complement-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}</script>
+</body>
+</html>

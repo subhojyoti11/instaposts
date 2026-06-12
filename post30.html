@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Context Window Explained</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Lexend:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#020a04;--card:#061208;--ink:#00ff66;--ink2:#339955;--dim:#1a5533;--warn:#ffcc00;--err:#ff3344;--border:rgba(0,255,102,.06)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);font-family:'Lexend',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
+body{background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,102,.008) 3px,rgba(0,255,102,.008) 4px)}
+.carousel-wrap{max-width:1100px;margin:0 auto}
+.carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 0 30px rgba(0,255,102,.02) inset}
+/* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ink);box-shadow:0 0 10px var(--ink)} */
+.ghost{position:absolute;top:50px;right:20px;font-family:'VT323',monospace;font-size:160px;line-height:.7;color:rgba(0,255,102,.025);pointer-events:none;user-select:none}
+.hdr{flex-shrink:0;padding:18px 22px 20px 24px;display:flex;justify-content:space-between;align-items:center}
+.hdr .num{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--dim)}.hdr .brand{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.body{flex:1;min-height:0;overflow:hidden;padding:10px 22px 0 24px;display:flex;flex-direction:column}
+.prompt{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);margin-bottom:8px;flex-shrink:0}
+.prompt span{color:var(--ink)}
+.slide h1{font-family:'VT323',monospace;font-weight:400;font-size:clamp(30px,6vw,82px);line-height:.85;margin-bottom:12px;flex-shrink:0;text-shadow:0 0 10px rgba(0,255,102,.3)}
+.slide h2{font-family:'VT323',monospace;font-weight:400;font-size:clamp(30px,6vw,52px);line-height:.85;margin-bottom:12px;flex-shrink:0;text-shadow:0 0 10px rgba(0,255,102,.3)}
+.slide h2 .w{color:var(--warn);text-shadow:0 0 10px rgba(255,204,0,.3)}.slide h2 .e{color:var(--err);text-shadow:0 0 10px rgba(255,51,68,.3)}
+.slide p{font-size:12.5px;line-height:1.55;color:var(--ink2);margin-bottom:6px;font-weight:300}
+.slide p.lead{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--ink);line-height:1.5}
+.ftr{flex-shrink:0;padding:8px 22px 16px 24px;display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;margin-bottom: 10px;}
+.ftr .left{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--dim)}.ftr .right{font-family:'VT323',monospace;font-size:24px;color:var(--ink)}
+.code{background:rgba(0,0,0,.5);border:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10.5px;padding:14px 16px;margin:8px 0;line-height:1.75;flex-shrink:0}
+.code .g{color:var(--ink);font-weight:400}.code .w{color:var(--warn)}.code .e{color:var(--err)}.code .dm{color:rgba(0,255,102,.2)}
+.stats{display:flex;flex-direction:column;gap:0;margin:6px 0;flex-shrink:0}
+.st{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border)}.st:last-child{border-bottom:none}
+.st-v{font-family:'Share Tech Mono',monospace;font-size:12px;min-width:52px;text-align:right;flex-shrink:0}
+.st-v.g{color:var(--ink)}.st-v.w{color:var(--warn)}.st-v.e{color:var(--err)}
+.st-t{font-family:'Lexend',sans-serif;font-size:11px;color:var(--ink2);line-height:1.35;font-weight:300}.st-t strong{font-weight:500;color:var(--ink)}
+.gcard{padding:12px 14px;margin:8px 0;font-size:11px;line-height:1.45;flex-shrink:0;font-family:'Lexend',sans-serif}
+.gcard.g-c{background:rgba(0,255,102,.04);border:1px solid rgba(0,255,102,.1)}
+.gcard.w-c{background:rgba(255,204,0,.04);border:1px solid rgba(255,204,0,.1)}
+.gcard.e-c{background:rgba(255,51,68,.04);border:1px solid rgba(255,51,68,.1)}
+.gcard p{color:var(--ink2);margin-bottom:2px}.gcard p:last-child{margin-bottom:0}.gcard strong{font-weight:500;color:var(--ink)}
+.dl-bar{display:flex;justify-content:center;gap:12px;margin-top:24px}
+.dl-btn{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:11px 24px;background:transparent;border:1px solid rgba(0,255,102,.2);color:var(--ink);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px}.dl-btn:hover{background:var(--ink);color:var(--bg)}.dl-btn.alt{border-color:rgba(0,255,102,.08);color:var(--dim)}.dl-btn.alt:hover{border-color:var(--ink);color:var(--ink)}
+.dl-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.dl-btn:disabled{opacity:.3}
+.progress-bar{width:160px;height:2px;background:rgba(0,255,102,.06);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--ink);transition:width .3s}
+.nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
+.nav button{background:transparent;border:1px solid rgba(0,255,102,.08);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;transition:all .25s}.nav button:hover{border-color:var(--ink);color:var(--ink)}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(0,255,102,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--ink);width:22px;border-radius:3px;box-shadow:0 0 6px var(--ink)}
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>explain --context-window</span></div> -->
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+      <h1>Context<br>Window</h1>
+      <p class="lead">> The context window is the model's working memory. Everything it can "see" at once. Prompt + history + response must fit inside it.</p>
+      <!-- <p>When ChatGPT "forgets" your earlier messages, it hasn't crashed. The conversation exceeded the context window. Older messages were silently dropped. Here's how it works.</p> -->
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>cat /proc/context/sizes</span></div> -->
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+      <h2>How big is the <span class="w">window?</span></h2>
+      <p class="lead" style="margin-bottom: 30px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v g">4K</span><div class="st-t"><strong>GPT-3.5 (2022).</strong> ~3,000 words. About 6 pages. A short conversation</div></div>
+        <div class="st"><span class="st-v g">128K</span><div class="st-t"><strong>GPT-4o (2024).</strong> ~96,000 words. A full novel. 300 pages of text</div></div>
+        <div class="st"><span class="st-v w">200K</span><div class="st-t"><strong>Claude 3.5 (2024).</strong> ~150,000 words. Multiple textbooks at once</div></div>
+        <div class="st"><span class="st-v w">1M</span><div class="st-t"><strong>Gemini 2.5 Pro (2025).</strong> ~750,000 words. An entire codebase. Every Harry Potter book combined, twice</div></div>
+        <div class="st"><span class="st-v w">∞?</span><div class="st-t"><strong>The goal.</strong> Infinite context. Models that never forget. We're not there yet. Here's why</div></div>
+      </div>
+      <p class="lead" style="margin-bottom: 40px;"> </p>
+       <p class="lead" style="margin-bottom: 40px;"> </p>
+       <p class="lead" style="margin-bottom: 20px;"> </p>
+      <div class="gcard w-c">
+        <p><strong>32× growth in 2 years.</strong> From 4K to 128K. But bigger windows create a new problem: the KV cache.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>explain --kv-cache</span></div> -->
+       
+      <h2>The <span class="e">KV cache</span> problem.</h2>
+      <p class="lead" style="margin-top: 20px;">> Every token in the context window creates a Key and Value vector that must be stored in GPU memory. This is the KV cache.</p>
+      <div class="code">
+<span class="dm">KV cache memory formula:</span><br>
+<span class="g">memory = 2 × layers × heads × dim × seq_len × bytes</span><br>
+<span class="dm">──────────────────────────────</span><br>
+<span class="dm">GPT-4o at different context lengths:</span><br>
+<span class="g">4K tokens:</span>    <span class="w">~0.5 GB</span>  <span class="dm">← fits easily</span><br>
+<span class="g">32K tokens:</span>   <span class="w">~4 GB</span>   <span class="dm">← noticeable</span><br>
+<span class="g">128K tokens:</span>  <span class="e">~16 GB</span>  <span class="dm">← half a GPU</span><br>
+<span class="e">1M tokens:</span>    <span class="e">~120 GB</span> <span class="dm">← multiple GPUs</span><br>
+<span class="dm">──────────────────────────────</span><br>
+<span class="e">PER REQUEST. Not shared. Each user</span><br>
+<span class="e">gets their own KV cache allocation.</span>
+      </div>
+      <p class="lead" style="margin-bottom: 10px;"> </p>
+      <div class="gcard e-c">
+        <p><strong>This is why long-context is expensive.</strong> A 128K context request eats 16 GB of HBM per user. Serve 100 concurrent users and you need 1.6 TB of GPU memory. That's the memory wall in action.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>cat /var/log/chat_overflow.log</span></div> -->
+      <h2>Why your chat <span class="e">forgets.</span></h2>
+      <p class="lead" style="margin-bottom: 20px;"> </p>
+      <div class="code">
+<span class="dm">128K context window. Chat session:</span><br>
+<span class="dm">──────────────────────────────</span><br>
+<span class="g">System prompt:</span>     <span class="w">2,000 tokens</span><br>
+<span class="g">Message 1-10:</span>      <span class="w">15,000 tokens</span><br>
+<span class="g">Message 11-30:</span>     <span class="w">45,000 tokens</span><br>
+<span class="g">Message 31-50:</span>     <span class="w">60,000 tokens</span><br>
+<span class="g">Total so far:</span>      <span class="e">122,000 tokens</span><br>
+<span class="dm">──────────────────────────────</span><br>
+<span class="e">WARNING: approaching limit</span><br>
+<span class="e">Message 51: oldest messages DROPPED</span><br>
+<span class="dm">──────────────────────────────</span><br>
+<span class="dm">The model didn't "forget."</span><br>
+<span class="e">The oldest context was evicted.</span><br>
+<span class="dm">Silently. Without telling you.</span>
+      </div>
+      <p class="lead" style="margin-bottom: 20px;"> </p>
+      <div class="gcard e-c">
+        <p><strong>No LLM has persistent memory.</strong> Every "conversation" is a single prompt containing the full history. When that prompt exceeds the window, oldest messages are truncated. The model literally can't see them anymore.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>explain --lost-in-middle</span></div> -->
+      <h2>Bigger ≠ <span class="w">better.</span></h2>
+      <p class="lead" style="margin-bottom: 20px;"> </p>
+      <p class="lead">> "Lost in the middle" — LLMs pay most attention to the start and end of context. Information buried in the middle gets ignored.</p>
+      <div class="stats">
+        <div class="st"><span class="st-v w">start</span><div class="st-t"><strong>First 10% of context.</strong> High attention. System prompt and initial instructions land well here</div></div>
+        <div class="st"><span class="st-v e">middle</span><div class="st-t"><strong>Middle 60-80%.</strong> Attention drops significantly. Key facts buried here get missed or garbled</div></div>
+        <div class="st"><span class="st-v w">end</span><div class="st-t"><strong>Last 10% of context.</strong> High attention again. The most recent message gets the most focus</div></div>
+      </div>
+      <p class="lead" style="margin-bottom: 40px;"> </p>
+      <p class="lead" style="margin-bottom: 40px;"> </p>
+      <p class="lead" style="margin-bottom: 30px;"> </p>
+      <div class="gcard w-c">
+        <p><strong>1M tokens ≠ 1M tokens of understanding.</strong> You CAN stuff a whole codebase into Gemini's context. But that doesn't mean it will accurately process all of it. Retrieval quality degrades as context grows. RAG with targeted chunks often outperforms brute-force long context.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div></div>
+
+    <div class="slide"><div class="ghost"> </div><div class="hdr"><span class="num"> </span><span class="brand"> </span></div><div class="body">
+      <!-- <div class="prompt">user@llm:~$ <span>optimize --context</span></div> -->
+      <h2>How to manage the <span class="g">window.</span></h2>
+      <p class="lead" style="margin-bottom: 20px;"> </p>
+      <div class="stats">
+        <div class="st"><span class="st-v g">01</span><div class="st-t"><strong>Summarize history.</strong> After 10 messages, compress old conversation into a 500-token summary. Reset the window</div></div>
+        <div class="st"><span class="st-v g">02</span><div class="st-t"><strong>RAG over stuffing.</strong> Don't paste 50 pages into context. Embed and retrieve only the relevant 3-5 chunks</div></div>
+        <div class="st"><span class="st-v g">03</span><div class="st-t"><strong>Put important info at edges.</strong> System prompt first, user query last. Don't bury instructions in the middle</div></div>
+        <div class="st"><span class="st-v g">04</span><div class="st-t"><strong>Use prompt caching.</strong> Static system prompts cached = 50-90% cost reduction on repeated context</div></div>
+        <div class="st"><span class="st-v g">05</span><div class="st-t"><strong>Right-size the model.</strong> Don't use 1M context model for a 4K task. Bigger windows = more compute = slower + costlier</div></div>
+      </div>
+      <p class="lead" style="margin-bottom: 40px;"> </p>
+       <p class="lead" style="margin-bottom: 10px;"> </p>
+      <div class="gcard g-c">
+        <p><strong>The context window is your budget.</strong> Spend it wisely. Every token inside competes for attention. Smaller, focused context often produces better results than massive, unfocused context. Quality of context > quantity of context.</p>
+      </div>
+    </div><div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ save</span></div></div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div class="dl-bar">
+    <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+    <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prev=document.getElementById('prev'),next=document.getElementById('next');const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';let cur=0;slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d)});const dots=dotsC.querySelectorAll('.dot'),sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});prev.onclick=()=>sc(-1);next.onclick=()=>sc(1);slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur))}})},{root:carousel,threshold:.6}).observe(s));document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1)};async function cap(s){return await html2canvas(s,{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false})}function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click()}async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.textContent='...';try{dl(await cap(slides[cur]),'context-window-'+String(cur+1).padStart(2,'0')+'.png')}catch(e){}b.innerHTML=dlSVG+'Current Slide';b.disabled=false}async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.textContent='...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'context-window-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(e){}b.innerHTML=dlSVG+'All Slides';b.disabled=false;setTimeout(()=>{bar.style.display='none'},1000)}
+</script>
+</body>
+</html>
