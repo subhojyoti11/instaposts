@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homomorphic Encryption, Post 69</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#070b0e; --card:#0c1318; --ink:#ddeeff; --ink2:#a0a0a0; --dim:#607080; --cyan:#22d3ee; --purple:#a78bfa; --green:#4ade80; --border:rgba(34,211,238,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .cy { color:var(--cyan); } .slide h2 .pu { color:var(--purple); } .slide h2 .gn { color:var(--green); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--cyan); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .cy { color:#67e8f9; } .code .pu { color:#c4b5fd; } .code .gn { color:#86efac; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.cy { color:var(--cyan); } .st-v.pu { color:var(--purple); } .st-v.gn { color:var(--green); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.cy-c { background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.15); }
+  .gcard.pu-c { background:rgba(167,139,250,.06); border:1px solid rgba(167,139,250,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(34,211,238,.2); color:var(--cyan); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--cyan); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--cyan); color:var(--cyan); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(34,211,238,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--cyan); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--cyan); color:var(--cyan); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(221,238,255,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--cyan); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(34,211,238,.2); color:var(--cyan); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--cyan); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--green); color:var(--green); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="cy">Homomorphic</span><br>Encryption.<br>Compute on<br><span class="pu">Ciphertext</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The Cloud<br><span class="cy">Privacy Problem</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Today's model</span><div class="st-t"><strong>You encrypt data before sending it to the cloud.</strong> The cloud decrypts it, runs the computation, returns the result. Your data is exposed in plaintext inside the server during every operation.</div></div>
+          <div class="st"><span class="st-v pu">The risk</span><div class="st-t"><strong>The cloud provider, a rogue employee, or an attacker with server access sees everything.</strong> Healthcare records, financial models, genomics data — all exposed the moment computation begins.</div></div>
+          <div class="st"><span class="st-v cy">The ideal</span><div class="st-t"><strong>Send encrypted data to the cloud, receive an encrypted result, decrypt locally.</strong> The cloud performs useful work on data it can never read. This is exactly what homomorphic encryption provides.</div></div>
+          <div class="st"><span class="st-v gn">Why now</span><div class="st-t"><strong>In 2009, Craig Gentry published the first fully homomorphic encryption scheme.</strong> Performance has improved by over a million times since then. Production deployments are real today.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>How <span class="pu">HE</span><br>Actually Works.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">The core idea</span><div class="st-t"><strong>HE schemes define addition and multiplication operations that work directly on ciphertexts.</strong> The result of operating on encrypted values, when decrypted, equals the result of operating on the plaintexts.</div></div>
+          <div class="st"><span class="st-v cy">Partial HE</span><div class="st-t"><strong>Supports only one operation, either addition or multiplication, but not both.</strong> RSA is multiplicatively homomorphic. Paillier cryptosystem is additively homomorphic. Used in secure voting and e-cash.</div></div>
+          <div class="st"><span class="st-v pu">Somewhat HE</span><div class="st-t"><strong>Supports both addition and multiplication but only for a limited depth of operations.</strong> Each operation introduces noise. After enough multiplications, the noise overwhelms the signal and decryption fails.</div></div>
+          <div class="st"><span class="st-v gn">Fully HE</span><div class="st-t"><strong>Bootstrapping resets the noise level, allowing unlimited operations.</strong> Gentry's breakthrough was showing that the decryption circuit itself can be evaluated homomorphically to refresh a ciphertext and continue computing.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>CKKS in<br><span class="cy">Practice</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Microsoft SEAL (Python wrapper via tenseal):</span>
+import tenseal as ts
+
+<span class="dm"># Create HE context (CKKS for real numbers)</span>
+ctx = ts.<span class="cy">context</span>(
+    ts.SCHEME_TYPE.<span class="pu">CKKS</span>,
+    poly_modulus_degree=<span class="gn">8192</span>,
+    coeff_mod_bit_sizes=[<span class="gn">60, 40, 40, 60</span>]
+)
+ctx.generate_galois_keys()
+ctx.global_scale = <span class="gn">2**40</span>
+
+<span class="dm"># Encrypt two vectors</span>
+a = ts.<span class="cy">ckks_vector</span>(ctx, [<span class="gn">1.0, 2.0, 3.0</span>])
+b = ts.<span class="cy">ckks_vector</span>(ctx, [<span class="gn">4.0, 5.0, 6.0</span>])
+
+result = a + b    <span class="dm"># encrypted add</span>
+result = a * b    <span class="dm"># encrypted multiply</span>
+<span class="dm"># Server never sees 1.0, 2.0, 3.0, 4.0...</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="cy">Schemes</span><br>Compared.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">BFV / BGV</span><div class="st-t"><strong>Optimized for integer arithmetic.</strong> Used for exact computations on discrete values: counting, database queries, set membership tests. Preferred for privacy-preserving database lookups.</div></div>
+          <div class="st"><span class="st-v pu">CKKS</span><div class="st-t"><strong>Optimized for real and complex numbers with approximate arithmetic.</strong> Ideal for machine learning inference on encrypted data. Google's HEIR compiler targets CKKS for neural network evaluation in the cloud.</div></div>
+          <div class="st"><span class="st-v gn">TFHE</span><div class="st-t"><strong>Supports arbitrary boolean circuits with very fast bootstrapping.</strong> Each gate takes about 13ms. Used by Zama.ai for encrypted database queries and confidential smart contracts on Ethereum.</div></div>
+          <div class="st"><span class="st-v cy">FHEW</span><div class="st-t"><strong>Fast gate-by-gate bootstrapping, lower latency than TFHE for small circuits.</strong> Best for binary decision problems: fraud detection, credit scoring, KYC checks where the yes/no answer stays encrypted.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="pu">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Microsoft SEAL</span><div class="st-t"><strong>Open-source HE library supporting BFV, BGV, and CKKS.</strong> Used inside Azure for confidential cloud computing. Allows customers to run ML inference on sensitive data without exposing it to Microsoft.</div></div>
+          <div class="st"><span class="st-v cy">Google HEIR</span><div class="st-t"><strong>High-level Intermediate Representation for HE, built on MLIR.</strong> Compiles standard ML models into CKKS operations automatically. Eliminates manual HE programming for ML inference pipelines.</div></div>
+          <div class="st"><span class="st-v gn">Zama.ai</span><div class="st-t"><strong>Builds Concrete and TFHE-rs, production FHE compilers.</strong> Partners with Inco Network for confidential Ethereum smart contracts. Input data, computation logic, and outputs stay encrypted end-to-end.</div></div>
+          <div class="st"><span class="st-v pu">IBM HElayers</span><div class="st-t"><strong>C++ toolkit for AI inference under CKKS.</strong> IBM demonstrated logistic regression and neural network inference on encrypted genomic data. Healthcare is the primary target for confidential genomics analysis.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="cy">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">HE</span><div class="st-t"><strong>Homomorphic Encryption: perform computations on encrypted data without decrypting.</strong> The result, when decrypted, equals what you would get from computing on the plaintexts directly.</div></div>
+          <div class="st"><span class="st-v pu">FHE</span><div class="st-t"><strong>Fully Homomorphic Encryption: supports unlimited additions and multiplications via bootstrapping.</strong> Craig Gentry's 2009 breakthrough. Bootstrapping resets ciphertext noise to allow continued computation.</div></div>
+          <div class="st"><span class="st-v gn">CKKS</span><div class="st-t"><strong>Approximate HE scheme for real-number arithmetic.</strong> Ideal for ML inference. Google HEIR and Microsoft SEAL both implement CKKS for neural network evaluation on encrypted inputs.</div></div>
+          <div class="st"><span class="st-v cy">TFHE</span><div class="st-t"><strong>Fast bootstrapping HE for boolean circuits.</strong> Each gate operation takes roughly 13ms. Used by Zama.ai for encrypted database queries and confidential smart contracts without revealing inputs.</div></div>
+          <div class="st"><span class="st-v pu">Noise</span><div class="st-t"><strong>Each HE operation adds noise to the ciphertext.</strong> Too much noise makes decryption fail. Bootstrapping resets the noise level at the cost of significant computation overhead per refresh.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Every time your data reaches the cloud, it gets decrypted. That is the moment it is most vulnerable.
+
+The standard model of cloud computing has an uncomfortable truth at its center. You encrypt data before transmission, but the cloud provider must decrypt it before running any computation. During that window, your data is plaintext inside a server you do not control. Healthcare records, financial models, genomic sequences — all exposed to anyone with access to the server, whether a rogue employee, a subpoena, or a sophisticated attacker.
+
+Homomorphic encryption eliminates that window entirely. An HE scheme defines addition and multiplication operations that work directly on ciphertexts. When you decrypt the result, you get the same answer you would have gotten by operating on the original data. The cloud performs useful computation on data it can never read.
+
+Craig Gentry published the first fully homomorphic encryption scheme in 2009 as part of his Stanford PhD thesis. It was theoretically groundbreaking and computationally impractical. Performance has improved by over a million times since then. Production deployments are real today.
+
+The CKKS scheme handles real-number arithmetic with approximate results, making it ideal for machine learning inference. Google's HEIR compiler takes standard neural network models and compiles them into CKKS operations automatically. Microsoft SEAL implements CKKS inside Azure for confidential cloud computing. TFHE supports arbitrary boolean circuits and enables Zama.ai to run encrypted database queries and confidential Ethereum smart contracts where inputs, logic, and outputs stay encrypted end-to-end.
+
+The remaining constraint is speed. Bootstrapping, the operation that resets ciphertext noise to allow continued computation, is expensive. Current FHE is 100x to 10,000x slower than plaintext computation depending on the scheme. For narrow, high-value applications like genomics analysis and financial risk scoring, that overhead is worth paying.
+
+Swipe to see how the schemes compare, what the CKKS code looks like in TenSEAL, and where teams are deploying this today.
+
+#homomorphicencryption #cryptography #privacy #cloudcomputing #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0c1318',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'hom-enc-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'hom-enc-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

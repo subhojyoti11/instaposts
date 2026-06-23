@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Twins, Post 75</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#060b0b; --card:#0c1414; --ink:#d9f2f0; --ink2:#a0a0a0; --dim:#406060; --teal:#0d9488; --indigo:#4f46e5; --amber:#f59e0b; --border:rgba(13,148,136,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .tl { color:var(--teal); } .slide h2 .id { color:var(--indigo); } .slide h2 .am { color:var(--amber); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--teal); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .tl { color:#5eead4; } .code .id { color:#818cf8; } .code .am { color:#fcd34d; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.tl { color:var(--teal); } .st-v.id { color:var(--indigo); } .st-v.am { color:var(--amber); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.tl-c { background:rgba(13,148,136,.06); border:1px solid rgba(13,148,136,.15); }
+  .gcard.id-c { background:rgba(79,70,229,.06); border:1px solid rgba(79,70,229,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(13,148,136,.2); color:var(--teal); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--teal); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--teal); color:var(--teal); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(13,148,136,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--teal); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--teal); color:var(--teal); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(217,242,240,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--teal); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(13,148,136,.2); color:var(--teal); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--teal); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--amber); color:var(--amber); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="tl">Digital</span><br>Twins.<br>Simulating<br><span class="id">Reality</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What a <span class="tl">Digital</span><br><span class="id">Twin</span> Is.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v tl">Definition</span><div class="st-t"><strong>A digital twin is a continuously updated virtual model of a physical asset, process, or system.</strong> Sensors stream real-time data from the physical object to its digital counterpart, keeping them synchronized. The digital model reflects the current state of the physical one at all times.</div></div>
+          <div class="st"><span class="st-v id">Origin</span><div class="st-t"><strong>NASA pioneered the concept for the Apollo program in 1969.</strong> Mission Control maintained physical replicas of spacecraft systems to simulate failure scenarios. Michael Grieves formalized the digital twin concept in a 2002 University of Michigan course on product lifecycle management.</div></div>
+          <div class="st"><span class="st-v am">Three components</span><div class="st-t"><strong>Every digital twin has three parts: the physical entity, the virtual model, and the data connection between them.</strong> Sensors stream state data from the physical asset. The digital model processes that data. Actuators close the loop by sending control signals back to the physical world.</div></div>
+          <div class="st"><span class="st-v tl">Simulation</span><div class="st-t"><strong>The key capability is running simulations against the virtual model before changing the physical asset.</strong> Test 1,000 maintenance schedules, supply chain configurations, or design variants in hours on the digital twin instead of months on the physical system.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="am">Data</span><br>Pipeline.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">Ingestion</span><div class="st-t"><strong>IoT sensors stream telemetry at 1Hz to 10kHz depending on the asset type.</strong> A jet engine has 5,000 sensors. A wind turbine has 500. A factory production line has 50,000 data points across all equipment. MQTT and OPC-UA are the dominant protocols for industrial sensor networks.</div></div>
+          <div class="st"><span class="st-v tl">Processing</span><div class="st-t"><strong>Raw sensor data is noisy, incomplete, and time-series in nature.</strong> Kalman filters smooth sensor readings. Anomaly detection flags outliers. Feature extraction converts raw timeseries into state variables the physics model can consume. Apache Kafka and AWS Kinesis handle the streaming layer.</div></div>
+          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The digital twin runs a physics simulation, not just a database lookup.</strong> Finite element analysis models stress and thermal dynamics in mechanical components. CFD models fluid flow in HVAC and chemical processes. The model predicts failure before sensors detect it.</div></div>
+          <div class="st"><span class="st-v am">Feedback</span><div class="st-t"><strong>Simulation results drive optimization recommendations or direct actuation.</strong> An autonomous factory twin adjusts line speed to minimize defect rate in real time. A building management twin preemptively adjusts HVAC load before a predicted heat spike to avoid an expensive demand charge.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Twin <span class="tl">Update</span><br>Loop.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Simplified digital twin sync loop</span>
+class <span class="tl">DigitalTwin</span>:
+    def __init__(self, asset_id):
+        self.state = <span class="id">PhysicsModel</span>(asset_id)
+        self.stream = <span class="am">SensorStream</span>(asset_id)
+
+    def run(self):
+        for reading in self.stream:
+            <span class="dm"># Update model with latest sensor data</span>
+            self.state.<span class="tl">update</span>(reading)
+
+            <span class="dm"># Predict next state, detect anomalies</span>
+            forecast = self.state.<span class="tl">predict</span>(horizon=3600)
+
+            if forecast.<span class="am">failure_probability</span> > 0.85:
+                <span class="id">alert_maintenance</span>(self.state.asset_id)
+                <span class="id">schedule_shutdown</span>(forecast.estimated_time)
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="id">Simulation</span><br>at Scale.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v id">Monte Carlo</span><div class="st-t"><strong>Digital twins run thousands of stochastic simulations to quantify risk under uncertainty.</strong> Boeing simulates 10,000 flight cycles on a new airframe design before cutting the first piece of metal. Each run varies material properties, load conditions, and environmental factors to build a failure probability distribution.</div></div>
+          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Physics-based models predict component failure from degradation curves, not reactive sensor thresholds.</strong> GE Aviation's twin for jet engines detects bearing wear 2,000 hours before failure by modeling metal fatigue accumulation. Scheduled maintenance replaces the part during a planned downtime window.</div></div>
+          <div class="st"><span class="st-v am">Supply chain</span><div class="st-t"><strong>Retail and logistics companies run inventory twins that simulate demand shocks in real time.</strong> When a Suez Canal blockage was announced in 2021, companies with supply chain twins rerouted orders within hours by simulating alternate routing costs across their digital supplier network.</div></div>
+          <div class="st"><span class="st-v id">Urban twins</span><div class="st-t"><strong>Cities build digital twins of their entire infrastructure.</strong> Singapore's Virtual Singapore models every building, road, and utility line at centimeter precision. Urban planners simulate flood impact, solar panel placement efficiency, and emergency vehicle routing before any physical change is made.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="am">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v tl">NVIDIA Omniverse</span><div class="st-t"><strong>Real-time 3D simulation platform for industrial digital twins at scale.</strong> BMW uses Omniverse to simulate entire factory layouts before physical construction. The BMW Munich plant was planned completely in Omniverse and then physically built, saving months of rework.</div></div>
+          <div class="st"><span class="st-v id">Siemens</span><div class="st-t"><strong>Siemens MindSphere connects industrial equipment to digital twins running in the Azure cloud.</strong> Siemens uses its own technology: the Amberg factory in Germany has a digital twin of every machine. Defect rate is 12 per million units, among the lowest in the world, enabled by real-time twin simulation.</div></div>
+          <div class="st"><span class="st-v am">GE Aviation</span><div class="st-t"><strong>Every GE jet engine shipped since 2016 has a digital twin tracking its specific flight history.</strong> The twin accumulates cycle counts, temperature excursions, and vibration signatures unique to that engine serial number. Maintenance decisions are made from the twin's degradation model, not generic schedules.</div></div>
+          <div class="st"><span class="st-v tl">Ping An Smart City</span><div class="st-t"><strong>Built digital twins of Shenzhen and 22 other Chinese cities.</strong> The urban twins run real-time traffic simulations to optimize signal timing. Emergency response routes are recomputed every 30 seconds based on live incident data from the physical twin.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="tl">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v tl">Digital twin</span><div class="st-t"><strong>A continuously synchronized virtual model of a physical asset or system.</strong> Sensor streams keep the model current. The model runs simulations, detects anomalies, and predicts failures before they occur in the physical world.</div></div>
+          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The simulation engine inside a digital twin, running finite element analysis or CFD.</strong> Predicts behavior under conditions not yet observed by sensors. Drives failure probability estimates from material science principles rather than statistical thresholds.</div></div>
+          <div class="st"><span class="st-v am">OPC-UA</span><div class="st-t"><strong>Open Platform Communications Unified Architecture: the standard industrial IoT messaging protocol.</strong> Replaces dozens of proprietary PLC communication protocols. All major industrial equipment vendors ship OPC-UA endpoints since 2018, enabling plug-and-play sensor data collection.</div></div>
+          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Maintenance scheduled by degradation model prediction rather than fixed intervals or reactive failure.</strong> GE Aviation's jet engine twins detect bearing wear 2,000 flight hours before failure. Unplanned engine-out events cost airlines $50,000-$500,000 per incident.</div></div>
+          <div class="st"><span class="st-v id">NVIDIA Omniverse</span><div class="st-t"><strong>GPU-accelerated 3D simulation platform for industrial digital twins.</strong> Built on Universal Scene Description (USD). BMW, Mercedes, and Foxconn use Omniverse for factory planning and robot training in simulation before physical deployment.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Before Boeing cuts a single piece of metal for a new airframe, they have already simulated 10,000 flight cycles on it. That is what digital twins make possible.
+
+A digital twin is a continuously synchronized virtual model of a physical asset or system. Sensors stream real-time telemetry from the physical object to the digital counterpart, keeping them in sync. The digital model is not a static CAD file. It is a living simulation that reflects the current state of the physical asset and can predict its future behavior.
+
+NASA pioneered the concept for the Apollo program in 1969, maintaining physical replicas of spacecraft systems at Mission Control to simulate failure scenarios during flights. Michael Grieves formalized the concept in 2002 as part of product lifecycle management research. The difference today is that IoT sensors, edge computing, and cloud simulation platforms have made the approach economically feasible at industrial scale.
+
+A jet engine has 5,000 sensors. A wind turbine has 500. A factory production line has 50,000 data points across all equipment. OPC-UA is the industrial standard protocol that lets all this equipment speak a common language to the data pipeline. Apache Kafka handles the streaming layer. Physics models run finite element analysis and computational fluid dynamics to predict behavior from material science principles, not just statistical thresholds.
+
+GE Aviation ships every jet engine since 2016 with a digital twin that accumulates the specific flight history of that engine serial number. Bearing wear is detected 2,000 flight hours before failure. BMW planned the entire layout of its Munich factory in NVIDIA Omniverse before construction began. Singapore's Virtual Singapore models every building and utility line at centimeter precision, allowing urban planners to simulate flood impact before spending a dollar on physical infrastructure.
+
+Swipe to see the sensor pipeline, the prediction loop in code, and the major production deployments shaping this technology.
+
+#digitaltwin #iiot #simulation #manufacturing #smartcity #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0c1414',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'digitwin-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'digitwin-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

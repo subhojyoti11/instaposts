@@ -161,10 +161,10 @@
         <h2>Tokenization<br>and <span class="bl">Compression</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v bl">BPE</span><div class="st-t"><strong>Byte-Pair Encoding builds a vocabulary by iteratively merging the most frequent symbol pairs in the training corpus.</strong> Common words become single tokens. Rare words are split into subword units, balancing vocabulary size against coverage.</div></div>
-          <div class="st"><span class="st-v em">Compression view</span><div class="st-t"><strong>A lower-perplexity model is a better compressor of text.</strong> Researchers have shown that LLM loss directly corresponds to compression ratio on a lossless compressor benchmark. Better language modeling equals better compression.</div></div>
-          <div class="st"><span class="st-v rd">Token cost</span><div class="st-t"><strong>Information-dense text uses fewer tokens per unit of meaning.</strong> Python code tokenizes more efficiently than English prose of equivalent semantic content. Token count drives both latency and API cost in production deployments.</div></div>
-          <div class="st"><span class="st-v bl">Mutual info</span><div class="st-t"><strong>Attention heads in transformers can be interpreted as maximizing mutual information between token positions.</strong> Heads that attend strongly to a distant token are capturing high mutual information between those two positions in the sequence.</div></div>
+          <div class="st"><span class="st-v bl">BPE</span><div class="st-t"><strong>Byte-Pair Encoding builds a vocabulary by merging the most frequent symbol pairs.</strong> Common words become single tokens. Rare words split into subword units.</div></div>
+          <div class="st"><span class="st-v em">Compression view</span><div class="st-t"><strong>A lower-perplexity model is a better compressor.</strong> LLM loss directly corresponds to compression ratio on benchmarks. Better language modeling equals better compression.</div></div>
+          <div class="st"><span class="st-v rd">Token cost</span><div class="st-t"><strong>Information-dense text uses fewer tokens per unit of meaning.</strong> Python code tokenizes more efficiently than English prose. Token count drives both latency and API cost.</div></div>
+          <div class="st"><span class="st-v bl">Mutual info</span><div class="st-t"><strong>Attention heads can be interpreted as maximizing mutual information between token positions.</strong> Strong attention to a distant token signals high mutual information between those positions.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -178,11 +178,11 @@
         <h2>Quick<br><span class="bl">Reference.</span></h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v bl">Entropy</span><div class="st-t"><strong>Average uncertainty in a probability distribution, measured in bits.</strong> High entropy means many equally likely outcomes. Low entropy means a dominant outcome. Context reduces entropy in language generation.</div></div>
-          <div class="st"><span class="st-v em">Cross-entropy loss</span><div class="st-t"><strong>The training objective for LLMs.</strong> Measures the gap between the model's predicted token distribution and the true next token. Minimizing it forces the model to assign high probability to correct tokens.</div></div>
-          <div class="st"><span class="st-v rd">Perplexity</span><div class="st-t"><strong>Exponentiated average loss.</strong> Represents the effective branching factor at each token. Lower is better. Modern LLMs score below human perplexity on held-out text benchmarks, though this does not imply understanding.</div></div>
-          <div class="st"><span class="st-v bl">KL divergence</span><div class="st-t"><strong>Measures difference between two probability distributions in bits.</strong> Used in RLHF as a penalty to prevent the fine-tuned policy from drifting too far from the base model during reward optimization.</div></div>
-          <div class="st"><span class="st-v em">Temperature</span><div class="st-t"><strong>Scales logits before softmax to sharpen or flatten the output distribution.</strong> Low temperature: confident, deterministic outputs. High temperature: diverse, creative, more uncertain outputs with higher effective entropy.</div></div>
+          <div class="st"><span class="st-v bl">Entropy</span><div class="st-t"><strong>Average uncertainty in a distribution, measured in bits.</strong> High entropy means many equally likely outcomes. Context reduces entropy in language generation.</div></div>
+          <div class="st"><span class="st-v em">Cross-entropy loss</span><div class="st-t"><strong>The training objective for LLMs.</strong> Measures the gap between predicted and true next-token distributions. Minimizing it forces high probability on correct tokens.</div></div>
+          <div class="st"><span class="st-v rd">Perplexity</span><div class="st-t"><strong>Exponentiated average loss, representing the effective branching factor.</strong> Lower is better. Modern LLMs score below human perplexity on held-out benchmarks.</div></div>
+          <div class="st"><span class="st-v bl">KL divergence</span><div class="st-t"><strong>Measures difference between two probability distributions.</strong> Used in RLHF as a penalty to keep the fine-tuned policy close to the base model during optimization.</div></div>
+          <div class="st"><span class="st-v em">Temperature</span><div class="st-t"><strong>Scales logits before softmax to sharpen or flatten the output distribution.</strong> Low temperature gives deterministic outputs. High temperature gives diverse, uncertain outputs.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

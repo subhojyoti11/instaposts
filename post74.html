@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Computing and Shor's Algorithm, Post 74</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#07060e; --card:#100e1c; --ink:#f0eeff; --ink2:#a0a0a0; --dim:#6050a0; --violet:#7c3aed; --cyan:#06b6d4; --pink:#ec4899; --border:rgba(124,58,237,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .vt { color:var(--violet); } .slide h2 .cy { color:var(--cyan); } .slide h2 .pk { color:var(--pink); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--violet); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .vt { color:#a78bfa; } .code .cy { color:#67e8f9; } .code .pk { color:#f9a8d4; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.vt { color:var(--violet); } .st-v.cy { color:var(--cyan); } .st-v.pk { color:var(--pink); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.vt-c { background:rgba(124,58,237,.06); border:1px solid rgba(124,58,237,.15); }
+  .gcard.cy-c { background:rgba(6,182,212,.06); border:1px solid rgba(6,182,212,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(124,58,237,.2); color:var(--violet); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--violet); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--violet); color:var(--violet); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(124,58,237,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--violet); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--violet); color:var(--violet); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(240,238,255,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--violet); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(124,58,237,.2); color:var(--violet); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--violet); color:#fff; }
+  .copy-btn.copied { border-color:var(--cyan); color:var(--cyan); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="vt">Quantum</span><br>Computing.<br>Breaking<br><span class="cy">RSA</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Why <span class="cy">RSA</span><br>Feels Safe<br>Today.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">The problem</span><div class="st-t"><strong>RSA encryption is based on integer factorization.</strong> Given N = p x q where p and q are large primes, find p and q. Multiplying two 1,024-bit primes together takes microseconds. Factoring the result on classical hardware takes longer than the age of the universe.</div></div>
+          <div class="st"><span class="st-v vt">Classical hardness</span><div class="st-t"><strong>The best classical factoring algorithm is the General Number Field Sieve, running in sub-exponential time O(exp(n^(1/3))).</strong> A 2,048-bit RSA key would take a classical supercomputer roughly 300 trillion years to factor. Security comes entirely from this asymmetry.</div></div>
+          <div class="st"><span class="st-v pk">Internet dependency</span><div class="st-t"><strong>RSA and elliptic curve cryptography underpin TLS, SSH, PGP, code signing, and certificate authorities.</strong> Every HTTPS connection you make today is protected by the assumption that integer factorization is computationally infeasible. Shor's algorithm breaks that assumption.</div></div>
+          <div class="st"><span class="st-v cy">Harvest now</span><div class="st-t"><strong>Nation-state adversaries are harvesting encrypted traffic today to decrypt when quantum computers arrive.</strong> Long-lived secrets like government communications, medical records, and financial models need post-quantum protection now, not when quantum computers become available.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Qubits and<br><span class="vt">Superposition</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v vt">Classical bit</span><div class="st-t"><strong>A classical bit is either 0 or 1.</strong> A register of 3 bits holds exactly one of eight possible states at any given moment. To search all 8 states you run 8 separate computations sequentially.</div></div>
+          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>A qubit exists in a superposition of 0 and 1 simultaneously until measured.</strong> A register of 3 qubits exists in all 8 states at once. Operations on that register apply to all 8 states in parallel. This is quantum parallelism.</div></div>
+          <div class="st"><span class="st-v pk">Entanglement</span><div class="st-t"><strong>Two entangled qubits share a correlated quantum state regardless of physical distance.</strong> Measuring one instantly determines the other. Shor's algorithm uses entanglement to build a quantum Fourier transform that extracts the period of a function exponentially faster than any classical approach.</div></div>
+          <div class="st"><span class="st-v vt">Decoherence</span><div class="st-t"><strong>Qubits are fragile. Any interaction with the environment collapses the superposition.</strong> Google's Sycamore processor operates at 15 millikelvin, colder than outer space, to maintain coherence. Current quantum computers have error rates of 0.1-1% per gate, limiting useful circuit depth.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Shor's<br><span class="cy">Algorithm</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Shor's Algorithm to factor N:</span>
+<span class="dm"># Step 1: Classical - pick random a</span>
+a = random_coprime(N)    <span class="dm"># gcd(a,N) = 1</span>
+
+<span class="dm"># Step 2: Quantum - find period r of f(x) = a^x mod N</span>
+<span class="dm">#   f(x) is periodic: f(x) = f(x+r)</span>
+<span class="dm">#   QFT finds r in O(log N)^2 time</span>
+r = <span class="vt">quantum_period_finding</span>(a, N)
+
+<span class="dm"># Step 3: Classical - extract factors</span>
+if r % 2 == 0:
+    p = gcd(a**(r//2) - 1, N)
+    q = gcd(a**(r//2) + 1, N)
+    <span class="dm"># Done: N = p * q, RSA is broken</span>
+
+<span class="dm"># Classical: O(exp(n^1/3))  -> centuries</span>
+<span class="dm"># Quantum:   O((log N)^2)   -> hours</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="pk">Post-Quantum</span><br>Cryptography.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">NIST PQC</span><div class="st-t"><strong>In 2024 NIST finalized the first three post-quantum cryptography standards.</strong> ML-KEM (Kyber) for key encapsulation, ML-DSA (Dilithium) for digital signatures, and SLH-DSA (SPHINCS+) for hash-based signatures. All are based on mathematical problems believed hard for both classical and quantum computers.</div></div>
+          <div class="st"><span class="st-v vt">Lattice problems</span><div class="st-t"><strong>ML-KEM and ML-DSA are based on the hardness of the Learning With Errors problem over lattices.</strong> Given a lattice with small noise added to points, find the hidden structure. No efficient quantum algorithm for LWE is known. Key sizes are 2-4x larger than RSA equivalents.</div></div>
+          <div class="st"><span class="st-v cy">Migration timeline</span><div class="st-t"><strong>TLS 1.3 already supports hybrid classical/post-quantum key exchange.</strong> Chrome 124 ships X25519+Kyber768 by default. Google and Apple began migrating internal systems in 2022. NIST requires federal agencies to migrate to PQC by 2030.</div></div>
+          <div class="st"><span class="st-v pk">Cryptographically relevant</span><div class="st-t"><strong>A quantum computer capable of breaking RSA-2048 would need roughly 4,000 error-corrected logical qubits.</strong> Current machines have thousands of physical qubits but only tens of error-corrected logical qubits. Most estimates put a cryptographically relevant quantum computer 10-20 years away.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="cy">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v vt">Google</span><div class="st-t"><strong>Announced quantum supremacy in 2019 with 53-qubit Sycamore completing a sampling task in 200 seconds.</strong> 2024 Willow chip: 105 qubits with error correction improving as qubits scale. Below threshold for quantum error correction for the first time. Internal TLS already uses Kyber hybrid mode.</div></div>
+          <div class="st"><span class="st-v cy">IBM</span><div class="st-t"><strong>IBM Quantum roadmap targets 100,000 qubit systems by 2033.</strong> IBM Condor shipped 1,121 qubits in 2023. Focus on quantum error correction via the surface code. IBM Research partners include Boeing, ExxonMobil, and Cleveland Clinic for drug discovery and optimization.</div></div>
+          <div class="st"><span class="st-v pk">Signal / iMessage</span><div class="st-t"><strong>Signal Protocol added post-quantum key exchange via PQXDH in 2023.</strong> Apple iMessage added PQ3 using ML-KEM for forward secrecy in 2024. Both protect against harvest-now-decrypt-later attacks on long-term encrypted message archives.</div></div>
+          <div class="st"><span class="st-v vt">AWS</span><div class="st-t"><strong>AWS Certificate Manager supports hybrid TLS with ML-KEM.</strong> AWS Braket provides access to quantum processors from IonQ, Rigetti, and OQC. Amazon's own key management infrastructure began testing post-quantum algorithms internally in 2022.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="vt">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v vt">Shor's algorithm</span><div class="st-t"><strong>Quantum algorithm for integer factorization running in O((log N)^2) time.</strong> Published by Peter Shor in 1994. Would factor RSA-2048 in hours given a large enough error-corrected quantum computer, versus centuries for classical algorithms.</div></div>
+          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>Quantum bit that exists in superposition of 0 and 1 until measured.</strong> N qubits represent 2^N states simultaneously. Decoherence from environmental interaction collapses superposition. Current error rates of 0.1-1% per gate limit useful circuit depth.</div></div>
+          <div class="st"><span class="st-v pk">QFT</span><div class="st-t"><strong>Quantum Fourier Transform: the key subroutine in Shor's algorithm.</strong> Finds the period of the modular exponentiation function exponentially faster than the classical FFT. This period reveals the prime factors of N.</div></div>
+          <div class="st"><span class="st-v vt">ML-KEM</span><div class="st-t"><strong>Module Lattice Key Encapsulation Mechanism, formerly Kyber.</strong> NIST's primary post-quantum key exchange standard, finalized 2024. Based on Learning With Errors hardness over lattices. Chrome 124 uses X25519+ML-KEM768 hybrid by default for all TLS connections.</div></div>
+          <div class="st"><span class="st-v cy">Harvest-now</span><div class="st-t"><strong>Nation-state strategy of recording encrypted traffic today to decrypt after quantum computers mature.</strong> Long-lived secrets need PQC protection now. NIST requires federal agencies to complete migration by 2030.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Every HTTPS connection you make depends on a 30-year-old bet that factoring large numbers is hard. Quantum computing is about to collect on that bet.
+
+RSA encryption is based on integer factorization. Given a number N that is the product of two large primes, find those primes. Multiplying two 1,024-bit primes together takes microseconds. Factoring the result on classical hardware takes the General Number Field Sieve algorithm longer than the age of the universe. The entire security of TLS, SSH, PGP, and code signing rests on this asymmetry.
+
+Shor's algorithm, published by Peter Shor in 1994, eliminates that asymmetry. The algorithm reduces factoring to finding the period of a modular exponentiation function. Classical period finding is exponentially hard. The Quantum Fourier Transform finds that period in O((log N)^2) time by exploiting quantum parallelism. A qubit in superposition holds 0 and 1 simultaneously. A register of N qubits holds 2^N states at once. The QFT operates on all states in parallel. The period emerges, the factors follow, RSA falls.
+
+The practical obstacle is decoherence. Qubits collapse from noise at error rates of 0.1-1% per gate. Breaking RSA-2048 requires roughly 4,000 error-corrected logical qubits. Current machines have thousands of physical qubits but only tens of error-corrected logical ones. Cryptographically relevant quantum computers are 10-20 years away by most estimates.
+
+The problem is harvest-now-decrypt-later. Nation-state adversaries are recording encrypted traffic today. Long-lived government communications, medical records, and financial contracts need post-quantum protection immediately, not when the threat materializes. NIST finalized three post-quantum standards in 2024: ML-KEM for key encapsulation, ML-DSA for signatures, and SLH-DSA for hash-based signatures. Chrome 124 already uses ML-KEM hybrid mode for all TLS connections. Signal and iMessage added post-quantum key exchange in 2023 and 2024 respectively.
+
+Swipe to see how Shor's algorithm works, what superposition and entanglement actually mean, and where major deployments stand today.
+
+#quantumcomputing #cryptography #postquantum #rsa #cybersecurity #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#100e1c',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'quantum-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'quantum-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

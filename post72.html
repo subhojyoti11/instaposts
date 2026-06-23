@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge Computing vs Cloud, Post 72</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#060a10; --card:#0d1220; --ink:#dce8ff; --ink2:#a0a0a0; --dim:#607090; --blue:#3b82f6; --orange:#f97316; --teal:#14b8a6; --border:rgba(59,130,246,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .bl { color:var(--blue); } .slide h2 .or { color:var(--orange); } .slide h2 .tl { color:var(--teal); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--blue); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .bl { color:#93c5fd; } .code .or { color:#fdba74; } .code .tl { color:#5eead4; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.bl { color:var(--blue); } .st-v.or { color:var(--orange); } .st-v.tl { color:var(--teal); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.bl-c { background:rgba(59,130,246,.06); border:1px solid rgba(59,130,246,.15); }
+  .gcard.or-c { background:rgba(249,115,22,.06); border:1px solid rgba(249,115,22,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(59,130,246,.2); color:var(--blue); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--blue); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--blue); color:var(--blue); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(59,130,246,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--blue); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--blue); color:var(--blue); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(220,232,255,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--blue); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(59,130,246,.2); color:var(--blue); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--blue); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--teal); color:var(--teal); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="bl">Edge</span><br>Computing.<br>Process<br><span class="or">Where</span><br><span class="tl">Data Lives</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="or">Latency</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v or">Speed of light</span><div class="st-t"><strong>Light travels at roughly 200,000 km/s through fiber optic cable after accounting for refraction.</strong> A user in Sydney to a server in us-east-1 covers 16,000km. The round-trip is at minimum 160ms, before any queuing or processing.</div></div>
+          <div class="st"><span class="st-v bl">Real world</span><div class="st-t"><strong>Sydney to us-east-1 actual p50 latency is 250-350ms.</strong> For real-time voice AI, autonomous vehicle control, and industrial automation, this is unusable. You cannot drive a robot arm with 300ms of round-trip lag.</div></div>
+          <div class="st"><span class="st-v tl">Bandwidth cost</span><div class="st-t"><strong>A single 4K camera generates 25 Mbps of continuous data.</strong> A factory with 200 cameras produces 5 Gbps. Sending all of it to the cloud for processing costs thousands of dollars per month in egress fees before any compute.</div></div>
+          <div class="st"><span class="st-v or">Compliance</span><div class="st-t"><strong>GDPR and data sovereignty laws restrict which countries user data can transit.</strong> A German manufacturer cannot legally send production floor video to a US data center without violating EU data residency requirements. Edge processing keeps data local.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="bl">Edge</span><br>Computing<br>Actually Is.</h2>
+        <div style="height:10px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Definition</span><div class="st-t"><strong>Processing data at or near its source instead of sending it to a centralized data center.</strong> The "edge" is any compute that sits closer to the user or device than a cloud region: CDN PoPs, 5G base stations, factory gateways, retail devices.</div></div>
+          <div class="st"><span class="st-v or">Near-edge</span><div class="st-t"><strong>CDN edge nodes run request filtering, auth, and personalization without touching the origin.</strong> Cloudflare Workers and Lambda@Edge execute code at 300+ global locations. Sub-10ms latency for users regardless of where the origin server lives.</div></div>
+          <div class="st"><span class="st-v tl">Far-edge</span><div class="st-t"><strong>On-premises gateways at factories, retail stores, and hospitals pre-process sensor data locally.</strong> AWS Outposts, Azure Stack Edge, and NVIDIA Jetson run inference workloads at the device. Only aggregated results or anomalies are sent to the cloud.</div></div>
+          <div class="st"><span class="st-v bl">5G MEC</span><div class="st-t"><strong>Mobile Edge Computing runs compute directly inside 5G base station infrastructure.</strong> AWS Wavelength and Azure Edge Zones embed cloud services in telecom data centers. Applications reach 5G users with single-digit millisecond latency.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>An <span class="tl">Edge</span><br>Function<br>Pattern.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm">// Cloudflare Worker: auth at the edge</span>
+<span class="dm">// Runs at 300+ locations, no round-trip to origin</span>
+export default {
+  async fetch(request, env) {
+    const token = request.headers.get(<span class="bl">'Authorization'</span>);
+
+    <span class="dm">// Verify JWT at the edge, not at origin</span>
+    const valid = await <span class="tl">verifyJWT</span>(token, env.<span class="or">JWT_SECRET</span>);
+    if (!valid) {
+      return new Response(<span class="bl">'Unauthorized'</span>, { status: 401 });
+    }
+
+    <span class="dm">// Only valid requests reach origin server</span>
+    return fetch(request);
+  }
+}
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="or">Trade-offs</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Edge wins</span><div class="st-t"><strong>Latency, bandwidth cost, offline operation, and data sovereignty.</strong> A factory line must continue functioning when the WAN link drops. An autonomous vehicle cannot wait for a round-trip to make a braking decision. Edge makes these possible.</div></div>
+          <div class="st"><span class="st-v or">Cloud wins</span><div class="st-t"><strong>Scale, complex ML training, global aggregation, and operational simplicity.</strong> Training a model on petabytes of sensor data from 10,000 factories requires centralized compute. The cloud is still the right place for heavy analytical workloads.</div></div>
+          <div class="st"><span class="st-v tl">Complexity cost</span><div class="st-t"><strong>Edge computing multiplies your operational surface area.</strong> Instead of one cloud region, you manage hundreds or thousands of edge nodes with inconsistent hardware, unreliable network links, and limited remote debugging capability. This cost is real.</div></div>
+          <div class="st"><span class="st-v bl">The model</span><div class="st-t"><strong>Most successful architectures use both.</strong> Edge handles real-time inference, anomaly detection, and compliance. Cloud handles model training, historical analytics, and long-term storage. Data flows one-way from edge to cloud for aggregation.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="tl">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Tesla</span><div class="st-t"><strong>Each Tesla vehicle runs inference on 8 custom FSD chips generating 72 TOPS.</strong> Vision, path planning, and control decisions are made onboard. Fleet telemetry is sent to the cloud for training, but no vehicle requires cloud connectivity to drive.</div></div>
+          <div class="st"><span class="st-v or">Amazon Go</span><div class="st-t"><strong>Hundreds of cameras per store feed local GPU servers running computer vision inference.</strong> Walk in, grab items, walk out. Item detection and checkout happen at the store edge. Transaction records sync to the cloud after the customer leaves.</div></div>
+          <div class="st"><span class="st-v tl">AWS Outposts</span><div class="st-t"><strong>Physical AWS racks deployed in customer data centers, running the same APIs as us-east-1.</strong> Goldman Sachs runs Outposts inside their trading floors for sub-millisecond order routing that cannot tolerate public internet latency.</div></div>
+          <div class="st"><span class="st-v bl">Siemens</span><div class="st-t"><strong>Siemens Industrial Edge runs ML inference on manufacturing lines using NVIDIA Jetson hardware.</strong> Defect detection models process camera streams locally. Only defect images and aggregated quality metrics are uploaded to MindSphere, their cloud IoT platform.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="bl">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Edge computing</span><div class="st-t"><strong>Processing data at or near its source rather than in a centralized cloud region.</strong> The edge ranges from CDN PoPs and 5G base stations to factory gateways and IoT devices.</div></div>
+          <div class="st"><span class="st-v or">MEC</span><div class="st-t"><strong>Multi-access Edge Computing: compute embedded in telecom infrastructure.</strong> AWS Wavelength and Azure Edge Zones run inside carrier data centers. Applications reach 5G users in single-digit milliseconds from the nearest base station.</div></div>
+          <div class="st"><span class="st-v tl">CDN edge</span><div class="st-t"><strong>Code running at CDN Points of Presence, 10ms from most users worldwide.</strong> Cloudflare Workers, Lambda@Edge, and Fastly Compute handle auth, A/B testing, and personalization without reaching the origin server.</div></div>
+          <div class="st"><span class="st-v bl">Far edge</span><div class="st-t"><strong>On-premises hardware at factories, hospitals, and retail stores.</strong> AWS Outposts, Azure Stack Edge, and NVIDIA Jetson run inference workloads locally. Only results and anomalies are forwarded to the cloud for aggregation and training.</div></div>
+          <div class="st"><span class="st-v or">Latency floor</span><div class="st-t"><strong>Light travels 200,000 km/s through fiber.</strong> A Sydney to us-east-1 round trip is at minimum 160ms. Processing on an edge server within 50km of the user brings this under 1ms, which is the boundary for real-time control systems.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Cloud computing solved the problem of where to run software. Edge computing solves the problem that cloud's answer was wrong for a large class of problems.
+
+Light travels at roughly 200,000 km/s through fiber optic cable. A user in Sydney requesting data from a server in us-east-1 faces a minimum 160ms round-trip just from physics, before any queuing or processing overhead. Real-world p50 latency is 250-350ms. For autonomous vehicles, robotic surgery, industrial automation, and real-time voice AI, this delay is not acceptable. You cannot drive a robot arm on a 300ms round-trip.
+
+Bandwidth economics create a second forcing function. A single 4K camera generates 25 Mbps continuously. A factory with 200 cameras produces 5 Gbps of raw video data. Sending all of it to the cloud costs thousands of dollars per month in egress fees before any compute charges. Processing locally and sending only anomalies and aggregates cuts that cost by 95%.
+
+The edge is not one thing. CDN edge nodes at Cloudflare and Fastly sit within 10ms of most users worldwide and run auth, A/B testing, and personalization without touching the origin server. 5G Multi-access Edge Computing embeds AWS Wavelength and Azure Edge Zones directly inside carrier infrastructure for single-digit millisecond application latency. Far edge devices like NVIDIA Jetson and AWS Outposts run inference on factory floors, keeping production data inside the facility entirely.
+
+The successful architecture uses both. Tesla runs onboard inference for driving decisions and uploads telemetry to the cloud for model training. Siemens runs defect detection at the factory edge and aggregates quality metrics in MindSphere. Goldman Sachs runs AWS Outposts inside trading floors for sub-millisecond order routing.
+
+Swipe to see a Cloudflare Worker doing JWT auth at the edge, the latency numbers, and the trade-offs between edge and cloud approaches.
+
+#edgecomputing #cloudcomputing #cloudflare #5g #iot #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0d1220',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'edge-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'edge-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

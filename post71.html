@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebAssembly Beyond the Browser, Post 71</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#08060f; --card:#110e1a; --ink:#ede9ff; --ink2:#a0a0a0; --dim:#7060a0; --purple:#9333ea; --cyan:#0ea5e9; --yellow:#eab308; --border:rgba(147,51,234,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .pu { color:var(--purple); } .slide h2 .cy { color:var(--cyan); } .slide h2 .yl { color:var(--yellow); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--purple); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .pu { color:#c084fc; } .code .cy { color:#38bdf8; } .code .yl { color:#fde047; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.pu { color:var(--purple); } .st-v.cy { color:var(--cyan); } .st-v.yl { color:var(--yellow); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.pu-c { background:rgba(147,51,234,.06); border:1px solid rgba(147,51,234,.15); }
+  .gcard.cy-c { background:rgba(14,165,233,.06); border:1px solid rgba(14,165,233,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(147,51,234,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--purple); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--purple); color:var(--purple); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(147,51,234,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--purple); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--purple); color:var(--purple); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(237,233,255,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--purple); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(147,51,234,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--purple); color:#fff; }
+  .copy-btn.copied { border-color:var(--cyan); color:var(--cyan); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="pu">WebAssembly</span><br>Beyond<br>the<br><span class="cy">Browser</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="pu">Wasm</span><br>Actually Is.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Not JavaScript</span><div class="st-t"><strong>WebAssembly is a binary instruction format for a stack-based virtual machine.</strong> It is a compilation target, not a language. You write C, C++, Rust, or Go and compile to a .wasm file that runs at near-native speed.</div></div>
+          <div class="st"><span class="st-v cy">The runtime</span><div class="st-t"><strong>A Wasm module runs inside a deterministic, sandboxed virtual machine.</strong> The sandbox has no default access to the filesystem, network, or system calls. Capabilities must be explicitly granted through WASI, the WebAssembly System Interface.</div></div>
+          <div class="st"><span class="st-v yl">WASI</span><div class="st-t"><strong>WebAssembly System Interface defines a standard set of POSIX-like syscalls for Wasm modules outside the browser.</strong> File access, networking, and clocks are all opt-in capabilities. A module that does not need the network cannot touch it.</div></div>
+          <div class="st"><span class="st-v pu">Speed</span><div class="st-t"><strong>Wasm compiles ahead-of-time via Wasmtime, WasmEdge, or V8 and runs at 70-90% of native C speed.</strong> Startup time is microseconds, not the hundreds of milliseconds a container cold start takes. This gap matters enormously at the edge.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="cy">Wasm</span> vs<br>Docker.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v cy">Cold start</span><div class="st-t"><strong>Docker: 50-500ms to pull image layers, start the daemon, and run an init process.</strong> Wasm: sub-millisecond. The Wasm binary loads directly into the runtime with no OS process overhead, no image layers, no init system.</div></div>
+          <div class="st"><span class="st-v pu">Image size</span><div class="st-t"><strong>A minimal Docker image is 5-50MB.</strong> A compiled Wasm module for the same function is typically 1-3MB. No OS, no package manager, no libc layers. Just the compiled application code and its dependencies.</div></div>
+          <div class="st"><span class="st-v yl">Portability</span><div class="st-t"><strong>Docker images are architecture-specific: linux/amd64 or linux/arm64.</strong> A .wasm binary runs identically on x86, ARM, RISC-V, or any platform with a Wasm runtime. One build, truly every target.</div></div>
+          <div class="st"><span class="st-v cy">Security</span><div class="st-t"><strong>Docker's sandbox is at the OS level, sharing the host kernel.</strong> Wasm's sandbox is at the instruction level. A compromised Wasm module cannot call any syscall not explicitly granted. The attack surface is dramatically smaller.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Running <span class="cy">Wasm</span><br>Server-Side.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Compile Rust to Wasm (WASI target)</span>
+cargo build --target wasm32-wasi --release
+
+<span class="dm"># Run with Wasmtime (near-native speed)</span>
+wasmtime <span class="pu">target/wasm32-wasi/release/app.wasm</span> \
+  --dir=<span class="cy">./data</span> \       <span class="dm"># grant filesystem access</span>
+  --env=<span class="yl">PORT=8080</span>      <span class="dm"># explicit capabilities only</span>
+
+<span class="dm"># Deploy to Cloudflare Workers (Wasm runtime)</span>
+wrangler publish    <span class="dm"># 300+ edge locations, sub-ms cold start</span>
+
+<span class="dm"># Docker comparison: same app</span>
+docker run -p 8080:8080 my-app  <span class="dm"># ~200ms cold start, 50MB image</span>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Where <span class="pu">Wasm</span><br>Wins.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Edge functions</span><div class="st-t"><strong>Cloudflare Workers and Fastly Compute run Wasm at 300+ locations worldwide.</strong> A request is handled within 10ms of the user at the nearest PoP. Traditional cloud functions in us-east-1 add 100-300ms of round-trip latency.</div></div>
+          <div class="st"><span class="st-v cy">Plugin systems</span><div class="st-t"><strong>Envoy and Kong run Wasm plugins inside the proxy process for zero-copy request filtering.</strong> Users upload a Wasm module that intercepts HTTP traffic. The sandbox prevents any plugin from accessing other tenants' data on the same proxy.</div></div>
+          <div class="st"><span class="st-v yl">Embedded / IoT</span><div class="st-t"><strong>WasmEdge targets microcontrollers and constrained devices.</strong> A Wasm module for edge inference or protocol parsing runs identically from a Raspberry Pi to a server without recompilation. The runtime footprint is under 1MB.</div></div>
+          <div class="st"><span class="st-v pu">Serverless cold starts</span><div class="st-t"><strong>Wasm component model separates compile time from instantiation time.</strong> Pre-compiled Wasm modules instantiate in under 1ms. AWS Lambda SnapStart solves cold starts for JVM functions with 10x more operational complexity than a Wasm runtime achieves natively.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="cy">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Cloudflare Workers</span><div class="st-t"><strong>Over 3 million developers deploy Wasm and JavaScript workers at the edge.</strong> Workers run on the V8 Wasm runtime at 300+ locations. No cold start problem. Used by Shopify for storefront request routing and Zendesk for bot filtering.</div></div>
+          <div class="st"><span class="st-v cy">Fastly Compute</span><div class="st-t"><strong>Fastly's edge computing platform runs Wasm exclusively.</strong> Each request handler is isolated in a fresh Wasm instance in under 50 microseconds. Used by Wikimedia for real-time origin shield and content negotiation at the CDN layer.</div></div>
+          <div class="st"><span class="st-v yl">Fermyon Spin</span><div class="st-t"><strong>Open-source microservices framework built on Wasm components.</strong> Spin apps compile to Wasm and deploy to Fermyon Cloud or self-hosted Kubernetes clusters. Competing with AWS Lambda for function-as-a-service workloads using Wasmtime as the runtime.</div></div>
+          <div class="st"><span class="st-v pu">Envoy proxy</span><div class="st-t"><strong>The standard sidecar for Istio and AWS App Mesh supports Wasm plugins.</strong> Auth, rate limiting, and request transformation logic ships as a Wasm module loaded at runtime. Istio 1.9 shipped first-class Wasm extension support.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="pu">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Wasm</span><div class="st-t"><strong>Binary instruction format for a portable, sandboxed virtual machine.</strong> Compiles from C, C++, Rust, and Go. Runs at 70-90% of native C speed. One binary runs on any platform with a Wasm runtime.</div></div>
+          <div class="st"><span class="st-v cy">WASI</span><div class="st-t"><strong>WebAssembly System Interface: standard syscall API for Wasm outside the browser.</strong> Filesystem, network, and clock access are opt-in capabilities. A module that does not request network access cannot make network calls.</div></div>
+          <div class="st"><span class="st-v yl">Wasmtime</span><div class="st-t"><strong>Bytecode Alliance's production Wasm runtime, written in Rust.</strong> Used by Fastly Compute and Fermyon Spin. Ahead-of-time compiles Wasm to native code before the request arrives. Module instantiation under 1ms.</div></div>
+          <div class="st"><span class="st-v pu">Component model</span><div class="st-t"><strong>Wasm component model separates compilation from instantiation.</strong> Modules declare explicit interfaces using WIT (Wasm Interface Types). Enables composition of Wasm modules from different languages without shared memory risks.</div></div>
+          <div class="st"><span class="st-v cy">vs Docker</span><div class="st-t"><strong>Wasm wins on startup time (microseconds vs hundreds of ms), image size (1MB vs 50MB+), and sandbox isolation.</strong> Docker wins on ecosystem maturity, tooling, and support for long-running stateful processes that need full OS access.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">WebAssembly was designed for the browser. The most interesting things happening with it are nowhere near a browser.
+
+WebAssembly is a binary instruction format for a sandboxed, deterministic virtual machine. It is not a language but a compilation target. You write Rust, C, C++, or Go and compile to a .wasm file that runs at 70-90% of native C speed. The sandbox has no default access to the filesystem, network, or any system resources. Capabilities must be explicitly granted through WASI, the WebAssembly System Interface, at startup.
+
+This capability model is what makes Wasm interesting outside the browser. Docker's sandbox is at the OS level and shares the host kernel. Wasm's sandbox is at the instruction level. A compromised Wasm module cannot call any syscall that was not explicitly granted. The attack surface shrinks dramatically. And because there is no OS, no package manager, no init system, and no image layers, a Wasm binary is typically 1-3MB versus 50MB for the equivalent Docker image.
+
+The startup time difference is the decisive factor for edge computing. Docker containers take 50-500ms to cold start. A Wasm module instantiates in under 1ms because a pre-compiled native binary loads directly into the runtime. Cloudflare Workers serves over 3 million developers on this property. Fastly Compute isolates each HTTP request in a fresh Wasm instance in under 50 microseconds. The round-trip to us-east-1 for a serverless function adds 100-300ms that Wasm at the nearest edge point of presence eliminates entirely.
+
+The component model, currently shipping across major runtimes, separates compilation from instantiation and defines typed interfaces between Wasm modules using WIT, the Wasm Interface Type system. Modules compiled from different languages compose without shared memory risks.
+
+Swipe to see the compile and deploy workflow, how Wasm compares to Docker in concrete numbers, and where the major production deployments are today.
+
+#webassembly #wasm #edgecomputing #cloudflare #serverless #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#110e1a',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'wasm-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'wasm-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

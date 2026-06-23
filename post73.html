@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serverless Cold Starts, Post 73</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#fffbf0; --card:#ffffff; --ink:#1a1400; --ink2:#5c4d1a; --dim:#9c8a50; --amber:#d97706; --blue:#2563eb; --rose:#e11d48; --border:rgba(217,119,6,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); box-shadow:0 4px 28px rgba(217,119,6,.04); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Outfit',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .am { color:var(--amber); } .slide h2 .bl { color:var(--blue); } .slide h2 .ro { color:var(--rose); }
+  .ftr { flex-shrink:0; padding:8px 24px 14px 26px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--amber); }
+  .code { background:#fffbea; border:1px solid rgba(217,119,6,.15); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .am { color:#92400e; } .code .bl { color:#1d4ed8; } .code .ro { color:#9f1239; } .code .dm { color:var(--dim); }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.am { color:var(--amber); } .st-v.bl { color:var(--blue); } .st-v.ro { color:var(--rose); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.am-c { background:rgba(217,119,6,.04); border:1px solid rgba(217,119,6,.12); }
+  .gcard.bl-c { background:rgba(37,99,235,.04); border:1px solid rgba(37,99,235,.12); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(217,119,6,.2); color:var(--amber); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--amber); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--amber); color:var(--amber); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(217,119,6,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--amber); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--amber); color:var(--amber); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(26,20,0,.08); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--amber); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 4px 28px rgba(217,119,6,.04); }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(217,119,6,.2); color:var(--amber); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--amber); color:#fff; }
+  .copy-btn.copied { border-color:var(--blue); color:var(--blue); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="am">Serverless</span><br>Cold Starts.<br>The Hidden<br><span class="bl">Cost</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="am">Cold Start</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">What happens</span><div class="st-t"><strong>When no instance of your Lambda function is already running, AWS must provision a new execution environment from scratch.</strong> This initialization work happens before your code runs and adds latency invisible to your application timer.</div></div>
+          <div class="st"><span class="st-v bl">The numbers</span><div class="st-t"><strong>Cold start latency varies massively by runtime.</strong> Go and Rust: 50-100ms. Node.js: 100-250ms. Python: 100-300ms. Java with Spring Boot: 2,000-10,000ms. The JVM's class loading and dependency injection is catastrophic for serverless.</div></div>
+          <div class="st"><span class="st-v ro">When it happens</span><div class="st-t"><strong>Cold starts occur when a function receives its first invocation, after it scales up to handle a traffic spike, or after 15 minutes of idle time.</strong> Low-traffic APIs, cron jobs, and bursty batch processes are most affected.</div></div>
+          <div class="st"><span class="st-v am">User impact</span><div class="st-t"><strong>A cold start adds imperceptible 50ms for a Go function and catastrophic 8 seconds for a Spring Boot service.</strong> For p99 latency SLOs, a single cold-started request can blow your budget on a low-traffic endpoint.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What Happens<br>Inside a<br><span class="bl">Cold Start</span>.</h2>
+        <div style="height:10px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">Init 1</span><div class="st-t"><strong>Execution environment provisioning.</strong> AWS allocates a Firecracker microVM, loads the Lambda worker process, and mounts the container image from the Lambda service layer. For a 50MB image this alone takes 50-150ms.</div></div>
+          <div class="st"><span class="st-v am">Init 2</span><div class="st-t"><strong>Runtime startup.</strong> The language runtime initializes: Python interpreter loads, Node.js V8 engine starts, or the JVM launches and loads its bytecode verifier and JIT compiler. This is where Java pays its catastrophic overhead.</div></div>
+          <div class="st"><span class="st-v ro">Init 3</span><div class="st-t"><strong>Handler initialization code runs.</strong> Your imports, global variables, SDK clients, and database connection pools all initialize. Code outside your handler function runs once per cold start. Poorly designed handlers import everything at module level, paying the cost every time.</div></div>
+          <div class="st"><span class="st-v bl">Warm</span><div class="st-t"><strong>Subsequent requests reuse the same execution environment.</strong> AWS keeps the microVM alive for up to 15 minutes of idle time. During this window, only your handler function runs. The microVM is reused, making warm invocations 10-100x faster than cold ones.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Lambda<br><span class="am">Init Phases</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Lambda execution lifecycle:</span>
+<span class="dm"># INIT phase (cold start only) --------</span>
+import boto3        <span class="dm"># slow: SDK init</span>
+import psycopg2     <span class="dm"># slow: db driver</span>
+
+<span class="am">db</span> = psycopg2.<span class="bl">connect</span>(os.environ[<span class="ro">'DB_URL'</span>])
+<span class="am">s3</span> = boto3.<span class="bl">client</span>(<span class="ro">'s3'</span>)
+<span class="dm"># above runs once per execution env</span>
+
+<span class="dm"># INVOKE phase (every request) --------</span>
+def <span class="bl">handler</span>(event, context):
+    <span class="dm"># reuses db + s3 from init phase</span>
+    rows = <span class="am">db</span>.execute(<span class="ro">"SELECT ..."</span>)
+    return {<span class="ro">'statusCode'</span>: 200, ...}
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="bl">SnapStart</span> and<br>Mitigation.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v bl">SnapStart</span><div class="st-t"><strong>AWS Lambda SnapStart publishes a snapshot of the initialized JVM execution environment.</strong> On first deploy, Lambda runs your init code and snapshots the memory state to S3. Subsequent cold starts restore from snapshot instead of re-initializing. Java cold starts drop from 8s to under 1s.</div></div>
+          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments continuously so they are always ready.</strong> Eliminates cold starts entirely for those instances. Costs roughly 2x the on-demand Lambda price for the pre-warmed capacity. Used for latency-sensitive customer-facing APIs.</div></div>
+          <div class="st"><span class="st-v ro">Optimize the runtime</span><div class="st-t"><strong>Switch from Java/Spring to GraalVM native image to eliminate JVM startup.</strong> Spring Boot with GraalVM native reduces cold starts from 8,000ms to 120ms. Go and Rust functions consistently cold-start under 100ms without any special configuration.</div></div>
+          <div class="st"><span class="st-v bl">Lazy loading</span><div class="st-t"><strong>Defer heavy imports inside the handler function, not at module level.</strong> Only import the SDK clients you actually need. Move database connections inside the handler but cache them as module-level globals after first use to reuse across warm invocations.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="am">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">Figma</span><div class="st-t"><strong>Migrated multiplayer server from Node.js Lambda to a long-running Rust service.</strong> The unpredictable cold start latency made the real-time collaboration experience unreliable. Serverless was the wrong model for persistent WebSocket connections requiring sub-10ms response.</div></div>
+          <div class="st"><span class="st-v bl">Datadog</span><div class="st-t"><strong>Built a Lambda layer that tracks cold start frequency and duration across customer functions.</strong> Their telemetry shows Java functions cold-start on average 1 in every 100 requests at typical Lambda concurrency. p99 latency is dominated by those cold starts.</div></div>
+          <div class="st"><span class="st-v ro">Netflix</span><div class="st-t"><strong>Uses Provisioned Concurrency on Lambda functions in the critical path for stream startup.</strong> The first 3 seconds of video playback must succeed for retention. Cold start variance in that path is unacceptable, so they pay for pre-warmed capacity on those specific endpoints.</div></div>
+          <div class="st"><span class="st-v am">Shopify</span><div class="st-t"><strong>Adopted WebAssembly for Shopify Functions instead of Lambda.</strong> Wasm modules cold-start in under 1ms inside Cloudflare's V8 isolates. Checkout customization logic that previously paid 200ms Lambda cold starts now executes in under 5ms total end-to-end.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="bl">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">Cold start</span><div class="st-t"><strong>Latency added when Lambda must provision a new execution environment before handling a request.</strong> Includes microVM creation, runtime startup, and handler init code. Does not count against your billed duration.</div></div>
+          <div class="st"><span class="st-v bl">Warm start</span><div class="st-t"><strong>Lambda reuses an existing execution environment, skipping all init phases.</strong> Only your handler function runs. Module-level globals persist across warm invocations, enabling connection reuse. Environments stay alive up to 15 minutes of idle time.</div></div>
+          <div class="st"><span class="st-v ro">SnapStart</span><div class="st-t"><strong>AWS feature for Java Lambda that snapshots the initialized JVM state after deployment.</strong> Subsequent cold starts restore from snapshot, reducing Java cold starts from 8,000ms to under 1,000ms without code changes.</div></div>
+          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments so requests always land on a warm instance.</strong> Costs roughly 2x on-demand Lambda pricing for the reserved capacity. Eliminates cold starts for latency-sensitive endpoints.</div></div>
+          <div class="st"><span class="st-v bl">Firecracker</span><div class="st-t"><strong>The microVM hypervisor powering AWS Lambda and AWS Fargate.</strong> Open-sourced by AWS in 2018. Boots a minimal kernel in under 125ms. Combines container-level startup speed with VM-level hardware isolation between tenant workloads.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">Serverless promises you only pay for what you use. The cold start is the thing you pay for that you did not ask for.
+
+When an AWS Lambda function receives a request and no warm execution environment exists, the service must provision a new one from scratch. A Firecracker microVM boots. The language runtime initializes. Your handler's imports and global initializers run. Only then does your actual code execute. None of this appears in your CloudWatch duration metric. The extra latency is invisible to your application but very visible to your users.
+
+The numbers vary dramatically by runtime. Go and Rust cold-start in 50-100ms. Node.js takes 100-250ms. Python is similar. Java with Spring Boot takes 2,000-10,000ms. The JVM's class loading, bytecode verification, and dependency injection framework initialization are catastrophically ill-suited to an environment that may have been idle for 15 minutes.
+
+The underlying infrastructure is Firecracker, the open-source microVM hypervisor AWS published in 2018. It powers both Lambda and Fargate. A Firecracker VM boots in under 125ms, which is why Lambda can provision environments at the speed it does. Subsequent requests reuse the same microVM until it has been idle for roughly 15 minutes.
+
+AWS SnapStart addresses the Java problem by snapshotting the initialized JVM state to S3 after deployment. Cold starts restore from that snapshot instead of re-initializing, dropping from 8 seconds to under 1 second without code changes. For teams that cannot move off Java, it is the most impactful option.
+
+For latency-sensitive critical paths, Provisioned Concurrency pre-warms N execution environments continuously. Netflix uses this for stream startup functions where cold start variance in the first 3 seconds of playback is unacceptable. Shopify avoided the problem entirely by moving checkout functions to Wasm on Cloudflare Workers, where cold starts are under 1ms.
+
+Swipe to see the Lambda init phase structure, the SnapStart mechanics, and the mitigation strategies with real production examples.
+
+#serverless #lambda #aws #coldstart #cloudcomputing #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'serverless-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'serverless-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

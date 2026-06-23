@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speculative Decoding, Post 80</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#07090a; --card:#0e1210; --ink:#e4ffec; --ink2:#a0a0a0; --dim:#406050; --lime:#65a30d; --cyan:#0891b2; --pink:#be185d; --border:rgba(101,163,13,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .lm { color:var(--lime); } .slide h2 .cy { color:var(--cyan); } .slide h2 .pk { color:var(--pink); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--lime); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .lm { color:#a3e635; } .code .cy { color:#67e8f9; } .code .pk { color:#f9a8d4; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.lm { color:var(--lime); } .st-v.cy { color:var(--cyan); } .st-v.pk { color:var(--pink); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.lm-c { background:rgba(101,163,13,.06); border:1px solid rgba(101,163,13,.15); }
+  .gcard.cy-c { background:rgba(8,145,178,.06); border:1px solid rgba(8,145,178,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(101,163,13,.2); color:var(--lime); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--lime); color:var(--bg); }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--lime); color:var(--lime); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(101,163,13,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--lime); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--lime); color:var(--lime); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(228,255,236,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--lime); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(101,163,13,.2); color:var(--lime); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--lime); color:var(--bg); }
+  .copy-btn.copied { border-color:var(--cyan); color:var(--cyan); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="lm">Speculative</span><br>Decoding.<br>3x Faster<br><span class="cy">Inference</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Why LLM<br><span class="pk">Inference</span><br>Is Slow.</h2>
+        <div style="height:10px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pk">Autoregressive</span><div class="st-t"><strong>LLMs generate one token at a time.</strong> Each token requires a full forward pass through all model layers, reading every weight from VRAM. For a 70B model on an A100, that is 140GB of memory reads per token. At 2TB/s VRAM bandwidth, that is 70ms minimum per token: roughly 14 tokens per second maximum.</div></div>
+          <div class="st"><span class="st-v lm">Memory-bound</span><div class="st-t"><strong>LLM decoding is memory-bandwidth-bound, not compute-bound.</strong> The GPU's tensor cores sit mostly idle waiting for weights to load from VRAM. GPU utilization during decoding is typically 20-40% even on the fastest hardware. Compute is not the bottleneck.</div></div>
+          <div class="st"><span class="st-v cy">The waste</span><div class="st-t"><strong>Every token requires the same full model pass regardless of how predictable that token is.</strong> If the next token is obviously "the" after "pick up the phone and answer", the model still reads 140GB of weights to confirm it. Simple tokens cost exactly the same as complex reasoning tokens.</div></div>
+          <div class="st"><span class="st-v pk">The opportunity</span><div class="st-t"><strong>If we could predict several tokens ahead cheaply and verify them in one pass of the large model, we could generate multiple tokens per large model pass.</strong> This is the core idea behind speculative decoding: use a small model to guess, use the large model to verify in parallel.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>How It<br><span class="lm">Works</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v lm">Draft model</span><div class="st-t"><strong>A small, fast model generates K candidate tokens autoregressively.</strong> For a 70B target model, the draft model might be 7B or even 68M parameters. The draft model runs K forward passes quickly because it is small. Each pass reads much less VRAM.</div></div>
+          <div class="st"><span class="st-v cy">Verification</span><div class="st-t"><strong>The large target model runs a single forward pass over the K candidate tokens in parallel.</strong> Unlike generation, verification can process all K tokens simultaneously because the inputs are already known. The target model produces probabilities for all K positions at once.</div></div>
+          <div class="st"><span class="st-v pk">Acceptance</span><div class="st-t"><strong>Each draft token is accepted or rejected based on whether the target model agrees with the draft's choice.</strong> If the target model's probability for the draft token exceeds a threshold, the token is accepted. Rejection is sampled stochastically to preserve the exact output distribution of the target model.</div></div>
+          <div class="st"><span class="st-v lm">Speedup</span><div class="st-t"><strong>If the draft model accepts on average K tokens before the first rejection, each large model pass yields K tokens instead of 1.</strong> With acceptance rate alpha of 0.7 and K=5 drafts, expected accepted tokens per large model pass is roughly 3.1. Net speedup is 2-3x over standard decoding.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Draft and<br><span class="cy">Verify</span> Loop.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># Speculative decoding loop (simplified)</span>
+def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
+    tokens = prompt
+    while not done(tokens):
+        <span class="dm"># Draft: small model generates K candidates</span>
+        candidates = []
+        for _ in range(K):
+            t = draft.<span class="cy">generate</span>(tokens + candidates)
+            candidates.append(t)
+
+        <span class="dm"># Verify: target checks all K in one pass</span>
+        target_probs = target.<span class="lm">forward</span>(tokens + candidates)
+
+        <span class="dm"># Accept greedily until first rejection</span>
+        for i, (draft_t, probs) in enumerate(
+                zip(candidates, target_probs)):
+            if <span class="pk">accept</span>(draft_t, probs):
+                tokens.append(draft_t)
+            else:
+                tokens.append(<span class="pk">resample</span>(probs))
+                break  <span class="dm"># next round with new prefix</span>
+    return tokens
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="lm">Variants</span><br>and Tuning.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v lm">Draft model choice</span><div class="st-t"><strong>The draft model must be from the same model family as the target for high acceptance rates.</strong> Llama 3 70B + Llama 3 8B draft achieves 70-80% acceptance. Mismatched families drop acceptance rates below 50%, eliminating the speedup. Self-speculative variants use earlier layers of the same model as the draft.</div></div>
+          <div class="st"><span class="st-v cy">Medusa</span><div class="st-t"><strong>Adds multiple prediction heads to the base LLM instead of using a separate draft model.</strong> Each head predicts a different future position simultaneously in a single forward pass of the target model. No separate model to deploy. Medusa-2 achieves 2.3-3.6x speedup on LLaMA and Vicuna models.</div></div>
+          <div class="st"><span class="st-v pk">EAGLE</span><div class="st-t"><strong>Trains a small autoregressive model on the target model's feature space, not token space.</strong> The draft model operates on hidden states rather than raw tokens, dramatically increasing acceptance rates. EAGLE-2 achieves 3-5x speedup and is the current state-of-the-art for production speculative decoding.</div></div>
+          <div class="st"><span class="st-v lm">Lookahead</span><div class="st-t"><strong>n-gram lookahead decoding maintains a pool of candidate phrase completions from recent context.</strong> Proposes multi-token completions based on patterns seen earlier in the generation. No draft model needed. Cheaper to implement, lower acceptance rates than learned drafts but zero additional VRAM.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="cy">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v lm">Google</span><div class="st-t"><strong>Speculative decoding is used in Google's production Gemini inference stack.</strong> Google published the original speculative decoding paper in 2023. Internal benchmarks showed 2-3x speedup on Chinchilla 70B for code generation tasks where predictable token sequences are common.</div></div>
+          <div class="st"><span class="st-v cy">DeepMind</span><div class="st-t"><strong>The "Fast Inference from Transformers via Speculative Decoding" paper by Leviathan et al. from Google Brain formalized the approach.</strong> Published at ICML 2023. Proved mathematically that speculative decoding produces identical output distributions to standard autoregressive decoding when using the stochastic acceptance criterion.</div></div>
+          <div class="st"><span class="st-v pk">Hugging Face TGI</span><div class="st-t"><strong>TGI ships speculative decoding as a first-class feature via the --speculate flag.</strong> Automatically manages the draft model and verification loop. Works with any model pair of the same family. Enabled by default on compatible HuggingFace Inference Endpoints for 2x throughput at no cost increase.</div></div>
+          <div class="st"><span class="st-v lm">vLLM</span><div class="st-t"><strong>vLLM supports draft-model speculative decoding alongside Medusa and EAGLE heads.</strong> Combined with PagedAttention for KV cache management, speculative decoding in vLLM reduces time-to-first-token and increases tokens per second simultaneously. The combination is the current state of production LLM serving.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="lm">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v lm">Speculative decoding</span><div class="st-t"><strong>Use a small draft model to propose K tokens, then verify all K with one pass of the large target model.</strong> Accepted tokens are generated for the cost of the draft. Speedup equals the average number of accepted tokens per target model pass.</div></div>
+          <div class="st"><span class="st-v cy">Acceptance rate</span><div class="st-t"><strong>The fraction of draft tokens accepted by the target model.</strong> Ranges from 50% (mismatched families) to 85% (same-family well-tuned drafts). Acceptance rate directly determines speedup: at 80% acceptance with K=5 drafts, roughly 3.3 tokens are accepted per target model forward pass.</div></div>
+          <div class="st"><span class="st-v pk">Medusa</span><div class="st-t"><strong>Multiple prediction heads added to the base LLM for speculative decoding without a separate draft model.</strong> Each head predicts a different future position in a single forward pass. 2.3-3.6x speedup. No separate model deployment overhead.</div></div>
+          <div class="st"><span class="st-v lm">EAGLE</span><div class="st-t"><strong>Draft model trained on the target model's hidden states rather than token probabilities.</strong> Higher acceptance rates than token-space drafts. EAGLE-2 achieves 3-5x speedup, the current state of the art for speculative decoding quality.</div></div>
+          <div class="st"><span class="st-v cy">Output equivalence</span><div class="st-t"><strong>Mathematically proven to produce identical output distribution to standard autoregressive decoding.</strong> The stochastic acceptance criterion ensures rejected tokens are resampled from the corrected distribution. The model output is unchanged, only the speed improves.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">LLM inference is memory-bound, not compute-bound. The GPU reads 140GB of weights from VRAM to generate each token. The tensor cores sit mostly idle waiting. Speculative decoding exploits this gap.
+
+Autoregressive generation has an inherent waste: every token requires the same full model pass regardless of how obvious that token is. The word "the" after "answer the phone" costs the same 140GB of weight reads as a complex logical deduction. If you could batch several obvious tokens together and verify them with one large model pass, you could generate multiple tokens per pass instead of one.
+
+Speculative decoding works exactly this way. A small, fast draft model generates K candidate tokens autoregressively. A Llama 3 8B draft runs much faster than the 70B target because it reads far less VRAM per token. The 70B target model then verifies all K candidates in a single forward pass. Unlike generation, verification can process all K positions in parallel because the inputs are already known. Each candidate is accepted or rejected based on whether the target model agrees with the draft's choice. The stochastic acceptance criterion preserves the exact output distribution of the target model. Outputs are mathematically identical to standard decoding. Only speed changes.
+
+With an acceptance rate of 70-80% and K=5 draft tokens, roughly 3 tokens are accepted per target model forward pass. Throughput increases 2-3x.
+
+Variants reduce the overhead further. Medusa adds multiple prediction heads directly to the target model, eliminating the separate draft model. EAGLE trains its draft on the target model's hidden states rather than token probabilities, pushing acceptance rates above 85% and achieving 3-5x speedup. vLLM and HuggingFace TGI both ship speculative decoding as production features.
+
+Swipe to see the draft-and-verify loop in Python, the acceptance math, and where production systems deploy this today.
+
+#llm #inference #speculative #mlops #aiengineering #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#0e1210',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'specdec-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'specdec-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

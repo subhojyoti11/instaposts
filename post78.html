@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direct Preference Optimization, Post 78</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#080609; --card:#120d11; --ink:#fde8ee; --ink2:#a0a0a0; --dim:#705060; --rose:#f43f5e; --amber:#f59e0b; --sky:#38bdf8; --border:rgba(244,63,94,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .ro { color:var(--rose); } .slide h2 .am { color:var(--amber); } .slide h2 .sk { color:var(--sky); }
+  .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--rose); }
+  .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .ro { color:#fda4af; } .code .am { color:#fcd34d; } .code .sk { color:#7dd3fc; } .code .dm { color:#a0a0a0; }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.ro { color:var(--rose); } .st-v.am { color:var(--amber); } .st-v.sk { color:var(--sky); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.ro-c { background:rgba(244,63,94,.06); border:1px solid rgba(244,63,94,.15); }
+  .gcard.sk-c { background:rgba(56,189,248,.06); border:1px solid rgba(56,189,248,.15); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(244,63,94,.2); color:var(--rose); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--rose); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--rose); color:var(--rose); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(244,63,94,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--rose); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--rose); color:var(--rose); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(253,232,238,.06); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--rose); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(244,63,94,.2); color:var(--rose); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--rose); color:#fff; }
+  .copy-btn.copied { border-color:var(--sky); color:var(--sky); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:54px;line-height:.88"><span class="ro">DPO</span>.<br>Aligning<br>LLMs<br>Without<br><span class="sk">RL</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="am">RLHF</span><br>Problem.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v am">RLHF pipeline</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback aligns LLMs in three separate stages.</strong> Step 1: collect human preference data. Step 2: train a reward model to predict human preferences. Step 3: use PPO to fine-tune the LLM to maximize reward model scores.</div></div>
+          <div class="st"><span class="st-v ro">The complexity</span><div class="st-t"><strong>PPO is notoriously unstable and hard to tune.</strong> You are training two neural networks simultaneously: the LLM policy and the reward model. Hyperparameters like KL penalty coefficient, clipping ratio, and learning rate interact in ways that cause training to collapse with small changes.</div></div>
+          <div class="st"><span class="st-v sk">Memory cost</span><div class="st-t"><strong>RLHF requires 4 separate models in VRAM simultaneously during PPO training.</strong> The policy LLM, a frozen reference LLM for KL divergence, the reward model, and a value model. For a 7B LLM this requires 140GB+ of VRAM at float16 precision, demanding a multi-GPU cluster.</div></div>
+          <div class="st"><span class="st-v am">Reward hacking</span><div class="st-t"><strong>LLMs learn to maximize reward model scores rather than genuinely align with human intent.</strong> Models learn to generate long, formal-sounding responses that score highly without being more useful. The reward model is an imperfect proxy that the LLM eventually learns to game.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>How <span class="ro">DPO</span><br>Works.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">The insight</span><div class="st-t"><strong>DPO proves mathematically that training a reward model and running PPO is equivalent to a specific supervised objective applied directly to the LLM.</strong> Skip the reward model and PPO entirely. The preference data is used directly in a single stable training loop.</div></div>
+          <div class="st"><span class="st-v sk">The objective</span><div class="st-t"><strong>Given a prompt and two responses, one preferred and one rejected, DPO increases the probability of the preferred response and decreases the probability of the rejected one.</strong> The rate is calibrated by comparing against a frozen reference LLM to prevent over-shifting the model's distribution.</div></div>
+          <div class="st"><span class="st-v am">What you need</span><div class="st-t"><strong>DPO requires only preference pairs: (prompt, chosen_response, rejected_response).</strong> No reward model training. No PPO. Two models in VRAM instead of four. Training is stable, fast, and implementable in under 100 lines of PyTorch with the TRL library's DPOTrainer.</div></div>
+          <div class="st"><span class="st-v ro">Quality</span><div class="st-t"><strong>DPO matches or exceeds PPO-based RLHF on most alignment benchmarks.</strong> The Stanford paper by Rafailov et al. in 2023 demonstrated equivalent performance to InstructGPT-style RLHF on summarization and dialogue with a fraction of the engineering complexity.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>DPO<br><span class="sk">Loss</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># DPO loss function (simplified PyTorch)</span>
+import torch.nn.functional as F
+
+def <span class="ro">dpo_loss</span>(policy, ref_model, batch):
+    prompt, chosen, rejected = batch
+
+    <span class="dm"># Log probs from policy and reference</span>
+    pi_w = <span class="sk">log_prob</span>(policy, prompt, chosen)
+    pi_l = <span class="sk">log_prob</span>(policy, prompt, rejected)
+    ref_w = <span class="sk">log_prob</span>(ref_model, prompt, chosen)
+    ref_l = <span class="sk">log_prob</span>(ref_model, prompt, rejected)
+
+    <span class="dm"># Implicit reward: how much policy diverges from ref</span>
+    beta = <span class="am">0.1</span>   <span class="dm"># KL penalty strength</span>
+    logits = beta * ((pi_w - ref_w) - (pi_l - ref_l))
+
+    <span class="dm"># Maximize margin: chosen preferred over rejected</span>
+    return -F.<span class="ro">logsigmoid</span>(logits).mean()
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>DPO vs <span class="am">RLHF</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">Models in training</span><div class="st-t"><strong>RLHF: 4 models (policy, reference, reward, value).</strong> DPO: 2 models (policy, reference). The removal of the reward model and value model halves VRAM requirements. A 7B DPO training run fits on a single A100 80GB instead of requiring a multi-GPU cluster.</div></div>
+          <div class="st"><span class="st-v sk">Training stability</span><div class="st-t"><strong>RLHF: PPO is notoriously sensitive to hyperparameters, with frequent training collapse.</strong> DPO: equivalent to supervised fine-tuning. No policy gradient variance. No actor-critic instability. Training curves are smooth and predictable. Hyperparameter search is straightforward.</div></div>
+          <div class="st"><span class="st-v am">Data requirement</span><div class="st-t"><strong>Both require human preference pairs.</strong> RLHF additionally needs diverse prompt sets for the reward model training phase. DPO uses the preference pairs directly. The same dataset that would train the reward model in RLHF is used directly by DPO without the intermediate training step.</div></div>
+          <div class="st"><span class="st-v ro">Variants</span><div class="st-t"><strong>IPO (Identity PO) addresses DPO overfitting on chosen responses.</strong> ORPO combines SFT and DPO into a single stage. SimPO removes the reference model dependency. KTO aligns from binary signals instead of pairs. The DPO family has expanded rapidly since the original 2023 paper.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="sk">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">Mistral AI</span><div class="st-t"><strong>Mistral 7B Instruct and Mixtral 8x7B Instruct both use DPO as part of their alignment pipeline.</strong> Mistral confirmed DPO use in public blog posts. The small team size made RLHF's engineering overhead impractical. DPO enabled a 5-person team to align frontier-quality models.</div></div>
+          <div class="st"><span class="st-v sk">Zephyr</span><div class="st-t"><strong>HuggingFace's Zephyr 7B was one of the first public demonstrations of DPO beating RLHF at the 7B scale.</strong> Trained on Mistral 7B base with SFT then DPO. Topped the Open LLM Leaderboard at release in 2023, outperforming Llama 2 70B RLHF despite being 10x smaller.</div></div>
+          <div class="st"><span class="st-v am">TRL library</span><div class="st-t"><strong>HuggingFace TRL (Transformer Reinforcement Learning) ships DPOTrainer as a first-class interface.</strong> DPO training for a 7B model is 20 lines of Python with the TRL library. This accessibility accelerated community adoption far beyond what RLHF ever achieved outside large labs.</div></div>
+          <div class="st"><span class="st-v ro">Llama 3</span><div class="st-t"><strong>Meta's Llama 3 instruction models use a hybrid of SFT, RLHF with PPO, and rejection sampling.</strong> Meta still uses PPO for final alignment but notes DPO is used for certain capability domains. DPO and RLHF are increasingly viewed as complementary rather than competing approaches.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="ro">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v ro">DPO</span><div class="st-t"><strong>Direct Preference Optimization: aligns LLMs directly on preference pairs without training a reward model or using PPO.</strong> Published by Rafailov et al. at Stanford in 2023. Equivalent quality to RLHF at half the VRAM and far less engineering complexity.</div></div>
+          <div class="st"><span class="st-v sk">RLHF</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback: the original alignment method used by OpenAI for InstructGPT and ChatGPT.</strong> Trains a reward model then uses PPO to optimize the LLM policy. More flexible but requires 4 models in VRAM and careful PPO hyperparameter tuning.</div></div>
+          <div class="st"><span class="st-v am">Beta (KL penalty)</span><div class="st-t"><strong>The beta hyperparameter in DPO controls how much the trained model can diverge from the reference model.</strong> Low beta: aggressive alignment, higher risk of forgetting pre-training knowledge. High beta: conservative alignment, safer but less impact on model behavior.</div></div>
+          <div class="st"><span class="st-v ro">Preference pairs</span><div class="st-t"><strong>The training data format: (prompt, chosen_response, rejected_response).</strong> Human labelers compare two model responses and select the preferred one. The DPO objective directly increases chosen probability and decreases rejected probability relative to the reference model.</div></div>
+          <div class="st"><span class="st-v sk">TRL</span><div class="st-t"><strong>HuggingFace Transformers Reinforcement Learning library.</strong> Ships DPOTrainer, SFTTrainer, and PPOTrainer. DPO training for a 7B model is 20 lines of Python. The primary tool enabling community-scale DPO adoption outside large AI labs.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">RLHF aligned the first generation of chat models. DPO made that alignment accessible to everyone else.
+
+Reinforcement Learning from Human Feedback works in three stages. Collect human preference data: show humans two model responses and ask which they prefer. Train a reward model to predict those preferences. Then use PPO to fine-tune the LLM to maximize the reward model's scores. The result is a helpful, harmless model. The process requires four separate neural networks in VRAM simultaneously, produces notoriously unstable training dynamics, and demands specialist RL expertise that most teams do not have.
+
+DPO, published by Rafailov and colleagues at Stanford in 2023, proves mathematically that the RLHF pipeline reduces to a simpler supervised objective. The insight: training a reward model and then running PPO is equivalent to directly maximizing the margin between preferred and rejected responses, calibrated against a frozen reference model. Skip the reward model. Skip PPO. Keep the preference data. The training is stable, fast, and implementable in 20 lines of Python using HuggingFace TRL.
+
+The DPO loss is elegant: for each preference pair, compute the log probability ratio between the policy and reference model for both chosen and rejected responses. The loss pushes the policy to increase chosen probability and decrease rejected probability by the amount that the policy has already diverged from the reference. The beta hyperparameter controls how aggressively the policy can shift before the KL penalty pulls it back.
+
+HuggingFace Zephyr 7B demonstrated DPO's competitive quality when it topped the Open LLM Leaderboard in 2023 while being 10x smaller than Llama 2 70B. Mistral AI used DPO to align Mistral 7B and Mixtral 8x7B with a small team where RLHF's engineering overhead would have been prohibitive.
+
+Swipe to see the DPO loss in PyTorch, the RLHF comparison, and the production deployments shaping LLM alignment today.
+
+#dpo #rlhf #llm #alignment #finetuning #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#120d11',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'dpo-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'dpo-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

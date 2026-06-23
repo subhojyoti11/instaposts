@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirLLM and Memory Offloading, Post 76</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f8f5ff; --card:#ffffff; --ink:#120d22; --ink2:#4c3d6e; --dim:#9080b8; --red:#dc2626; --indigo:#4f46e5; --teal:#0d9488; --border:rgba(79,70,229,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'DM Sans',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); box-shadow:0 4px 28px rgba(79,70,229,.04); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Outfit',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .rd { color:var(--red); } .slide h2 .id { color:var(--indigo); } .slide h2 .tl { color:var(--teal); }
+  .ftr { flex-shrink:0; padding:8px 24px 14px 26px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--indigo); }
+  .code { background:#f0eeff; border:1px solid rgba(79,70,229,.12); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .rd { color:#991b1b; } .code .id { color:#3730a3; } .code .tl { color:#0f766e; } .code .dm { color:var(--dim); }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.rd { color:var(--red); } .st-v.id { color:var(--indigo); } .st-v.tl { color:var(--teal); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.id-c { background:rgba(79,70,229,.04); border:1px solid rgba(79,70,229,.12); }
+  .gcard.tl-c { background:rgba(13,148,136,.04); border:1px solid rgba(13,148,136,.12); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(79,70,229,.2); color:var(--indigo); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--indigo); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--indigo); color:var(--indigo); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(79,70,229,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--indigo); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--indigo); color:var(--indigo); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(18,13,34,.08); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--indigo); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 4px 28px rgba(79,70,229,.04); }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(79,70,229,.2); color:var(--indigo); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--indigo); color:#fff; }
+  .copy-btn.copied { border-color:var(--teal); color:var(--teal); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="rd">AirLLM</span>.<br>70B on<br>an <span class="id">8GB</span><br>GPU.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="rd">Memory</span><br>Wall.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v rd">The problem</span><div class="st-t"><strong>LLM inference requires all model weights to fit in GPU VRAM simultaneously.</strong> A 70B parameter model at float16 precision requires 140GB of VRAM. An RTX 4090 has 24GB. The cheapest GPU with enough VRAM to run it, 8x A100, costs over $200,000. Most people cannot afford to run large models locally.</div></div>
+          <div class="st"><span class="st-v id">Why VRAM?</span><div class="st-t"><strong>GPU VRAM bandwidth is the bottleneck for token generation, not compute.</strong> To generate one token, the GPU must read every single weight of every layer at least once. With 140GB of weights, that is 140GB of memory reads per token. VRAM bandwidth at 2-3 TB/s is 10x faster than RAM bandwidth and 1000x faster than NVMe SSD.</div></div>
+          <div class="st"><span class="st-v tl">Quantization</span><div class="st-t"><strong>The first solution: reduce weight precision from float16 to int4, shrinking 140GB to 35GB.</strong> GGUF format and llama.cpp use 4-bit quantization extensively. Quality degrades slightly but remains strong for most tasks. 35GB still exceeds a single consumer GPU's VRAM.</div></div>
+          <div class="st"><span class="st-v rd">The insight</span><div class="st-t"><strong>Transformers process layers sequentially.</strong> During inference, only the weights of the current layer are needed. Layers not currently executing serve no purpose sitting in VRAM. AirLLM exploits this: stream layers from storage just-in-time and evict them immediately after use.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2><span class="id">Layer</span><br>Streaming<br>Explained.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v id">Normal inference</span><div class="st-t"><strong>Load all 80 layers of Llama 70B into VRAM at startup.</strong> Requires 140GB VRAM. Each forward pass reads weights sequentially through all 80 layers. All weights stay resident in VRAM between tokens.</div></div>
+          <div class="st"><span class="st-v rd">AirLLM inference</span><div class="st-t"><strong>Load layer 1 from NVMe to RAM to VRAM, run it, evict it from VRAM, load layer 2, repeat.</strong> Peak VRAM usage is the size of one layer, roughly 1.75GB for a 70B model. The 8GB GPU can run it. The cost: each token takes 60-120 seconds instead of sub-second.</div></div>
+          <div class="st"><span class="st-v tl">The memory hierarchy</span><div class="st-t"><strong>NVMe SSD: 7 GB/s read speed. RAM: 50-100 GB/s bandwidth. VRAM: 2,000 GB/s bandwidth.</strong> AirLLM exploits the full hierarchy. NVMe delivers layers to RAM asynchronously while the GPU computes with the current layer in VRAM. Prefetching hides part of the disk I/O latency.</div></div>
+          <div class="st"><span class="st-v id">Compression</span><div class="st-t"><strong>AirLLM applies 4-bit quantization per layer before storing to disk.</strong> Each layer is quantized when saved, reducing NVMe reads by 4x. A 70B model weighs 35GB quantized instead of 140GB. NVMe load time per layer drops from 20ms to 5ms, directly reducing time per token.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>AirLLM<br><span class="id">in Code</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># pip install airllm</span>
+from airllm import <span class="id">AirLLMLlama2</span>
+
+<span class="dm"># Load 70B model on 8GB GPU via layer streaming</span>
+model = <span class="id">AirLLMLlama2</span>.from_pretrained(
+    <span class="rd">"meta-llama/Llama-2-70b-hf"</span>,
+    compression=<span class="tl">'4bit'</span>,    <span class="dm"># quantize on disk</span>
+    prefetch_layer=<span class="tl">True</span>   <span class="dm"># async disk prefetch</span>
+)
+
+input_tokens = model.tokenizer(
+    <span class="rd">"Explain transformers in simple terms:"</span>,
+    return_tensors=<span class="rd">"pt"</span>
+)
+
+<span class="dm"># Generates ~1 token per 60s on RTX 4060</span>
+output = model.<span class="tl">generate</span>(**input_tokens, max_new_tokens=50)
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Speed vs<br><span class="tl">Feasibility</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v rd">The cost</span><div class="st-t"><strong>Layer streaming is slow.</strong> On an RTX 4060 with NVMe, AirLLM generates roughly 1 token per 60-120 seconds for a 70B model. A 200-token response takes 3-4 hours. This is not viable for interactive chat but is viable for offline batch processing.</div></div>
+          <div class="st"><span class="st-v id">Use cases</span><div class="st-t"><strong>Overnight document summarization, legal contract review, and research analysis where latency is irrelevant but cost matters.</strong> A 70B model running on a $400 consumer GPU overnight processes a 100-document corpus that would cost $20 via API. After 20 runs it pays for itself.</div></div>
+          <div class="st"><span class="st-v tl">Apple Silicon advantage</span><div class="st-t"><strong>Apple M-series chips have unified memory architecture: CPU and GPU share the same memory pool.</strong> An M2 Max with 96GB unified memory can run a 70B model at native speed without layer streaming. MLX, Apple's ML framework, enables this. macOS is now a first-class LLM inference platform.</div></div>
+          <div class="st"><span class="st-v rd">Related approaches</span><div class="st-t"><strong>llama.cpp implements model offloading that splits layers between GPU and CPU RAM.</strong> Some layers run on GPU at full speed, overflow layers run on CPU. A 70B model with 24GB VRAM offloads 50 layers to GPU and 30 to CPU, achieving 3-5 tokens per second, orders of magnitude faster than full disk streaming.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The<br><span class="id">Ecosystem</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v id">llama.cpp</span><div class="st-t"><strong>The most widely used local inference engine, written in C++.</strong> Created by Georgi Gerganov in 2023. Implements 4-bit and 8-bit quantization in GGUF format. Supports layer offloading between GPU and CPU RAM. Runs on Mac, Linux, and Windows. The backbone of Ollama and LM Studio.</div></div>
+          <div class="st"><span class="st-v rd">Ollama</span><div class="st-t"><strong>Docker-like runtime for local LLMs built on llama.cpp.</strong> One command downloads and runs any model from the Ollama registry. Manages quantized model weights, GPU layer allocation, and an OpenAI-compatible API endpoint. Powers LM Studio's backend and VS Code Copilot alternatives.</div></div>
+          <div class="st"><span class="st-v tl">MLX</span><span class="st-t"><strong>Apple's array framework optimized for Apple Silicon's unified memory.</strong> Released in 2023. Enables inference at full memory bandwidth without the CPU-GPU copy overhead. Llama 70B on M2 Ultra 192GB runs at 15 tokens per second, competitive with A100 cloud inference at 1/10 the cost.</span></div>
+          <div class="st"><span class="st-v id">AirLLM</span><div class="st-t"><strong>Open-source Python library for layer-by-layer inference on constrained hardware.</strong> Published by lyogavin on GitHub. Supports Llama 2, Llama 3, Mistral, and Falcon models. The primary use case is enabling 70B+ models on consumer GPUs with 8-24GB VRAM at the cost of very slow generation speed.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="id">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v id">AirLLM</span><div class="st-t"><strong>Layer-by-layer inference: loads one transformer layer at a time from NVMe to VRAM, runs it, evicts it.</strong> Peak VRAM usage equals one layer size. Enables 70B models on 8GB GPUs at 1 token per 60-120 seconds.</div></div>
+          <div class="st"><span class="st-v rd">Quantization</span><div class="st-t"><strong>Reducing model weight precision from float16 to int4 or int8.</strong> Shrinks a 70B model from 140GB to 35GB (int4) with mild quality loss. GGUF is the standard format. llama.cpp, Ollama, and AirLLM all use quantization by default.</div></div>
+          <div class="st"><span class="st-v tl">Layer offloading</span><div class="st-t"><strong>Splitting model layers between GPU VRAM and CPU RAM.</strong> llama.cpp sets n_gpu_layers to control the split. Layers on GPU run at VRAM bandwidth. Layers on CPU run at RAM bandwidth. Enables near-real-time inference on consumer hardware for models that overflow VRAM.</div></div>
+          <div class="st"><span class="st-v id">MLX</span><div class="st-t"><strong>Apple's unified memory framework for Apple Silicon.</strong> CPU and GPU share the same physical memory pool. No copy overhead. M2 Ultra with 192GB unified memory runs 70B models at 15 tokens/s, comparable to an A100 at 1/10 the cost.</div></div>
+          <div class="st"><span class="st-v rd">GGUF</span><div class="st-t"><strong>GPT-Generated Unified Format: the standard file format for quantized LLM weights.</strong> Replaced GGML. Stores model architecture metadata alongside quantized weights. Supported by llama.cpp, Ollama, LM Studio, and koboldcpp. Models are shared in GGUF on Hugging Face.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">A 70 billion parameter model requires 140GB of GPU VRAM to run. A consumer GPU has 8-24GB. AirLLM closes that gap by breaking the fundamental assumption that all weights must be resident simultaneously.
+
+Transformer inference is sequential by layer. During the forward pass, the GPU reads layer 1's weights, computes, then moves to layer 2. Layer 1's weights serve no purpose while layer 2 is computing. Normal inference keeps all layers in VRAM simultaneously for speed. AirLLM exploits the sequential structure to stream layers just-in-time: load layer 1 from NVMe to RAM to VRAM, run it, evict it, load layer 2, repeat. Peak VRAM usage drops from 140GB to the size of one layer, roughly 1.75GB for a 70B model.
+
+The cost is speed. An RTX 4060 running a 70B model via AirLLM generates approximately 1 token per 60-120 seconds. A 200-token response takes 3-4 hours. This is not interactive chat. It is a tool for offline batch processing where running a frontier-scale model matters but latency does not: overnight legal contract review, document summarization, and research analysis. After roughly 20 batch runs, the $400 consumer GPU has paid for itself versus API costs.
+
+AirLLM applies 4-bit quantization per layer before storing to disk, shrinking the 70B model from 140GB to 35GB. Combined with NVMe prefetching, load time per layer drops significantly, directly reducing time per token.
+
+The ecosystem offers alternatives for different constraints. llama.cpp implements layer offloading between GPU VRAM and CPU RAM, achieving 3-5 tokens per second on a 70B model with mixed GPU/CPU execution. Apple Silicon's unified memory architecture eliminates the problem entirely for M2 Ultra and M3 Ultra users. Apple's MLX framework runs 70B models at 15 tokens per second on 192GB unified memory.
+
+Swipe to see the AirLLM code, the memory hierarchy, and the comparison of local inference approaches.
+
+#llm #localai #inference #llama #quantization #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'airllm-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'airllm-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>

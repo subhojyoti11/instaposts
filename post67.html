@@ -150,10 +150,10 @@ used_in_models: [<span class="pu">review-clf-v7</span>, <span class="pu">sentime
         <h2>Legal and<br><span class="am">Compliance</span> Pressure.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">EU AI Act</span><div class="st-t"><strong>The EU AI Act requires high-risk AI systems to document training data sources, including copyright status and data collection methods.</strong> Non-compliance carries fines up to 3% of global annual revenue.</div></div>
-          <div class="st"><span class="st-v pu">Copyright suits</span><div class="st-t"><strong>Multiple lawsuits against AI companies allege that training on copyrighted content without a license constitutes infringement.</strong> Organizations that cannot document their training data sources face litigation risk on every model they deploy.</div></div>
-          <div class="st"><span class="st-v cy">GDPR erasure</span><div class="st-t"><strong>If a model memorized personally identifiable information from training data, a deletion request may require retraining.</strong> Without provenance records, the organization cannot determine which models are affected or the scope of remediation.</div></div>
-          <div class="st"><span class="st-v am">Model cards</span><div class="st-t"><strong>Hugging Face model cards and Google's Data Cards are emerging standards for documenting training data provenance.</strong> Enterprise AI governance frameworks now require these artifacts before production deployment approval.</div></div>
+          <div class="st"><span class="st-v am">EU AI Act</span><div class="st-t"><strong>The EU AI Act requires high-risk AI systems to document training data sources and copyright status.</strong> Non-compliance carries fines up to 3% of global annual revenue.</div></div>
+          <div class="st"><span class="st-v pu">Copyright suits</span><div class="st-t"><strong>Multiple lawsuits allege that training on copyrighted content without a license constitutes infringement.</strong> Organizations that cannot document data sources face litigation risk on every model deployed.</div></div>
+          <div class="st"><span class="st-v cy">GDPR erasure</span><div class="st-t"><strong>A deletion request may require retraining if a model memorized PII from training data.</strong> Without provenance records, the organization cannot determine which models are affected.</div></div>
+          <div class="st"><span class="st-v am">Model cards</span><div class="st-t"><strong>Hugging Face model cards and Google's Data Cards are emerging standards for training data provenance.</strong> Enterprise AI governance frameworks now require these before production deployment.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -184,11 +184,11 @@ used_in_models: [<span class="pu">review-clf-v7</span>, <span class="pu">sentime
         <h2>Quick<br><span class="pu">Reference.</span></h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pu">Provenance</span><div class="st-t"><strong>The complete record of where data originated, who transformed it, and which models it trained.</strong> Required for regulatory compliance, copyright defense, GDPR erasure requests, and model reproducibility audits.</div></div>
-          <div class="st"><span class="st-v cy">Lineage</span><div class="st-t"><strong>The graph of transformations connecting raw source data to a final dataset or model artifact.</strong> Lineage tools like OpenLineage and DataHub capture this graph automatically as pipelines run.</div></div>
-          <div class="st"><span class="st-v am">DVC</span><div class="st-t"><strong>Data Version Control: tracks dataset versions in Git with content hashes.</strong> Ensures that a specific model checkpoint can be reproduced from the same data and code, even years after the original training run.</div></div>
-          <div class="st"><span class="st-v pu">Model card</span><div class="st-t"><strong>Structured documentation of a model's training data, intended use, limitations, and evaluation results.</strong> Required by EU AI Act for high-risk systems. Standard artifact in enterprise AI governance review processes.</div></div>
-          <div class="st"><span class="st-v cy">Right to erasure</span><div class="st-t"><strong>GDPR Article 17 grants individuals the right to have their personal data deleted.</strong> If that data was in a training set, the organization must trace which models were trained on it and evaluate whether retraining is required.</div></div>
+          <div class="st"><span class="st-v pu">Provenance</span><div class="st-t"><strong>The complete record of where data originated, who transformed it, and which models it trained.</strong> Required for compliance, copyright defense, GDPR erasure, and reproducibility audits.</div></div>
+          <div class="st"><span class="st-v cy">Lineage</span><div class="st-t"><strong>The graph of transformations from raw source to final dataset or model artifact.</strong> Tools like OpenLineage and DataHub capture this graph automatically as pipelines run.</div></div>
+          <div class="st"><span class="st-v am">DVC</span><div class="st-t"><strong>Data Version Control tracks dataset versions in Git with content hashes.</strong> Ensures a model checkpoint can be reproduced from the same data and code years later.</div></div>
+          <div class="st"><span class="st-v pu">Model card</span><div class="st-t"><strong>Structured documentation of training data, intended use, limitations, and evaluation results.</strong> Required by EU AI Act for high-risk systems and enterprise governance reviews.</div></div>
+          <div class="st"><span class="st-v cy">Right to erasure</span><div class="st-t"><strong>GDPR Article 17 grants individuals the right to have their personal data deleted.</strong> The organization must trace which models trained on it and evaluate whether retraining is required.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

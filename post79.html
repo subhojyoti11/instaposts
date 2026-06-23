@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG vs Long Context Windows, Post 79</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#faf8ff; --card:#ffffff; --ink:#130d22; --ink2:#4a3c6e; --dim:#9080b8; --purple:#7c3aed; --orange:#c2410c; --blue:#1d4ed8; --border:rgba(124,58,237,.06); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--bg); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; padding:40px 16px 80px; }
+  .carousel-wrap { max-width:1100px; margin:0 auto; }
+  .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
+  .carousel::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); box-shadow:0 4px 28px rgba(124,58,237,.04); }
+  .ghost { display:none; }
+  .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
+  .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
+  .slide h2 { font-family:'Sora',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 .pu { color:var(--purple); } .slide h2 .or { color:var(--orange); } .slide h2 .bl { color:var(--blue); }
+  .ftr { flex-shrink:0; padding:8px 24px 14px 26px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
+  .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
+  .ftr .right { font-size:13px; font-weight:600; color:var(--purple); }
+  .code { background:#f5f0ff; border:1px solid rgba(124,58,237,.12); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
+  .code .pu { color:#6d28d9; } .code .or { color:#9a3412; } .code .bl { color:#1e40af; } .code .dm { color:var(--dim); }
+  .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
+  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st:last-child { border-bottom:none; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v.pu { color:var(--purple); } .st-v.or { color:var(--orange); } .st-v.bl { color:var(--blue); }
+  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t strong { font-weight:600; color:var(--ink); }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard.pu-c { background:rgba(124,58,237,.04); border:1px solid rgba(124,58,237,.12); }
+  .gcard.or-c { background:rgba(194,65,12,.04); border:1px solid rgba(194,65,12,.12); }
+  .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
+  .dl-bar { display:flex; justify-content:center; gap:12px; margin-top:24px; }
+  .dl-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:11px 24px; background:transparent; border:1px solid rgba(124,58,237,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:8px; border-radius:6px; }
+  .dl-btn:hover { background:var(--purple); color:#fff; }
+  .dl-btn.alt { border-color:var(--border); color:var(--dim); } .dl-btn.alt:hover { border-color:var(--purple); color:var(--purple); }
+  .dl-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; } .dl-btn:disabled { opacity:.3; }
+  .progress-bar { width:160px; height:2px; background:rgba(124,58,237,.08); overflow:hidden; display:none; margin-top:12px; border-radius:2px; }
+  .progress-bar .fill { height:100%; width:0%; background:var(--purple); transition:width .3s; }
+  .nav { display:flex; justify-content:center; gap:16px; margin-top:20px; align-items:center; }
+  .nav button { background:transparent; border:1px solid var(--border); color:var(--dim); width:38px; height:38px; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; border-radius:6px; transition:all .25s; }
+  .nav button:hover { border-color:var(--purple); color:var(--purple); }
+  .dots { display:flex; gap:8px; align-items:center; }
+  .dot { width:5px; height:5px; border-radius:50%; background:rgba(19,13,34,.08); cursor:pointer; transition:all .35s; }
+  .dot.active { background:var(--purple); width:22px; border-radius:3px; }
+  .caption-section { max-width:min(92vw,520px); margin:28px auto 0; background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 4px 28px rgba(124,58,237,.04); }
+  .caption-hdr { display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid var(--border); }
+  .caption-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .copy-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; background:transparent; border:1px solid rgba(124,58,237,.2); color:var(--purple); cursor:pointer; transition:all .25s; display:flex; align-items:center; gap:6px; border-radius:4px; }
+  .copy-btn:hover { background:var(--purple); color:#fff; }
+  .copy-btn.copied { border-color:var(--blue); color:var(--blue); }
+  .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
+  .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+</style>
+</head>
+<body>
+<div class="carousel-wrap">
+  <div class="carousel" id="carousel">
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:80px"> </p>
+        <h2 style="font-size:48px;line-height:1.0"><span class="pu">RAG</span> vs<br><span class="or">Long</span><br>Context.<br>The <span class="bl">Debate</span>.</h2>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="pu">RAG</span><br>Solves.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">The problem</span><div class="st-t"><strong>LLMs have a training cutoff and finite knowledge.</strong> They cannot answer questions about documents added after training or internal proprietary data they have never seen. Fine-tuning on new data is expensive and slow to update.</div></div>
+          <div class="st"><span class="st-v or">The solution</span><div class="st-t"><strong>Retrieval-Augmented Generation embeds documents into a vector database and retrieves relevant chunks at query time.</strong> Only the 3-10 most relevant chunks are inserted into the prompt. The LLM answers based on retrieved context it could not have known from training.</div></div>
+          <div class="st"><span class="st-v bl">The cost model</span><div class="st-t"><strong>RAG scales cheaply with knowledge base size.</strong> Adding 1 million new documents costs only vector embedding computation and storage. Query cost is fixed: retrieve 3-10 chunks, run a 4K-8K token prompt. The knowledge base can grow without increasing inference cost.</div></div>
+          <div class="st"><span class="st-v pu">The limit</span><div class="st-t"><strong>RAG retrieval is imperfect.</strong> If the relevant document is not in the top-K results, the LLM answers without it or hallucinates. Questions requiring synthesis across many documents are hard: the retriever returns local excerpts, not global understanding of the corpus.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>What <span class="or">Long</span><br>Context Solves.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v or">The context window</span><div class="st-t"><strong>Gemini 1.5 Pro supports 2 million tokens. Claude 3 supports 200,000 tokens. GPT-4o supports 128,000 tokens.</strong> At 2 million tokens, you can fit an entire software codebase, a year of Slack history, or 3,000 research papers in a single prompt and ask questions over the complete corpus.</div></div>
+          <div class="st"><span class="st-v bl">No retrieval error</span><div class="st-t"><strong>If all documents fit in context, retrieval failure is impossible.</strong> The LLM attends to the full corpus directly. Questions requiring synthesis across many documents are answered accurately. No chunking strategy, no embedding model, no vector database to operate.</div></div>
+          <div class="st"><span class="st-v or">The cost</span><div class="st-t"><strong>Attention scales quadratically with context length.</strong> A 2M token Gemini 1.5 Pro call costs roughly $10.50 per query at standard pricing. For a corpus you query 100 times per day, that is $1,050 per day just in LLM costs. RAG with a 4K token prompt costs $0.004 per query on GPT-4o for the same corpus.</div></div>
+          <div class="st"><span class="st-v pu">Lost in the middle</span><div class="st-t"><strong>LLMs struggle to use information from the middle of very long contexts.</strong> Stanford's "Lost in the Middle" paper showed retrieval accuracy drops significantly for facts buried in the center of a 10K+ token context. Very long contexts do not guarantee the model actually attends to everything equally.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>A <span class="pu">RAG</span><br>Pipeline.</h2>
+        <div style="height:14px"></div>
+        <div class="code">
+<span class="dm"># RAG: cheap, scales, imperfect retrieval</span>
+from openai import OpenAI
+import pinecone
+
+<span class="dm"># Retrieve relevant chunks</span>
+query_vec = <span class="pu">embed</span>(<span class="or">"What is our refund policy?"</span>)
+chunks = pinecone.<span class="pu">query</span>(query_vec, top_k=<span class="bl">5</span>)
+
+<span class="dm"># Build prompt with retrieved context only</span>
+prompt = f<span class="or">"""Context: {chunks}
+Question: What is our refund policy?"""</span>
+
+<span class="dm"># ~4K tokens, $0.004 per query</span>
+response = client.chat.completions.<span class="pu">create</span>(
+    model=<span class="or">"gpt-4o"</span>, messages=[{<span class="or">"role"</span>:<span class="or">"user"</span>,
+    <span class="or">"content"</span>: prompt}]
+)
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>The <span class="bl">Cost</span><br>Comparison.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">RAG at scale</span><div class="st-t"><strong>100K document corpus, 1,000 queries per day, GPT-4o at $0.004 per 4K token query.</strong> Daily cost: $4. Monthly cost: $120. Adding 100K more documents costs only the vector embedding compute (roughly $1 one-time for text-embedding-3-small). Query cost stays fixed.</div></div>
+          <div class="st"><span class="st-v or">Long context at scale</span><div class="st-t"><strong>Same 100K documents, 1,000 queries per day, Gemini 1.5 Pro at $10.50 per 2M token query.</strong> Daily cost: $10,500. Monthly cost: $315,000. Long context is economically viable only for queries made very infrequently against small corpora, like legal due diligence on a single deal.</div></div>
+          <div class="st"><span class="st-v bl">Where long context wins</span><div class="st-t"><strong>Low-frequency, high-value queries over complete corpora where retrieval mistakes are unacceptable.</strong> Due diligence on 300 contracts. Understanding all dependencies in a 200K line codebase. Summarizing a year of board meeting transcripts. Cost is irrelevant, completeness is required.</div></div>
+          <div class="st"><span class="st-v pu">Hybrid</span><div class="st-t"><strong>Most production systems combine both.</strong> RAG retrieves candidate chunks efficiently. A reranking model selects the top 20. Those 20 are inserted into a 32K token context for the final generation. You get RAG's cost efficiency with improved recall versus top-5 retrieval.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>In<br><span class="or">Production</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">Notion AI</span><div class="st-t"><strong>Uses RAG to answer questions against a user's workspace documents.</strong> Each workspace can contain thousands of pages. RAG retrieves the relevant ones at query time. Full-context loading of an entire Notion workspace would be prohibitively expensive for every query.</div></div>
+          <div class="st"><span class="st-v or">Google NotebookLM</span><div class="st-t"><strong>Uses long context to index a user's uploaded documents into Gemini 1.5 Pro's context window.</strong> Users upload up to 50 PDF documents totaling 500,000 words. NotebookLM keeps all of them in context for every query, enabling accurate cross-document synthesis.</div></div>
+          <div class="st"><span class="st-v bl">GitHub Copilot</span><div class="st-t"><strong>Uses RAG across the active codebase to provide context-aware code suggestions.</strong> The repository is chunked by file and function, embedded in a vector store, and relevant code blocks are retrieved per edit. Long context for an entire large codebase would exceed 128K tokens on most models.</div></div>
+          <div class="st"><span class="st-v pu">Anthropic Projects</span><div class="st-t"><strong>Claude's Projects feature maintains persistent context across conversations using a hybrid approach.</strong> Documents uploaded to a project are stored and selectively injected based on relevance. Claude's 200K context window is used for full-document situations where the entire file matters.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+    </div>
+
+    <div class="slide">
+      <div class="ghost"> </div>
+      <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+      <div class="body">
+        <p style="margin-bottom:14px"> </p>
+        <h2>Quick<br><span class="pu">Reference</span>.</h2>
+        <div style="height:14px"></div>
+        <div class="stats">
+          <div class="st"><span class="st-v pu">RAG</span><div class="st-t"><strong>Retrieval-Augmented Generation: embed corpus into a vector database, retrieve relevant chunks at query time.</strong> Fixed query cost regardless of knowledge base size. Imperfect retrieval can miss relevant documents. Best for large, frequently-queried, frequently-updated knowledge bases.</div></div>
+          <div class="st"><span class="st-v or">Long context</span><div class="st-t"><strong>Place the entire corpus in the model's context window for every query.</strong> No retrieval failure. Cost scales quadratically with context length. Viable for low-frequency queries where completeness matters more than cost. Gemini 1.5 Pro: 2M tokens. Claude 3: 200K tokens.</div></div>
+          <div class="st"><span class="st-v bl">Chunking</span><div class="st-t"><strong>Splitting documents into smaller segments for embedding in RAG pipelines.</strong> Chunk size affects retrieval quality. Too small loses context. Too large reduces precision. 256-512 tokens with 50-token overlap is the common starting point. Semantic chunking splits at sentence boundaries.</div></div>
+          <div class="st"><span class="st-v pu">Reranking</span><div class="st-t"><strong>A cross-encoder model that reranks retrieved chunks by relevance after initial vector retrieval.</strong> Retrieval finds the approximate top-50 candidates fast. The reranker precisely scores the top-50 and keeps only the top-5-20. Cohere Rerank and cross-encoder/ms-marco are common choices.</div></div>
+          <div class="st"><span class="st-v or">Lost in middle</span><div class="st-t"><strong>Stanford finding: LLM accuracy degrades for facts in the middle of long contexts.</strong> Information at the start and end of the context window is recalled reliably. Middle sections are underutilized. An LLM reading 100K tokens is not equivalent to 100K tokens of uniform attention.</div></div>
+        </div>
+      </div>
+      <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
+    </div>
+
+  </div>
+  <div class="nav"><button id="prev">←</button><div class="dots" id="dots"></div><button id="next">→</button></div>
+  <div style="display:flex;flex-direction:column;align-items:center;">
+    <div class="dl-bar">
+      <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Current Slide</button>
+      <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>All Slides</button>
+    </div>
+    <div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+  </div>
+  <div class="caption-section">
+    <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <div class="caption-text" id="captionText">When Gemini 1.5 Pro launched with a 2 million token context window, many people asked whether RAG was dead. The honest answer: not even close.
+
+RAG and long context are optimized for completely different constraints. RAG is a cost-efficiency tool. Long context is a completeness tool.
+
+RAG embeds your document corpus into a vector database, then retrieves the 3-10 most relevant chunks at query time and inserts only those into the prompt. The context window stays small. The query cost stays fixed. Adding 1 million documents to the knowledge base costs only the embedding computation. The 1,001,000th document does not increase your per-query cost by a single cent. GitHub Copilot uses RAG across codebases. Notion AI uses it across workspaces. Any product with a large, frequently-queried, frequently-updated corpus uses RAG.
+
+Long context places the entire corpus in the model's context window for every query. At 2 million tokens, there is no retrieval step. No chunking strategy. No vector database. No retrieval failure. Questions requiring synthesis across many documents, where the relevant passage could be anywhere, are answered accurately. But a 2M token Gemini query costs roughly $10.50. Run that 1,000 times per day and you are spending $315,000 per month. Google NotebookLM uses this approach for up to 50 uploaded PDFs because the users query infrequently and completeness matters.
+
+Stanford's "Lost in the Middle" paper adds a critical caveat: LLM accuracy degrades for facts in the center of long contexts. Information at the beginning and end is recalled reliably. The middle is underutilized. A 2M token context does not mean 2M tokens of uniform attention.
+
+Production systems converge on hybrid approaches: RAG retrieves candidates efficiently, a reranker selects the best 20, and those 20 fill a larger context window for better synthesis than top-5 retrieval alone.
+
+Swipe to see the RAG pipeline code, the cost comparison at scale, and where each approach wins.
+
+#rag #llm #vectordatabase #genai #enterpriseai #ravenextechnologies</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  const carousel=document.getElementById('carousel'),slides=carousel.querySelectorAll('.slide'),dotsC=document.getElementById('dots'),prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+  const dlSVG='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  let cur=0;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});dotsC.appendChild(d);});
+  const dots=dotsC.querySelectorAll('.dot');
+  const sc=dir=>carousel.scrollBy({left:dir*(slides[0].offsetWidth+18),behavior:'smooth'});
+  prevBtn.onclick=()=>sc(-1);nextBtn.onclick=()=>sc(1);
+  slides.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cur=Array.from(slides).indexOf(e.target);dots.forEach((d,i)=>d.classList.toggle('active',i===cur));}});},{root:carousel,threshold:.6}).observe(s));
+  document.onkeydown=e=>{if(e.key==='ArrowRight')sc(1);if(e.key==='ArrowLeft')sc(-1);};
+  const copySVG='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  async function copyCaption(){const text=document.getElementById('captionText').innerText;const btn=document.getElementById('copyBtn');try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}btn.classList.add('copied');btn.innerHTML=copySVG+'Copied!';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=copySVG+'Copy';},2000);}
+  async function cap(s){return await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});}
+  function dl(c,f){const a=document.createElement('a');a.download=f;a.href=c.toDataURL('image/png');a.click();}
+  async function downloadCurrentSlide(){const b=document.getElementById('dlCurrent');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';try{dl(await cap(slides[cur]),'ragctx-'+String(cur+1).padStart(2,'0')+'.png');}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'Current Slide';b.disabled=false;}
+  async function downloadAllSlides(){const b=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');b.disabled=true;b.innerHTML=dlSVG+'Capturing...';bar.style.display='block';fill.style.width='0%';try{const o=carousel.scrollLeft;carousel.style.scrollBehavior='auto';for(let i=0;i<slides.length;i++){slides[i].scrollIntoView({behavior:'instant',inline:'center'});await new Promise(r=>setTimeout(r,150));fill.style.width=((i+1)/slides.length*100)+'%';dl(await cap(slides[i]),'ragctx-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400));}carousel.scrollTo({left:o,behavior:'instant'});carousel.style.scrollBehavior='smooth';}catch(e){alert('Download failed: '+e.message);}b.innerHTML=dlSVG+'All Slides';b.disabled=false;bar.style.display='none';}
+</script>
+</body>
+</html>
