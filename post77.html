@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.gn { color:var(--green); } .st-v.bl { color:var(--blue); } .st-v.or { color:var(--orange); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.gn-c { background:rgba(22,163,74,.06); border:1px solid rgba(22,163,74,.15); }
   .gcard.bl-c { background:rgba(29,78,216,.06); border:1px solid rgba(29,78,216,.15); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -85,7 +85,7 @@
           <div class="st"><span class="st-v or">The old way</span><div class="st-t"><strong>Early LLM serving systems used static batching: group N requests together, run them as a fixed batch, return all results together when the longest request finishes.</strong> Simple to implement, but catastrophically wasteful on GPU.</div></div>
           <div class="st"><span class="st-v gn">The waste</span><div class="st-t"><strong>If one request in a batch of 32 generates 500 tokens while the rest generate 50, all 31 short requests sit idle waiting for the one long one to finish.</strong> GPU utilization collapses to near zero for 90% of the batch's wall-clock time. Throughput per dollar is terrible.</div></div>
           <div class="st"><span class="st-v bl">The insight</span><div class="st-t"><strong>LLM inference is autoregressive: each token is generated one step at a time.</strong> Between each step, the GPU is idle for all completed sequences. Continuous batching replaces finished sequences with new requests immediately after they complete, keeping the GPU full at every step.</div></div>
-          <div class="st"><span class="st-v or">The result</span><div class="st-t"><strong>Continuous batching improves throughput by 5-23x over static batching at equivalent latency.</strong> The UC Berkeley vLLM team published this in 2023 and demonstrated the improvement on real OpenAI API traffic patterns. It is now the standard approach in every production LLM serving system.</div></div>
+          <div class="st"><span class="st-v or">The result</span><div class="st-t"><strong>Continuous batching improves throughput by 5-23x over static batching at equivalent latency.</strong> The UC Berkeley vLLM paper in 2023 demonstrated this. Now standard in all LLM serving.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -99,10 +99,10 @@
         <h2><span class="gn">PagedAttention</span><br>Explained.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v gn">The KV cache</span><div class="st-t"><strong>Attention mechanisms cache Key and Value tensors for all previous tokens to avoid recomputing them.</strong> For a 2,048-token context on a 70B model, the KV cache for a single request consumes several GB. Multiply by concurrent users and VRAM fills instantly.</div></div>
-          <div class="st"><span class="st-v or">The fragmentation</span><div class="st-t"><strong>Before vLLM, KV caches were allocated contiguously with maximum sequence length reserved upfront.</strong> A request expected to generate 2,048 tokens reserved 2,048-token VRAM even if it generated only 20. Over 60-80% of reserved VRAM sat empty. GPU utilization remained low even with continuous batching.</div></div>
-          <div class="st"><span class="st-v bl">PagedAttention</span><div class="st-t"><strong>Borrowed from OS virtual memory: divide VRAM into fixed blocks and map non-contiguous blocks to logical KV cache pages.</strong> A request grows its KV cache one block at a time as tokens are generated. No upfront reservation. Fragmentation drops to under 4%. More requests fit in memory simultaneously.</div></div>
-          <div class="st"><span class="st-v gn">Copy-on-write</span><div class="st-t"><strong>PagedAttention enables KV cache sharing between requests with common prefixes.</strong> System prompt blocks are shared in memory across all concurrent users. When a request diverges, its page is forked via copy-on-write. Reduces VRAM usage by 30-50% for chat applications with long system prompts.</div></div>
+          <div class="st"><span class="st-v gn">The KV cache</span><div class="st-t"><strong>Attention mechanisms cache Key and Value tensors for all previous tokens to avoid recomputing them.</strong> For a 2,048-token context on a 70B model, the KV cache for one request consumes several GB. With concurrent users, VRAM fills instantly.</div></div>
+          <div class="st"><span class="st-v or">The fragmentation</span><div class="st-t"><strong>Before vLLM, KV caches were allocated contiguously with maximum sequence length reserved upfront.</strong> A 2,048-token reservation was made even if only 20 tokens were generated. Over 60% of VRAM sat empty.</div></div>
+          <div class="st"><span class="st-v bl">PagedAttention</span><div class="st-t"><strong>Borrowed from OS virtual memory: divide VRAM into fixed blocks and map non-contiguous blocks to logical KV cache pages.</strong> KV cache grows one block at a time as tokens generate. No upfront reservation. Fragmentation drops to under 4%.</div></div>
+          <div class="st"><span class="st-v gn">Copy-on-write</span><div class="st-t"><strong>PagedAttention enables KV cache sharing between requests with common prefixes.</strong> System prompt blocks are shared in memory. Pages fork via copy-on-write on divergence. Saves 30-50% VRAM for chat with long system prompts.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -141,10 +141,10 @@ docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span>
         <h2><span class="gn">vLLM</span> vs<br><span class="bl">TGI</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v gn">vLLM strengths</span><div class="st-t"><strong>Highest throughput in independent benchmarks, widest model support, easiest Python integration.</strong> PagedAttention is the core innovation. Supports 100+ model architectures including Llama, Mistral, Qwen, and Gemma. OpenAI-compatible API out of the box. Favored for research and flexible production deployment.</div></div>
-          <div class="st"><span class="st-v bl">TGI strengths</span><div class="st-t"><strong>HuggingFace's production serving engine, battle-tested at scale by the HuggingFace Inference API.</strong> Better tooling for token streaming, request cancellation, and safety filtering. Supports FlashAttention and speculative decoding. Preferred by enterprise teams already on the HuggingFace ecosystem.</div></div>
-          <div class="st"><span class="st-v or">FlashAttention</span><div class="st-t"><strong>Both vLLM and TGI use FlashAttention as the underlying attention kernel.</strong> FlashAttention rewrites attention computation to be IO-aware: it fuses operations to minimize GPU memory reads and writes. Results in 2-4x speedup on the attention computation itself, independent of batching strategy.</div></div>
-          <div class="st"><span class="st-v gn">Speculative decoding</span><div class="st-t"><strong>Both support speculative decoding: a small draft model generates candidate tokens, and the large model verifies them in parallel.</strong> Correct draft tokens are accepted without extra computation. Typical acceptance rates of 70-80% yield 2-3x throughput improvement on long-form generation tasks.</div></div>
+          <div class="st"><span class="st-v gn">vLLM strengths</span><div class="st-t"><strong>Highest throughput in independent benchmarks, widest model support, easiest Python integration.</strong> Supports 100+ model architectures. OpenAI-compatible API. Favored for research and flexible deployment.</div></div>
+          <div class="st"><span class="st-v bl">TGI strengths</span><div class="st-t"><strong>HuggingFace's production serving engine, battle-tested at scale by the HuggingFace Inference API.</strong> Better tooling for streaming, cancellation, and safety filtering. Preferred by HuggingFace ecosystem teams.</div></div>
+          <div class="st"><span class="st-v or">FlashAttention</span><div class="st-t"><strong>Both vLLM and TGI use FlashAttention as the underlying attention kernel.</strong> Fuses operations to minimize GPU memory reads, giving 2-4x speedup on attention independent of batching strategy.</div></div>
+          <div class="st"><span class="st-v gn">Speculative decoding</span><div class="st-t"><strong>Both support speculative decoding: a small draft model generates candidate tokens, and the large model verifies them in parallel.</strong> 70-80% acceptance rates yield 2-3x throughput improvement on long-form generation.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -158,10 +158,10 @@ docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span>
         <h2>In<br><span class="bl">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v gn">Anyscale</span><div class="st-t"><strong>Deployed vLLM as the serving backbone for their LLM endpoints API.</strong> The vLLM team spun out from UC Berkeley RISELab to commercialize around the technology. Anyscale's endpoints serve hundreds of millions of tokens per day using vLLM on Ray Serve for distributed inference.</div></div>
-          <div class="st"><span class="st-v bl">HuggingFace</span><div class="st-t"><strong>TGI powers HuggingFace's Inference API, which serves models used by millions of developers daily.</strong> Battle-tested on peaks exceeding 1 billion requests per day across shared and dedicated inference endpoints. Reliability and monitoring tooling are mature compared to vLLM's younger ecosystem.</div></div>
+          <div class="st"><span class="st-v gn">Anyscale</span><div class="st-t"><strong>Deployed vLLM as the serving backbone for their LLM endpoints API.</strong> Serves hundreds of millions of tokens per day using vLLM on Ray Serve.</div></div>
+          <div class="st"><span class="st-v bl">HuggingFace</span><div class="st-t"><strong>TGI powers HuggingFace's Inference API, which serves models used by millions of developers daily.</strong> Battle-tested on peaks exceeding 1 billion requests per day. Monitoring tooling is more mature than vLLM's.</div></div>
           <div class="st"><span class="st-v or">AWS Bedrock</span><div class="st-t"><strong>Amazon uses continuous batching internally for all Bedrock model serving.</strong> Claude on Bedrock, Llama on Bedrock, and Titan models all use continuous batching to maximize GPU utilization. The approach is not publicly disclosed but confirmed in AWS re:Invent 2023 architecture sessions.</div></div>
-          <div class="st"><span class="st-v gn">Modal</span><div class="st-t"><strong>Serverless GPU compute platform that uses vLLM for its LLM serving primitives.</strong> Users deploy a vLLM inference endpoint with 5 lines of Python. Modal handles container orchestration, GPU allocation, autoscaling, and cold start optimization transparently. The underlying engine is vLLM with PagedAttention.</div></div>
+          <div class="st"><span class="st-v gn">Modal</span><div class="st-t"><strong>Serverless GPU compute platform that uses vLLM for its LLM serving primitives.</strong> Users deploy a vLLM endpoint with 5 lines of Python. Modal handles container orchestration, GPU allocation, and autoscaling.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -177,9 +177,9 @@ docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span>
         <div class="stats">
           <div class="st"><span class="st-v gn">Continuous batching</span><div class="st-t"><strong>Replace finished requests with new ones at each generation step instead of waiting for the whole batch to finish.</strong> Improves throughput by 5-23x over static batching. Standard in all modern LLM serving systems since vLLM's 2023 paper.</div></div>
           <div class="st"><span class="st-v bl">PagedAttention</span><div class="st-t"><strong>Manage KV cache in fixed-size blocks mapped non-contiguously, like OS virtual memory.</strong> Eliminates reservation waste. Enables KV cache sharing between requests with common prefixes via copy-on-write. Reduces VRAM fragmentation from 60%+ to under 4%.</div></div>
-          <div class="st"><span class="st-v or">FlashAttention</span><div class="st-t"><strong>IO-aware attention kernel that fuses operations to minimize GPU memory reads.</strong> 2-4x faster than naive attention implementation. Used by both vLLM and TGI as the underlying compute kernel. Essential for long-context inference where attention is the bottleneck.</div></div>
-          <div class="st"><span class="st-v gn">Tensor parallelism</span><div class="st-t"><strong>Split model weight matrices across multiple GPUs, each computing a shard.</strong> An A100 80GB holds roughly a 70B model. 4x A100 via tensor parallel can serve a 70B model at 4x the throughput. Both vLLM and TGI support tensor parallel with the --tensor-parallel-size flag.</div></div>
-          <div class="st"><span class="st-v bl">KV cache</span><div class="st-t"><strong>Cached Key-Value tensors from previous attention computations to avoid recomputing them.</strong> Essential for autoregressive generation. Size scales linearly with sequence length and model size. PagedAttention's primary contribution is managing KV cache allocation efficiently.</div></div>
+          <div class="st"><span class="st-v or">FlashAttention</span><div class="st-t"><strong>IO-aware attention kernel that fuses operations to minimize GPU memory reads.</strong> 2-4x faster than naive attention. Used by both vLLM and TGI. Essential for long-context inference.</div></div>
+          <div class="st"><span class="st-v gn">Tensor parallelism</span><div class="st-t"><strong>Split model weight matrices across multiple GPUs, each computing a shard.</strong> 4x A100 via tensor parallel serves a 70B model at 4x throughput. Both vLLM and TGI support --tensor-parallel-size.</div></div>
+          <div class="st"><span class="st-v bl">KV cache</span><div class="st-t"><strong>Cached Key-Value tensors from previous attention computations to avoid recomputing them.</strong> Essential for autoregressive generation. PagedAttention's primary contribution is efficient KV cache allocation.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

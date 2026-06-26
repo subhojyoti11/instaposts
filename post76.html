@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.rd { color:var(--red); } .st-v.id { color:var(--indigo); } .st-v.tl { color:var(--teal); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.id-c { background:rgba(79,70,229,.04); border:1px solid rgba(79,70,229,.12); }
   .gcard.tl-c { background:rgba(13,148,136,.04); border:1px solid rgba(13,148,136,.12); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,9 +82,9 @@
         <h2>The <span class="rd">Memory</span><br>Wall.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v rd">The problem</span><div class="st-t"><strong>LLM inference requires all model weights to fit in GPU VRAM simultaneously.</strong> A 70B parameter model at float16 precision requires 140GB of VRAM. An RTX 4090 has 24GB. The cheapest GPU with enough VRAM to run it, 8x A100, costs over $200,000. Most people cannot afford to run large models locally.</div></div>
-          <div class="st"><span class="st-v id">Why VRAM?</span><div class="st-t"><strong>GPU VRAM bandwidth is the bottleneck for token generation, not compute.</strong> To generate one token, the GPU must read every single weight of every layer at least once. With 140GB of weights, that is 140GB of memory reads per token. VRAM bandwidth at 2-3 TB/s is 10x faster than RAM bandwidth and 1000x faster than NVMe SSD.</div></div>
-          <div class="st"><span class="st-v tl">Quantization</span><div class="st-t"><strong>The first solution: reduce weight precision from float16 to int4, shrinking 140GB to 35GB.</strong> GGUF format and llama.cpp use 4-bit quantization extensively. Quality degrades slightly but remains strong for most tasks. 35GB still exceeds a single consumer GPU's VRAM.</div></div>
+          <div class="st"><span class="st-v rd">The problem</span><div class="st-t"><strong>LLM inference requires all model weights to fit in GPU VRAM simultaneously.</strong> A 70B model at float16 needs 140GB of VRAM. The cheapest GPU cluster with enough VRAM costs over $200,000.</div></div>
+          <div class="st"><span class="st-v id">Why VRAM?</span><div class="st-t"><strong>GPU VRAM bandwidth is the bottleneck for token generation, not compute.</strong> Generating one token requires reading every weight at least once. VRAM at 2-3 TB/s is 10x faster than RAM and 1000x faster than NVMe.</div></div>
+          <div class="st"><span class="st-v tl">Quantization</span><div class="st-t"><strong>The first solution: reduce weight precision from float16 to int4, shrinking 140GB to 35GB.</strong> GGUF and llama.cpp use 4-bit quantization extensively. 35GB still exceeds a single consumer GPU.</div></div>
           <div class="st"><span class="st-v rd">The insight</span><div class="st-t"><strong>Transformers process layers sequentially.</strong> During inference, only the weights of the current layer are needed. Layers not currently executing serve no purpose sitting in VRAM. AirLLM exploits this: stream layers from storage just-in-time and evict them immediately after use.</div></div>
         </div>
       </div>
@@ -99,10 +99,10 @@
         <h2><span class="id">Layer</span><br>Streaming<br>Explained.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v id">Normal inference</span><div class="st-t"><strong>Load all 80 layers of Llama 70B into VRAM at startup.</strong> Requires 140GB VRAM. Each forward pass reads weights sequentially through all 80 layers. All weights stay resident in VRAM between tokens.</div></div>
-          <div class="st"><span class="st-v rd">AirLLM inference</span><div class="st-t"><strong>Load layer 1 from NVMe to RAM to VRAM, run it, evict it from VRAM, load layer 2, repeat.</strong> Peak VRAM usage is the size of one layer, roughly 1.75GB for a 70B model. The 8GB GPU can run it. The cost: each token takes 60-120 seconds instead of sub-second.</div></div>
-          <div class="st"><span class="st-v tl">The memory hierarchy</span><div class="st-t"><strong>NVMe SSD: 7 GB/s read speed. RAM: 50-100 GB/s bandwidth. VRAM: 2,000 GB/s bandwidth.</strong> AirLLM exploits the full hierarchy. NVMe delivers layers to RAM asynchronously while the GPU computes with the current layer in VRAM. Prefetching hides part of the disk I/O latency.</div></div>
-          <div class="st"><span class="st-v id">Compression</span><div class="st-t"><strong>AirLLM applies 4-bit quantization per layer before storing to disk.</strong> Each layer is quantized when saved, reducing NVMe reads by 4x. A 70B model weighs 35GB quantized instead of 140GB. NVMe load time per layer drops from 20ms to 5ms, directly reducing time per token.</div></div>
+          <div class="st"><span class="st-v id">Normal inference</span><div class="st-t"><strong>Load all 80 layers of Llama 70B into VRAM at startup.</strong> Requires 140GB VRAM. All 80 layers stay resident between tokens.</div></div>
+          <div class="st"><span class="st-v rd">AirLLM inference</span><div class="st-t"><strong>Load layer 1 from NVMe to RAM to VRAM, run it, evict it from VRAM, load layer 2, repeat.</strong> Peak VRAM is one layer (~1.75GB for a 70B model). Each token takes 60-120 seconds.</div></div>
+          <div class="st"><span class="st-v tl">The memory hierarchy</span><div class="st-t"><strong>NVMe SSD: 7 GB/s read speed. RAM: 50-100 GB/s bandwidth. VRAM: 2,000 GB/s bandwidth.</strong> NVMe delivers layers to RAM asynchronously while the GPU computes the current layer. Prefetching hides disk I/O latency.</div></div>
+          <div class="st"><span class="st-v id">Compression</span><div class="st-t"><strong>AirLLM applies 4-bit quantization per layer before storing to disk.</strong> A 70B model weighs 35GB quantized instead of 140GB. Load time per layer drops from 20ms to 5ms.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -146,10 +146,10 @@ output = model.<span class="tl">generate</span>(**input_tokens, max_new_tokens=5
         <h2>Speed vs<br><span class="tl">Feasibility</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v rd">The cost</span><div class="st-t"><strong>Layer streaming is slow.</strong> On an RTX 4060 with NVMe, AirLLM generates roughly 1 token per 60-120 seconds for a 70B model. A 200-token response takes 3-4 hours. This is not viable for interactive chat but is viable for offline batch processing.</div></div>
-          <div class="st"><span class="st-v id">Use cases</span><div class="st-t"><strong>Overnight document summarization, legal contract review, and research analysis where latency is irrelevant but cost matters.</strong> A 70B model running on a $400 consumer GPU overnight processes a 100-document corpus that would cost $20 via API. After 20 runs it pays for itself.</div></div>
-          <div class="st"><span class="st-v tl">Apple Silicon advantage</span><div class="st-t"><strong>Apple M-series chips have unified memory architecture: CPU and GPU share the same memory pool.</strong> An M2 Max with 96GB unified memory can run a 70B model at native speed without layer streaming. MLX, Apple's ML framework, enables this. macOS is now a first-class LLM inference platform.</div></div>
-          <div class="st"><span class="st-v rd">Related approaches</span><div class="st-t"><strong>llama.cpp implements model offloading that splits layers between GPU and CPU RAM.</strong> Some layers run on GPU at full speed, overflow layers run on CPU. A 70B model with 24GB VRAM offloads 50 layers to GPU and 30 to CPU, achieving 3-5 tokens per second, orders of magnitude faster than full disk streaming.</div></div>
+          <div class="st"><span class="st-v rd">The cost</span><div class="st-t"><strong>Layer streaming is slow.</strong> On an RTX 4060, AirLLM generates ~1 token per 60-120 seconds. A 200-token response takes 3-4 hours.</div></div>
+          <div class="st"><span class="st-v id">Use cases</span><div class="st-t"><strong>Overnight document summarization, legal contract review, and research analysis where latency is irrelevant but cost matters.</strong> A $400 consumer GPU processes a 100-document corpus overnight that would cost $20 via API.</div></div>
+          <div class="st"><span class="st-v tl">Apple Silicon advantage</span><div class="st-t"><strong>Apple M-series chips have unified memory architecture: CPU and GPU share the same memory pool.</strong> M2 Max with 96GB unified memory runs 70B models at native speed via MLX without layer streaming.</div></div>
+          <div class="st"><span class="st-v rd">Related approaches</span><div class="st-t"><strong>llama.cpp implements model offloading that splits layers between GPU and CPU RAM.</strong> A 70B model with 24GB VRAM offloads 50 layers to GPU and 30 to CPU, achieving 3-5 tokens/s.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -163,10 +163,10 @@ output = model.<span class="tl">generate</span>(**input_tokens, max_new_tokens=5
         <h2>The<br><span class="id">Ecosystem</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v id">llama.cpp</span><div class="st-t"><strong>The most widely used local inference engine, written in C++.</strong> Created by Georgi Gerganov in 2023. Implements 4-bit and 8-bit quantization in GGUF format. Supports layer offloading between GPU and CPU RAM. Runs on Mac, Linux, and Windows. The backbone of Ollama and LM Studio.</div></div>
-          <div class="st"><span class="st-v rd">Ollama</span><div class="st-t"><strong>Docker-like runtime for local LLMs built on llama.cpp.</strong> One command downloads and runs any model from the Ollama registry. Manages quantized model weights, GPU layer allocation, and an OpenAI-compatible API endpoint. Powers LM Studio's backend and VS Code Copilot alternatives.</div></div>
-          <div class="st"><span class="st-v tl">MLX</span><span class="st-t"><strong>Apple's array framework optimized for Apple Silicon's unified memory.</strong> Released in 2023. Enables inference at full memory bandwidth without the CPU-GPU copy overhead. Llama 70B on M2 Ultra 192GB runs at 15 tokens per second, competitive with A100 cloud inference at 1/10 the cost.</span></div>
-          <div class="st"><span class="st-v id">AirLLM</span><div class="st-t"><strong>Open-source Python library for layer-by-layer inference on constrained hardware.</strong> Published by lyogavin on GitHub. Supports Llama 2, Llama 3, Mistral, and Falcon models. The primary use case is enabling 70B+ models on consumer GPUs with 8-24GB VRAM at the cost of very slow generation speed.</div></div>
+          <div class="st"><span class="st-v id">llama.cpp</span><div class="st-t"><strong>The most widely used local inference engine, written in C++.</strong> Created by Georgi Gerganov in 2023. GGUF quantization and GPU/CPU layer offloading. The backbone of Ollama and LM Studio.</div></div>
+          <div class="st"><span class="st-v rd">Ollama</span><div class="st-t"><strong>Docker-like runtime for local LLMs built on llama.cpp.</strong> One command downloads and runs any model. Manages weights, GPU allocation, and an OpenAI-compatible API.</div></div>
+          <div class="st"><span class="st-v tl">MLX</span><span class="st-t"><strong>Apple's array framework optimized for Apple Silicon's unified memory.</strong> M2 Ultra with 192GB runs Llama 70B at 15 tokens/s, competitive with A100 at 1/10 the cost.</span></div>
+          <div class="st"><span class="st-v id">AirLLM</span><div class="st-t"><strong>Open-source Python library for layer-by-layer inference on constrained hardware.</strong> Supports Llama 2, Llama 3, Mistral, and Falcon. Enables 70B+ on 8-24GB consumer GPUs at very slow speeds.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -182,9 +182,9 @@ output = model.<span class="tl">generate</span>(**input_tokens, max_new_tokens=5
         <div class="stats">
           <div class="st"><span class="st-v id">AirLLM</span><div class="st-t"><strong>Layer-by-layer inference: loads one transformer layer at a time from NVMe to VRAM, runs it, evicts it.</strong> Peak VRAM usage equals one layer size. Enables 70B models on 8GB GPUs at 1 token per 60-120 seconds.</div></div>
           <div class="st"><span class="st-v rd">Quantization</span><div class="st-t"><strong>Reducing model weight precision from float16 to int4 or int8.</strong> Shrinks a 70B model from 140GB to 35GB (int4) with mild quality loss. GGUF is the standard format. llama.cpp, Ollama, and AirLLM all use quantization by default.</div></div>
-          <div class="st"><span class="st-v tl">Layer offloading</span><div class="st-t"><strong>Splitting model layers between GPU VRAM and CPU RAM.</strong> llama.cpp sets n_gpu_layers to control the split. Layers on GPU run at VRAM bandwidth. Layers on CPU run at RAM bandwidth. Enables near-real-time inference on consumer hardware for models that overflow VRAM.</div></div>
-          <div class="st"><span class="st-v id">MLX</span><div class="st-t"><strong>Apple's unified memory framework for Apple Silicon.</strong> CPU and GPU share the same physical memory pool. No copy overhead. M2 Ultra with 192GB unified memory runs 70B models at 15 tokens/s, comparable to an A100 at 1/10 the cost.</div></div>
-          <div class="st"><span class="st-v rd">GGUF</span><div class="st-t"><strong>GPT-Generated Unified Format: the standard file format for quantized LLM weights.</strong> Replaced GGML. Stores model architecture metadata alongside quantized weights. Supported by llama.cpp, Ollama, LM Studio, and koboldcpp. Models are shared in GGUF on Hugging Face.</div></div>
+          <div class="st"><span class="st-v tl">Layer offloading</span><div class="st-t"><strong>Splitting model layers between GPU VRAM and CPU RAM.</strong> llama.cpp sets n_gpu_layers to control the split. Enables near-real-time inference on consumer hardware for models that overflow VRAM.</div></div>
+          <div class="st"><span class="st-v id">MLX</span><div class="st-t"><strong>Apple's unified memory framework for Apple Silicon.</strong> CPU and GPU share the same physical memory pool. M2 Ultra 192GB runs 70B models at 15 tokens/s at 1/10 A100 cost.</div></div>
+          <div class="st"><span class="st-v rd">GGUF</span><div class="st-t"><strong>GPT-Generated Unified Format: the standard file format for quantized LLM weights.</strong> Replaced GGML. Supported by llama.cpp, Ollama, LM Studio, and koboldcpp.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

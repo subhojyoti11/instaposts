@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.tl { color:var(--teal); } .st-v.id { color:var(--indigo); } .st-v.am { color:var(--amber); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.tl-c { background:rgba(13,148,136,.06); border:1px solid rgba(13,148,136,.15); }
   .gcard.id-c { background:rgba(79,70,229,.06); border:1px solid rgba(79,70,229,.15); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,10 +82,10 @@
         <h2>What a <span class="tl">Digital</span><br><span class="id">Twin</span> Is.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v tl">Definition</span><div class="st-t"><strong>A digital twin is a continuously updated virtual model of a physical asset, process, or system.</strong> Sensors stream real-time data from the physical object to its digital counterpart, keeping them synchronized. The digital model reflects the current state of the physical one at all times.</div></div>
-          <div class="st"><span class="st-v id">Origin</span><div class="st-t"><strong>NASA pioneered the concept for the Apollo program in 1969.</strong> Mission Control maintained physical replicas of spacecraft systems to simulate failure scenarios. Michael Grieves formalized the digital twin concept in a 2002 University of Michigan course on product lifecycle management.</div></div>
-          <div class="st"><span class="st-v am">Three components</span><div class="st-t"><strong>Every digital twin has three parts: the physical entity, the virtual model, and the data connection between them.</strong> Sensors stream state data from the physical asset. The digital model processes that data. Actuators close the loop by sending control signals back to the physical world.</div></div>
-          <div class="st"><span class="st-v tl">Simulation</span><div class="st-t"><strong>The key capability is running simulations against the virtual model before changing the physical asset.</strong> Test 1,000 maintenance schedules, supply chain configurations, or design variants in hours on the digital twin instead of months on the physical system.</div></div>
+          <div class="st"><span class="st-v tl">Definition</span><div class="st-t"><strong>A digital twin is a continuously updated virtual model of a physical asset, process, or system.</strong> Sensors stream real-time data to keep them synchronized.</div></div>
+          <div class="st"><span class="st-v id">Origin</span><div class="st-t"><strong>NASA pioneered the concept for the Apollo program in 1969.</strong> Michael Grieves formalized the concept in a 2002 product lifecycle management course.</div></div>
+          <div class="st"><span class="st-v am">Three components</span><div class="st-t"><strong>Every digital twin has three parts: the physical entity, the virtual model, and the data connection between them.</strong> Sensors stream state. The model computes. Actuators close the loop.</div></div>
+          <div class="st"><span class="st-v tl">Simulation</span><div class="st-t"><strong>The key capability is running simulations against the virtual model before changing the physical asset.</strong> Test 1,000 maintenance schedules or design variants in hours instead of months.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -99,10 +99,10 @@
         <h2>The <span class="am">Data</span><br>Pipeline.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">Ingestion</span><div class="st-t"><strong>IoT sensors stream telemetry at 1Hz to 10kHz depending on the asset type.</strong> A jet engine has 5,000 sensors. A wind turbine has 500. A factory production line has 50,000 data points across all equipment. MQTT and OPC-UA are the dominant protocols for industrial sensor networks.</div></div>
-          <div class="st"><span class="st-v tl">Processing</span><div class="st-t"><strong>Raw sensor data is noisy, incomplete, and time-series in nature.</strong> Kalman filters smooth sensor readings. Anomaly detection flags outliers. Feature extraction converts raw timeseries into state variables the physics model can consume. Apache Kafka and AWS Kinesis handle the streaming layer.</div></div>
-          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The digital twin runs a physics simulation, not just a database lookup.</strong> Finite element analysis models stress and thermal dynamics in mechanical components. CFD models fluid flow in HVAC and chemical processes. The model predicts failure before sensors detect it.</div></div>
-          <div class="st"><span class="st-v am">Feedback</span><div class="st-t"><strong>Simulation results drive optimization recommendations or direct actuation.</strong> An autonomous factory twin adjusts line speed to minimize defect rate in real time. A building management twin preemptively adjusts HVAC load before a predicted heat spike to avoid an expensive demand charge.</div></div>
+          <div class="st"><span class="st-v am">Ingestion</span><div class="st-t"><strong>IoT sensors stream telemetry at 1Hz to 10kHz depending on the asset type.</strong> MQTT and OPC-UA are the dominant industrial protocols. A jet engine has 5,000 sensors; a factory line 50,000 data points.</div></div>
+          <div class="st"><span class="st-v tl">Processing</span><div class="st-t"><strong>Raw sensor data is noisy, incomplete, and time-series in nature.</strong> Kalman filters smooth readings. Apache Kafka and Kinesis handle the streaming layer.</div></div>
+          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The digital twin runs a physics simulation, not just a database lookup.</strong> Finite element analysis models stress. CFD models fluid flow. The model predicts failure before sensors detect it.</div></div>
+          <div class="st"><span class="st-v am">Feedback</span><div class="st-t"><strong>Simulation results drive optimization recommendations or direct actuation.</strong> A factory twin adjusts line speed in real time. A building twin preemptively manages HVAC load before a heat spike.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -146,10 +146,10 @@ class <span class="tl">DigitalTwin</span>:
         <h2><span class="id">Simulation</span><br>at Scale.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v id">Monte Carlo</span><div class="st-t"><strong>Digital twins run thousands of stochastic simulations to quantify risk under uncertainty.</strong> Boeing simulates 10,000 flight cycles on a new airframe design before cutting the first piece of metal. Each run varies material properties, load conditions, and environmental factors to build a failure probability distribution.</div></div>
-          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Physics-based models predict component failure from degradation curves, not reactive sensor thresholds.</strong> GE Aviation's twin for jet engines detects bearing wear 2,000 hours before failure by modeling metal fatigue accumulation. Scheduled maintenance replaces the part during a planned downtime window.</div></div>
-          <div class="st"><span class="st-v am">Supply chain</span><div class="st-t"><strong>Retail and logistics companies run inventory twins that simulate demand shocks in real time.</strong> When a Suez Canal blockage was announced in 2021, companies with supply chain twins rerouted orders within hours by simulating alternate routing costs across their digital supplier network.</div></div>
-          <div class="st"><span class="st-v id">Urban twins</span><div class="st-t"><strong>Cities build digital twins of their entire infrastructure.</strong> Singapore's Virtual Singapore models every building, road, and utility line at centimeter precision. Urban planners simulate flood impact, solar panel placement efficiency, and emergency vehicle routing before any physical change is made.</div></div>
+          <div class="st"><span class="st-v id">Monte Carlo</span><div class="st-t"><strong>Digital twins run thousands of stochastic simulations to quantify risk under uncertainty.</strong> Boeing simulates 10,000 flight cycles on a new airframe before cutting a single piece of metal.</div></div>
+          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Physics-based models predict component failure from degradation curves, not reactive sensor thresholds.</strong> GE Aviation detects bearing wear 2,000 flight hours before failure by modeling fatigue accumulation.</div></div>
+          <div class="st"><span class="st-v am">Supply chain</span><div class="st-t"><strong>Retail and logistics companies run inventory twins that simulate demand shocks in real time.</strong> When the Suez Canal blocked in 2021, companies with supply chain twins rerouted orders within hours.</div></div>
+          <div class="st"><span class="st-v id">Urban twins</span><div class="st-t"><strong>Cities build digital twins of their entire infrastructure.</strong> Singapore's Virtual Singapore models every building at centimeter precision for urban planning.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -163,10 +163,10 @@ class <span class="tl">DigitalTwin</span>:
         <h2>In<br><span class="am">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v tl">NVIDIA Omniverse</span><div class="st-t"><strong>Real-time 3D simulation platform for industrial digital twins at scale.</strong> BMW uses Omniverse to simulate entire factory layouts before physical construction. The BMW Munich plant was planned completely in Omniverse and then physically built, saving months of rework.</div></div>
-          <div class="st"><span class="st-v id">Siemens</span><div class="st-t"><strong>Siemens MindSphere connects industrial equipment to digital twins running in the Azure cloud.</strong> Siemens uses its own technology: the Amberg factory in Germany has a digital twin of every machine. Defect rate is 12 per million units, among the lowest in the world, enabled by real-time twin simulation.</div></div>
-          <div class="st"><span class="st-v am">GE Aviation</span><div class="st-t"><strong>Every GE jet engine shipped since 2016 has a digital twin tracking its specific flight history.</strong> The twin accumulates cycle counts, temperature excursions, and vibration signatures unique to that engine serial number. Maintenance decisions are made from the twin's degradation model, not generic schedules.</div></div>
-          <div class="st"><span class="st-v tl">Ping An Smart City</span><div class="st-t"><strong>Built digital twins of Shenzhen and 22 other Chinese cities.</strong> The urban twins run real-time traffic simulations to optimize signal timing. Emergency response routes are recomputed every 30 seconds based on live incident data from the physical twin.</div></div>
+          <div class="st"><span class="st-v tl">NVIDIA Omniverse</span><div class="st-t"><strong>Real-time 3D simulation platform for industrial digital twins at scale.</strong> BMW planned its Munich factory entirely in Omniverse before physical construction began.</div></div>
+          <div class="st"><span class="st-v id">Siemens</span><div class="st-t"><strong>Siemens MindSphere connects industrial equipment to digital twins running in the Azure cloud.</strong> The Amberg factory twins every machine, achieving 12 defects per million units.</div></div>
+          <div class="st"><span class="st-v am">GE Aviation</span><div class="st-t"><strong>Every GE jet engine shipped since 2016 has a digital twin tracking its specific flight history.</strong> The twin accumulates cycle counts and vibration signatures unique to that serial number.</div></div>
+          <div class="st"><span class="st-v tl">Ping An Smart City</span><div class="st-t"><strong>Built digital twins of Shenzhen and 22 other Chinese cities.</strong> Twins optimize signal timing in real time and recompute emergency routes every 30 seconds.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -180,11 +180,11 @@ class <span class="tl">DigitalTwin</span>:
         <h2>Quick<br><span class="tl">Reference</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v tl">Digital twin</span><div class="st-t"><strong>A continuously synchronized virtual model of a physical asset or system.</strong> Sensor streams keep the model current. The model runs simulations, detects anomalies, and predicts failures before they occur in the physical world.</div></div>
-          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The simulation engine inside a digital twin, running finite element analysis or CFD.</strong> Predicts behavior under conditions not yet observed by sensors. Drives failure probability estimates from material science principles rather than statistical thresholds.</div></div>
-          <div class="st"><span class="st-v am">OPC-UA</span><div class="st-t"><strong>Open Platform Communications Unified Architecture: the standard industrial IoT messaging protocol.</strong> Replaces dozens of proprietary PLC communication protocols. All major industrial equipment vendors ship OPC-UA endpoints since 2018, enabling plug-and-play sensor data collection.</div></div>
-          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Maintenance scheduled by degradation model prediction rather than fixed intervals or reactive failure.</strong> GE Aviation's jet engine twins detect bearing wear 2,000 flight hours before failure. Unplanned engine-out events cost airlines $50,000-$500,000 per incident.</div></div>
-          <div class="st"><span class="st-v id">NVIDIA Omniverse</span><div class="st-t"><strong>GPU-accelerated 3D simulation platform for industrial digital twins.</strong> Built on Universal Scene Description (USD). BMW, Mercedes, and Foxconn use Omniverse for factory planning and robot training in simulation before physical deployment.</div></div>
+          <div class="st"><span class="st-v tl">Digital twin</span><div class="st-t"><strong>A continuously synchronized virtual model of a physical asset or system.</strong> Sensor streams keep the model current. The model predicts failures before they occur.</div></div>
+          <div class="st"><span class="st-v id">Physics model</span><div class="st-t"><strong>The simulation engine inside a digital twin, running finite element analysis or CFD.</strong> Predicts behavior under conditions not yet observed by sensors.</div></div>
+          <div class="st"><span class="st-v am">OPC-UA</span><div class="st-t"><strong>Open Platform Communications Unified Architecture: the standard industrial IoT messaging protocol.</strong> Replaces dozens of proprietary PLC protocols. All major industrial vendors ship OPC-UA endpoints since 2018.</div></div>
+          <div class="st"><span class="st-v tl">Predictive maintenance</span><div class="st-t"><strong>Maintenance scheduled by degradation model prediction rather than fixed intervals or reactive failure.</strong> GE Aviation's twins detect bearing wear 2,000 flight hours before failure.</div></div>
+          <div class="st"><span class="st-v id">NVIDIA Omniverse</span><div class="st-t"><strong>GPU-accelerated 3D simulation platform for industrial digital twins.</strong> BMW, Mercedes, and Foxconn use Omniverse for factory planning and robot training.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

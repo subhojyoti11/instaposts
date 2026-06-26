@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.lm { color:var(--lime); } .st-v.cy { color:var(--cyan); } .st-v.pk { color:var(--pink); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.lm-c { background:rgba(101,163,13,.06); border:1px solid rgba(101,163,13,.15); }
   .gcard.cy-c { background:rgba(8,145,178,.06); border:1px solid rgba(8,145,178,.15); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,9 +82,9 @@
         <h2>Why LLM<br><span class="pk">Inference</span><br>Is Slow.</h2>
         <div style="height:10px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pk">Autoregressive</span><div class="st-t"><strong>LLMs generate one token at a time.</strong> Each token requires a full forward pass through all model layers, reading every weight from VRAM. For a 70B model on an A100, that is 140GB of memory reads per token. At 2TB/s VRAM bandwidth, that is 70ms minimum per token: roughly 14 tokens per second maximum.</div></div>
-          <div class="st"><span class="st-v lm">Memory-bound</span><div class="st-t"><strong>LLM decoding is memory-bandwidth-bound, not compute-bound.</strong> The GPU's tensor cores sit mostly idle waiting for weights to load from VRAM. GPU utilization during decoding is typically 20-40% even on the fastest hardware. Compute is not the bottleneck.</div></div>
-          <div class="st"><span class="st-v cy">The waste</span><div class="st-t"><strong>Every token requires the same full model pass regardless of how predictable that token is.</strong> If the next token is obviously "the" after "pick up the phone and answer", the model still reads 140GB of weights to confirm it. Simple tokens cost exactly the same as complex reasoning tokens.</div></div>
+          <div class="st"><span class="st-v pk">Autoregressive</span><div class="st-t"><strong>LLMs generate one token at a time.</strong> Each token needs a full forward pass reading 140GB of weights. At 2TB/s VRAM bandwidth that's ~70ms minimum per token.</div></div>
+          <div class="st"><span class="st-v lm">Memory-bound</span><div class="st-t"><strong>LLM decoding is memory-bandwidth-bound, not compute-bound.</strong> Tensor cores sit idle waiting for VRAM loads. GPU utilization during decoding is typically 20-40%.</div></div>
+          <div class="st"><span class="st-v cy">The waste</span><div class="st-t"><strong>Every token requires the same full model pass regardless of how predictable that token is.</strong> If the next token is obviously "the", the model still reads 140GB of weights to confirm it.</div></div>
           <div class="st"><span class="st-v pk">The opportunity</span><div class="st-t"><strong>If we could predict several tokens ahead cheaply and verify them in one pass of the large model, we could generate multiple tokens per large model pass.</strong> This is the core idea behind speculative decoding: use a small model to guess, use the large model to verify in parallel.</div></div>
         </div>
       </div>
@@ -99,10 +99,10 @@
         <h2>How It<br><span class="lm">Works</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v lm">Draft model</span><div class="st-t"><strong>A small, fast model generates K candidate tokens autoregressively.</strong> For a 70B target model, the draft model might be 7B or even 68M parameters. The draft model runs K forward passes quickly because it is small. Each pass reads much less VRAM.</div></div>
+          <div class="st"><span class="st-v lm">Draft model</span><div class="st-t"><strong>A small, fast model generates K candidate tokens autoregressively.</strong> For a 70B target, the draft might be 7B. It runs K passes quickly, reading far less VRAM each.</div></div>
           <div class="st"><span class="st-v cy">Verification</span><div class="st-t"><strong>The large target model runs a single forward pass over the K candidate tokens in parallel.</strong> Unlike generation, verification can process all K tokens simultaneously because the inputs are already known. The target model produces probabilities for all K positions at once.</div></div>
           <div class="st"><span class="st-v pk">Acceptance</span><div class="st-t"><strong>Each draft token is accepted or rejected based on whether the target model agrees with the draft's choice.</strong> If the target model's probability for the draft token exceeds a threshold, the token is accepted. Rejection is sampled stochastically to preserve the exact output distribution of the target model.</div></div>
-          <div class="st"><span class="st-v lm">Speedup</span><div class="st-t"><strong>If the draft model accepts on average K tokens before the first rejection, each large model pass yields K tokens instead of 1.</strong> With acceptance rate alpha of 0.7 and K=5 drafts, expected accepted tokens per large model pass is roughly 3.1. Net speedup is 2-3x over standard decoding.</div></div>
+          <div class="st"><span class="st-v lm">Speedup</span><div class="st-t"><strong>If the draft model accepts on average K tokens before the first rejection, each large model pass yields K tokens instead of 1.</strong> At 70% acceptance with K=5 drafts, ~3.1 tokens accepted per pass. Net 2-3x speedup.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -151,9 +151,9 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
         <h2><span class="lm">Variants</span><br>and Tuning.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v lm">Draft model choice</span><div class="st-t"><strong>The draft model must be from the same model family as the target for high acceptance rates.</strong> Llama 3 70B + Llama 3 8B draft achieves 70-80% acceptance. Mismatched families drop acceptance rates below 50%, eliminating the speedup. Self-speculative variants use earlier layers of the same model as the draft.</div></div>
+          <div class="st"><span class="st-v lm">Draft model choice</span><div class="st-t"><strong>The draft model must be from the same model family as the target for high acceptance rates.</strong> Llama 3 70B + Llama 3 8B achieves 70-80% acceptance. Mismatched families drop below 50%.</div></div>
           <div class="st"><span class="st-v cy">Medusa</span><div class="st-t"><strong>Adds multiple prediction heads to the base LLM instead of using a separate draft model.</strong> Each head predicts a different future position simultaneously in a single forward pass of the target model. No separate model to deploy. Medusa-2 achieves 2.3-3.6x speedup on LLaMA and Vicuna models.</div></div>
-          <div class="st"><span class="st-v pk">EAGLE</span><div class="st-t"><strong>Trains a small autoregressive model on the target model's feature space, not token space.</strong> The draft model operates on hidden states rather than raw tokens, dramatically increasing acceptance rates. EAGLE-2 achieves 3-5x speedup and is the current state-of-the-art for production speculative decoding.</div></div>
+          <div class="st"><span class="st-v pk">EAGLE</span><div class="st-t"><strong>Trains a small autoregressive model on the target model's feature space, not token space.</strong> Operating on hidden states dramatically increases acceptance rates. EAGLE-2 achieves 3-5x speedup.</div></div>
           <div class="st"><span class="st-v lm">Lookahead</span><div class="st-t"><strong>n-gram lookahead decoding maintains a pool of candidate phrase completions from recent context.</strong> Proposes multi-token completions based on patterns seen earlier in the generation. No draft model needed. Cheaper to implement, lower acceptance rates than learned drafts but zero additional VRAM.</div></div>
         </div>
       </div>
@@ -168,10 +168,10 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
         <h2>In<br><span class="cy">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v lm">Google</span><div class="st-t"><strong>Speculative decoding is used in Google's production Gemini inference stack.</strong> Google published the original speculative decoding paper in 2023. Internal benchmarks showed 2-3x speedup on Chinchilla 70B for code generation tasks where predictable token sequences are common.</div></div>
-          <div class="st"><span class="st-v cy">DeepMind</span><div class="st-t"><strong>The "Fast Inference from Transformers via Speculative Decoding" paper by Leviathan et al. from Google Brain formalized the approach.</strong> Published at ICML 2023. Proved mathematically that speculative decoding produces identical output distributions to standard autoregressive decoding when using the stochastic acceptance criterion.</div></div>
-          <div class="st"><span class="st-v pk">Hugging Face TGI</span><div class="st-t"><strong>TGI ships speculative decoding as a first-class feature via the --speculate flag.</strong> Automatically manages the draft model and verification loop. Works with any model pair of the same family. Enabled by default on compatible HuggingFace Inference Endpoints for 2x throughput at no cost increase.</div></div>
-          <div class="st"><span class="st-v lm">vLLM</span><div class="st-t"><strong>vLLM supports draft-model speculative decoding alongside Medusa and EAGLE heads.</strong> Combined with PagedAttention for KV cache management, speculative decoding in vLLM reduces time-to-first-token and increases tokens per second simultaneously. The combination is the current state of production LLM serving.</div></div>
+          <div class="st"><span class="st-v lm">Google</span><div class="st-t"><strong>Speculative decoding is used in Google's production Gemini inference stack.</strong> Google published the original paper in 2023. Internal benchmarks: 2-3x speedup on code generation.</div></div>
+          <div class="st"><span class="st-v cy">DeepMind</span><div class="st-t"><strong>The "Fast Inference from Transformers via Speculative Decoding" paper by Leviathan et al. from Google Brain formalized the approach.</strong> Published at ICML 2023. Proved outputs are mathematically identical to standard autoregressive decoding.</div></div>
+          <div class="st"><span class="st-v pk">Hugging Face TGI</span><div class="st-t"><strong>TGI ships speculative decoding as a first-class feature via the --speculate flag.</strong> Auto-manages draft and verification. Enabled by default on compatible Inference Endpoints for 2x throughput.</div></div>
+          <div class="st"><span class="st-v lm">vLLM</span><div class="st-t"><strong>vLLM supports draft-model speculative decoding alongside Medusa and EAGLE heads.</strong> Combined with PagedAttention, reduces time-to-first-token and increases tokens/s simultaneously.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -186,10 +186,10 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
         <div style="height:14px"></div>
         <div class="stats">
           <div class="st"><span class="st-v lm">Speculative decoding</span><div class="st-t"><strong>Use a small draft model to propose K tokens, then verify all K with one pass of the large target model.</strong> Accepted tokens are generated for the cost of the draft. Speedup equals the average number of accepted tokens per target model pass.</div></div>
-          <div class="st"><span class="st-v cy">Acceptance rate</span><div class="st-t"><strong>The fraction of draft tokens accepted by the target model.</strong> Ranges from 50% (mismatched families) to 85% (same-family well-tuned drafts). Acceptance rate directly determines speedup: at 80% acceptance with K=5 drafts, roughly 3.3 tokens are accepted per target model forward pass.</div></div>
+          <div class="st"><span class="st-v cy">Acceptance rate</span><div class="st-t"><strong>The fraction of draft tokens accepted by the target model.</strong> 50% for mismatched families, 85% for well-tuned same-family drafts. At 80% with K=5, ~3.3 tokens accepted per pass.</div></div>
           <div class="st"><span class="st-v pk">Medusa</span><div class="st-t"><strong>Multiple prediction heads added to the base LLM for speculative decoding without a separate draft model.</strong> Each head predicts a different future position in a single forward pass. 2.3-3.6x speedup. No separate model deployment overhead.</div></div>
           <div class="st"><span class="st-v lm">EAGLE</span><div class="st-t"><strong>Draft model trained on the target model's hidden states rather than token probabilities.</strong> Higher acceptance rates than token-space drafts. EAGLE-2 achieves 3-5x speedup, the current state of the art for speculative decoding quality.</div></div>
-          <div class="st"><span class="st-v cy">Output equivalence</span><div class="st-t"><strong>Mathematically proven to produce identical output distribution to standard autoregressive decoding.</strong> The stochastic acceptance criterion ensures rejected tokens are resampled from the corrected distribution. The model output is unchanged, only the speed improves.</div></div>
+          <div class="st"><span class="st-v cy">Output equivalence</span><div class="st-t"><strong>Mathematically proven to produce identical output distribution to standard autoregressive decoding.</strong> The stochastic criterion ensures rejected tokens are resampled correctly. Output is unchanged, only speed improves.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

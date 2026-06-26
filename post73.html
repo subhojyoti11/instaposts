@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.am { color:var(--amber); } .st-v.bl { color:var(--blue); } .st-v.ro { color:var(--rose); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.am-c { background:rgba(217,119,6,.04); border:1px solid rgba(217,119,6,.12); }
   .gcard.bl-c { background:rgba(37,99,235,.04); border:1px solid rgba(37,99,235,.12); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,10 +82,10 @@
         <h2>The <span class="am">Cold Start</span><br>Problem.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">What happens</span><div class="st-t"><strong>When no instance of your Lambda function is already running, AWS must provision a new execution environment from scratch.</strong> This initialization work happens before your code runs and adds latency invisible to your application timer.</div></div>
-          <div class="st"><span class="st-v bl">The numbers</span><div class="st-t"><strong>Cold start latency varies massively by runtime.</strong> Go and Rust: 50-100ms. Node.js: 100-250ms. Python: 100-300ms. Java with Spring Boot: 2,000-10,000ms. The JVM's class loading and dependency injection is catastrophic for serverless.</div></div>
-          <div class="st"><span class="st-v ro">When it happens</span><div class="st-t"><strong>Cold starts occur when a function receives its first invocation, after it scales up to handle a traffic spike, or after 15 minutes of idle time.</strong> Low-traffic APIs, cron jobs, and bursty batch processes are most affected.</div></div>
-          <div class="st"><span class="st-v am">User impact</span><div class="st-t"><strong>A cold start adds imperceptible 50ms for a Go function and catastrophic 8 seconds for a Spring Boot service.</strong> For p99 latency SLOs, a single cold-started request can blow your budget on a low-traffic endpoint.</div></div>
+          <div class="st"><span class="st-v am">What happens</span><div class="st-t"><strong>When no instance of your Lambda function is already running, AWS must provision a new execution environment from scratch.</strong></div></div>
+          <div class="st"><span class="st-v bl">The numbers</span><div class="st-t"><strong>Cold start latency varies massively by runtime.</strong> Go: 50-100ms. Node.js: 100-250ms. Python: 100-300ms. Java with Spring: 2,000-10,000ms.</div></div>
+          <div class="st"><span class="st-v ro">When it happens</span><div class="st-t"><strong>Cold starts occur when a function receives its first invocation, after it scales up to handle a traffic spike, or after 15 minutes of idle time.</strong></div></div>
+          <div class="st"><span class="st-v am">User impact</span><div class="st-t"><strong>A cold start adds imperceptible 50ms for a Go function and catastrophic 8 seconds for a Spring Boot service.</strong></div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -99,10 +99,10 @@
         <h2>What Happens<br>Inside a<br><span class="bl">Cold Start</span>.</h2>
         <div style="height:10px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v bl">Init 1</span><div class="st-t"><strong>Execution environment provisioning.</strong> AWS allocates a Firecracker microVM, loads the Lambda worker process, and mounts the container image from the Lambda service layer. For a 50MB image this alone takes 50-150ms.</div></div>
-          <div class="st"><span class="st-v am">Init 2</span><div class="st-t"><strong>Runtime startup.</strong> The language runtime initializes: Python interpreter loads, Node.js V8 engine starts, or the JVM launches and loads its bytecode verifier and JIT compiler. This is where Java pays its catastrophic overhead.</div></div>
-          <div class="st"><span class="st-v ro">Init 3</span><div class="st-t"><strong>Handler initialization code runs.</strong> Your imports, global variables, SDK clients, and database connection pools all initialize. Code outside your handler function runs once per cold start. Poorly designed handlers import everything at module level, paying the cost every time.</div></div>
-          <div class="st"><span class="st-v bl">Warm</span><div class="st-t"><strong>Subsequent requests reuse the same execution environment.</strong> AWS keeps the microVM alive for up to 15 minutes of idle time. During this window, only your handler function runs. The microVM is reused, making warm invocations 10-100x faster than cold ones.</div></div>
+          <div class="st"><span class="st-v bl">Init 1</span><div class="st-t"><strong>Execution environment provisioning.</strong> AWS allocates a Firecracker microVM, loads the Lambda worker process, and mounts the container image from the Lambda service layer.</div></div>
+          <div class="st"><span class="st-v am">Init 2</span><div class="st-t"><strong>Runtime startup.</strong> Python loads, Node.js V8 starts, or the JVM launches its bytecode verifier and JIT compiler.</div></div>
+          <div class="st"><span class="st-v ro">Init 3</span><div class="st-t"><strong>Handler initialization code runs.</strong> Your imports, global variables, SDK clients, and database connection pools all initialize once per cold start.</div></div>
+          <div class="st"><span class="st-v bl">Warm</span><div class="st-t"><strong>Subsequent requests reuse the same execution environment.</strong> AWS keeps the microVM alive for up to 15 minutes of idle time, making warm invocations 10-100x faster.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -143,10 +143,10 @@ def <span class="bl">handler</span>(event, context):
         <h2><span class="bl">SnapStart</span> and<br>Mitigation.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v bl">SnapStart</span><div class="st-t"><strong>AWS Lambda SnapStart publishes a snapshot of the initialized JVM execution environment.</strong> On first deploy, Lambda runs your init code and snapshots the memory state to S3. Subsequent cold starts restore from snapshot instead of re-initializing. Java cold starts drop from 8s to under 1s.</div></div>
-          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments continuously so they are always ready.</strong> Eliminates cold starts entirely for those instances. Costs roughly 2x the on-demand Lambda price for the pre-warmed capacity. Used for latency-sensitive customer-facing APIs.</div></div>
-          <div class="st"><span class="st-v ro">Optimize the runtime</span><div class="st-t"><strong>Switch from Java/Spring to GraalVM native image to eliminate JVM startup.</strong> Spring Boot with GraalVM native reduces cold starts from 8,000ms to 120ms. Go and Rust functions consistently cold-start under 100ms without any special configuration.</div></div>
-          <div class="st"><span class="st-v bl">Lazy loading</span><div class="st-t"><strong>Defer heavy imports inside the handler function, not at module level.</strong> Only import the SDK clients you actually need. Move database connections inside the handler but cache them as module-level globals after first use to reuse across warm invocations.</div></div>
+          <div class="st"><span class="st-v bl">SnapStart</span><div class="st-t"><strong>AWS Lambda SnapStart publishes a snapshot of the initialized JVM execution environment.</strong> Subsequent cold starts restore from snapshot, dropping Java from 8s to under 1s.</div></div>
+          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments continuously so they are always ready.</strong> Eliminates cold starts but costs ~2x on-demand Lambda pricing.</div></div>
+          <div class="st"><span class="st-v ro">Optimize the runtime</span><div class="st-t"><strong>Switch from Java/Spring to GraalVM native image to eliminate JVM startup.</strong> GraalVM native drops Spring Boot cold starts from 8,000ms to 120ms.</div></div>
+          <div class="st"><span class="st-v bl">Lazy loading</span><div class="st-t"><strong>Defer heavy imports inside the handler function, not at module level.</strong> Cache SDK clients and DB connections as globals after first use.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -160,10 +160,10 @@ def <span class="bl">handler</span>(event, context):
         <h2>In<br><span class="am">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">Figma</span><div class="st-t"><strong>Migrated multiplayer server from Node.js Lambda to a long-running Rust service.</strong> The unpredictable cold start latency made the real-time collaboration experience unreliable. Serverless was the wrong model for persistent WebSocket connections requiring sub-10ms response.</div></div>
-          <div class="st"><span class="st-v bl">Datadog</span><div class="st-t"><strong>Built a Lambda layer that tracks cold start frequency and duration across customer functions.</strong> Their telemetry shows Java functions cold-start on average 1 in every 100 requests at typical Lambda concurrency. p99 latency is dominated by those cold starts.</div></div>
-          <div class="st"><span class="st-v ro">Netflix</span><div class="st-t"><strong>Uses Provisioned Concurrency on Lambda functions in the critical path for stream startup.</strong> The first 3 seconds of video playback must succeed for retention. Cold start variance in that path is unacceptable, so they pay for pre-warmed capacity on those specific endpoints.</div></div>
-          <div class="st"><span class="st-v am">Shopify</span><div class="st-t"><strong>Adopted WebAssembly for Shopify Functions instead of Lambda.</strong> Wasm modules cold-start in under 1ms inside Cloudflare's V8 isolates. Checkout customization logic that previously paid 200ms Lambda cold starts now executes in under 5ms total end-to-end.</div></div>
+          <div class="st"><span class="st-v am">Figma</span><div class="st-t"><strong>Migrated multiplayer server from Node.js Lambda to a long-running Rust service.</strong> Cold start variance made real-time WebSocket collaboration unreliable.</div></div>
+          <div class="st"><span class="st-v bl">Datadog</span><div class="st-t"><strong>Built a Lambda layer that tracks cold start frequency and duration across customer functions.</strong> Telemetry shows Java cold-starting on 1 in 100 requests, dominating p99 latency.</div></div>
+          <div class="st"><span class="st-v ro">Netflix</span><div class="st-t"><strong>Uses Provisioned Concurrency on Lambda functions in the critical path for stream startup.</strong> Cold start variance in the first 3 seconds of playback directly hurts retention.</div></div>
+          <div class="st"><span class="st-v am">Shopify</span><div class="st-t"><strong>Adopted WebAssembly for Shopify Functions instead of Lambda.</strong> Wasm on Cloudflare Workers cold-starts under 1ms vs 200ms Lambda cold starts.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -177,11 +177,11 @@ def <span class="bl">handler</span>(event, context):
         <h2>Quick<br><span class="bl">Reference</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">Cold start</span><div class="st-t"><strong>Latency added when Lambda must provision a new execution environment before handling a request.</strong> Includes microVM creation, runtime startup, and handler init code. Does not count against your billed duration.</div></div>
-          <div class="st"><span class="st-v bl">Warm start</span><div class="st-t"><strong>Lambda reuses an existing execution environment, skipping all init phases.</strong> Only your handler function runs. Module-level globals persist across warm invocations, enabling connection reuse. Environments stay alive up to 15 minutes of idle time.</div></div>
-          <div class="st"><span class="st-v ro">SnapStart</span><div class="st-t"><strong>AWS feature for Java Lambda that snapshots the initialized JVM state after deployment.</strong> Subsequent cold starts restore from snapshot, reducing Java cold starts from 8,000ms to under 1,000ms without code changes.</div></div>
-          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments so requests always land on a warm instance.</strong> Costs roughly 2x on-demand Lambda pricing for the reserved capacity. Eliminates cold starts for latency-sensitive endpoints.</div></div>
-          <div class="st"><span class="st-v bl">Firecracker</span><div class="st-t"><strong>The microVM hypervisor powering AWS Lambda and AWS Fargate.</strong> Open-sourced by AWS in 2018. Boots a minimal kernel in under 125ms. Combines container-level startup speed with VM-level hardware isolation between tenant workloads.</div></div>
+          <div class="st"><span class="st-v am">Cold start</span><div class="st-t"><strong>Latency added when Lambda must provision a new execution environment before handling a request.</strong> Includes microVM creation, runtime startup, and handler init code.</div></div>
+          <div class="st"><span class="st-v bl">Warm start</span><div class="st-t"><strong>Lambda reuses an existing execution environment, skipping all init phases.</strong> Module-level globals persist for connection reuse. Environments live up to 15 min idle.</div></div>
+          <div class="st"><span class="st-v ro">SnapStart</span><div class="st-t"><strong>AWS feature for Java Lambda that snapshots the initialized JVM state after deployment.</strong> Reduces Java cold starts from 8,000ms to under 1,000ms without code changes.</div></div>
+          <div class="st"><span class="st-v am">Provisioned concurrency</span><div class="st-t"><strong>Pre-warms N execution environments so requests always land on a warm instance.</strong> Costs ~2x on-demand pricing. Eliminates cold starts entirely.</div></div>
+          <div class="st"><span class="st-v bl">Firecracker</span><div class="st-t"><strong>The microVM hypervisor powering AWS Lambda and AWS Fargate.</strong> Open-sourced by AWS in 2018. Boots a minimal kernel in under 125ms with VM-level isolation.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

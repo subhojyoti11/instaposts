@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.ro { color:var(--rose); } .st-v.am { color:var(--amber); } .st-v.sk { color:var(--sky); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.ro-c { background:rgba(244,63,94,.06); border:1px solid rgba(244,63,94,.15); }
   .gcard.sk-c { background:rgba(56,189,248,.06); border:1px solid rgba(56,189,248,.15); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,10 +82,10 @@
         <h2>The <span class="am">RLHF</span><br>Problem.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v am">RLHF pipeline</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback aligns LLMs in three separate stages.</strong> Step 1: collect human preference data. Step 2: train a reward model to predict human preferences. Step 3: use PPO to fine-tune the LLM to maximize reward model scores.</div></div>
-          <div class="st"><span class="st-v ro">The complexity</span><div class="st-t"><strong>PPO is notoriously unstable and hard to tune.</strong> You are training two neural networks simultaneously: the LLM policy and the reward model. Hyperparameters like KL penalty coefficient, clipping ratio, and learning rate interact in ways that cause training to collapse with small changes.</div></div>
-          <div class="st"><span class="st-v sk">Memory cost</span><div class="st-t"><strong>RLHF requires 4 separate models in VRAM simultaneously during PPO training.</strong> The policy LLM, a frozen reference LLM for KL divergence, the reward model, and a value model. For a 7B LLM this requires 140GB+ of VRAM at float16 precision, demanding a multi-GPU cluster.</div></div>
-          <div class="st"><span class="st-v am">Reward hacking</span><div class="st-t"><strong>LLMs learn to maximize reward model scores rather than genuinely align with human intent.</strong> Models learn to generate long, formal-sounding responses that score highly without being more useful. The reward model is an imperfect proxy that the LLM eventually learns to game.</div></div>
+          <div class="st"><span class="st-v am">RLHF pipeline</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback aligns LLMs in three separate stages.</strong> Collect preference data, train a reward model, then use PPO to maximize reward model scores.</div></div>
+          <div class="st"><span class="st-v ro">The complexity</span><div class="st-t"><strong>PPO is notoriously unstable and hard to tune.</strong> Training the LLM policy and reward model simultaneously, with hyperparameters that interact in ways that cause frequent training collapse.</div></div>
+          <div class="st"><span class="st-v sk">Memory cost</span><div class="st-t"><strong>RLHF requires 4 separate models in VRAM simultaneously during PPO training.</strong> Policy, reference LLM, reward model, and value model. A 7B RLHF setup demands 140GB+ VRAM.</div></div>
+          <div class="st"><span class="st-v am">Reward hacking</span><div class="st-t"><strong>LLMs learn to maximize reward model scores rather than genuinely align with human intent.</strong> Models generate long, formal-sounding responses that score highly but are not more useful.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -102,7 +102,7 @@
           <div class="st"><span class="st-v ro">The insight</span><div class="st-t"><strong>DPO proves mathematically that training a reward model and running PPO is equivalent to a specific supervised objective applied directly to the LLM.</strong> Skip the reward model and PPO entirely. The preference data is used directly in a single stable training loop.</div></div>
           <div class="st"><span class="st-v sk">The objective</span><div class="st-t"><strong>Given a prompt and two responses, one preferred and one rejected, DPO increases the probability of the preferred response and decreases the probability of the rejected one.</strong> The rate is calibrated by comparing against a frozen reference LLM to prevent over-shifting the model's distribution.</div></div>
           <div class="st"><span class="st-v am">What you need</span><div class="st-t"><strong>DPO requires only preference pairs: (prompt, chosen_response, rejected_response).</strong> No reward model training. No PPO. Two models in VRAM instead of four. Training is stable, fast, and implementable in under 100 lines of PyTorch with the TRL library's DPOTrainer.</div></div>
-          <div class="st"><span class="st-v ro">Quality</span><div class="st-t"><strong>DPO matches or exceeds PPO-based RLHF on most alignment benchmarks.</strong> The Stanford paper by Rafailov et al. in 2023 demonstrated equivalent performance to InstructGPT-style RLHF on summarization and dialogue with a fraction of the engineering complexity.</div></div>
+          <div class="st"><span class="st-v ro">Quality</span><div class="st-t"><strong>DPO matches or exceeds PPO-based RLHF on most alignment benchmarks.</strong> Rafailov et al. 2023 demonstrated equivalent performance to InstructGPT-style RLHF on summarization and dialogue.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -148,9 +148,9 @@ def <span class="ro">dpo_loss</span>(policy, ref_model, batch):
         <div style="height:14px"></div>
         <div class="stats">
           <div class="st"><span class="st-v ro">Models in training</span><div class="st-t"><strong>RLHF: 4 models (policy, reference, reward, value).</strong> DPO: 2 models (policy, reference). The removal of the reward model and value model halves VRAM requirements. A 7B DPO training run fits on a single A100 80GB instead of requiring a multi-GPU cluster.</div></div>
-          <div class="st"><span class="st-v sk">Training stability</span><div class="st-t"><strong>RLHF: PPO is notoriously sensitive to hyperparameters, with frequent training collapse.</strong> DPO: equivalent to supervised fine-tuning. No policy gradient variance. No actor-critic instability. Training curves are smooth and predictable. Hyperparameter search is straightforward.</div></div>
-          <div class="st"><span class="st-v am">Data requirement</span><div class="st-t"><strong>Both require human preference pairs.</strong> RLHF additionally needs diverse prompt sets for the reward model training phase. DPO uses the preference pairs directly. The same dataset that would train the reward model in RLHF is used directly by DPO without the intermediate training step.</div></div>
-          <div class="st"><span class="st-v ro">Variants</span><div class="st-t"><strong>IPO (Identity PO) addresses DPO overfitting on chosen responses.</strong> ORPO combines SFT and DPO into a single stage. SimPO removes the reference model dependency. KTO aligns from binary signals instead of pairs. The DPO family has expanded rapidly since the original 2023 paper.</div></div>
+          <div class="st"><span class="st-v sk">Training stability</span><div class="st-t"><strong>RLHF: PPO is notoriously sensitive to hyperparameters, with frequent training collapse.</strong> DPO is equivalent to supervised fine-tuning. No gradient variance, smooth training curves.</div></div>
+          <div class="st"><span class="st-v am">Data requirement</span><div class="st-t"><strong>Both require human preference pairs.</strong> RLHF needs additional prompt sets for reward model training. DPO uses the pairs directly without the intermediate training step.</div></div>
+          <div class="st"><span class="st-v ro">Variants</span><div class="st-t"><strong>IPO (Identity PO) addresses DPO overfitting on chosen responses.</strong> ORPO combines SFT and DPO. SimPO removes the reference model. KTO uses binary signals instead of pairs.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -164,10 +164,10 @@ def <span class="ro">dpo_loss</span>(policy, ref_model, batch):
         <h2>In<br><span class="sk">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v ro">Mistral AI</span><div class="st-t"><strong>Mistral 7B Instruct and Mixtral 8x7B Instruct both use DPO as part of their alignment pipeline.</strong> Mistral confirmed DPO use in public blog posts. The small team size made RLHF's engineering overhead impractical. DPO enabled a 5-person team to align frontier-quality models.</div></div>
-          <div class="st"><span class="st-v sk">Zephyr</span><div class="st-t"><strong>HuggingFace's Zephyr 7B was one of the first public demonstrations of DPO beating RLHF at the 7B scale.</strong> Trained on Mistral 7B base with SFT then DPO. Topped the Open LLM Leaderboard at release in 2023, outperforming Llama 2 70B RLHF despite being 10x smaller.</div></div>
-          <div class="st"><span class="st-v am">TRL library</span><div class="st-t"><strong>HuggingFace TRL (Transformer Reinforcement Learning) ships DPOTrainer as a first-class interface.</strong> DPO training for a 7B model is 20 lines of Python with the TRL library. This accessibility accelerated community adoption far beyond what RLHF ever achieved outside large labs.</div></div>
-          <div class="st"><span class="st-v ro">Llama 3</span><div class="st-t"><strong>Meta's Llama 3 instruction models use a hybrid of SFT, RLHF with PPO, and rejection sampling.</strong> Meta still uses PPO for final alignment but notes DPO is used for certain capability domains. DPO and RLHF are increasingly viewed as complementary rather than competing approaches.</div></div>
+          <div class="st"><span class="st-v ro">Mistral AI</span><div class="st-t"><strong>Mistral 7B Instruct and Mixtral 8x7B Instruct both use DPO as part of their alignment pipeline.</strong> DPO enabled a small team to align frontier models where RLHF's overhead was impractical.</div></div>
+          <div class="st"><span class="st-v sk">Zephyr</span><div class="st-t"><strong>HuggingFace's Zephyr 7B was one of the first public demonstrations of DPO beating RLHF at the 7B scale.</strong> Trained with SFT then DPO. Topped the Open LLM Leaderboard in 2023, beating Llama 2 70B at 10x smaller.</div></div>
+          <div class="st"><span class="st-v am">TRL library</span><div class="st-t"><strong>HuggingFace TRL (Transformer Reinforcement Learning) ships DPOTrainer as a first-class interface.</strong> DPO for a 7B model is 20 lines of Python. Accelerated adoption far beyond RLHF outside large labs.</div></div>
+          <div class="st"><span class="st-v ro">Llama 3</span><div class="st-t"><strong>Meta's Llama 3 instruction models use a hybrid of SFT, RLHF with PPO, and rejection sampling.</strong> Meta still uses PPO for final alignment. DPO and RLHF are increasingly viewed as complementary.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -181,11 +181,11 @@ def <span class="ro">dpo_loss</span>(policy, ref_model, batch):
         <h2>Quick<br><span class="ro">Reference</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v ro">DPO</span><div class="st-t"><strong>Direct Preference Optimization: aligns LLMs directly on preference pairs without training a reward model or using PPO.</strong> Published by Rafailov et al. at Stanford in 2023. Equivalent quality to RLHF at half the VRAM and far less engineering complexity.</div></div>
-          <div class="st"><span class="st-v sk">RLHF</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback: the original alignment method used by OpenAI for InstructGPT and ChatGPT.</strong> Trains a reward model then uses PPO to optimize the LLM policy. More flexible but requires 4 models in VRAM and careful PPO hyperparameter tuning.</div></div>
+          <div class="st"><span class="st-v ro">DPO</span><div class="st-t"><strong>Direct Preference Optimization: aligns LLMs directly on preference pairs without training a reward model or using PPO.</strong> Published by Rafailov et al. at Stanford in 2023. Equivalent quality to RLHF with far less complexity.</div></div>
+          <div class="st"><span class="st-v sk">RLHF</span><div class="st-t"><strong>Reinforcement Learning from Human Feedback: the original alignment method used by OpenAI for InstructGPT and ChatGPT.</strong> Trains a reward model then uses PPO. More flexible but needs 4 models and careful hyperparameter tuning.</div></div>
           <div class="st"><span class="st-v am">Beta (KL penalty)</span><div class="st-t"><strong>The beta hyperparameter in DPO controls how much the trained model can diverge from the reference model.</strong> Low beta: aggressive alignment, higher risk of forgetting pre-training knowledge. High beta: conservative alignment, safer but less impact on model behavior.</div></div>
-          <div class="st"><span class="st-v ro">Preference pairs</span><div class="st-t"><strong>The training data format: (prompt, chosen_response, rejected_response).</strong> Human labelers compare two model responses and select the preferred one. The DPO objective directly increases chosen probability and decreases rejected probability relative to the reference model.</div></div>
-          <div class="st"><span class="st-v sk">TRL</span><div class="st-t"><strong>HuggingFace Transformers Reinforcement Learning library.</strong> Ships DPOTrainer, SFTTrainer, and PPOTrainer. DPO training for a 7B model is 20 lines of Python. The primary tool enabling community-scale DPO adoption outside large AI labs.</div></div>
+          <div class="st"><span class="st-v ro">Preference pairs</span><div class="st-t"><strong>The training data format: (prompt, chosen_response, rejected_response).</strong> Human labelers compare two model responses and select the preferred one. DPO increases chosen probability and decreases rejected probability relative to the reference.</div></div>
+          <div class="st"><span class="st-v sk">TRL</span><div class="st-t"><strong>HuggingFace Transformers Reinforcement Learning library.</strong> Ships DPOTrainer, SFTTrainer, and PPOTrainer. DPO for a 7B model is 20 lines of Python.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>

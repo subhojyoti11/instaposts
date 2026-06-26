@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -31,9 +31,9 @@
   .st:last-child { border-bottom:none; }
   .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.vt { color:var(--violet); } .st-v.cy { color:var(--cyan); } .st-v.pk { color:var(--pink); }
-  .st-t { font-size:14px; color:var(--ink2); line-height:1.35; }
+  .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
-  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:14px; line-height:1.5; flex-shrink:0; }
+  .gcard { padding:12px 14px; margin:8px 0; border-radius:8px; font-size:13px; line-height:1.5; flex-shrink:0; }
   .gcard.vt-c { background:rgba(124,58,237,.06); border:1px solid rgba(124,58,237,.15); }
   .gcard.cy-c { background:rgba(6,182,212,.06); border:1px solid rgba(6,182,212,.15); }
   .gcard p { color:var(--ink2); } .gcard strong { font-weight:600; color:var(--ink); }
@@ -82,10 +82,10 @@
         <h2>Why <span class="cy">RSA</span><br>Feels Safe<br>Today.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v cy">The problem</span><div class="st-t"><strong>RSA encryption is based on integer factorization.</strong> Given N = p x q where p and q are large primes, find p and q. Multiplying two 1,024-bit primes together takes microseconds. Factoring the result on classical hardware takes longer than the age of the universe.</div></div>
-          <div class="st"><span class="st-v vt">Classical hardness</span><div class="st-t"><strong>The best classical factoring algorithm is the General Number Field Sieve, running in sub-exponential time O(exp(n^(1/3))).</strong> A 2,048-bit RSA key would take a classical supercomputer roughly 300 trillion years to factor. Security comes entirely from this asymmetry.</div></div>
-          <div class="st"><span class="st-v pk">Internet dependency</span><div class="st-t"><strong>RSA and elliptic curve cryptography underpin TLS, SSH, PGP, code signing, and certificate authorities.</strong> Every HTTPS connection you make today is protected by the assumption that integer factorization is computationally infeasible. Shor's algorithm breaks that assumption.</div></div>
-          <div class="st"><span class="st-v cy">Harvest now</span><div class="st-t"><strong>Nation-state adversaries are harvesting encrypted traffic today to decrypt when quantum computers arrive.</strong> Long-lived secrets like government communications, medical records, and financial models need post-quantum protection now, not when quantum computers become available.</div></div>
+          <div class="st"><span class="st-v cy">The problem</span><div class="st-t"><strong>RSA encryption is based on integer factorization.</strong> Multiplying two 1,024-bit primes is instant. Factoring the result on classical hardware takes longer than the age of the universe.</div></div>
+          <div class="st"><span class="st-v vt">Classical hardness</span><div class="st-t"><strong>The best classical factoring algorithm is the General Number Field Sieve, running in sub-exponential time O(exp(n^(1/3))).</strong> A 2,048-bit key would take a classical supercomputer roughly 300 trillion years to factor.</div></div>
+          <div class="st"><span class="st-v pk">Internet dependency</span><div class="st-t"><strong>RSA and elliptic curve cryptography underpin TLS, SSH, PGP, code signing, and certificate authorities.</strong> Shor's algorithm breaks that assumption on all of them.</div></div>
+          <div class="st"><span class="st-v cy">Harvest now</span><div class="st-t"><strong>Nation-state adversaries are harvesting encrypted traffic today to decrypt when quantum computers arrive.</strong> Long-lived secrets need post-quantum protection now, before quantum computers arrive.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -99,10 +99,10 @@
         <h2>Qubits and<br><span class="vt">Superposition</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v vt">Classical bit</span><div class="st-t"><strong>A classical bit is either 0 or 1.</strong> A register of 3 bits holds exactly one of eight possible states at any given moment. To search all 8 states you run 8 separate computations sequentially.</div></div>
-          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>A qubit exists in a superposition of 0 and 1 simultaneously until measured.</strong> A register of 3 qubits exists in all 8 states at once. Operations on that register apply to all 8 states in parallel. This is quantum parallelism.</div></div>
-          <div class="st"><span class="st-v pk">Entanglement</span><div class="st-t"><strong>Two entangled qubits share a correlated quantum state regardless of physical distance.</strong> Measuring one instantly determines the other. Shor's algorithm uses entanglement to build a quantum Fourier transform that extracts the period of a function exponentially faster than any classical approach.</div></div>
-          <div class="st"><span class="st-v vt">Decoherence</span><div class="st-t"><strong>Qubits are fragile. Any interaction with the environment collapses the superposition.</strong> Google's Sycamore processor operates at 15 millikelvin, colder than outer space, to maintain coherence. Current quantum computers have error rates of 0.1-1% per gate, limiting useful circuit depth.</div></div>
+          <div class="st"><span class="st-v vt">Classical bit</span><div class="st-t"><strong>A classical bit is either 0 or 1.</strong> A register of 3 bits holds exactly one of eight states at any moment.</div></div>
+          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>A qubit exists in a superposition of 0 and 1 simultaneously until measured.</strong> A register of 3 qubits exists in all 8 states at once.</div></div>
+          <div class="st"><span class="st-v pk">Entanglement</span><div class="st-t"><strong>Two entangled qubits share a correlated quantum state regardless of physical distance.</strong> Shor's algorithm uses this to build a QFT that finds function periods exponentially faster than classical methods.</div></div>
+          <div class="st"><span class="st-v vt">Decoherence</span><div class="st-t"><strong>Qubits are fragile. Any interaction with the environment collapses the superposition.</strong> Google's Sycamore operates at 15 millikelvin to maintain coherence. Error rates of 0.1-1% per gate limit circuit depth.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -146,10 +146,10 @@ if r % 2 == 0:
         <h2><span class="pk">Post-Quantum</span><br>Cryptography.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pk">NIST PQC</span><div class="st-t"><strong>In 2024 NIST finalized the first three post-quantum cryptography standards.</strong> ML-KEM (Kyber) for key encapsulation, ML-DSA (Dilithium) for digital signatures, and SLH-DSA (SPHINCS+) for hash-based signatures. All are based on mathematical problems believed hard for both classical and quantum computers.</div></div>
-          <div class="st"><span class="st-v vt">Lattice problems</span><div class="st-t"><strong>ML-KEM and ML-DSA are based on the hardness of the Learning With Errors problem over lattices.</strong> Given a lattice with small noise added to points, find the hidden structure. No efficient quantum algorithm for LWE is known. Key sizes are 2-4x larger than RSA equivalents.</div></div>
-          <div class="st"><span class="st-v cy">Migration timeline</span><div class="st-t"><strong>TLS 1.3 already supports hybrid classical/post-quantum key exchange.</strong> Chrome 124 ships X25519+Kyber768 by default. Google and Apple began migrating internal systems in 2022. NIST requires federal agencies to migrate to PQC by 2030.</div></div>
-          <div class="st"><span class="st-v pk">Cryptographically relevant</span><div class="st-t"><strong>A quantum computer capable of breaking RSA-2048 would need roughly 4,000 error-corrected logical qubits.</strong> Current machines have thousands of physical qubits but only tens of error-corrected logical qubits. Most estimates put a cryptographically relevant quantum computer 10-20 years away.</div></div>
+          <div class="st"><span class="st-v pk">NIST PQC</span><div class="st-t"><strong>In 2024 NIST finalized the first three post-quantum cryptography standards.</strong> ML-KEM for key encapsulation, ML-DSA for digital signatures, SLH-DSA for hash-based signatures.</div></div>
+          <div class="st"><span class="st-v vt">Lattice problems</span><div class="st-t"><strong>ML-KEM and ML-DSA are based on the hardness of the Learning With Errors problem over lattices.</strong> No efficient quantum algorithm for LWE is known. Key sizes are 2-4x larger than RSA equivalents.</div></div>
+          <div class="st"><span class="st-v cy">Migration timeline</span><div class="st-t"><strong>TLS 1.3 already supports hybrid classical/post-quantum key exchange.</strong> Chrome 124 ships X25519+ML-KEM768 by default. NIST requires federal agencies to migrate by 2030.</div></div>
+          <div class="st"><span class="st-v pk">Cryptographically relevant</span><div class="st-t"><strong>A quantum computer capable of breaking RSA-2048 would need roughly 4,000 error-corrected logical qubits.</strong> Current machines have only tens of error-corrected logical qubits. Most estimates put CRQC 10-20 years away.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -163,10 +163,10 @@ if r % 2 == 0:
         <h2>In<br><span class="cy">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v vt">Google</span><div class="st-t"><strong>Announced quantum supremacy in 2019 with 53-qubit Sycamore completing a sampling task in 200 seconds.</strong> 2024 Willow chip: 105 qubits with error correction improving as qubits scale. Below threshold for quantum error correction for the first time. Internal TLS already uses Kyber hybrid mode.</div></div>
-          <div class="st"><span class="st-v cy">IBM</span><div class="st-t"><strong>IBM Quantum roadmap targets 100,000 qubit systems by 2033.</strong> IBM Condor shipped 1,121 qubits in 2023. Focus on quantum error correction via the surface code. IBM Research partners include Boeing, ExxonMobil, and Cleveland Clinic for drug discovery and optimization.</div></div>
-          <div class="st"><span class="st-v pk">Signal / iMessage</span><div class="st-t"><strong>Signal Protocol added post-quantum key exchange via PQXDH in 2023.</strong> Apple iMessage added PQ3 using ML-KEM for forward secrecy in 2024. Both protect against harvest-now-decrypt-later attacks on long-term encrypted message archives.</div></div>
-          <div class="st"><span class="st-v vt">AWS</span><div class="st-t"><strong>AWS Certificate Manager supports hybrid TLS with ML-KEM.</strong> AWS Braket provides access to quantum processors from IonQ, Rigetti, and OQC. Amazon's own key management infrastructure began testing post-quantum algorithms internally in 2022.</div></div>
+          <div class="st"><span class="st-v vt">Google</span><div class="st-t"><strong>Announced quantum supremacy in 2019 with 53-qubit Sycamore completing a sampling task in 200 seconds.</strong> 2024 Willow chip: 105 qubits, first to cross the quantum error correction threshold. Internal TLS uses Kyber hybrid mode.</div></div>
+          <div class="st"><span class="st-v cy">IBM</span><div class="st-t"><strong>IBM Quantum roadmap targets 100,000 qubit systems by 2033.</strong> IBM Condor shipped 1,121 qubits in 2023. Partners include Boeing, ExxonMobil, and Cleveland Clinic.</div></div>
+          <div class="st"><span class="st-v pk">Signal / iMessage</span><div class="st-t"><strong>Signal Protocol added post-quantum key exchange via PQXDH in 2023.</strong> Apple iMessage added PQ3 using ML-KEM in 2024. Both defend against harvest-now-decrypt-later attacks.</div></div>
+          <div class="st"><span class="st-v vt">AWS</span><div class="st-t"><strong>AWS Certificate Manager supports hybrid TLS with ML-KEM.</strong> AWS Braket provides access to quantum processors from IonQ, Rigetti, and OQC.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -180,11 +180,11 @@ if r % 2 == 0:
         <h2>Quick<br><span class="vt">Reference</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v vt">Shor's algorithm</span><div class="st-t"><strong>Quantum algorithm for integer factorization running in O((log N)^2) time.</strong> Published by Peter Shor in 1994. Would factor RSA-2048 in hours given a large enough error-corrected quantum computer, versus centuries for classical algorithms.</div></div>
-          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>Quantum bit that exists in superposition of 0 and 1 until measured.</strong> N qubits represent 2^N states simultaneously. Decoherence from environmental interaction collapses superposition. Current error rates of 0.1-1% per gate limit useful circuit depth.</div></div>
-          <div class="st"><span class="st-v pk">QFT</span><div class="st-t"><strong>Quantum Fourier Transform: the key subroutine in Shor's algorithm.</strong> Finds the period of the modular exponentiation function exponentially faster than the classical FFT. This period reveals the prime factors of N.</div></div>
-          <div class="st"><span class="st-v vt">ML-KEM</span><div class="st-t"><strong>Module Lattice Key Encapsulation Mechanism, formerly Kyber.</strong> NIST's primary post-quantum key exchange standard, finalized 2024. Based on Learning With Errors hardness over lattices. Chrome 124 uses X25519+ML-KEM768 hybrid by default for all TLS connections.</div></div>
-          <div class="st"><span class="st-v cy">Harvest-now</span><div class="st-t"><strong>Nation-state strategy of recording encrypted traffic today to decrypt after quantum computers mature.</strong> Long-lived secrets need PQC protection now. NIST requires federal agencies to complete migration by 2030.</div></div>
+          <div class="st"><span class="st-v vt">Shor's algorithm</span><div class="st-t"><strong>Quantum algorithm for integer factorization running in O((log N)^2) time.</strong> Published by Peter Shor in 1994. Would factor RSA-2048 in hours versus centuries classically.</div></div>
+          <div class="st"><span class="st-v cy">Qubit</span><div class="st-t"><strong>Quantum bit that exists in superposition of 0 and 1 until measured.</strong> N qubits represent 2^N states simultaneously. Error rates of 0.1-1% per gate limit circuit depth.</div></div>
+          <div class="st"><span class="st-v pk">QFT</span><div class="st-t"><strong>Quantum Fourier Transform: the key subroutine in Shor's algorithm.</strong> Finds the period of the modular exponentiation function exponentially faster than classical FFT.</div></div>
+          <div class="st"><span class="st-v vt">ML-KEM</span><div class="st-t"><strong>Module Lattice Key Encapsulation Mechanism, formerly Kyber.</strong> NIST's primary post-quantum key exchange standard, finalized 2024. Chrome 124 uses X25519+ML-KEM768 hybrid by default.</div></div>
+          <div class="st"><span class="st-v cy">Harvest-now</span><div class="st-t"><strong>Nation-state strategy of recording encrypted traffic today to decrypt after quantum computers mature.</strong> Long-lived secrets need PQC now. Federal agencies must migrate by 2030.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
