@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Looping vs Prompting, Post 81</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090e;
+      --card: #0e1118;
+      --ink: #e8f0ff;
+      --ink2: #a0a0a0;
+      --dim: #556070;
+      --orange: #f97316;
+      --emerald: #10b981;
+      --violet: #8b5cf6;
+      --border: rgba(249, 115, 22, .06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 16px 2px 36px;
+      scrollbar-width: none;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+    }
+
+    .ghost {
+      display: none;
+    }
+
+    .hdr {
+      flex-shrink: 0;
+      padding: 18px 24px 0 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hdr .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+    }
+
+    .body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 10px 24px 0 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: 1.0;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .or {
+      color: var(--orange);
+    }
+
+    .slide h2 .em {
+      color: var(--emerald);
+    }
+
+    .slide h2 .vt {
+      color: var(--violet);
+    }
+
+    .ftr {
+      flex-shrink: 0;
+      padding: 10px 24px 16px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .ftr .left {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--dim);
+    }
+
+    .ftr .right {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+    }
+
+    .code {
+      background: rgb(136 136 136/15%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+    }
+
+    .code .or {
+      color: #fdba74;
+    }
+
+    .code .em {
+      color: #6ee7b7;
+    }
+
+    .code .vt {
+      color: #c4b5fd;
+    }
+
+    .code .dm {
+      color: #a0a0a0;
+    }
+
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 6px 0;
+      flex-shrink: 0;
+    }
+
+    .st {
+      display: grid;
+      grid-template-columns: 20% 1fr;
+      gap: 0 10px;
+      align-items: start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .st:last-child {
+      border-bottom: none;
+    }
+
+    .st-v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 400;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .st-v.or {
+      color: var(--orange);
+    }
+
+    .st-v.em {
+      color: var(--emerald);
+    }
+
+    .st-v.vt {
+      color: var(--violet);
+    }
+
+    .st-t {
+      font-size: 13px;
+      color: var(--ink2);
+      line-height: 1.35;
+    }
+
+    .st-t strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .gcard {
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+
+    .gcard.or-c {
+      background: rgba(249, 115, 22, .06);
+      border: 1px solid rgba(249, 115, 22, .15);
+    }
+
+    .gcard.em-c {
+      background: rgba(16, 185, 129, .06);
+      border: 1px solid rgba(16, 185, 129, .15);
+    }
+
+    .gcard p {
+      color: var(--ink2);
+    }
+
+    .gcard strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .dl-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .dl-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid rgba(249, 115, 22, .2);
+      color: var(--orange);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+
+    .dl-btn:hover {
+      background: var(--orange);
+      color: var(--bg);
+    }
+
+    .dl-btn.alt {
+      border-color: var(--border);
+      color: var(--dim);
+    }
+
+    .dl-btn.alt:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    .dl-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .dl-btn:disabled {
+      opacity: .3;
+    }
+
+    .progress-bar {
+      width: 160px;
+      height: 2px;
+      background: rgba(249, 115, 22, .08);
+      overflow: hidden;
+      display: none;
+      margin-top: 12px;
+      border-radius: 2px;
+    }
+
+    .progress-bar .fill {
+      height: 100%;
+      width: 0%;
+      background: var(--orange);
+      transition: width .3s;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    .nav button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 6px;
+      transition: all .25s;
+    }
+
+    .nav button:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(232, 240, 255, .06);
+      cursor: pointer;
+      transition: all .35s;
+    }
+
+    .dot.active {
+      background: var(--orange);
+      width: 22px;
+      border-radius: 3px;
+    }
+
+    .caption-section {
+      max-width: min(92vw, 520px);
+      margin: 28px auto 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .caption-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .caption-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .copy-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      background: transparent;
+      border: 1px solid rgba(249, 115, 22, .2);
+      color: var(--orange);
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 4px;
+    }
+
+    .copy-btn:hover {
+      background: var(--orange);
+      color: var(--bg);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+
+    .copy-btn svg {
+      width: 12px;
+      height: 12px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .caption-text {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--ink2);
+      padding: 14px 16px;
+      white-space: pre-wrap;
+      max-height: 220px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:80px"> </p>
+          <h2 style="font-size:48px;line-height:1.0"><span class="or">Prompting</span><br>Is Dead.<br>Meet<br><span
+              class="em">AI Looping</span>.</h2>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The <span class="or">Prompting</span><br>Problem.</h2>
+          <div style="height:42px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v or">What you do</span>
+              <div class="st-t"><strong>Write a command, get one output, evaluate it yourself.</strong> If it misses the
+                mark, you become the QA system.</div>
+            </div>
+            <div class="st"><span class="st-v vt">What the model does</span>
+              <div class="st-t"><strong>Generates one response and stops.</strong> No awareness of whether it met your
+                actual intent.</div>
+            </div>
+            <div class="st"><span class="st-v em">The bottleneck</span>
+              <div class="st-t"><strong>Complex tasks need multiple refinement cycles.</strong> Each iteration costs
+                your time and cognitive load.</div>
+            </div>
+            <div class="st"><span class="st-v or">The result</span>
+              <div class="st-t"><strong>Developers spend 40% of AI interaction time re-prompting to fix bad
+                  outputs.</strong> You are the loop.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>How <span class="em">AI Looping</span><br>Works.</h2>
+          <div style="height:42px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v em">Goal not prompt</span>
+              <div class="st-t"><strong>You define what perfect looks like, not what the AI should do.</strong> The goal
+                has a success criterion the model can evaluate itself against.</div>
+            </div>
+            <div class="st"><span class="st-v or">Self-critique</span>
+              <div class="st-t"><strong>The model evaluates its own output against your goal criterion.</strong> A fast,
+                cheap model typically runs the critique step.</div>
+            </div>
+            <div class="st"><span class="st-v vt">Auto re-prompt</span>
+              <div class="st-t"><strong>If critique returns FAIL, the model writes its own corrective prompt and runs
+                  again.</strong> You are not in the loop.</div>
+            </div>
+            <div class="st"><span class="st-v em">Loop exit</span>
+              <div class="st-t"><strong>The loop terminates when self-evaluation returns PASS.</strong> Typically 3-5
+                iterations for complex goals.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The <span class="or">Loop</span><br>in Code.</h2>
+          <div style="height:42px"></div>
+          <div class="code">
+            <span class="dm"># AI Loop: goal-driven self-correction</span>
+            def <span class="em">ai_loop</span>(goal, max_iters=<span class="or">5</span>):
+            prompt = f<span class="vt">"Achieve this goal: {goal}"</span>
+
+            for _ in range(max_iters):
+            <span class="dm"># Step 1: generate</span>
+            output = <span class="or">generate</span>(big_model, prompt)
+
+            <span class="dm"># Step 2: self-critique against goal</span>
+            verdict = <span class="vt">critique</span>(fast_model, goal, output)
+            if <span class="em">"PASS"</span> in verdict:
+            return output <span class="dm"># goal achieved</span>
+
+            <span class="dm"># Step 3: self re-prompt from critique</span>
+            prompt = f<span class="vt">"Failed: {verdict}. Retry: {goal}"</span>
+
+            return output <span class="dm"># best attempt</span>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2><span class="or">Prompting</span><br>vs <span class="em">Looping</span>.</h2>
+          <div style="height:42px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v or">Who iterates</span>
+              <div class="st-t"><strong>Prompting: you rewrite after evaluating the output.</strong> Looping: the model
+                rewrites its own prompt from its self-critique.</div>
+            </div>
+            <div class="st"><span class="st-v em">Error detection</span>
+              <div class="st-t"><strong>Prompting: you spot the mistake manually.</strong> Looping: the model spots it
+                using a fast critique model.</div>
+            </div>
+            <div class="st"><span class="st-v vt">Best for</span>
+              <div class="st-t"><strong>Prompting: simple, one-shot tasks with clear outputs.</strong> Looping: complex,
+                multi-step goals where correctness is verifiable.</div>
+            </div>
+            <div class="st"><span class="st-v or">Where it's live</span>
+              <div class="st-t"><strong>OpenAI o3, Cursor Agent, Devin, Claude tool-use chains.</strong> All run
+                internal loops before returning a final answer.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>In<br><span class="vt">Production</span>.</h2>
+          <div style="height:42px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v or">OpenAI o3</span>
+              <div class="st-t"><strong>Runs 15-30 internal reasoning steps before returning an answer.</strong> Each
+                step generates a thought, critiques it, and refines. The user sees one response; the model ran a full
+                loop.</div>
+            </div>
+            <div class="st"><span class="st-v em">Cursor Agent</span>
+              <div class="st-t"><strong>Writes code, runs your tests, reads the error, rewrites, loops until tests
+                  pass.</strong> You set the goal once and step away.</div>
+            </div>
+            <div class="st"><span class="st-v vt">Devin</span>
+              <div class="st-t"><strong>Achieved 13.86% on SWE-bench by looping through docs, code, debugging, and
+                  deployment.</strong> No human in the loop.</div>
+            </div>
+            <div class="st"><span class="st-v or">Claude + MCP</span>
+              <div class="st-t"><strong>Tool-use chains are AI loops: call tool, evaluate result, decide next
+                  tool.</strong> Give Claude a goal and tools. It loops until the goal is met.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span><span></span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="em">Reference</span>.</h2>
+          <div style="height:42px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v em">AI Loop</span>
+              <div class="st-t"><strong>Generate, self-critique against a goal, self-prompt to improve, repeat until
+                  PASS.</strong> The model is the QA system.</div>
+            </div>
+            <div class="st"><span class="st-v or">Goal</span>
+              <div class="st-t"><strong>A success criterion describing what perfect output looks like.</strong> The loop
+                runs until the model's self-evaluation passes.</div>
+            </div>
+            <div class="st"><span class="st-v vt">Self-critique</span>
+              <div class="st-t"><strong>A fast model (Haiku, GPT-4o-mini) evaluates the output of a capable model
+                  (Sonnet, GPT-4o) against the goal.</strong></div>
+            </div>
+            <div class="st"><span class="st-v em">Agentic AI</span>
+              <div class="st-t"><strong>AI loops combined with tool use to autonomously complete multi-step
+                  tasks.</strong> Cursor, Devin, and o3 are all agentic.</div>
+            </div>
+            <div class="st"><span class="st-v or">Prompt</span>
+              <div class="st-t"><strong>A one-shot instruction with no self-correction.</strong> Sufficient for simple
+                tasks. Insufficient for complex goals that require iteration.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">Every hour you spend perfecting a prompt is an hour you could have
+        spent setting a goal.
+
+        Traditional prompting is a one-shot transaction. You write a command, the model returns an answer, and the
+        session ends. If the output misses the mark, you become the QA system. You analyze what went wrong, write a
+        corrective prompt, and try again. The model did one job. You did three.
+
+        AI Looping flips this entirely. Instead of a command, you give the model a Goal. A goal has a success criterion:
+        what does perfect look like? The model generates a response, then runs a self-critique pass against that
+        criterion. If it passes, the loop exits. If it fails, the model writes its own corrective prompt and runs again.
+        You are not in the loop. The model is.
+
+        This is not a hypothetical. OpenAI o3 executes 15-30 internal reasoning steps before returning an answer. Each
+        step is a micro-loop: generate a thought, evaluate it, refine. Cursor Agent writes code, runs your test suite,
+        reads the error message, rewrites the code, and loops until the tests are green. You set the goal once. Devin
+        achieved 13.86% on SWE-bench by looping through documentation, code, debugging, and deployment with no human
+        intervention.
+
+        The implementation is straightforward. A fast, cheap model (Haiku or GPT-4o-mini) handles the critique step. A
+        capable model (Sonnet or GPT-4o) handles generation. The critique model answers one question: does this output
+        achieve the stated goal? If no, it explains why. That explanation becomes the next prompt. Three to five
+        iterations solve problems that ten manually written prompts cannot.
+
+        The shift in mental model is the hard part. Prompts describe actions. Goals describe outcomes. "Write a Python
+        function that sorts a list" is a prompt. "A Python function that passes these five unit tests" is a goal. One
+        gives the model a direction. The other gives the model a stopping condition.
+
+        The industry already moved. The only question is whether your workflow has.
+
+        #ailooping #agenticai #promptengineering #llm #aiworkflow #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
+    async function cap(s) { return await html2canvas(s, { backgroundColor: '#0e1118', scale: 2, useCORS: true, logging: false }); }
+    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'ailoop-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'ailoop-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+  </script>
+</body>
+
+</html>

@@ -458,3 +458,8 @@ Future Topics for Ravenex Technologies
 - Focus: The modulus math that allows distributed caches to scale dynamically without shuffling the entire dataset.
 200. HyperLogLog Math
 - Focus: Flajolet-Martin algorithms. Using the distribution of leading zeros in hashed data to estimate cardinality instantly.
+
+--- AI PARADIGM SHIFTS (201+) ---
+201. AI Looping vs Prompting
+- Focus: Why single-shot prompting is dead. How agentic loops work: the model receives a Goal, generates a response, critiques its own output, writes its next prompt, and iterates until the goal is met — acting as its own QA manager.
+- Key angle: Prompting = command → answer (you do the heavy lifting). Looping = Goal → self-critique → self-prompt → repeat (the model does the heavy lifting). Real-world shift already happening in Cursor, Devin, and OpenAI's o3 reasoning loops.

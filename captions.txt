@@ -668,3 +668,20 @@ Variants reduce the overhead further. Medusa adds multiple prediction heads dire
 Swipe to see the draft-and-verify loop in Python, the acceptance math, and where production systems deploy this today.
 
 #llm #inference #speculative #mlops #aiengineering #ravenextechnologies
+
+=== POST 81 — AI Looping vs Prompting ===
+Every hour you spend perfecting a prompt is an hour you could have spent setting a goal.
+
+Traditional prompting is a one-shot transaction. You write a command, the model returns an answer, and the session ends. If the output misses the mark, you become the QA system. You analyze what went wrong, write a corrective prompt, and try again. The model did one job. You did three.
+
+AI Looping flips this entirely. Instead of a command, you give the model a Goal. A goal has a success criterion: what does perfect look like? The model generates a response, then runs a self-critique pass against that criterion. If it passes, the loop exits. If it fails, the model writes its own corrective prompt and runs again. You are not in the loop. The model is.
+
+This is not a hypothetical. OpenAI o3 executes 15-30 internal reasoning steps before returning an answer. Each step is a micro-loop: generate a thought, evaluate it, refine. Cursor Agent writes code, runs your test suite, reads the error message, rewrites the code, and loops until the tests are green. You set the goal once. Devin achieved 13.86% on SWE-bench by looping through documentation, code, debugging, and deployment with no human intervention.
+
+The implementation is straightforward. A fast, cheap model (Haiku or GPT-4o-mini) handles the critique step. A capable model (Sonnet or GPT-4o) handles generation. The critique model answers one question: does this output achieve the stated goal? If no, it explains why. That explanation becomes the next prompt. Three to five iterations solve problems that ten manually written prompts cannot.
+
+The shift in mental model is the hard part. Prompts describe actions. Goals describe outcomes. "Write a Python function that sorts a list" is a prompt. "A Python function that passes these five unit tests" is a goal. One gives the model a direction. The other gives the model a stopping condition.
+
+The industry already moved. The only question is whether your workflow has.
+
+#ailooping #agenticai #promptengineering #llm #aiworkflow #ravenextechnologies
