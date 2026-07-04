@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaZero and Reinforcement Learning, Post 85</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fffaf0;
+      --card: #ffffff;
+      --ink: #241a0d;
+      --ink2: #6b5236;
+      --dim: #b39a78;
+      --a1: #b45309;
+      --a2: #4338ca;
+      --a3: #b91c1c;
+      --a1rgb: 180, 83, 9;
+      --a2rgb: 67, 56, 202;
+      --a3rgb: 185, 28, 28;
+      --border: rgba(180, 83, 9, .1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(var(--a1rgb), .05);
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+    .hdr .domain { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: .14em; color: var(--dim); }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+
+    .code {
+      background: #fff3e0;
+      border: 1px solid rgba(var(--a1rgb), .16);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .code .c1 { color: #92400e; }
+    .code .c2 { color: #3730a3; }
+    .code .c3 { color: #991b1b; }
+    .code .dm { color: var(--dim); }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
+    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
+    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .flow-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin: 10px 0; }
+    .fc-box { background: rgba(36, 26, 13, .025); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; }
+    .fc-box .fc-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); margin-bottom: 7px; }
+    .fc-box .fc-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+    .fc-box .fc-sub { font-size: 10.5px; color: var(--ink2); line-height: 1.35; }
+    .fc-arrow { font-size: 18px; color: var(--dim); }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(36, 26, 13, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--a1); }
+    .metric span { font-size: 8px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
+    .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
+    .tl-item:last-child::before { display: none; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .14); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
+    .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(36, 26, 13, .12); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .05); }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+    .copy-btn:hover { background: var(--a1); color: #fff; }
+    .copy-btn.copied { border-color: #4338ca; color: #4338ca; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0"><span class="c1">Zero</span> Human<br>Games.<br>World
+            Champion.</h2>
+          <div class="lead">AlphaZero was never shown a single human game of Go, chess, or shogi. It learned every
+            strategy from scratch by playing itself, and it beat the best system built on human knowledge in
+            hours.</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Built on <span class="c3">Human</span><br>Knowledge.</h2>
+          <div style="height:20px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c3">Deep Blue (1997)</span>
+              <div class="st-t"><strong>Beat Kasparov using handcrafted chess heuristics</strong> written by grandmasters,
+                plus brute-force search.</div>
+            </div>
+            <div class="st"><span class="st-v c1">AlphaGo (2016)</span>
+              <div class="st-t"><strong>Beat Lee Sedol, but only after training on 30 million moves</strong> from
+                real human professional Go games.</div>
+            </div>
+            <div class="st"><span class="st-v c2">The ceiling</span>
+              <div class="st-t"><strong>Every system was bounded by the quality of human data or human rules fed into
+                  it.</strong> None could exceed what people already knew.</div>
+            </div>
+          </div>
+          <div class="callout c3"><p><strong>What if the system never saw a human game at all?</strong> That question
+              is what AlphaZero was built to answer.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Play <span class="c2">Yourself</span>.<br>Learn From It.</h2>
+          <div style="height:6px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Random start</b><span>The network
+                  begins with random weights, and plays complete games against itself, badly.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Guided search</b><span>Monte Carlo
+                  Tree Search uses the network's own policy and value estimates to pick strong moves to explore.</span>
+              </div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Train on outcomes</b><span>The
+                  network is retrained on its own game results, then plays itself again, slightly stronger.</span>
+              </div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Repeat millions of times</b><span>Superhuman
+                  play emerges purely from this loop, with zero external data.</span></div></div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Self-Play<br><span class="c1">Loop</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="code"><span class="dm"># AlphaZero training loop, simplified</span>
+def <span class="c1">train</span>(network):
+  while True:
+    game = []
+    state = initial_state()
+    while not <span class="c3">terminal</span>(state):
+      <span class="dm"># search guided by the network itself</span>
+      probs = <span class="c2">mcts_search</span>(state, network)
+      move = sample(probs)
+      game.append((state, probs))
+      state = apply(state, move)
+
+    outcome = <span class="c3">result</span>(state)
+    <span class="c1">network.train</span>(game, outcome)</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2><span class="c2">Search</span> vs<br><span class="c1">Self-Play</span>.</h2>
+          <div style="height:14px"></div>
+          <div class="flow-compare">
+            <div class="fc-box"><div class="fc-label">Stockfish</div><div class="fc-val" style="color:var(--a3)">Handcrafted
+                eval</div><div class="fc-sub">Brute-force search, human-tuned heuristics</div></div>
+            <div class="fc-arrow">vs</div>
+            <div class="fc-box"><div class="fc-label">AlphaZero</div><div class="fc-val"
+                style="color:var(--a1)">Learned eval</div><div class="fc-sub">MCTS guided by a self-trained network</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Chess result</span>
+              <div class="st-t"><strong>AlphaZero beat Stockfish after just 4 hours of self-play,</strong> searching
+                far fewer positions per second but far more selectively.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Go result</span>
+              <div class="st-t"><strong>AlphaZero beat AlphaGo, the system that beat Lee Sedol, 100 games to
+                  0.</strong> Zero human data, total dominance.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Beyond the<br><span class="c3">Board</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>100-0</b><span>vs AlphaGo</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>4hr</b><span
+                style="color:var(--a2)">To beat Stockfish</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
+                style="color:var(--a3)">Human games used</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">MuZero</span>
+              <div class="st-t"><strong>The successor that learns to play without even knowing the game's
+                  rules,</strong> modeling dynamics purely from experience.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Protein folding, chip design</span>
+              <div class="st-t"><strong>The same self-play and search framework now drives DeepMind's work</strong>
+                on problems far outside board games.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Self-play</span>
+              <div class="st-t"><strong>Training an agent by having it play against copies of itself,</strong> with
+                no external data required.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Monte Carlo Tree Search</span>
+              <div class="st-t"><strong>A search algorithm that explores likely move sequences,</strong> guided here
+                by the network's own policy and value predictions.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Policy and value network</span>
+              <div class="st-t"><strong>One network outputs which moves look promising,</strong> the other estimates
+                who is winning from the current position.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Elo rating</span>
+              <div class="st-t"><strong>The relative skill score used to compare AlphaZero's strength</strong> against
+                Stockfish, AlphaGo, and human champions.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">AlphaZero never saw a single human game of chess, Go, or shogi. Not one. It learned every opening, every tactic, every endgame principle from scratch, purely by playing itself, and it beat the strongest systems built on decades of human knowledge in a matter of hours.
+
+Every prior system had a ceiling built from human input. Deep Blue beat Kasparov in 1997 using chess heuristics written by grandmasters combined with brute-force search. AlphaGo beat Lee Sedol in 2016, but only after training on 30 million moves pulled from real professional Go games. Both were bounded by the quality of the human knowledge fed into them. Neither could exceed what people already understood about the game.
+
+AlphaZero removed that input entirely. It starts with a neural network initialized to random weights and plays complete games against itself, badly at first. Monte Carlo Tree Search explores possible move sequences, but instead of a handcrafted evaluation function, it is guided by the network's own policy and value predictions, which moves look promising and who is likely winning. After each batch of self-played games, the network retrains on the outcomes, gets slightly stronger, and plays itself again. Repeat this loop millions of times and superhuman play emerges from nothing but the rules of the game and the outcomes of its own matches.
+
+The results were not close. AlphaZero beat Stockfish, the strongest handcrafted chess engine in the world, after just four hours of self-play training, searching far fewer positions per second but far more selectively. Against AlphaGo, the system that had already beaten a human world champion, AlphaZero won one hundred games to zero. Zero human data, total dominance.
+
+The framework did not stop at board games. MuZero, its successor, learns to play without even being told the rules, modeling the game's dynamics purely from experience. The same self-play and search architecture now shows up in DeepMind's work on protein folding and chip design, anywhere a system can generate its own training signal by trying things and observing what happens.
+
+#alphazero #reinforcementlearning #deepmind #mcts #artificialintelligence #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
+    async function cap(s) { return await html2canvas(s, { backgroundColor: '#ffffff', scale: 2, useCORS: true, logging: false }); }
+    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'alphazero-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'alphazero-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+  </script>
+</body>
+
+</html>
