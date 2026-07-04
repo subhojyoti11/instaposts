@@ -82,10 +82,10 @@
         <h2>What <span class="pu">RAG</span><br>Solves.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pu">The problem</span><div class="st-t"><strong>LLMs have a training cutoff and finite knowledge.</strong> They cannot answer questions about documents added after training or internal proprietary data they have never seen. Fine-tuning on new data is expensive and slow to update.</div></div>
-          <div class="st"><span class="st-v or">The solution</span><div class="st-t"><strong>Retrieval-Augmented Generation embeds documents into a vector database and retrieves relevant chunks at query time.</strong> Only the 3-10 most relevant chunks are inserted into the prompt. The LLM answers based on retrieved context it could not have known from training.</div></div>
-          <div class="st"><span class="st-v bl">The cost model</span><div class="st-t"><strong>RAG scales cheaply with knowledge base size.</strong> Adding 1M documents costs only embedding compute. Query cost stays fixed regardless of corpus size.</div></div>
-          <div class="st"><span class="st-v pu">The limit</span><div class="st-t"><strong>RAG retrieval is imperfect.</strong> If the relevant document is not in the top-K results, the LLM answers without it or hallucinates. Questions requiring synthesis across many documents are hard: the retriever returns local excerpts, not global understanding of the corpus.</div></div>
+          <div class="st"><span class="st-v pu">The problem</span><div class="st-t"><strong>LLMs have a training cutoff and finite knowledge.</strong> They cannot answer questions about documents or proprietary data added after training.</div></div>
+          <div class="st"><span class="st-v or">The solution</span><div class="st-t"><strong>Retrieval-Augmented Generation embeds documents into a vector database and retrieves relevant chunks at query time.</strong> Only the top 3-10 chunks are inserted into the prompt.</div></div>
+          <div class="st"><span class="st-v bl">The cost model</span><div class="st-t"><strong>RAG scales cheaply with knowledge base size.</strong> Adding 1M documents costs only embedding compute.</div></div>
+          <div class="st"><span class="st-v pu">The limit</span><div class="st-t"><strong>RAG retrieval is imperfect.</strong> If the relevant document is not in the top-K results, the LLM answers without it or hallucinates.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -99,10 +99,10 @@
         <h2>What <span class="or">Long</span><br>Context Solves.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v or">The context window</span><div class="st-t"><strong>Gemini 1.5 Pro supports 2 million tokens. Claude 3 supports 200,000 tokens. GPT-4o supports 128,000 tokens.</strong> At 2 million tokens, you can fit an entire software codebase, a year of Slack history, or 3,000 research papers in a single prompt.</div></div>
-          <div class="st"><span class="st-v bl">No retrieval error</span><div class="st-t"><strong>If all documents fit in context, retrieval failure is impossible.</strong> The LLM attends to the full corpus directly. Questions requiring synthesis across many documents are answered accurately. No chunking strategy, no embedding model, no vector database to operate.</div></div>
-          <div class="st"><span class="st-v or">The cost</span><div class="st-t"><strong>Attention scales quadratically with context length.</strong> A 2M Gemini query costs ~$10.50. At 100 queries/day that's $1,050 daily. RAG with a 4K prompt costs $0.004 per query.</div></div>
-          <div class="st"><span class="st-v pu">Lost in the middle</span><div class="st-t"><strong>LLMs struggle to use information from the middle of very long contexts.</strong> Stanford research showed accuracy drops for facts buried in the center of long contexts.</div></div>
+          <div class="st"><span class="st-v or">The context window</span><div class="st-t"><strong>Gemini 1.5 Pro supports 2 million tokens. Claude 3 supports 200,000. GPT-4o supports 128,000.</strong> An entire codebase or 3,000 papers fit in a single prompt.</div></div>
+          <div class="st"><span class="st-v bl">No retrieval error</span><div class="st-t"><strong>If all documents fit in context, retrieval failure is impossible.</strong> No chunking strategy, no embedding model, no vector database to operate.</div></div>
+          <div class="st"><span class="st-v or">The cost</span><div class="st-t"><strong>Attention scales quadratically with context length.</strong> A 2M Gemini query costs ~$10.50 versus $0.004 for a 4K RAG prompt.</div></div>
+          <div class="st"><span class="st-v pu">Lost in the middle</span><div class="st-t"><strong>LLMs struggle to use information from the middle of very long contexts.</strong> Stanford research showed accuracy drops for facts buried in the center.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -146,10 +146,10 @@ response = client.chat.completions.<span class="pu">create</span>(
         <h2>The <span class="bl">Cost</span><br>Comparison.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pu">RAG at scale</span><div class="st-t"><strong>100K document corpus, 1,000 queries per day, GPT-4o at $0.004 per 4K token query.</strong> Daily cost: $4. Monthly cost: $120. Adding 100K more documents costs ~$1 one-time for embedding.</div></div>
-          <div class="st"><span class="st-v or">Long context at scale</span><div class="st-t"><strong>Same 100K documents, 1,000 queries per day, Gemini 1.5 Pro at $10.50 per 2M token query.</strong> Daily cost: $10,500. Monthly cost: $315,000. Viable only for very infrequent, high-value queries.</div></div>
-          <div class="st"><span class="st-v bl">Where long context wins</span><div class="st-t"><strong>Low-frequency, high-value queries over complete corpora where retrieval mistakes are unacceptable.</strong> Due diligence on 300 contracts. Understanding all dependencies in a 200K line codebase. Summarizing a year of board meeting transcripts. Cost is irrelevant, completeness is required.</div></div>
-          <div class="st"><span class="st-v pu">Hybrid</span><div class="st-t"><strong>Most production systems combine both.</strong> RAG retrieves candidates. A reranker selects the top 20. Those 20 fill a 32K context for better recall than top-5 retrieval.</div></div>
+          <div class="st"><span class="st-v pu">RAG at scale</span><div class="st-t"><strong>100K document corpus, 1,000 queries per day, GPT-4o at $0.004 per query.</strong> Monthly cost: $120.</div></div>
+          <div class="st"><span class="st-v or">Long context at scale</span><div class="st-t"><strong>Same corpus, 1,000 queries per day, Gemini 1.5 Pro at $10.50 per query.</strong> Monthly cost: $315,000.</div></div>
+          <div class="st"><span class="st-v bl">Where long context wins</span><div class="st-t"><strong>Low-frequency, high-value queries over complete corpora where retrieval mistakes are unacceptable.</strong> Contract due diligence, full codebase dependency analysis.</div></div>
+          <div class="st"><span class="st-v pu">Hybrid</span><div class="st-t"><strong>Most production systems combine both.</strong> RAG retrieves candidates, a reranker selects the top 20, and those fill a larger context.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -163,10 +163,10 @@ response = client.chat.completions.<span class="pu">create</span>(
         <h2>In<br><span class="or">Production</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pu">Notion AI</span><div class="st-t"><strong>Uses RAG to answer questions against a user's workspace documents.</strong> Each workspace has thousands of pages. Full-context loading of an entire workspace would be prohibitively expensive per query.</div></div>
-          <div class="st"><span class="st-v or">Google NotebookLM</span><div class="st-t"><strong>Uses long context to index a user's uploaded documents into Gemini 1.5 Pro's context window.</strong> Users upload up to 50 PDFs. NotebookLM keeps all in context, enabling cross-document synthesis.</div></div>
-          <div class="st"><span class="st-v bl">GitHub Copilot</span><div class="st-t"><strong>Uses RAG across the active codebase to provide context-aware code suggestions.</strong> Code is chunked and embedded. Long context for a large codebase would exceed 128K tokens on most models.</div></div>
-          <div class="st"><span class="st-v pu">Anthropic Projects</span><div class="st-t"><strong>Claude's Projects feature maintains persistent context across conversations using a hybrid approach.</strong> Documents are stored and selectively injected by relevance. The 200K window is used when the entire file matters.</div></div>
+          <div class="st"><span class="st-v pu">Notion AI</span><div class="st-t"><strong>Uses RAG to answer questions against a user's workspace documents.</strong> Full-context loading of thousands of pages per query would be prohibitively expensive.</div></div>
+          <div class="st"><span class="st-v or">Google NotebookLM</span><div class="st-t"><strong>Uses long context to index a user's uploaded documents into Gemini 1.5 Pro's context window.</strong> Up to 50 PDFs stay in context for cross-document synthesis.</div></div>
+          <div class="st"><span class="st-v bl">GitHub Copilot</span><div class="st-t"><strong>Uses RAG across the active codebase to provide context-aware code suggestions.</strong> Long context for a large codebase would exceed most models' limits.</div></div>
+          <div class="st"><span class="st-v pu">Anthropic Projects</span><div class="st-t"><strong>Claude's Projects feature maintains persistent context across conversations using a hybrid approach.</strong> Documents are stored and selectively injected by relevance.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -180,11 +180,11 @@ response = client.chat.completions.<span class="pu">create</span>(
         <h2>Quick<br><span class="pu">Reference</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pu">RAG</span><div class="st-t"><strong>Retrieval-Augmented Generation: embed corpus into a vector database, retrieve relevant chunks at query time.</strong> Fixed query cost regardless of knowledge base size. Imperfect retrieval can miss relevant documents. Best for large, frequently-queried, frequently-updated knowledge bases.</div></div>
-          <div class="st"><span class="st-v or">Long context</span><div class="st-t"><strong>Place the entire corpus in the model's context window for every query.</strong> No retrieval failure. Cost scales quadratically with context length. Viable for low-frequency queries where completeness matters more than cost. Gemini 1.5 Pro: 2M tokens. Claude 3: 200K tokens.</div></div>
-          <div class="st"><span class="st-v bl">Chunking</span><div class="st-t"><strong>Splitting documents into smaller segments for embedding in RAG pipelines.</strong> 256-512 tokens with 50-token overlap is the common starting point. Semantic chunking splits at sentence boundaries.</div></div>
-          <div class="st"><span class="st-v pu">Reranking</span><div class="st-t"><strong>A cross-encoder model that reranks retrieved chunks by relevance after initial vector retrieval.</strong> Retrieval finds top-50 fast. Reranker scores and keeps top-5-20. Cohere Rerank is a common choice.</div></div>
-          <div class="st"><span class="st-v or">Lost in middle</span><div class="st-t"><strong>Stanford finding: LLM accuracy degrades for facts in the middle of long contexts.</strong> Information at the start and end of the context window is recalled reliably. Middle sections are underutilized.</div></div>
+          <div class="st"><span class="st-v pu">RAG</span><div class="st-t"><strong>Retrieval-Augmented Generation: embed corpus into a vector database, retrieve relevant chunks at query time.</strong> Fixed query cost regardless of corpus size.</div></div>
+          <div class="st"><span class="st-v or">Long context</span><div class="st-t"><strong>Place the entire corpus in the model's context window for every query.</strong> No retrieval failure, but cost scales quadratically with length.</div></div>
+          <div class="st"><span class="st-v bl">Chunking</span><div class="st-t"><strong>Splitting documents into smaller segments for embedding in RAG pipelines.</strong> 256-512 tokens with 50-token overlap is the common starting point.</div></div>
+          <div class="st"><span class="st-v pu">Reranking</span><div class="st-t"><strong>A cross-encoder model that reranks retrieved chunks by relevance after initial vector retrieval.</strong> Retrieval finds top-50, reranker keeps top-5-20.</div></div>
+          <div class="st"><span class="st-v or">Lost in middle</span><div class="st-t"><strong>Stanford finding: LLM accuracy degrades for facts in the middle of long contexts.</strong> Start and end are recalled reliably; the middle is underutilized.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
