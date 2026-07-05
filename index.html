@@ -1,197 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ravenex Technologies — Post Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0b0c11;
-    --card: #13151e;
-    --card-hover: #181b26;
-    --ink: #f0f2f8;
-    --ink2: #8892a4;
-    --dim: #4a5568;
-    --accent: #6366f1;
-    --border: rgba(255,255,255,.06);
-    --border-hover: rgba(99,102,241,.25);
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  html,body { background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; min-height:100vh; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ravenex Technologies — Post Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c11;
+      --card: #13151e;
+      --card-hover: #181b26;
+      --ink: #f0f2f8;
+      --ink2: #8892a4;
+      --dim: #4a5568;
+      --accent: #6366f1;
+      --border: rgba(255, 255, 255, .06);
+      --border-hover: rgba(99, 102, 241, .25);
+    }
 
-  /* ── Header ── */
-  .hero { text-align:center; padding:72px 24px 56px; }
-  .brand { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
-  .hero h1 { font-size:clamp(36px,6vw,64px); font-weight:800; letter-spacing:-.03em; line-height:1; margin-bottom:16px; }
-  .hero p { font-size:16px; color:var(--ink2); max-width:480px; margin:0 auto 36px; line-height:1.6; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── Search ── */
-  .search-wrap { max-width:480px; margin:0 auto; position:relative; }
-  .search-wrap svg { position:absolute; left:16px; top:50%; transform:translateY(-50%); width:16px; height:16px; stroke:var(--dim); fill:none; stroke-width:2; stroke-linecap:round; pointer-events:none; }
-  #search { width:100%; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 16px 13px 44px; font-size:14px; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink); outline:none; transition:border-color .2s; }
-  #search::placeholder { color:var(--dim); }
-  #search:focus { border-color:var(--accent); }
+    html,
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+    }
 
-  /* ── Status bar ── */
-  .status-bar { display:flex; align-items:center; justify-content:space-between; max-width:1160px; margin:0 auto; padding:0 24px 20px; gap:12px; }
-  .status-left { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); }
-  .pulse { width:6px; height:6px; border-radius:50%; background:#22c55e; flex-shrink:0; animation:pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-  .pulse.done { background:var(--dim); animation:none; }
-  #counter { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); }
+    /* ── Header ── */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 56px;
+    }
 
-  /* ── Error box ── */
-  #err { max-width:600px; margin:0 auto 32px; background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.18); border-radius:10px; padding:18px 22px; display:none; }
-  #err p { font-size:13px; color:#fca5a5; line-height:1.8; }
-  #err code { font-family:'JetBrains Mono',monospace; font-size:12px; background:rgba(239,68,68,.1); padding:2px 7px; border-radius:3px; }
+    .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
 
-  /* ── Grid ── */
-  .grid-wrap { max-width:1160px; margin:0 auto; padding:0 24px 80px; }
-  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  @media(max-width:900px){ .grid { grid-template-columns:repeat(2,1fr); } }
-  @media(max-width:560px){ .grid { grid-template-columns:1fr; } }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
 
-  /* ── Card ── */
-  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; cursor:pointer; text-decoration:none; display:flex; flex-direction:column; gap:10px; transition:background .2s, border-color .2s, transform .2s; }
-  .card:hover { background:var(--card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
-  .card-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
-  .card-title { font-size:16px; font-weight:700; color:var(--ink); line-height:1.4; flex:1; }
-  .card-link { font-size:13px; color:var(--ink2); display:flex; align-items:center; gap:4px; transition:color .2s; margin-top:4px; }
-  .card:hover .card-link { color:var(--accent); }
-  .card.hidden { display:none; }
+    .hero p {
+      font-size: 16px;
+      color: var(--ink2);
+      max-width: 480px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
 
-  /* ── No results ── */
-  #empty { display:none; text-align:center; padding:60px 24px; font-size:15px; color:var(--dim); }
-</style>
+    /* ── Search ── */
+    .search-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--dim);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px 13px 44px;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    #search::placeholder {
+      color: var(--dim);
+    }
+
+    #search:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px 20px;
+      gap: 12px;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.7)
+      }
+    }
+
+    .pulse.done {
+      background: var(--dim);
+      animation: none;
+    }
+
+    #counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    /* ── Error box ── */
+    #err {
+      max-width: 600px;
+      margin: 0 auto 32px;
+      background: rgba(239, 68, 68, .06);
+      border: 1px solid rgba(239, 68, 68, .18);
+      border-radius: 10px;
+      padding: 18px 22px;
+      display: none;
+    }
+
+    #err p {
+      font-size: 13px;
+      color: #fca5a5;
+      line-height: 1.8;
+    }
+
+    #err code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(239, 68, 68, .1);
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    /* ── Grid ── */
+    .grid-wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media(max-width:900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width:560px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+
+    .card:hover {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .card-link {
+      font-size: 13px;
+      color: var(--ink2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color .2s;
+      margin-top: 4px;
+    }
+
+    .card:hover .card-link {
+      color: var(--accent);
+    }
+
+    .card.hidden {
+      display: none;
+    }
+
+    /* ── No results ── */
+    #empty {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+      font-size: 15px;
+      color: var(--dim);
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="hero">
-  <div class="brand">Ravenex Technologies</div>
-  <h1>Post Library</h1>
-  <p>Technical infographics on AI, systems, and software engineering</p>
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-    <input id="search" type="text" placeholder="Search posts..." autocomplete="off">
+  <div class="hero">
+    <div class="brand">Ravenex Technologies</div>
+    <h1>Post Library</h1>
+    <p>Technical infographics on AI, systems, and software engineering</p>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8" />
+        <path d="M21 21l-4.35-4.35" />
+      </svg>
+      <input id="search" type="text" placeholder="Search posts..." autocomplete="off">
+    </div>
   </div>
-</div>
 
-<div class="status-bar">
-  <div class="status-left"><span class="pulse" id="dot"></span><span id="statusText">Discovering posts…</span></div>
-  <div id="counter"></div>
-</div>
+  <div class="status-bar">
+    <div class="status-left"><span class="pulse" id="dot"></span><span id="statusText">Discovering posts…</span></div>
+    <div id="counter"></div>
+  </div>
 
-<div id="err" style="padding:0 24px">
-  <p><strong>Auto-discovery needs a local server.</strong> Run one of these in the folder, then reload:<br><br>
-  Python 3: <code>python -m http.server 5500</code> → open <code>http://localhost:5500</code><br>
-  Node: <code>npx serve .</code> → open the displayed URL<br>
-  VSCode: install <strong>Live Server</strong> and click <em>Go Live</em> in the status bar.</p>
-</div>
+  <div id="err" style="padding:0 24px">
+    <p><strong>Auto-discovery needs a local server.</strong> Run one of these in the folder, then reload:<br><br>
+      Python 3: <code>python -m http.server 5500</code> → open <code>http://localhost:5500</code><br>
+      Node: <code>npx serve .</code> → open the displayed URL<br>
+      VSCode: install <strong>Live Server</strong> and click <em>Go Live</em> in the status bar.</p>
+  </div>
 
-<div class="grid-wrap">
-  <div class="grid" id="grid"></div>
-  <div id="empty">No posts match your search.</div>
-</div>
+  <div class="grid-wrap">
+    <div class="grid" id="grid"></div>
+    <div id="empty">No posts match your search.</div>
+  </div>
 
-<script>
-const MAX_POST = 150;
-const BATCH    = 20;
-const HIDDEN_POSTS = new Set([
-  ...Array.from({ length: 67 }, (_, i) => i + 1),
-  69, 70, 72, 73, 74, 75, 78, 81
-]);
+  <script>
+    const MAX_POST = 150;
+    const BATCH = 20;
+    const HIDDEN_POSTS = new Set([
+      ...Array.from({ length: 67 }, (_, i) => i + 1),
+      69, 70, 72, 73, 74, 75, 78, 81
+    ]);
 
-function parsePost(num, html) {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const titleRaw = doc.title || '';
-  const topic = titleRaw.replace(/[,:\s-]+[Pp]ost\s*\d+\s*$/, '').trim() || `Post ${num}`;
-  const styleText = doc.querySelector('style')?.textContent || '';
-  const colorVars = [...styleText.matchAll(/--(?!bg\b|card\b|ink\b|dim\b|border\b)[a-z]+:\s*(#[0-9a-fA-F]{6})/g)];
-  const primaryHex = colorVars[0]?.[1] || '#6366f1';
-  const bgMatch = styleText.match(/--bg:\s*(#[0-9a-fA-F]{6})/);
-  const bgHex = bgMatch?.[1] || '#111111';
-  const isLight = parseInt(bgHex.slice(1, 3), 16) > 100;
-  return { num, topic, primaryHex, isLight };
-}
+    function parsePost(num, html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const titleRaw = doc.title || '';
+      const topic = titleRaw.replace(/[,:\s-]+[Pp]ost\s*\d+\s*$/, '').trim() || `Post ${num}`;
+      const styleText = doc.querySelector('style')?.textContent || '';
+      const colorVars = [...styleText.matchAll(/--(?!bg\b|card\b|ink\b|dim\b|border\b)[a-z]+:\s*(#[0-9a-fA-F]{6})/g)];
+      const primaryHex = colorVars[0]?.[1] || '#6366f1';
+      const bgMatch = styleText.match(/--bg:\s*(#[0-9a-fA-F]{6})/);
+      const bgHex = bgMatch?.[1] || '#111111';
+      const isLight = parseInt(bgHex.slice(1, 3), 16) > 100;
+      return { num, topic, primaryHex, isLight };
+    }
 
-function makeCard({ num, topic }) {
-  const a = document.createElement('a');
-  a.href  = `post${num}.html`;
-  a.className = 'card';
-  a.dataset.topic = topic.toLowerCase();
-  a.innerHTML =
-    `<div class="card-num">POST ${String(num).padStart(2, '0')}</div>` +
-    `<div class="card-title">${escHtml(topic)}</div>` +
-    `<div class="card-link">View post <span>→</span></div>`;
-  return a;
-}
+    function makeCard({ num, topic }) {
+      const a = document.createElement('a');
+      a.href = `post${num}.html`;
+      a.className = 'card';
+      a.dataset.topic = topic.toLowerCase();
+      a.innerHTML =
+        `<div class="card-num">POST ${String(num).padStart(2, '0')}</div>` +
+        `<div class="card-title">${escHtml(topic)}</div>` +
+        `<div class="card-link">View post <span>→</span></div>`;
+      return a;
+    }
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
-async function probeFetch(num) {
-  try {
-    const r = await fetch(`post${num}.html`, { cache: 'no-store' });
-    if (!r.ok) return null;
-    return parsePost(num, await r.text());
-  } catch { return null; }
-}
+    async function probeFetch(num) {
+      try {
+        const r = await fetch(`post${num}.html`, { cache: 'no-store' });
+        if (!r.ok) return null;
+        return parsePost(num, await r.text());
+      } catch { return null; }
+    }
 
-// Search filter
-document.getElementById('search').addEventListener('input', function() {
-  const q = this.value.toLowerCase().trim();
-  const cards = document.querySelectorAll('.card');
-  let visible = 0;
-  cards.forEach(c => {
-    const match = !q || c.dataset.topic.includes(q);
-    c.classList.toggle('hidden', !match);
-    if (match) visible++;
-  });
-  document.getElementById('empty').style.display = visible === 0 && cards.length > 0 ? 'block' : 'none';
-});
+    // Search filter
+    document.getElementById('search').addEventListener('input', function () {
+      const q = this.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.card');
+      let visible = 0;
+      cards.forEach(c => {
+        const match = !q || c.dataset.topic.includes(q);
+        c.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+      document.getElementById('empty').style.display = visible === 0 && cards.length > 0 ? 'block' : 'none';
+    });
 
-async function run() {
-  const grid    = document.getElementById('grid');
-  const status  = document.getElementById('statusText');
-  const counter = document.getElementById('counter');
-  const dot     = document.getElementById('dot');
-  const errBox  = document.getElementById('err');
+    async function run() {
+      const grid = document.getElementById('grid');
+      const status = document.getElementById('statusText');
+      const counter = document.getElementById('counter');
+      const dot = document.getElementById('dot');
+      const errBox = document.getElementById('err');
 
-  try {
-    const test = await fetch('index.html', { method: 'HEAD', cache: 'no-store' });
-    if (!test.ok) throw new Error();
-  } catch {
-    errBox.style.display = 'block';
-    status.textContent = 'Open via a local server to enable auto-discovery.';
-    dot.classList.add('done');
-    return;
-  }
+      try {
+        const test = await fetch('index.html', { method: 'HEAD', cache: 'no-store' });
+        if (!test.ok) throw new Error();
+      } catch {
+        errBox.style.display = 'block';
+        status.textContent = 'Open via a local server to enable auto-discovery.';
+        dot.classList.add('done');
+        return;
+      }
 
-  const found = [];
+      const found = [];
 
-  for (let start = 1; start <= MAX_POST; start += BATCH) {
-    const end  = Math.min(start + BATCH - 1, MAX_POST);
-    status.textContent = `Scanning ${start} – ${end}…`;
-    const nums  = Array.from({ length: end - start + 1 }, (_, i) => start + i)
-                       .filter(n => !HIDDEN_POSTS.has(n));
-    const batch = await Promise.all(nums.map(n => probeFetch(n)));
-    batch.forEach(r => { if (r) found.push(r); });
-    found.sort((a, b) => b.num - a.num);
-    grid.innerHTML = '';
-    found.forEach(p => grid.appendChild(makeCard(p)));
-    counter.textContent = `${found.length} posts`;
-  }
+      for (let start = 1; start <= MAX_POST; start += BATCH) {
+        const end = Math.min(start + BATCH - 1, MAX_POST);
+        status.textContent = `Scanning ${start} – ${end}…`;
+        const nums = Array.from({ length: end - start + 1 }, (_, i) => start + i)
+          .filter(n => !HIDDEN_POSTS.has(n));
+        const batch = await Promise.all(nums.map(n => probeFetch(n)));
+        batch.forEach(r => { if (r) found.push(r); });
+        found.sort((a, b) => b.num - a.num);
+        grid.innerHTML = '';
+        found.forEach(p => grid.appendChild(makeCard(p)));
+        counter.textContent = `${found.length} posts`;
+      }
 
-  dot.classList.add('done');
-  status.textContent = `${found.length} post${found.length !== 1 ? 's' : ''} found`;
-  if (found.length === 0) status.textContent = 'No post*.html files found.';
-}
+      dot.classList.add('done');
+      status.textContent = `${found.length} post${found.length !== 1 ? 's' : ''} found`;
+      if (found.length === 0) status.textContent = 'No post*.html files found.';
+    }
 
-run();
-</script>
+    run();
+  </script>
 </body>
+
 </html>
