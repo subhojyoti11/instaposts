@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The HTTP QUERY Method, Post 93</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06090f;
+      --card: #0c111a;
+      --ink: #eaf1ff;
+      --ink2: #a0a0a0;
+      --dim: #55606e;
+      --a1: #38bdf8;
+      --a2: #fb7185;
+      --a3: #34d399;
+      --a1rgb: 56, 189, 248;
+      --a2rgb: 251, 113, 133;
+      --a3rgb: 52, 211, 153;
+      --border: rgba(148, 163, 184, .1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0b2338 0%, var(--bg) 55%) var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 520px);
+      aspect-ratio: 4/5;
+      scroll-snap-align: center;
+      background: linear-gradient(160deg, #0d223052 0%, var(--card) 40%);
+      background-color: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+
+    .code {
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .code .c1 { color: #7dd3fc; }
+    .code .c2 { color: #fda4af; }
+    .code .c3 { color: #6ee7b7; }
+    .code .dm { color: #7d8595; }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 20% 1fr; gap: 0 10px; align-items: start; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 13.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .07); border-color: rgba(var(--a1rgb), .2); }
+    .callout.c2 { background: rgba(var(--a2rgb), .07); border-color: rgba(var(--a2rgb), .2); }
+    .callout.c3 { background: rgba(var(--a3rgb), .07); border-color: rgba(var(--a3rgb), .2); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(255, 255, 255, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--a1); }
+    .metric span { font-size: 8px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+    .dl-btn:hover { background: var(--a1); color: var(--bg); }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .1); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(232, 240, 255, .08); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+    .copy-btn:hover { background: var(--a1); color: var(--bg); }
+    .copy-btn.copied { border-color: #34d399; color: #34d399; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">HTTP Just<br>Shipped a<br><span class="c1">Fifth Verb</span>.</h2>
+          <div class="lead">For decades, GET couldn't carry a body and POST was never meant to read data. RFC 9458
+            finally gives search-heavy APIs a verb built for exactly this.</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Why <span class="c3">GET</span> and<br><span class="c2">POST</span> Both Fail.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c3">GET: too small</span>
+              <div class="st-t"><strong>Browsers and servers cap URLs around 2,048-8,192 characters, and GET has no
+                  request body.</strong> Stack in 30 filters and you trip a 414 URI Too Long error, since every
+                filter must be serialized into the URL string itself.</div>
+            </div>
+            <div class="st"><span class="st-v c1">GET: still ideal</span>
+              <div class="st-t"><strong>GET is safe, idempotent, and cacheable,</strong> exactly what a read-only
+                search wants, and its semantics are perfect for reading data. It just can't carry the payload.</div>
+            </div>
+            <div class="st"><span class="st-v c2">POST: wrong tool</span>
+              <div class="st-t"><strong>POST carries a full request body, so complex filters fit easily as JSON, but
+                  POST means create or modify a resource,</strong> not fetch one, so using it to read data breaks
+                that contract.</div>
+            </div>
+            <div class="st"><span class="st-v c2">POST: the cost</span>
+              <div class="st-t"><strong>Repeating a POST can trigger duplicate side effects, and browsers, CDNs, and
+                  gateways never cache it by default.</strong> Retrying a timed-out request isn't safe, and every
+                "read" still hits the origin server.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>One Verb.<br><span class="c1">Both</span> Wins.</h2>
+          <div style="height:14px"></div>
+          <div class="code"><span class="dm"># A GET-style request that carries a POST-style body</span>
+<span class="c1">QUERY</span> /products HTTP/1.1
+Host: api.example.com
+Content-Type: <span class="c2">application/json</span>
+
+{
+  <span class="c3">"filters"</span>: {
+    <span class="c3">"category"</span>: <span class="c2">"electronics"</span>,
+    <span class="c3">"price"</span>: { <span class="c3">"min"</span>: 100, <span class="c3">"max"</span>: 500 }
+  },
+  <span class="c3">"sort"</span>: <span class="c2">"price_asc"</span>
+}</div>
+          <div class="callout c1"><p><strong>Same safe, idempotent, cacheable contract as GET.</strong> Same rich
+              JSON body as POST. RFC 9458 makes it official.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2><span class="c3">GET</span> vs <span class="c2">POST</span><br>vs <span class="c1">QUERY</span>.</h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Request body</span>
+              <div class="st-t"><strong>GET has none.</strong> POST and QUERY both carry a full JSON body.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Safe & idempotent</span>
+              <div class="st-t"><strong>GET and QUERY never alter state and can be retried freely.</strong> POST can,
+                and often does.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Cacheable</span>
+              <div class="st-t"><strong>GET and QUERY responses can be cached by content.</strong> POST is not
+                cached by default.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Best for</span>
+              <div class="st-t"><strong>GET fits simple lookups, POST fits mutations, QUERY fits complex reads.</strong>
+                Three verbs, three distinct jobs.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Adoption<br>Is the <span class="c2">Catch</span>.</h2>
+          <div style="height:14px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>9458</b><span>RFC number</span></div>
+            <div class="metric" style="border-color:rgba(var(--a1rgb),.25)"><b>Safe</b><span
+                style="color:var(--a1)">No state change</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>2025</b><span
+                style="color:var(--a3)">Standardized</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c2">Server support</span>
+              <div class="st-t"><strong>Frameworks, API gateways, and firewalls must learn to route the QUERY
+                  verb.</strong> Older middleware may reject it outright.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Where it wins</span>
+              <div class="st-t"><strong>Search-heavy APIs with dozens of optional filters.</strong> Product
+                catalogs, log queries, analytics endpoints.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:14px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">QUERY</span>
+              <div class="st-t"><strong>New HTTP verb combining GET's safety with POST's body.</strong> Safe,
+                idempotent, cacheable, and body-carrying.</div>
+            </div>
+            <div class="st"><span class="st-v c3">414 error</span>
+              <div class="st-t"><strong>"URI Too Long," triggered when a GET query string exceeds server
+                  limits.</strong> The original problem QUERY solves.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Idempotent</span>
+              <div class="st-t"><strong>Repeating the same request produces the same result with no extra side
+                  effects.</strong> True for GET and QUERY, not guaranteed for POST.</div>
+            </div>
+            <div class="st"><span class="st-v c2">RFC 9458</span>
+              <div class="st-t"><strong>The IETF standard formally defining the QUERY method.</strong> Adoption
+                depends on servers and gateways supporting it.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">HTTP has a new verb, and it fixes a problem developers have been hacking around for years.
+
+Say you're building a search endpoint with 30 or 40 optional filters. A GET request is the semantically correct choice: it's safe, idempotent, and every response is cacheable. But GET has no request body, so every filter has to get crammed into the URL. Browsers and servers cap URL length around 2,000 to 8,000 characters, and a complex filter set blows past that limit fast, returning a 414 URI Too Long error.
+
+So developers reach for POST instead. POST happily carries a full JSON body, filters and all. But POST was never meant to read data, it means create or modify a resource. It isn't idempotent, so retrying a failed request can trigger duplicate side effects, and browsers, CDNs, and API gateways never cache a POST response by default. Every "read" ends up hitting the origin server again.
+
+QUERY, defined in RFC 9458, closes that gap. It carries a rich JSON body like POST, but keeps the safe, idempotent, cacheable contract of GET. The server treats it purely as a read: no state changes, no duplicate writes, and caching works based on the body content rather than the URL.
+
+Instead of a search request truncated into an unreadable query string, an API can accept a clean, structured body. A QUERY request to /products with a JSON payload describing category, price range, and sort order is understood by the server as a pure fetch, not a mutation.
+
+The catch is adoption. Frameworks, reverse proxies, API gateways, and firewalls all need to recognize QUERY as a legitimate verb and route it correctly. Older middleware built around the classic four methods may reject it outright. For search-heavy APIs with dozens of optional parameters though, it finally closes a gap GET and POST could never cover on their own.
+
+#http #restapi #webdevelopment #systemdesign #backenddevelopment #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
+    async function cap(s) { return await html2canvas(s, { backgroundColor: '#0c111a', scale: 2, useCORS: true, logging: false }); }
+    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'httpquery-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'httpquery-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+  </script>
+</body>
+
+</html>
