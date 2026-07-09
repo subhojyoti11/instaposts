@@ -146,7 +146,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.8;
       padding: 13px 16px;
       margin: 8px 0;
@@ -524,18 +524,17 @@
           <p style="margin-bottom:14px"> </p>
           <h2>Serving<br><span class="gn">in Practice</span>.</h2>
           <div style="height:14px"></div>
-          <div class="code"><span class="dm"># vLLM server (OpenAI-compatible API)</span>
-            python -m vllm.entrypoints.<span class="gn">openai.api_server</span> \
-            --model <span class="bl">meta-llama/Llama-3-70b-instruct</span> \
-            --tensor-parallel-size <span class="or">4</span> \ <span class="dm"># 4 GPUs</span>
-            --max-num-seqs <span class="or">256</span> \ <span class="dm"># concurrent requests</span>
-            --gpu-memory-utilization <span class="or">0.9</span>
-            <span class="dm"># HuggingFace TGI server</span>
-            docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span> \
-            --model-id <span class="bl">meta-llama/Llama-3-70b-instruct</span> \
-            --num-shard <span class="or">4</span> \ <span class="dm"># tensor parallel</span>
-            --max-concurrent-requests <span class="or">256</span>
-          </div>
+          <div class="code" style="white-space:pre"><span class="dm"># vLLM server (OpenAI-compatible API)</span>
+python -m vllm.entrypoints.<span class="gn">openai.api_server</span> \
+--model <span class="bl">meta-llama/Llama-3-70b-instruct</span> \
+--tensor-parallel-size <span class="or">4</span> \ <span class="dm"># 4 GPUs</span>
+--max-num-seqs <span class="or">256</span> \ <span class="dm"># concurrent requests</span>
+--gpu-memory-utilization <span class="or">0.9</span>
+<span class="dm"># HuggingFace TGI server</span>
+docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span> \
+--model-id <span class="bl">meta-llama/Llama-3-70b-instruct</span> \
+--num-shard <span class="or">4</span> \ <span class="dm"># tensor parallel</span>
+--max-concurrent-requests <span class="or">256</span></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
