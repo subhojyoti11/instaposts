@@ -27,9 +27,9 @@
   .code { background:rgb(136 136 136/15%); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12px; padding:13px 16px; margin:8px 0; white-space:pre-wrap; flex-shrink:0; }
   .code .lm { color:#a3e635; } .code .cy { color:#67e8f9; } .code .pk { color:#f9a8d4; } .code .dm { color:#a0a0a0; }
   .stats { display:flex; flex-direction:column; gap:0; margin:6px 0; flex-shrink:0; }
-  .st { display:grid; grid-template-columns:20% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
+  .st { display:grid; grid-template-columns:23% 1fr; gap:0 10px; align-items:start; padding:7px 0; border-bottom:1px solid var(--border); }
   .st:last-child { border-bottom:none; }
-  .st-v { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:400; text-align:right; word-break:break-word; }
+  .st-v { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:400; text-align:right; word-break:break-word; }
   .st-v.lm { color:var(--lime); } .st-v.cy { color:var(--cyan); } .st-v.pk { color:var(--pink); }
   .st-t { font-size:13px; color:var(--ink2); line-height:1.35; }
   .st-t strong { font-weight:600; color:var(--ink); }
@@ -82,7 +82,7 @@
         <h2>Why LLM<br><span class="pk">Inference</span><br>Is Slow.</h2>
         <div style="height:10px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v pk">Autoregressive</span><div class="st-t"><strong>LLMs generate one token at a time.</strong> Each token needs a full forward pass reading 140GB of weights.</div></div>
+          <div class="st"><span class="st-v pk">Auto-regressive</span><div class="st-t"><strong>LLMs generate one token at a time.</strong> Each token needs a full forward pass reading 140GB of weights.</div></div>
           <div class="st"><span class="st-v lm">Memory-bound</span><div class="st-t"><strong>LLM decoding is memory-bandwidth-bound, not compute-bound.</strong> GPU utilization during decoding is typically 20-40%.</div></div>
           <div class="st"><span class="st-v cy">The waste</span><div class="st-t"><strong>Every token requires the same full model pass regardless of how predictable that token is.</strong> An obvious token still costs a full weight read.</div></div>
           <div class="st"><span class="st-v pk">The opportunity</span><div class="st-t"><strong>Predict several tokens ahead cheaply, then verify them in one pass of the large model.</strong> Use a small model to guess, the large model to verify in parallel.</div></div>
@@ -99,7 +99,7 @@
         <h2>How It<br><span class="lm">Works</span>.</h2>
         <div style="height:14px"></div>
         <div class="stats">
-          <div class="st"><span class="st-v lm">Draft model</span><div class="st-t"><strong>A small, fast model generates K candidate tokens autoregressively.</strong> For a 70B target, the draft might be 7B.</div></div>
+          <div class="st"><span class="st-v lm">Draft model</span><div class="st-t"><strong>A small, fast model generates K candidate tokens auto-regressively.</strong> For a 70B target, the draft might be 7B.</div></div>
           <div class="st"><span class="st-v cy">Verification</span><div class="st-t"><strong>The large target model runs a single forward pass over the K candidate tokens in parallel.</strong> All K positions are scored at once since the inputs are already known.</div></div>
           <div class="st"><span class="st-v pk">Acceptance</span><div class="st-t"><strong>Each draft token is accepted or rejected based on whether the target model agrees with the draft's choice.</strong> Rejection is sampled stochastically to preserve the target's output distribution.</div></div>
           <div class="st"><span class="st-v lm">Speedup</span><div class="st-t"><strong>If the draft model accepts on average K tokens before the first rejection, each large model pass yields K tokens instead of 1.</strong> At 70% acceptance with K=5, net 2-3x speedup.</div></div>
@@ -153,7 +153,7 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
         <div class="stats">
           <div class="st"><span class="st-v lm">Draft model choice</span><div class="st-t"><strong>The draft model must be from the same model family as the target for high acceptance rates.</strong> Llama 3 70B + Llama 3 8B achieves 70-80% acceptance.</div></div>
           <div class="st"><span class="st-v cy">Medusa</span><div class="st-t"><strong>Adds multiple prediction heads to the base LLM instead of using a separate draft model.</strong> No separate model to deploy; Medusa-2 achieves 2.3-3.6x speedup.</div></div>
-          <div class="st"><span class="st-v pk">EAGLE</span><div class="st-t"><strong>Trains a small autoregressive model on the target model's feature space, not token space.</strong> EAGLE-2 achieves 3-5x speedup.</div></div>
+          <div class="st"><span class="st-v pk">EAGLE</span><div class="st-t"><strong>Trains a small auto-regressive model on the target model's feature space, not token space.</strong> EAGLE-2 achieves 3-5x speedup.</div></div>
           <div class="st"><span class="st-v lm">Lookahead</span><div class="st-t"><strong>n-gram lookahead decoding maintains a pool of candidate phrase completions from recent context.</strong> No draft model needed, though acceptance rates are lower.</div></div>
         </div>
       </div>
@@ -189,7 +189,7 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
           <div class="st"><span class="st-v cy">Acceptance rate</span><div class="st-t"><strong>The fraction of draft tokens accepted by the target model.</strong> 50% for mismatched families, 85% for well-tuned same-family drafts.</div></div>
           <div class="st"><span class="st-v pk">Medusa</span><div class="st-t"><strong>Multiple prediction heads added to the base LLM for speculative decoding without a separate draft model.</strong> 2.3-3.6x speedup, no deployment overhead.</div></div>
           <div class="st"><span class="st-v lm">EAGLE</span><div class="st-t"><strong>Draft model trained on the target model's hidden states rather than token probabilities.</strong> EAGLE-2 achieves 3-5x speedup, the current state of the art.</div></div>
-          <div class="st"><span class="st-v cy">Output equivalence</span><div class="st-t"><strong>Mathematically proven to produce identical output distribution to standard autoregressive decoding.</strong> Only speed improves, output is unchanged.</div></div>
+          <div class="st"><span class="st-v cy">Output equivalence</span><div class="st-t"><strong>Mathematically proven to produce identical output distribution to standard auto-regressive decoding.</strong> Only speed improves, output is unchanged.</div></div>
         </div>
       </div>
       <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span></div>
@@ -208,9 +208,9 @@ def <span class="lm">speculative_decode</span>(target, draft, prompt, K=5):
     <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn" onclick="copyCaption()"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
     <div class="caption-text" id="captionText">LLM inference is memory-bound, not compute-bound. The GPU reads 140GB of weights from VRAM to generate each token. The tensor cores sit mostly idle waiting. Speculative decoding exploits this gap.
 
-Autoregressive generation has an inherent waste: every token requires the same full model pass regardless of how obvious that token is. The word "the" after "answer the phone" costs the same 140GB of weight reads as a complex logical deduction. If you could batch several obvious tokens together and verify them with one large model pass, you could generate multiple tokens per pass instead of one.
+Auto-regressive generation has an inherent waste: every token requires the same full model pass regardless of how obvious that token is. The word "the" after "answer the phone" costs the same 140GB of weight reads as a complex logical deduction. If you could batch several obvious tokens together and verify them with one large model pass, you could generate multiple tokens per pass instead of one.
 
-Speculative decoding works exactly this way. A small, fast draft model generates K candidate tokens autoregressively. A Llama 3 8B draft runs much faster than the 70B target because it reads far less VRAM per token. The 70B target model then verifies all K candidates in a single forward pass. Unlike generation, verification can process all K positions in parallel because the inputs are already known. Each candidate is accepted or rejected based on whether the target model agrees with the draft's choice. The stochastic acceptance criterion preserves the exact output distribution of the target model. Outputs are mathematically identical to standard decoding. Only speed changes.
+Speculative decoding works exactly this way. A small, fast draft model generates K candidate tokens auto-regressively. A Llama 3 8B draft runs much faster than the 70B target because it reads far less VRAM per token. The 70B target model then verifies all K candidates in a single forward pass. Unlike generation, verification can process all K positions in parallel because the inputs are already known. Each candidate is accepted or rejected based on whether the target model agrees with the draft's choice. The stochastic acceptance criterion preserves the exact output distribution of the target model. Outputs are mathematically identical to standard decoding. Only speed changes.
 
 With an acceptance rate of 70-80% and K=5 draft tokens, roughly 3 tokens are accepted per target model forward pass. Throughput increases 2-3x.
 
