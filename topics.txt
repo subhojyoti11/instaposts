@@ -467,3 +467,7 @@ Future Topics for Ravenex Technologies
 202. The HTTP QUERY Method (RFC 9458)
 - Focus: Why HTTP needed a fifth verb. GET can't carry a body and hits URL length limits (414 errors) on complex, multi-filter search requests; POST carries a body but is non-idempotent and non-cacheable, corrupting caches and monitoring when misused for reads.
 - Key angle: QUERY merges both: a body-carrying request that stays safe, idempotent, and cacheable, like GET, but shaped like POST. Lets APIs send structured JSON filter objects instead of unreadable, truncatable query strings. Adoption is gated on servers, gateways, and firewalls learning to route the new verb.
+
+203. Open Knowledge Format: RAG Without Vectors
+- Focus: Traditional RAG breaks documents into chunks, embeds them as vectors, and retrieves via semantic search at query time. That search is probabilistic, not exact, so relevant chunks get missed, results come back random or inaccurate, and scattering context across hundreds of chunks adds real latency.
+- Key angle: Inspired by Andrej Karpathy's "LLM Wiki" concept, the alternative skips embeddings entirely. An AI generates one structured Markdown file per source document plus explicit links between related files (revenue.md links to payments.md), building an open knowledge graph instead of a vector index. Queries are then resolved deterministically by following those pre-built links to the exact files that matter, trading nearest-neighbor guessing for faster, more accurate, explainable retrieval.

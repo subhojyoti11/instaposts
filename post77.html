@@ -658,12 +658,9 @@ docker run ghcr.io/huggingface/<span class="bl">text-generation-inference</span>
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The bottleneck for LLM inference is not compute. It is memory. The
-        teams that figured this out first built the serving engines everyone uses today.
+      <div class="caption-text" id="captionText">The bottleneck for LLM inference is not compute. It is memory. The teams that figured this out first built the serving engines everyone uses today.
 
-        Early LLM serving systems used static batching: group N requests together, run them as a fixed batch, and return
-        all results when the longest request finishes. If one request in a batch of 32 generates 500 tokens while the
-        rest generate 50, all 31 short requests sit idle waiting. GPU utilization collapses. Throughput is terrible.
+        Early LLM serving systems used static batching: group N requests together, run them as a fixed batch, and return all results when the longest request finishes. If one request in a batch of 32 generates 500 tokens while the rest generate 50, all 31 short requests sit idle waiting. GPU utilization collapses. Throughput is terrible.
 
         Continuous batching solves this by treating LLM generation as the token-by-token loop it actually is. Between
         each generation step, completed sequences are immediately replaced with new requests from a queue. The GPU stays
