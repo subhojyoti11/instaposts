@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neuromorphic Computing, Post 86</title>
+  <title>Tactile Sensors in Robotics, Post 98</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,11 +17,11 @@
       --ink: #e8f0ff;
       --ink2: #a0a0a0;
       --dim: #545b6e;
-      --a1: #a3e635;
-      --a2: #e879f9;
+      --a1: #fb7185;
+      --a2: #facc15;
       --a3: #22d3ee;
-      --a1rgb: 163, 230, 53;
-      --a2rgb: 232, 121, 249;
+      --a1rgb: 251, 113, 133;
+      --a2rgb: 250, 204, 21;
       --a3rgb: 34, 211, 238;
       --border: rgba(148, 163, 184, .1);
     }
@@ -29,7 +29,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #182a10 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #200c14 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -41,12 +41,10 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     .slide {
-      flex: 0 0 520px;
-    width: 520px;
-    height: 650px;
-      
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #10122052 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #1a0a1052 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -60,9 +58,8 @@
     .ghost { display: none; }
     .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
     .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
-    .hdr .domain { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: .14em; color: var(--dim); }
 
-    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; justify-content: center; }
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
 
     .slide h2 {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -84,6 +81,31 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
+    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2px; }
+    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(38px, 12vw, 68px); line-height: .92; letter-spacing: -.02em; text-transform: uppercase; }
+    .big-word.c1 { color: var(--a1); text-shadow: 0 0 26px rgba(var(--a1rgb), .45); }
+    .big-word.c2 { color: var(--a2); text-shadow: 0 0 26px rgba(var(--a2rgb), .45); }
+    .big-word.c3 { color: var(--a3); text-shadow: 0 0 26px rgba(var(--a3rgb), .45); }
+    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 4px 0; }
+
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
+    .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .35); background: rgba(var(--a1rgb), .05); }
+    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .35); background: rgba(var(--a2rgb), .05); }
+    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .35); background: rgba(var(--a3rgb), .05); }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
+    .cmp-col.c1 .cmp-icon { background: var(--a1); }
+    .cmp-col.c2 .cmp-icon { background: var(--a2); }
+    .cmp-col.c3 .cmp-icon { background: var(--a3); }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-col.c1 .cmp-title { color: var(--a1); }
+    .cmp-col.c2 .cmp-title { color: var(--a2); }
+    .cmp-col.c3 .cmp-title { color: var(--a3); }
+    .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
+    .cmp-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
+    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .07); color: var(--a1); }
+
     .code {
       background: rgba(0, 0, 0, .35);
       border: 1px solid var(--border);
@@ -96,8 +118,8 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #bef264; }
-    .code .c2 { color: #f0abfc; }
+    .code .c1 { color: #fda4af; }
+    .code .c2 { color: #fde047; }
     .code .c3 { color: #67e8f9; }
     .code .dm { color: #7d8595; }
 
@@ -118,18 +140,6 @@
     .callout p { color: var(--ink2); }
     .callout strong { font-weight: 600; color: var(--ink); }
 
-    .flow-compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin: 10px 0; }
-    .fc-box { background: rgba(255, 255, 255, .03); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; }
-    .fc-box .fc-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--dim); margin-bottom: 7px; }
-    .fc-box .fc-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; margin-bottom: 5px; }
-    .fc-box .fc-sub { font-size: 10.5px; color: var(--ink2); line-height: 1.35; }
-    .fc-arrow { font-size: 18px; color: var(--dim); }
-
-    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
-    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(255, 255, 255, .02); }
-    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--a1); }
-    .metric span { font-size: 8px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
-
     .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
     .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
     .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
@@ -138,6 +148,11 @@
     .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .15); border: 1.5px solid var(--a1); flex-shrink: 0; }
     .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
     .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(255, 255, 255, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
+    .metric span { font-size: 7.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
 
     .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
     .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
@@ -157,6 +172,10 @@
     .dots { display: flex; gap: 8px; align-items: center; }
     .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(232, 240, 255, .08); cursor: pointer; transition: all .35s; }
     .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
+    .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
 
     .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
@@ -183,11 +202,12 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="body">
-          <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">Your Brain Runs<br>on <span class="c1">20 Watts</span>.</h2>
-          <div class="lead">A single GPU training a large model draws hundreds of watts. Your brain runs perception,
-            memory, and reasoning on about as much power as a dim light bulb.</div>
+        <div class="big-title-wrap">
+          <div class="big-word c1">Vision</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c2">Force</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c3">Touch</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -197,24 +217,22 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Compute<br><span class="c2">Even When Idle</span>.</h2>
-          <div style="height:20px"></div>
+          <h2>Cameras Go<br><span class="c1">Blind</span> at Contact.</h2>
+          <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c2">Von Neumann chips</span>
-              <div class="st-t"><strong>CPUs and GPUs shuttle data between memory and compute constantly,</strong>
-                even when the input barely changed from the last cycle.</div>
+            <div class="st"><span class="st-v c1">Occlusion</span>
+              <div class="st-t"><strong>The instant fingers close around an object, they block the camera's view of
+                  exactly what it's doing.</strong></div>
             </div>
-            <div class="st"><span class="st-v c1">Dense computation</span>
-              <div class="st-t"><strong>A neural network layer runs its full matrix multiply every clock
-                  tick,</strong> whether or not most of the signal is meaningful.</div>
+            <div class="st"><span class="st-v c2">No force signal</span>
+              <div class="st-t"><strong>A camera can see an egg. It cannot see how hard the gripper is squeezing
+                  it,</strong> until the shell is already cracked.</div>
             </div>
-            <div class="st"><span class="st-v c3">The cost</span>
-              <div class="st-t"><strong>Always-on sensors and edge devices burn battery</strong> processing mostly
-                unchanging frames of video or audio.</div>
+            <div class="st"><span class="st-v c3">Slip is invisible</span>
+              <div class="st-t"><strong>An object beginning to slip out of a grip looks identical to a stable grip,
+                  from a camera three feet away.</strong></div>
             </div>
           </div>
-          <div class="callout c2"><p><strong>The brain does not compute on a clock.</strong> A neuron only spends
-              energy the instant it actually fires.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -224,18 +242,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Fire Only<br>When it <span class="c1">Matters</span>.</h2>
-          <div style="height:6px"></div>
-          <div class="lead">Spiking Neural Networks model neurons that accumulate charge over time and emit a
-            discrete spike only once a threshold is crossed. No spike, no computation, no power.</div>
-          <div class="flow-compare">
-            <div class="fc-box"><div class="fc-label">Standard ANN</div><div class="fc-val" style="color:var(--a2)">Always
-                on</div><div class="fc-sub">Every neuron fires every step</div></div>
-            <div class="fc-arrow">→</div>
-            <div class="fc-box"><div class="fc-label">Spiking net</div><div class="fc-val"
-                style="color:var(--a1)">Event-driven</div><div class="fc-sub">Silent until threshold is crossed</div>
+          <h2>Three Ways to<br><span class="c3">Sense</span> Contact.</h2>
+          <div class="cmp-grid">
+            <div class="cmp-col c1">
+              <div class="cmp-icon">📷</div>
+              <div class="cmp-title">VISION</div>
+              <div class="cmp-sub">External</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">See the object before and around the grasp.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Cameras and depth sensors watching from outside the hand.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Blind the moment fingers occlude the object.</div>
+            </div>
+            <div class="cmp-col c2">
+              <div class="cmp-icon">⚖️</div>
+              <div class="cmp-title">FORCE</div>
+              <div class="cmp-sub">Joint-level</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Measure total grip torque at the wrist or motor.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Torque sensors reporting one aggregate number per joint.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Knows overall force, not fingertip contact shape.</div>
+            </div>
+            <div class="cmp-col c3">
+              <div class="cmp-icon">🖐️</div>
+              <div class="cmp-title">TOUCH</div>
+              <div class="cmp-sub">Optical tactile</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Feel fine-grained texture, shape, and slip.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">A hidden camera photographing gel deformation at contact.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Reads contact geometry in real time, at the fingertip.</div>
             </div>
           </div>
+          <div class="cmp-cta">↻ Touch closes the loop vision can't</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -245,19 +288,19 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Leaky<br><span class="c3">Integrate-and-Fire</span>.</h2>
-          <div style="height:20px"></div>
-          <div class="code"><span class="dm"># The core spiking neuron model</span>
-def <span class="c1">lif_step</span>(v, input_current, dt):
-  <span class="dm"># charge leaks away over time</span>
-  v += (-v / tau_leak + input_current) * dt
-
-  if v >= <span class="c2">THRESHOLD</span>:
-    <span class="c3">emit_spike</span>()
-    v = <span class="c2">RESET_POTENTIAL</span>
-  return v   <span class="dm"># no spike = no downstream cost</span></div>
-          <div class="callout c1"><p><strong>Between spikes, the chip is doing almost nothing.</strong> Computation
-              only happens at the exact moment a spike is emitted.</p></div>
+          <h2>A Camera Hidden<br>in a <span class="c1">Fingertip</span>.</h2>
+          <div style="height:6px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Soft gel skin</b><span>A clear,
+                  elastomer pad sits at the fingertip, deforming on contact like real skin.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Internal illumination</b><span>Colored
+                  LEDs light the gel from inside the sensor housing.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Tiny camera photographs the
+                  deformation</b><span>A miniature camera behind the gel captures how the surface bends around the
+                  object.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Software reconstructs contact</b><span>The
+                  deformation image is converted into a 3D contact map, shape, and slip estimate.</span></div></div>
+          </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -267,22 +310,17 @@ def <span class="c1">lif_step</span>(v, input_current, dt):
         <div class="hdr"><span class="num">05 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2><span class="c2">ANN</span> vs<br><span class="c1">SNN</span>.</h2>
-          <div style="height:14px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c2">Power draw</span>
-              <div class="st-t"><strong>ANN on a GPU: hundreds of watts, constant.</strong> SNN on neuromorphic
-                silicon: milliwatts, proportional to activity.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Temporal data</span>
-              <div class="st-t"><strong>Spiking neurons naturally encode timing,</strong> making them a strong fit
-                for audio, sensor streams, and event cameras.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Training difficulty</span>
-              <div class="st-t"><strong>Spikes are non-differentiable,</strong> so training SNNs directly with
-                backpropagation still requires workarounds like surrogate gradients.</div>
-            </div>
-          </div>
+          <h2>Detecting <span class="c2">Slip</span><br>in Real Time.</h2>
+          <div style="height:20px"></div>
+          <div class="code"><span class="dm"># Tactile slip detection, simplified</span>
+def <span class="c1">check_grip</span>(gel_frame_t0, gel_frame_t1):
+  shift = <span class="c2">optical_flow</span>(gel_frame_t0, gel_frame_t1)
+
+  if <span class="c3">magnitude</span>(shift) > SLIP_THRESHOLD:
+    <span class="c1">increase_grip_force</span>()
+  <span class="dm"># the contact pattern moved: the object is slipping</span></div>
+          <div class="callout c2"><p><strong>Slip shows up as motion inside the gel image itself,</strong> caught
+              and corrected before the object ever hits the floor.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -292,23 +330,23 @@ def <span class="c1">lif_step</span>(v, input_current, dt):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>In<br><span class="c3">Silicon</span>.</h2>
-          <div style="height:20px"></div>
+          <h2>Threading a<br><span class="c3">Needle</span>.</h2>
+          <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1mW</b><span>Loihi 2 idle</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>1M</b><span
-                style="color:var(--a2)">TrueNorth neurons</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>~20W</b><span
-                style="color:var(--a3)">Human brain</span></div>
+            <div class="metric"><b>MIT</b><span>GelSight origin</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>μm</b><span
+                style="color:var(--a2)">Surface detail</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>0</b><span
+                style="color:var(--a3)">Cracked eggs</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Intel Loihi</span>
-              <div class="st-t"><strong>A neuromorphic chip built entirely around asynchronous spikes,</strong>
-                used for robotics and always-on sensing research.</div>
+            <div class="st"><span class="st-v c1">GelSight</span>
+              <div class="st-t"><strong>The optical-tactile approach originated in MIT robotics research</strong>
+                and is now licensed into industrial and research manipulators.</div>
             </div>
-            <div class="st"><span class="st-v c2">IBM TrueNorth</span>
-              <div class="st-t"><strong>Packs a million spiking neurons on one chip</strong> while drawing a
-                fraction of the power of an equivalent GPU workload.</div>
+            <div class="st"><span class="st-v c2">Delicate tasks</span>
+              <div class="st-t"><strong>Threading a needle, peeling a single sheet of paper off a stack,</strong>
+                and grasping fragile produce all lean on tactile feedback, not vision alone.</div>
             </div>
           </div>
         </div>
@@ -321,23 +359,23 @@ def <span class="c1">lif_step</span>(v, input_current, dt):
         <div class="body">
           <p style="margin-bottom:14px"> </p>
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
-          <div style="height:20px"></div>
+          <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Neuromorphic chip</span>
-              <div class="st-t"><strong>Hardware designed around spiking, event-driven neurons</strong> instead of
-                dense, clock-driven matrix multiplication.</div>
+            <div class="st"><span class="st-v c1">Optical tactile sensor</span>
+              <div class="st-t"><strong>A camera photographing the deformation of a soft gel pad</strong> to
+                measure fine-grained contact shape and force.</div>
             </div>
-            <div class="st"><span class="st-v c2">Spiking Neural Network</span>
-              <div class="st-t"><strong>A network where neurons accumulate charge and fire discrete spikes</strong>
-                only once a threshold is crossed.</div>
+            <div class="st"><span class="st-v c2">Slip detection</span>
+              <div class="st-t"><strong>Tracking motion inside the tactile image itself</strong> to catch an
+                object beginning to slip before it falls.</div>
             </div>
-            <div class="st"><span class="st-v c3">Event-driven computation</span>
-              <div class="st-t"><strong>Power is spent only when a spike happens,</strong> not on every clock cycle
-                regardless of activity.</div>
+            <div class="st"><span class="st-v c3">Shear force</span>
+              <div class="st-t"><strong>Force acting sideways across the contact surface,</strong> as opposed to
+                straight into it, a key slip indicator.</div>
             </div>
-            <div class="st"><span class="st-v c1">Sparsity</span>
-              <div class="st-t"><strong>Most neurons stay silent at any given moment,</strong> which is exactly where
-                the energy savings come from.</div>
+            <div class="st"><span class="st-v c1">GelSight</span>
+              <div class="st-t"><strong>The MIT-originated optical tactile sensor design</strong> now widely used
+                across research and industrial manipulation.</div>
             </div>
           </div>
         </div>
@@ -365,6 +403,10 @@ def <span class="c1">lif_step</span>(v, input_current, dt):
       <div class="progress-bar" id="progressBar">
         <div class="fill" id="progressFill"></div>
       </div>
+      <div class="post-nav-links">
+        <a href="post97.html" class="pn-btn">← Previous Post</a>
+        <a href="post99.html" class="pn-btn">Next Post →</a>
+      </div>
     </div>
     <div class="caption-section">
       <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
@@ -372,17 +414,17 @@ def <span class="c1">lif_step</span>(v, input_current, dt):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A single GPU training a large model draws hundreds of watts, continuously, whether or not the input changes much from one instant to the next. Your brain runs perception, memory, and reasoning on roughly 20 watts. The gap is not because biology found better transistors. It is because your brain never computes on a clock.
+      <div class="caption-text" id="captionText">A robot can watch an egg with a perfect camera and still crack it, because seeing an object and feeling how hard you are squeezing it are two completely different problems.
 
-Every CPU and GPU is built on the von Neumann model, shuttling data between memory and compute at a fixed rate. A neural network layer runs its full matrix multiply every cycle, dense and constant, regardless of how much of that signal is actually meaningful. An always-on camera or microphone processing mostly static scenes still pays full compute cost for every frame, which is exactly why edge devices burn through battery so fast.
+Vision handles the first half of manipulation well: locate the object, plan an approach, position the gripper. Then contact happens, fingers close around the object, and the camera's view gets occluded at the exact moment the hardest part of the task begins. Force sensing at the wrist or motor fills part of that gap, reporting total grip torque, but it has no idea how that force is distributed across the fingertip, or whether the object is a hard-shelled walnut or a soft grape.
 
-Neuromorphic chips flip this by modeling neurons the way biology actually does it, as leaky integrators that fire discrete spikes. A Spiking Neural Network neuron accumulates input current over time, and that charge continuously leaks away if nothing new arrives. Only when accumulated charge crosses a threshold does the neuron emit a spike and reset. Between spikes, there is no computation and no power draw at all. Downstream neurons only do work when a spike actually reaches them. Sparsity is not an optimization bolted on afterward, it is the entire mechanism.
+Optical tactile sensors, the approach popularized by MIT's GelSight, solve this by putting a tiny camera inside the fingertip itself. A soft, clear elastomer pad sits at the point of contact and deforms like real skin when it touches something. Internal LEDs illuminate that gel from inside the sensor housing, and a miniature camera photographs exactly how the surface is bending around the object. Software converts that deformation image into a detailed 3D contact map, capturing shape, texture, and pressure distribution at a resolution vision alone could never provide from three feet away.
 
-This is a real tradeoff, not a free upgrade. Spikes are discrete and non-differentiable, so training these networks with standard backpropagation needs workarounds like surrogate gradients, and the ecosystem is far less mature than standard deep learning. What you gain in exchange is dramatic: Intel's Loihi 2 idles at around a milliwatt, and IBM's TrueNorth packs a million spiking neurons onto a single chip while drawing a fraction of an equivalent GPU workload's power.
+The most useful trick this unlocks is slip detection. When an object begins sliding out of a grip, the contact pattern inside the gel image itself visibly shifts, showing up as motion the same way optical flow tracks movement in ordinary video. Detect that shift early enough, and the gripper can tighten its hold before the object actually falls, catching a failure mode that is functionally invisible to any camera watching from outside the hand.
 
-The fit is obvious for anything that is mostly quiet punctuated by rare, important events: always-on sensors, event cameras, low-power robotics, hearing aids. Anywhere a device needs to watch constantly but act rarely, spending energy only at the moment something actually happens is the entire point.
+This is precisely what makes tasks like threading a needle, peeling a single sheet of paper off a stack, or gently gripping fragile produce possible for a robot. None of it works from vision alone. It requires a sense that only exists at the point of contact.
 
-#neuromorphiccomputing #spikingneuralnetworks #edgeai #computerhardware #ai #ravenextechnologies</div>
+#tactilesensors #robotics #gelsight #manipulation #embodiedai #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -416,8 +458,8 @@ The fit is obvious for anything that is mostly quiet punctuated by rare, importa
     return canvas;
   }
     function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
-    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'neuromorphic-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
-    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'neuromorphic-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'tactile-sensors-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'tactile-sensors-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
   </script>
 </body>
 

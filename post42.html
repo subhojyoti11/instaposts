@@ -11,7 +11,9 @@
 html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding:40px 16px 80px}
 .cw{max-width:1100px;margin:0 auto}
 .carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
-.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 2px 12px rgba(26,26,46,.04)}
+.slide{flex: 0 0 520px;
+    width: 520px;
+    height: 650px;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 2px 12px rgba(26,26,46,.04)}
 .ghost{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'DM Serif Display',serif;font-style:italic;font-weight:400;font-size:260px;line-height:.7;color:rgba(26,26,46,.018);pointer-events:none;user-select:none}
 /* Page number, always centered */
 .hdr{flex-shrink:0;padding:20px 28px 0;display:flex;justify-content:center}
@@ -57,6 +59,13 @@ p.body-text{font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:10px;f
 .nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
 .nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--terra);color:var(--terra)}
 .dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(26,26,46,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--terra);width:22px;border-radius:3px}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

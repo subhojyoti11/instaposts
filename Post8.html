@@ -42,7 +42,7 @@ h1.main .pk{color:var(--pink)}
 .carousel::-webkit-scrollbar{display:none}
 
 .slide{
-  flex:0 0 min(90vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  flex:0 0 min(90vw,520px);scroll-snap-align:center;
   background:var(--card-bg);color:var(--ink);border:1px solid var(--card-border);
   position:relative;overflow:hidden;padding:36px;display:flex;flex-direction:column;
   background-image:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 36px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 36px);
@@ -156,6 +156,13 @@ h1.main .pk{color:var(--pink)}
 .dot.active{background:var(--teal);width:22px}
 
 @media(max-width:600px){.slide{padding:26px}.slide h2{font-size:26px}.uses,.metrics{grid-template-columns:1fr}}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

@@ -27,7 +27,9 @@ body{background-image:radial-gradient(ellipse 50% 40% at 20% 10%,rgba(0,245,160,
 .carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
 
 .slide{
-  flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  flex: 0 0 520px;
+    width: 520px;
+    height: 650px;scroll-snap-align:center;
   background:var(--card);color:var(--ink);
   position:relative;overflow:hidden;display:flex;flex-direction:column;
   border:1px solid var(--card-border);
@@ -110,6 +112,13 @@ body{background-image:radial-gradient(ellipse 50% 40% at 20% 10%,rgba(0,245,160,
 .dot.active{background:var(--mint);width:22px;border-radius:3px}
 
 @media(max-width:600px){.hdr{padding:16px 18px 0 20px}.body{padding:10px 18px 0 20px}.ftr{padding:8px 18px 14px 20px}.slide h2{font-size:26px}}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

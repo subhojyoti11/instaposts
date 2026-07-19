@@ -22,7 +22,9 @@ html,body{background:var(--bg);font-family:'DM Sans',sans-serif;min-height:100vh
 .cw{max-width:1100px;margin:0 auto}
 .carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
 .slide{
-  flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  flex: 0 0 520px;
+    width: 520px;
+    height: 650px;scroll-snap-align:center;
   background:var(--card);color:var(--ink);
   position:relative;overflow:hidden;display:flex;flex-direction:column;
   border:1px solid var(--border);box-shadow:0 1px 4px rgba(26,35,50,.04);
@@ -61,6 +63,13 @@ h2 .em{color:var(--emerald)}h2 .cr{color:var(--coral)}h2 .in{color:var(--indigo)
 .nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
 .nav button{background:transparent;border:1px solid var(--border);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;border-radius:6px;transition:all .25s}.nav button:hover{border-color:var(--indigo);color:var(--indigo)}
 .dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(26,35,50,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--indigo);width:22px;border-radius:3px}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

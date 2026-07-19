@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teleoperation Data Scaling, Post 97</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f6fe;
+      --card: #ffffff;
+      --ink: #14132b;
+      --ink2: #45435f;
+      --dim: #9694b0;
+      --a1: #4f46e5;
+      --a2: #ea580c;
+      --a3: #059669;
+      --a1rgb: 79, 70, 229;
+      --a2rgb: 234, 88, 12;
+      --a3rgb: 5, 150, 105;
+      --border: rgba(79, 70, 229, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(var(--a1rgb), .05);
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+
+    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
+    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(36px, 11.5vw, 64px); line-height: .92; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
+    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
+    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
+    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
+    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
+
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
+    .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
+    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .3); background: rgba(var(--a2rgb), .04); }
+    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .3); background: rgba(var(--a3rgb), .04); }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
+    .cmp-col.c1 .cmp-icon { background: var(--a1); }
+    .cmp-col.c2 .cmp-icon { background: var(--a2); }
+    .cmp-col.c3 .cmp-icon { background: var(--a3); }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-col.c1 .cmp-title { color: var(--a1); }
+    .cmp-col.c2 .cmp-title { color: var(--a2); }
+    .cmp-col.c3 .cmp-title { color: var(--a3); }
+    .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
+    .cmp-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
+    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .28); background: rgba(var(--a1rgb), .06); color: var(--a1); }
+
+    .code {
+      background: #f0eefe;
+      border: 1px solid rgba(var(--a1rgb), .16);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .code .c1 { color: #4338ca; }
+    .code .c2 { color: #9a3412; }
+    .code .c3 { color: #047857; }
+    .code .dm { color: var(--dim); }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
+    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
+    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
+    .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
+    .tl-item:last-child::before { display: none; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .12); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
+    .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(20, 19, 43, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
+    .metric span { font-size: 7.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(20, 19, 43, .1); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
+    .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .05); }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+    .copy-btn:hover { background: var(--a1); color: #fff; }
+    .copy-btn.copied { border-color: #059669; color: #059669; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span></div>
+        <div class="big-title-wrap">
+          <div class="big-word c1">Sim</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c2">Teleop</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c3">Real</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Internet Has<br>No <span class="c1">Body</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Text and images</span>
+              <div class="st-t"><strong>Language models trained on trillions of tokens scraped from the open
+                  web.</strong> That corpus already existed.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Physical actions</span>
+              <div class="st-t"><strong>No equivalent corpus exists for "how a hand grips an egg without cracking
+                  it."</strong> That data has to be generated, not scraped.</div>
+            </div>
+            <div class="st"><span class="st-v c3">The bottleneck</span>
+              <div class="st-t"><strong>Every physical demonstration costs real time, a real robot, and often a
+                  real human,</strong> which is why embodied AI has lagged years behind language AI.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Three Sources<br>of <span class="c2">Motion Data</span>.</h2>
+          <div class="cmp-grid">
+            <div class="cmp-col c1">
+              <div class="cmp-icon">🖥️</div>
+              <div class="cmp-title">SIM</div>
+              <div class="cmp-sub">Synthetic</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Generate unlimited demonstrations in a physics engine.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Domain randomization across friction, mass, and lighting.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Cheap and infinite, but physics never matches reality exactly.</div>
+            </div>
+            <div class="cmp-col c2">
+              <div class="cmp-icon">🥽</div>
+              <div class="cmp-title">TELEOP</div>
+              <div class="cmp-sub">Human piloted</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">A VR pilot drives the real robot through real tasks.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Headsets and haptic controllers logging every frame.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Real physics, but one pilot moves one robot at a time.</div>
+            </div>
+            <div class="cmp-col c3">
+              <div class="cmp-icon">📡</div>
+              <div class="cmp-title">REAL LOGS</div>
+              <div class="cmp-sub">Deployed fleet</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Harvest data from robots already working in the field.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Edge cases and corrections a simulator would never invent.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">The richest signal, but it only exists after deployment.</div>
+            </div>
+          </div>
+          <div class="cmp-cta">↻ Real robots learn from all three</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>A Human Drives.<br>A Robot <span class="c1">Learns</span>.</h2>
+          <div style="height:6px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Pilot suits up</b><span>A remote
+                  operator puts on a VR headset and haptic-feedback controllers.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Motion maps to the robot</b><span>Hand
+                  and arm movements drive the physical robot in real time.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Every frame gets logged</b><span>Camera
+                  video, joint positions, and forces are recorded as a labeled demonstration.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Scale via parallel pilots</b><span>Dozens
+                  of operators run sessions simultaneously, turning hours of piloting into a training set.</span>
+              </div></div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>What Gets<br><span class="c2">Recorded</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="code"><span class="dm"># One teleoperation frame, logged for training</span>
+frame = {
+  <span class="c1">"camera"</span>: image,
+  <span class="c1">"joint_positions"</span>: robot.joints,
+  <span class="c1">"gripper_force"</span>: haptic.force,
+  <span class="c2">"pilot_action"</span>: controller.pose,
+  <span class="c3">"task_label"</span>: <span class="c3">"pour_liquid"</span>
+}</div>
+          <div class="callout c2"><p><strong>Every single frame is a labeled example</strong> of exactly how a
+              human solved a physical problem, captured automatically as the pilot works.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>A New Kind<br>of <span class="c3">Job</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>1:1</b><span>Pilot to robot</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>24/7</b><span
+                style="color:var(--a2)">Farm operation</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>New</b><span
+                style="color:var(--a3)">Labor category</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Figure AI &amp; 1X</span>
+              <div class="st-t"><strong>Both run dedicated teleoperation programs</strong> to bootstrap the
+                demonstration data their neural policies train on.</div>
+            </div>
+            <div class="st"><span class="st-v c2">"Data collection pilot"</span>
+              <div class="st-t"><strong>An emerging job title,</strong> paying people specifically to generate
+                training data by remotely operating robots all day.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Teleoperation</span>
+              <div class="st-t"><strong>A human remotely pilots a physical robot,</strong> generating labeled
+                training demonstrations as a byproduct of doing the task.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Domain randomization</span>
+              <div class="st-t"><strong>Varying simulated lighting, textures, and physics</strong> so a policy
+                trained in sim generalizes better to reality.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Sim2real gap</span>
+              <div class="st-t"><strong>The performance drop when a policy trained in simulation</strong> meets the
+                messiness of the real physical world.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Haptic feedback</span>
+              <div class="st-t"><strong>Force feedback sent back to the pilot's controller,</strong> letting them
+                feel resistance and grip strength remotely.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+      <div class="post-nav-links">
+        <a href="post96.html" class="pn-btn">← Previous Post</a>
+        <a href="post98.html" class="pn-btn">Next Post →</a>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">Language models had it easy. The internet already contained trillions of tokens of text, scraped and ready to train on. Robots have no equivalent corpus. Nobody has ever posted a labeled dataset of exactly how a hand grips an egg without cracking it, and that gap is the real bottleneck in embodied AI.
+
+Three sources are racing to fill it. Simulation generates unlimited synthetic demonstrations inside a physics engine, cheap and infinitely scalable, but no simulated physics perfectly matches the real world, a gap in performance known as the sim2real gap. Domain randomization, deliberately varying simulated lighting, textures, and friction during training, narrows that gap but never fully closes it. Real-world deployment logs are the richest signal of all, capturing exactly how a robot handled a genuine edge case, but that data only exists after a robot is already out in the field doing real work, which is precisely the chicken-and-egg problem new robotics companies face.
+
+Teleoperation is the bridge. A human pilot puts on a VR headset and haptic-feedback controllers, and their hand and arm movements drive an actual physical robot in real time. Every camera frame, joint position, gripper force, and pilot action gets logged automatically as a labeled demonstration, a byproduct of the pilot simply doing the task. Real physics, real contact forces, real failure modes, captured without needing a robot already deployed in the world.
+
+The constraint is throughput: one pilot operates one robot at a time, so companies scale by running dozens of pilots in parallel, effectively building teleoperation data farms. Figure AI and 1X Technologies both run dedicated programs like this specifically to bootstrap the demonstration data their neural policies train on. It has created a genuinely new job category: people paid specifically to generate training data by remotely piloting robots for hours at a time.
+
+None of these three sources wins alone. Simulation gives volume, teleoperation gives grounded physical realism, and real-world logs give the edge cases nobody thought to simulate. Combining all three, at scale, is what is actually closing the data gap.
+
+#teleoperation #robotics #embodiedai #vr #machinelearning #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
+    async function cap(s) {
+    const wrap = document.querySelector('.carousel-wrap');
+    if (wrap) wrap.style.zoom = '1';
+    await new Promise(r => setTimeout(r, 50));
+    
+    const canvas = await html2canvas(s, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      windowWidth: 1200,
+      windowHeight: 800,
+      useCORS: true,
+      logging: false
+    });
+    
+    if (wrap) wrap.style.zoom = '';
+    return canvas;
+  }
+    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
+    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'teleop-scaling-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
+    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'teleop-scaling-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+  </script>
+</body>
+
+</html>

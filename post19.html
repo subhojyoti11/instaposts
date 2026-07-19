@@ -57,7 +57,7 @@ html, body {
 
 .slide {
   flex: 0 0 min(90vw, 500px);
-  aspect-ratio: 4/5;
+  
   scroll-snap-align: center;
   background: var(--card);
   border: 1px solid var(--border);
@@ -474,6 +474,13 @@ html, body {
   .slide h2 { font-size: 24px; }
   .metrics { grid-template-columns: 1fr; }
 }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

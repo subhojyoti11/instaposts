@@ -12,7 +12,9 @@ html,body{background:var(--bg);font-family:'Lexend',sans-serif;min-height:100vh;
 body{background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,102,.008) 3px,rgba(0,255,102,.008) 4px)}
 .carousel-wrap{max-width:1100px;margin:0 auto}
 .carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 2px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
-.slide{flex:0 0 min(92vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 0 30px rgba(0,255,102,.02) inset}
+.slide{flex: 0 0 520px;
+    width: 520px;
+    height: 650px;scroll-snap-align:center;background:var(--card);color:var(--ink);position:relative;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:0 0 30px rgba(0,255,102,.02) inset}
 /* .slide::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ink);box-shadow:0 0 10px var(--ink)} */
 .ghost{position:absolute;top:50px;right:20px;font-family:'VT323',monospace;font-size:160px;line-height:.7;color:rgba(0,255,102,.025);pointer-events:none;user-select:none}
 .hdr{flex-shrink:0;padding:18px 22px 20px 24px;display:flex;justify-content:space-between;align-items:center}
@@ -46,6 +48,13 @@ body{background-image:repeating-linear-gradient(0deg,transparent,transparent 3px
 .nav{display:flex;justify-content:center;gap:16px;margin-top:20px;align-items:center}
 .nav button{background:transparent;border:1px solid rgba(0,255,102,.08);color:var(--dim);width:38px;height:38px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;transition:all .25s}.nav button:hover{border-color:var(--ink);color:var(--ink)}
 .dots{display:flex;gap:8px;align-items:center}.dot{width:5px;height:5px;border-radius:50%;background:rgba(0,255,102,.08);cursor:pointer;transition:all .35s}.dot.active{background:var(--ink);width:22px;border-radius:3px;box-shadow:0 0 6px var(--ink)}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

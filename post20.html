@@ -41,7 +41,7 @@ body {
 
 .slide {
   flex: 0 0 min(90vw, 500px);
-  aspect-ratio: 4/5;
+  
   scroll-snap-align: center;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -161,6 +161,13 @@ p.lead { font-size: 15px; color: var(--text-primary); font-weight: 500; }
   background: none; border: 1px solid var(--accent-blue); color: var(--accent-blue);
   padding: 10px 24px; font-family: 'JetBrains Mono'; cursor: pointer; font-size: 11px;
 }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

@@ -24,8 +24,10 @@ html,body{background:var(--bg);font-family:'Libre Franklin',sans-serif;min-heigh
 .carousel::-webkit-scrollbar{display:none}
 
 .slide{
-  flex:0 0 min(92vw,520px);
-  aspect-ratio:4/5;
+  flex: 0 0 520px;
+    width: 520px;
+    height: 650px;
+  
   scroll-snap-align:center;
   background:var(--cream);
   color:var(--ink);
@@ -180,6 +182,13 @@ html,body{background:var(--bg);font-family:'Libre Franklin',sans-serif;min-heigh
   .slide h2{font-size:28px}
   .mets{grid-template-columns:1fr}
 }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

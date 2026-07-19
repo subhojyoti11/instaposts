@@ -44,8 +44,10 @@
   .carousel::-webkit-scrollbar { display: none; }
 
   .slide {
-    flex: 0 0 min(92vw, 520px);
-    aspect-ratio: 4/5;
+    flex: 0 0 520px;
+    width: 520px;
+    height: 650px;
+    
     scroll-snap-align: center;
     background: var(--card);
     color: var(--ink);
@@ -91,7 +93,7 @@
   .slide h2 {
     font-family: 'Sora', sans-serif;
     font-weight: 800;
-    font-size: clamp(24px, 5vw, 36px);
+    font-size: 36px;
     line-height:1.0;
     letter-spacing: -.03em;
     margin-bottom: 12px;
@@ -297,6 +299,13 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+  }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
   }
 </style>
 </head>
@@ -581,12 +590,21 @@ Swipe to see how the sequence is split, what the ring algorithm actually compute
   document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
 
   async function cap(s) {
-    return await html2canvas(s, {
+    const wrap = document.querySelector('.carousel-wrap');
+    if (wrap) wrap.style.zoom = '1';
+    await new Promise(r => setTimeout(r, 50));
+    
+    const canvas = await html2canvas(s, {
       backgroundColor: '#ffffff',
       scale: 2,
+      windowWidth: 1200,
+      windowHeight: 800,
       useCORS: true,
       logging: false
     });
+    
+    if (wrap) wrap.style.zoom = '';
+    return canvas;
   }
 
   function dl(c, f) {

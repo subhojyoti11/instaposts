@@ -14,12 +14,14 @@
   .carousel-wrap { max-width:1100px; margin:0 auto; }
   .carousel { display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; padding:16px 2px 36px; scrollbar-width:none; }
   .carousel::-webkit-scrollbar { display:none; }
-  .slide { flex:0 0 min(92vw,520px); aspect-ratio:4/5; scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
+  .slide { flex: 0 0 520px;
+    width: 520px;
+    height: 650px;  scroll-snap-align:center; background:var(--card); color:var(--ink); position:relative; overflow:hidden; display:flex; flex-direction:column; border:1px solid var(--border); }
   .ghost { display:none; }
   .hdr { flex-shrink:0; padding:18px 24px 0 26px; display:flex; justify-content:space-between; align-items:center; }
   .hdr .num { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--dim); }
   .body { flex:1; min-height:0; overflow:hidden; padding:10px 24px 0 26px; display:flex; flex-direction:column; }
-  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:clamp(24px,5vw,36px); line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
+  .slide h2 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size: 36px; line-height:1.0; letter-spacing:-.03em; margin-bottom:12px; flex-shrink:0; }
   .slide h2 .lm { color:var(--lime); } .slide h2 .cy { color:var(--cyan); } .slide h2 .pk { color:var(--pink); }
   .ftr { flex-shrink:0; padding:10px 24px 16px 26px; display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border); margin-top:auto; }
   .ftr .left { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--dim); }
@@ -58,6 +60,13 @@
   .copy-btn.copied { border-color:var(--cyan); color:var(--cyan); }
   .copy-btn svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; }
   .caption-text { font-size:13px; line-height:1.7; color:var(--ink2); padding:14px 16px; white-space:pre-wrap; max-height:220px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

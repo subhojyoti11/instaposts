@@ -40,7 +40,7 @@ h1.main .lv{color:var(--lav)}
 .carousel::-webkit-scrollbar{display:none}
 
 .slide{
-  flex:0 0 min(90vw,520px);aspect-ratio:4/5;scroll-snap-align:center;
+  flex:0 0 min(90vw,520px);scroll-snap-align:center;
   background:var(--card-bg);color:var(--ink);border:1px solid var(--card-border);
   position:relative;overflow:hidden;padding:34px;display:flex;flex-direction:column;
   box-shadow:0 20px 60px -15px rgba(124,58,237,.07);
@@ -154,6 +154,13 @@ h1.main .lv{color:var(--lav)}
 .dot.active{background:var(--lav);width:22px;border-radius:3px}
 
 @media(max-width:600px){.slide{padding:26px}.slide h2{font-size:26px}.solutions{grid-template-columns:1fr}}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

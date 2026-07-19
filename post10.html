@@ -17,7 +17,7 @@ h1.main em{font-weight:900;font-style:normal;color:var(--gpu)}h1.main .tp{color:
 .dek{font-weight:300;font-size:16px;color:var(--ink-dim);max-width:620px;line-height:1.55}
 .carousel-wrap{max-width:1100px;margin:0 auto;position:relative}
 .carousel{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:16px 4px 36px;scrollbar-width:none}.carousel::-webkit-scrollbar{display:none}
-.slide{flex:0 0 min(90vw,520px);aspect-ratio:4/5;scroll-snap-align:center;background:var(--card-bg);color:var(--ink);border:1px solid var(--card-border);position:relative;overflow:hidden;padding:36px;display:flex;flex-direction:column;background-image:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 36px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 36px)}.slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cpu),var(--gpu),var(--tpu),var(--tpu8))}
+.slide{flex:0 0 min(90vw,520px);scroll-snap-align:center;background:var(--card-bg);color:var(--ink);border:1px solid var(--card-border);position:relative;overflow:hidden;padding:36px;display:flex;flex-direction:column;background-image:repeating-linear-gradient(0deg,var(--grid) 0 1px,transparent 1px 36px),repeating-linear-gradient(90deg,var(--grid) 0 1px,transparent 1px 36px)}.slide::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cpu),var(--gpu),var(--tpu),var(--tpu8))}
 .sm{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.15em;color:var(--ink-dim);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:auto}.sm .tag{font-weight:600}
 .slide h2{font-family:'Archivo',sans-serif;font-weight:300;font-size:clamp(24px,3.8vw,38px);line-height:.96;letter-spacing:-.01em;margin:16px 0 12px}.slide h2 em{font-weight:900;font-style:normal;color:var(--gpu)}.slide h2 .tp{color:var(--tpu)}.slide h2 .t8{color:var(--tpu8)}.slide h2 .cp{color:var(--cpu)}
 .slide p{font-size:13.5px;line-height:1.6;color:var(--ink-dim);margin-bottom:9px}.slide p.lead{font-family:'Archivo',sans-serif;font-weight:300;font-size:16px;color:var(--ink);opacity:.85}
@@ -40,6 +40,13 @@ h1.main em{font-weight:900;font-style:normal;color:var(--gpu)}h1.main .tp{color:
 .progress-bar{width:200px;height:3px;background:rgba(192,132,252,.1);overflow:hidden;display:none}.progress-bar .fill{height:100%;width:0%;background:var(--tpu8);transition:width .3s}
 .nav{display:flex;justify-content:center;gap:14px;margin-top:18px;align-items:center}.nav button{background:transparent;border:1px solid var(--card-border);color:var(--ink);width:42px;height:42px;cursor:pointer;font-size:16px;transition:all .2s;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace}.nav button:hover{background:var(--tpu8);border-color:var(--tpu8);color:var(--bg)}.dots{display:flex;gap:6px;align-items:center}.dot{width:6px;height:6px;background:rgba(192,132,252,.15);cursor:pointer;transition:all .3s}.dot.active{background:var(--tpu8);width:22px}
 @media(max-width:600px){.slide{padding:24px}.slide h2{font-size:24px}.uses,.metrics{grid-template-columns:1fr}}
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

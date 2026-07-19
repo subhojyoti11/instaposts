@@ -56,8 +56,10 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     .slide {
-      flex: 0 0 min(92vw, 520px);
-      aspect-ratio: 4/5;
+      flex: 0 0 520px;
+    width: 520px;
+    height: 650px;
+      
       scroll-snap-align: center;
       background: linear-gradient(160deg, #10122052 0%, var(--card) 40%);
       background-color: var(--card);
@@ -90,12 +92,13 @@
       padding: 10px 24px 0 26px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
     }
 
     .slide h2 {
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 800;
-      font-size: clamp(24px, 5vw, 36px);
+      font-size: 36px;
       line-height: 1.02;
       letter-spacing: -.03em;
       margin-bottom: 12px;
@@ -237,7 +240,14 @@
       font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap;
       max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent;
     }
-  </style>
+  
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
 </head>
 
 <body>
@@ -479,7 +489,23 @@ This is already running quietly at scale. Gboard's next-word prediction, Apple's
     document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
     const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
     async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
-    async function cap(s) { return await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, useCORS: true, logging: false }); }
+    async function cap(s) {
+    const wrap = document.querySelector('.carousel-wrap');
+    if (wrap) wrap.style.zoom = '1';
+    await new Promise(r => setTimeout(r, 50));
+    
+    const canvas = await html2canvas(s, {
+      backgroundColor: '#0d0f1a',
+      scale: 2,
+      windowWidth: 1200,
+      windowHeight: 800,
+      useCORS: true,
+      logging: false
+    });
+    
+    if (wrap) wrap.style.zoom = '';
+    return canvas;
+  }
     function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
     async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'federated-learning-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
     async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'federated-learning-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }

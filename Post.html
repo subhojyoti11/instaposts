@@ -124,7 +124,7 @@
 
         .slide {
             flex: 0 0 min(92vw, 540px);
-            aspect-ratio: 4/5;
+            
             scroll-snap-align: center;
             background: var(--paper);
             color: var(--paper-ink);
@@ -554,7 +554,14 @@
                 grid-template-columns: 1fr
             }
         }
-    </style>
+    
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
 </head>
 
 <body>

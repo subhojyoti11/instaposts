@@ -43,7 +43,7 @@ h1.main .warm{color:var(--accent-warm)}
 
 .slide{
   flex:0 0 min(90vw, 520px);
-  aspect-ratio:4/5;
+  
   scroll-snap-align:center;
   background:var(--card-bg);color:var(--ink);
   border:1px solid var(--card-border);
@@ -198,6 +198,13 @@ h1.main .warm{color:var(--accent-warm)}
   .slide h2{font-size:26px}
   .uses{grid-template-columns:1fr}
 }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
 </style>
 </head>
 <body>

@@ -58,8 +58,10 @@
     }
 
     .slide {
-      flex: 0 0 min(92vw, 520px);
-      aspect-ratio: 4/5;
+      flex: 0 0 520px;
+    width: 520px;
+    height: 650px;
+      
       scroll-snap-align: center;
       background: var(--card);
       color: var(--ink);
@@ -410,7 +412,14 @@
       width: 22px;
       border-radius: 3px
     }
-  </style>
+  
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
 </head>
 
 <body>
