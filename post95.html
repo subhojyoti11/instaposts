@@ -873,12 +873,13 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># A vision-language-action policy step</span>
-            def <span class="c1">vla_step</span>(camera_frame, instruction):
-            embedding = <span class="c2">encoder</span>(camera_frame, instruction)
-            action = <span class="c3">policy_net</span>(embedding)
-            <span class="dm"># action = joint torques + gripper state</span>
-            execute(action)
+          <div class="code">
+<span class="dm"># A vision-language-action policy step</span>
+def <span class="c1">vla_step</span>(camera_frame, instruction):
+    embedding = <span class="c2">encoder</span>(camera_frame, instruction)
+    action = <span class="c3">policy_net</span>(embedding)
+    <span class="dm"># action = joint torques + gripper state</span>
+    execute(action)
           </div>
           <div class="callout c2">
             <p><strong>No hardcoded inverse kinematics anywhere in this loop.</strong> Every
