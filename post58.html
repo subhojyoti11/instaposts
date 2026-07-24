@@ -281,7 +281,7 @@
     line-height: 1.7;
     color: var(--ink2);
     padding: 14px 16px;
-    white-space: pre-wrap;
+    white-space: pre-line;
     max-height: 220px;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -581,23 +581,42 @@ Swipe to see how four memory copies become zero, what RDMA verbs actually look l
   async function copyCaption() {
     const text = document.getElementById('captionText').innerText;
     const btn  = document.getElementById('copyBtn');
-    try { await navigator.clipboard.writeText(text); }
-    catch(e) {
+    let ok = false;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+    }
+    if (!ok) {
       const ta = document.createElement('textarea');
-      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
       document.body.removeChild(ta);
     }
-    btn.classList.add('copied');
-    btn.innerHTML = copySVG + 'Copied!';
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+    if (!ok && navigator.share) {
+      try { await navigator.share({ text }); ok = true; } catch (e) {}
+    }
+    if (ok) {
+      btn.classList.add('copied');
+      btn.innerHTML = copySVG + 'Copied!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+    } else {
+      btn.innerHTML = copySVG + 'Copy failed';
+      setTimeout(() => { btn.innerHTML = copySVG + 'Copy'; }, 2500);
+    }
   }
 
   async function cap(s) {
     const wrap = document.querySelector('.carousel-wrap');
     if (wrap) wrap.style.zoom = '1';
     await new Promise(r => setTimeout(r, 50));
-    
+
     const canvas = await html2canvas(s, {
       backgroundColor: '#ffffff',
       scale: 2,
@@ -606,20 +625,44 @@ Swipe to see how four memory copies become zero, what RDMA verbs actually look l
       useCORS: true,
       logging: false
     });
-    
+
     if (wrap) wrap.style.zoom = '';
     return canvas;
   }
 
-  function dl(c, f) {
+  function canvasToFile(canvas, filename) {
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png');
+    });
+  }
+
+  // iOS Safari does not reliably save a data-URI <a download> link to Photos/Files,
+  // it just opens the image. The native share sheet is the path that actually saves it.
+  async function saveFile(file) {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file] });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+      }
+    }
     const a = document.createElement('a');
-    a.download = f; a.href = c.toDataURL('image/png'); a.click();
+    a.download = file.name;
+    a.href = URL.createObjectURL(file);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
 
   async function downloadCurrentSlide() {
     const b = document.getElementById('dlCurrent');
     b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-    try { dl(await cap(slides[cur]), 'zerocopy-' + String(cur + 1).padStart(2, '0') + '.png'); }
+    try {
+      const file = await canvasToFile(await cap(slides[cur]), 'zerocopy-' + String(cur + 1).padStart(2, '0') + '.png');
+      await saveFile(file);
+    }
     catch (e) { console.error(e); alert('Download failed: ' + e.message); }
     b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
   }
@@ -633,15 +676,24 @@ Swipe to see how four memory copies become zero, what RDMA verbs actually look l
     try {
       const origScroll = carousel.scrollLeft;
       carousel.style.scrollBehavior = 'auto';
+      const files = [];
       for (let i = 0; i < slides.length; i++) {
         slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
         await new Promise(r => setTimeout(r, 150));
         fill.style.width = ((i + 1) / slides.length * 100) + '%';
-        dl(await cap(slides[i]), 'zerocopy-' + String(i + 1).padStart(2, '0') + '.png');
+        files.push(await canvasToFile(await cap(slides[i]), 'zerocopy-' + String(i + 1).padStart(2, '0') + '.png'));
         await new Promise(r => setTimeout(r, 400));
       }
       carousel.scrollTo({ left: origScroll, behavior: 'instant' });
       carousel.style.scrollBehavior = 'smooth';
+      // Hand the whole batch to the OS share sheet in one shot when possible (iOS lets
+      // you save all images to Photos at once); otherwise save them one at a time.
+      if (navigator.canShare && navigator.canShare({ files })) {
+        try { await navigator.share({ files }); }
+        catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
+      } else {
+        for (const f of files) await saveFile(f);
+      }
     } catch (e) { console.error(e); alert('Download failed: ' + e.message); }
     b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
   }

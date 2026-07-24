@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sim2Real Transfer, Post 99</title>
+  <title>Agricultural Autonomy, Post 105</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,19 +17,19 @@
       --ink: #e8f0ff;
       --ink2: #a0a0a0;
       --dim: #545b6e;
-      --a1: #14b8a6;
+      --a1: #84cc16;
       --a2: #f59e0b;
-      --a3: #f43f5e;
-      --a1rgb: 20, 184, 166;
+      --a3: #0ea5e9;
+      --a1rgb: 132, 204, 22;
       --a2rgb: 245, 158, 11;
-      --a3rgb: 244, 63, 94;
+      --a3rgb: 14, 165, 233;
       --border: rgba(148, 163, 184, .1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0a201c 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #141f0a 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +44,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #0d1a1852 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #161a0d52 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -118,9 +118,9 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #5eead4; }
+    .code .c1 { color: #bef264; }
     .code .c2 { color: #fcd34d; }
-    .code .c3 { color: #fda4af; }
+    .code .c3 { color: #7dd3fc; }
     .code .dm { color: #7d8595; }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -184,8 +184,8 @@
     .copy-btn:hover { background: var(--a1); color: var(--bg); }
     .copy-btn.copied { border-color: #34d399; color: #34d399; }
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
-    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-wrap; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-  
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
   /* Mobile Scaling for perfect aspect ratio captures */
   @media (max-width: 600px) {
     .carousel-wrap {
@@ -203,11 +203,11 @@
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="big-title-wrap">
-          <div class="big-word c1">Randomize</div>
+          <div class="big-word c1">Spray</div>
           <div class="big-vs">vs</div>
-          <div class="big-word c2">Calibrate</div>
+          <div class="big-word c2">Scout</div>
           <div class="big-vs">vs</div>
-          <div class="big-word c3">Fine-Tune</div>
+          <div class="big-word c3">Zap</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +217,20 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Perfect in Sim.<br><span class="c3">Falls Over</span> in Real Life.</h2>
+          <h2>The Whole Field,<br>for One <span class="c1">Weed</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Approximate physics</span>
-              <div class="st-t"><strong>Physics engines model friction and contact dynamics as
-                  approximations,</strong> never as exact as the real forces involved.</div>
+            <div class="st"><span class="st-v c1">Blanket application</span>
+              <div class="st-t"><strong>Conventional spraying covers an entire field uniformly,</strong> stressing
+                soil acres a single weed problem never touched.</div>
             </div>
-            <div class="st"><span class="st-v c2">Clean sensors</span>
-              <div class="st-t"><strong>Simulated cameras and joint encoders have none of the noise</strong> that
-                real hardware produces constantly.</div>
+            <div class="st"><span class="st-v c2">Herbicide resistance</span>
+              <div class="st-t"><strong>Decades of blanket spraying bred weeds now genetically resistant</strong> to
+                the most common herbicides.</div>
             </div>
-            <div class="st"><span class="st-v c3">The reality gap</span>
-              <div class="st-t"><strong>A policy that walks flawlessly in simulation can fall over on real
-                  hardware,</strong> exploiting quirks of the sim that don't exist in reality.</div>
+            <div class="st"><span class="st-v c3">No per-plant decisions</span>
+              <div class="st-t"><strong>A sprayer can't tell a healthy crop row from an invasive weed inches
+                  away,</strong> it treats the whole field the same.</div>
             </div>
           </div>
         </div>
@@ -242,43 +242,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Close the <span class="c2">Gap</span>.</h2>
+          <h2>Three Ways to<br>Clear a <span class="c3">Field</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🎲</div>
-              <div class="cmp-title">RANDOMIZE</div>
-              <div class="cmp-sub">Domain rand.</div>
+              <div class="cmp-icon">🚜</div>
+              <div class="cmp-title">SPRAY</div>
+              <div class="cmp-sub">Whole field</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Train across many physics, not just one exact sim.</div>
+              <div class="cmp-text">Kill weeds across the entire field at once.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Friction, mass, lighting shuffled on every episode.</div>
+              <div class="cmp-text">Uniform chemical coverage regardless of what's growing.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Policy generalizes across a range that includes reality.</div>
+              <div class="cmp-text">Resistant weed strains, runoff, high input cost.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📐</div>
-              <div class="cmp-title">CALIBRATE</div>
-              <div class="cmp-sub">System ID</div>
+              <div class="cmp-icon">🚁</div>
+              <div class="cmp-title">SCOUT</div>
+              <div class="cmp-sub">Drone mapping</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Measure real motors and feed values back into the sim.</div>
+              <div class="cmp-text">Map exactly where weeds and crop stress actually are.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Real motor delays and friction coefficients, measured directly.</div>
+              <div class="cmp-text">Multispectral cameras build a live weed map.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">A more accurate simulator, narrower gap from the start.</div>
+              <div class="cmp-text">You know precisely where, but haven't fixed it yet.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔧</div>
-              <div class="cmp-title">FINE-TUNE</div>
-              <div class="cmp-sub">Real-world</div>
+              <div class="cmp-icon">🔦</div>
+              <div class="cmp-title">ZAP</div>
+              <div class="cmp-sub">Laser removal</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Adapt the sim-trained policy with a little real data.</div>
+              <div class="cmp-text">Remove each weed individually with a targeted laser.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A short real-world training phase after simulation.</div>
+              <div class="cmp-text">Vision identifies a weed, laser burns its growing point.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Closes whatever gap is still left, cheaply.</div>
+              <div class="cmp-text">Zero herbicide, millimeter precision, crop untouched.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ Combine all three to close the gap</div>
+          <div class="cmp-cta">↻ The shift: whole field → single plant</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,18 +288,17 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Years of<br>Practice, in <span class="c1">Hours</span>.</h2>
+          <h2>A Laser for<br>Every <span class="c1">Weed</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Massively parallel simulation</b><span>Thousands
-                  of copies of the same robot train simultaneously inside a physics engine.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Randomized every episode</b><span>Friction,
-                  mass, lighting, and textures shift on every single run.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Compressed experience</b><span>Years
-                  of equivalent physical practice compress into a few hours of GPU time.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Zero or few-shot deployment</b><span>The
-                  trained policy runs on the physical robot with little to no additional real-world tuning.</span>
-              </div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Field imaging</b><span>Cameras
+                  mounted on the rover capture every plant in the row at close range as it drives.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Per-plant classification</b><span>A
+                  vision model classifies each plant in real time as crop or weed, down to species.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Targeting the growing point</b><span>For
+                  every weed found, the system aims a low-power laser at its meristem, its growing point.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Mechanical kill, no chemicals</b><span>A
+                  brief laser pulse stops the weed, without a drop of herbicide sprayed.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -310,17 +309,18 @@
         <div class="hdr"><span class="num">05 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Randomizing<br>Every <span class="c2">Episode</span>.</h2>
+          <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># Domain randomization, one training episode</span>
-def <span class="c1">new_episode</span>(sim):
-  sim.friction = <span class="c2">random_range</span>(0.4, 1.2)
-  sim.mass = <span class="c2">random_range</span>(0.8, 1.3)
-  sim.light = <span class="c3">random_choice</span>(LIGHT_PRESETS)
-  sim.texture = <span class="c3">random_choice</span>(TEXTURE_SET)
-  <span class="dm"># the policy never sees the same world twice</span></div>
-          <div class="callout c1"><p><strong>If a policy survives thousands of randomized physics variants,</strong>
-              the real world just becomes one more variant it already handles.</p></div>
+          <div class="code"><span class="dm"># One frame of a laser-weeding rover's vision loop</span>
+def <span class="c1">weeding_step</span>(frame):
+    plants = <span class="c2">detect_plants</span>(frame)
+    for plant in plants:
+        label = <span class="c3">classify_plant</span>(plant)
+        if label == "weed":
+            laser.fire_at(plant.growing_point)
+        <span class="dm"># crop plants are simply left untouched</span></div>
+          <div class="callout c2"><p><strong>The model doesn't decide where to spray.</strong> It decides, plant by
+              plant, whether this specific one gets removed at all.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -330,23 +330,23 @@ def <span class="c1">new_episode</span>(sim):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Isaac Gym<br>and <span class="c3">Beyond</span>.</h2>
+          <h2>Organic by<br><span class="c3">Design</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1000s</b><span>Parallel envs</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Years</b><span
-                style="color:var(--a2)">Compressed to hours</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>GPU</b><span
-                style="color:var(--a3)">Native simulation</span></div>
+            <div class="metric"><b>100K+</b><span>Weeds ID'd per acre</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>0</b><span
+                style="color:var(--a2)">Herbicide used</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>mm</b><span
+                style="color:var(--a3)">Targeting precision</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">NVIDIA Isaac</span>
-              <div class="st-t"><strong>Runs thousands of simulated robots in parallel directly on the GPU,</strong>
-                the standard platform behind most modern sim2real pipelines.</div>
+            <div class="st"><span class="st-v c1">Organic-compatible</span>
+              <div class="st-t"><strong>Because no chemicals touch the field,</strong> laser-weeded crops can
+                qualify for organic certification.</div>
             </div>
-            <div class="st"><span class="st-v c2">Legged locomotion</span>
-              <div class="st-t"><strong>Quadruped and humanoid walking policies are now trained almost entirely
-                  in simulation,</strong> then deployed with minimal real-world adjustment.</div>
+            <div class="st"><span class="st-v c2">Resistance-proof</span>
+              <div class="st-t"><strong>A laser can't be evolved around the way herbicide resistance
+                  evolves,</strong> it kills mechanically, not chemically.</div>
             </div>
           </div>
         </div>
@@ -361,21 +361,21 @@ def <span class="c1">new_episode</span>(sim):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Sim2real gap</span>
-              <div class="st-t"><strong>The performance drop when a policy trained in simulation</strong> meets
-                the real world's imperfect, unpredictable physics.</div>
+            <div class="st"><span class="st-v c1">Precision agriculture</span>
+              <div class="st-t"><strong>Making farming decisions at the level of individual plants</strong> instead
+                of a uniform whole-field treatment.</div>
             </div>
-            <div class="st"><span class="st-v c2">Domain randomization</span>
-              <div class="st-t"><strong>Varying simulated physics and visuals every episode</strong> so the policy
-                generalizes instead of overfitting to one exact simulator.</div>
+            <div class="st"><span class="st-v c2">Multispectral imaging</span>
+              <div class="st-t"><strong>Capturing crop data outside visible light</strong> to detect stress and
+                species differences.</div>
             </div>
-            <div class="st"><span class="st-v c3">System identification</span>
-              <div class="st-t"><strong>Measuring a real robot's actual physical parameters</strong> and feeding
-                them back into the simulator to make it more accurate.</div>
+            <div class="st"><span class="st-v c3">Meristem targeting</span>
+              <div class="st-t"><strong>Aiming removal at a weed's specific growing point</strong> rather than the
+                whole plant body.</div>
             </div>
-            <div class="st"><span class="st-v c1">Zero-shot transfer</span>
-              <div class="st-t"><strong>Deploying a sim-trained policy directly to real hardware</strong> with no
-                additional training on the physical robot.</div>
+            <div class="st"><span class="st-v c1">Herbicide resistance</span>
+              <div class="st-t"><strong>A weed population's evolved ability to survive a chemical</strong> that used
+                to kill it.</div>
             </div>
           </div>
         </div>
@@ -404,8 +404,8 @@ def <span class="c1">new_episode</span>(sim):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post98.html" class="pn-btn">← Previous Post</a>
-        <a href="post100.html" class="pn-btn">Next Post →</a>
+        <a href="post104.html" class="pn-btn">← Previous Post</a>
+        <a href="post106.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -414,17 +414,17 @@ def <span class="c1">new_episode</span>(sim):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A robot can learn to walk perfectly in a physics simulator and fall over the instant it touches real ground. That gap between simulated and physical performance has a name, the sim2real gap, and closing it is one of the most practically important problems in modern robotics.
+      <div class="caption-text" id="captionText">A laser can identify a single weed among thousands of healthy crop plants and destroy just that one, without a drop of herbicide touching the field. That is not a lab demo anymore, it is running on rovers in commercial fields today.
 
-The root cause is that no physics engine is a perfect model of reality. Friction, contact dynamics, and motor response are all approximations, and simulated sensors are far cleaner than the noisy, imperfect ones on real hardware. A policy trained against one exact simulated world can end up quietly exploiting quirks of that simulation that simply do not exist in the physical one, producing behavior that looks flawless in training and fails immediately on a real robot.
+Conventional weed control still mostly means spraying an entire field uniformly, regardless of where the actual weeds are. It works, but at a real cost. Blanket application kills weeds and stresses soil biology across acres a single weed problem never touched, and decades of repeated spraying have bred weed populations that are now genetically resistant to the most common herbicides. A sprayer has no way to tell a healthy crop row from an invasive weed growing inches away, it simply treats the whole field the same.
 
-Three techniques work together to close that gap. Domain randomization trains the policy against thousands of varied physics conditions instead of one fixed simulation, randomizing friction, mass, lighting, and textures every single episode, so the policy learns to be robust across a wide range rather than perfectly tuned to a single, unrealistic setup. System identification works the other direction: measuring a real robot's actual motor delays and friction coefficients, then feeding those precise numbers back into the simulator to make the simulation itself more accurate from the start. Fine-tuning closes whatever gap remains after both of those, adapting the sim-trained policy using a comparatively small amount of real-world data, far cheaper than training from scratch on physical hardware.
+Drone scouting was the first real improvement, flying multispectral cameras over fields to build a live map of exactly where weeds and crop stress actually exist. That solves the information problem, you finally know where the weeds are, but scouting alone doesn't remove anything. The real shift happens on the ground, where laser-weeding rovers drive down crop rows with cameras capturing every individual plant at close range. A vision model classifies each plant in real time, crop or weed, often down to the specific species, and for every plant labeled a weed, the rover aims a low-power laser precisely at its meristem, the plant's growing point, and fires a brief pulse that stops the weed without touching a single neighboring crop plant.
 
-What makes this practical at all is simulation speed. Platforms like NVIDIA's Isaac Gym run thousands of copies of the same robot in parallel directly on GPU hardware, compressing years of equivalent physical practice into a few hours of compute time. Most modern legged locomotion policies, walking quadrupeds and humanoids alike, are trained almost entirely this way, then deployed to physical hardware with little or no additional tuning.
+The result is mechanical weed control with zero herbicide and millimeter-level precision, at a scale of well over a hundred thousand individual plant decisions per acre pass. Because no chemicals ever touch the field, laser-weeded crops can qualify for organic certification that herbicide use would immediately disqualify. And a laser cannot be evolved around the way herbicide resistance evolves, it kills mechanically, plant by plant, not through a chemical a population can adapt to.
 
-None of the three techniques alone fully closes the reality gap. Combined, they are how a policy that has never touched a real motor ends up controlling one successfully on the first try.
+Farming spent a century treating the field as one uniform surface. Computer vision finally lets it treat every single plant as its own decision.
 
-#sim2real #robotics #reinforcementlearning #nvidiaisaac #embodiedai #ravenextechnologies</div>
+#agtech #precisionagriculture #computervision #sustainablefarming #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -439,27 +439,83 @@ None of the three techniques alone fully closes the reality gap. Combined, they 
     slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
     document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
     const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-    async function copyCaption() { const text = document.getElementById('captionText').innerText; const btn = document.getElementById('copyBtn'); try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!'; setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000); }
+    async function copyCaption() {
+      const text = document.getElementById('captionText').innerText;
+      const btn = document.getElementById('copyBtn');
+      let ok = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+      }
+      if (!ok) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+      }
+      if (!ok && navigator.share) {
+        try { await navigator.share({ text }); ok = true; } catch (e) {}
+      }
+      if (ok) {
+        btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+      } else {
+        btn.innerHTML = copySVG + 'Copy failed';
+        setTimeout(() => { btn.innerHTML = copySVG + 'Copy'; }, 2500);
+      }
+    }
     async function cap(s) {
-    const wrap = document.querySelector('.carousel-wrap');
-    if (wrap) wrap.style.zoom = '1';
-    await new Promise(r => setTimeout(r, 50));
-    
-    const canvas = await html2canvas(s, {
-      backgroundColor: '#0d0f1a',
-      scale: 2,
-      windowWidth: 1200,
-      windowHeight: 800,
-      useCORS: true,
-      logging: false
-    });
-    
-    if (wrap) wrap.style.zoom = '';
-    return canvas;
-  }
-    function dl(c, f) { const a = document.createElement('a'); a.download = f; a.href = c.toDataURL('image/png'); a.click(); }
-    async function downloadCurrentSlide() { const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; try { dl(await cap(slides[cur]), 'sim2real-' + String(cur + 1).padStart(2, '0') + '.png'); } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false; }
-    async function downloadAllSlides() { const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%'; try { const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto'; for (let i = 0; i < slides.length; i++) { slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' }); await new Promise(r => setTimeout(r, 150)); fill.style.width = ((i + 1) / slides.length * 100) + '%'; dl(await cap(slides[i]), 'sim2real-' + String(i + 1).padStart(2, '0') + '.png'); await new Promise(r => setTimeout(r, 400)); } carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth'; } catch (e) { alert('Download failed: ' + e.message); } b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none'; }
+      const wrap = document.querySelector('.carousel-wrap');
+      if (wrap) wrap.style.zoom = '1';
+      await new Promise(r => setTimeout(r, 50));
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      if (wrap) wrap.style.zoom = '';
+      return canvas;
+    }
+    function canvasToFile(canvas, filename) {
+      return new Promise(resolve => { canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png'); });
+    }
+    async function saveFile(file) {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.download = file.name; a.href = URL.createObjectURL(file);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+      try { const file = await canvasToFile(await cap(slides[cur]), 'agriauto-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
+    }
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%';
+      try {
+        const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto';
+        const files = [];
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          files.push(await canvasToFile(await cap(slides[i]), 'agriauto-' + String(i + 1).padStart(2, '0') + '.png'));
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
+        if (navigator.canShare && navigator.canShare({ files })) {
+          try { await navigator.share({ files }); }
+          catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
+        } else {
+          for (const f of files) await saveFile(f);
+        }
+      } catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
+    }
   </script>
 </body>
 

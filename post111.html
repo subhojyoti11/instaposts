@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drone Deliveries at Scale, Post 111</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f6fe;
+      --card: #ffffff;
+      --ink: #14132b;
+      --ink2: #45435f;
+      --dim: #9694b0;
+      --a1: #2563eb;
+      --a2: #16a34a;
+      --a3: #d97706;
+      --a1rgb: 37, 99, 235;
+      --a2rgb: 22, 163, 74;
+      --a3rgb: 217, 119, 6;
+      --border: rgba(37, 99, 235, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(var(--a1rgb), .05);
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+
+    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
+    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
+    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
+    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
+    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
+    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
+
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
+    .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
+    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .3); background: rgba(var(--a2rgb), .04); }
+    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .3); background: rgba(var(--a3rgb), .04); }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
+    .cmp-col.c1 .cmp-icon { background: var(--a1); }
+    .cmp-col.c2 .cmp-icon { background: var(--a2); }
+    .cmp-col.c3 .cmp-icon { background: var(--a3); }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-col.c1 .cmp-title { color: var(--a1); }
+    .cmp-col.c2 .cmp-title { color: var(--a2); }
+    .cmp-col.c3 .cmp-title { color: var(--a3); }
+    .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
+    .cmp-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
+    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .28); background: rgba(var(--a1rgb), .06); color: var(--a1); }
+
+    .code {
+      background: #eaf1fd;
+      border: 1px solid rgba(var(--a1rgb), .16);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .code .c1 { color: #1d4ed8; }
+    .code .c2 { color: #15803d; }
+    .code .c3 { color: #b45309; }
+    .code .dm { color: var(--dim); }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
+    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
+    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
+    .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
+    .tl-item:last-child::before { display: none; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .12); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
+    .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(20, 19, 43, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
+    .metric span { font-size: 7.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(20, 19, 43, .1); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
+    .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .05); }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+    .copy-btn:hover { background: var(--a1); color: #fff; }
+    .copy-btn.copied { border-color: #059669; color: #059669; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span></div>
+        <div class="big-title-wrap">
+          <div class="big-word c1">Manual</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c2">Line-of-Sight</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c3">Autonomous</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>One Pilot.<br>One <span class="c1">Drone</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">One pilot, one drone</span>
+              <div class="st-t"><strong>Early rules required a pilot to keep visual line of sight on every
+                  flight,</strong> capping throughput at one drone per operator.</div>
+            </div>
+            <div class="st"><span class="st-v c2">No shared airspace map</span>
+              <div class="st-t"><strong>Without a real-time tracking system,</strong> regulators had no way to
+                guarantee two drones wouldn't collide.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Precision landing failures</span>
+              <div class="st-t"><strong>GPS alone is only accurate to a few meters,</strong> nowhere near precise
+                enough to drop a package on a porch.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Three Ways to<br>Fly a <span class="c3">Fleet</span>.</h2>
+          <div class="cmp-grid">
+            <div class="cmp-col c1">
+              <div class="cmp-icon">🎮</div>
+              <div class="cmp-title">MANUAL</div>
+              <div class="cmp-sub">Full control</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">A human pilot flies the drone for the entire delivery.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Full manual control from takeoff to landing.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Safe but impossibly slow to scale.</div>
+            </div>
+            <div class="cmp-col c2">
+              <div class="cmp-icon">👀</div>
+              <div class="cmp-title">LINE-OF-SIGHT</div>
+              <div class="cmp-sub">Supervised</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">A human supervises but the drone flies itself.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Autopilot handles the route, a human can intervene.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Still one operator per drone, capping fleet size.</div>
+            </div>
+            <div class="cmp-col c3">
+              <div class="cmp-icon">🛰️</div>
+              <div class="cmp-title">AUTONOMOUS</div>
+              <div class="cmp-sub">Beyond sight</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">One operator supervises many drones beyond sight.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Onboard vision plus a shared traffic system handle flight.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">One operator now runs a real delivery fleet.</div>
+            </div>
+          </div>
+          <div class="cmp-cta">↻ The shift: one pilot, one drone → one pilot, a fleet</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Flying Where<br>Nobody's <span class="c1">Watching</span>.</h2>
+          <div style="height:6px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Regulatory approval for
+                  BVLOS</b><span>Regulators began approving Beyond Visual Line of Sight flights, the legal unlock
+                  for scale.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Onboard sense-and-avoid</b><span>Computer
+                  vision and radar let the drone detect and avoid obstacles without a human watching.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Shared airspace
+                  deconfliction</b><span>A traffic management system tracks every drone in an area, routing around
+                  conflicts.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Vision-guided precision
+                  landing</b><span>Downward cameras identify the delivery spot, correcting for GPS drift to land
+                  within centimeters.</span></div></div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="code"><span class="dm"># One planning tick for an autonomous delivery drone</span>
+def <span class="c1">flight_step</span>(drone, traffic_system, target):
+    nearby = traffic_system.query_nearby(drone.position)
+    path = <span class="c2">deconflict</span>(plan_route(drone, target), nearby)
+    drone.follow(path)
+    <span class="dm"># sense-and-avoid still runs independently as a safety net</span></div>
+          <div class="callout c2"><p><strong>The route planner and the collision-avoidance system are deliberately
+                separate.</strong> One plans efficiency, the other exists purely to prevent disaster.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Already on<br>Your <span class="c3">Street</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>BVLOS</b><span>Flights now approved</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>cm</b><span
+                style="color:var(--a2)">Landing precision</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>1:many</b><span
+                style="color:var(--a3)">Operator to drone ratio</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Suburban rollout</span>
+              <div class="st-t"><strong>Companies run regular residential delivery routes</strong> with average
+                flight times under 30 minutes.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Weather and no-fly limits</span>
+              <div class="st-t"><strong>Systems automatically ground flights during high winds,</strong> decisions
+                no longer left to a pilot's judgment call.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">BVLOS</span>
+              <div class="st-t"><strong>Regulatory approval allowing a drone to fly beyond visual sight,</strong>
+                the legal foundation for scaled delivery.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Sense-and-avoid</span>
+              <div class="st-t"><strong>Onboard sensors letting a drone detect and route around
+                  obstacles</strong> without human intervention.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Airspace deconfliction</span>
+              <div class="st-t"><strong>Automatically resolving conflicts between drones</strong> sharing the same
+                airspace in real time.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Vision-guided landing</span>
+              <div class="st-t"><strong>Using cameras to correct for GPS imprecision</strong> and land a package
+                within centimeters.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+      <div class="post-nav-links">
+        <a href="post110.html" class="pn-btn">← Previous Post</a>
+        <a href="post112.html" class="pn-btn">Next Post →</a>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">A single operator now supervises an entire fleet of delivery drones flying routes they can't even see. Five years ago, regulations required one human watching one drone at all times. The shift from that to a real delivery network needed two separate breakthroughs, one legal and one technical.
+
+The legal unlock was approval for Beyond Visual Line of Sight flight, BVLOS. Before regulators allowed it, every drone delivery required a pilot maintaining direct visual contact with the aircraft, which meant one operator could realistically manage exactly one drone. No amount of better hardware could scale a delivery network under that constraint, the bottleneck was the rule, not the robot.
+
+The technical unlock was making the drone trustworthy enough to fly unsupervised. Onboard sense-and-avoid systems, using cameras and radar, let a drone detect obstacles, birds, and other aircraft and route around them without a human watching every second. A shared airspace traffic management system tracks every registered drone operating in an area in real time, automatically resolving potential conflicts before two drones ever get close to each other. And because GPS alone is only accurate to a few meters, nowhere near precise enough to drop a package on a specific porch, downward-facing cameras handle the final approach, visually identifying the landing spot and correcting for GPS drift to land within centimeters.
+
+Together, these systems let companies run regular suburban delivery routes today, with average flight times under thirty minutes from order to doorstep, while a single remote operator supervises dozens of drones instead of one. The system also makes its own conservative calls, automatically grounding flights during high winds or near restricted airspace, decisions that used to depend entirely on a pilot's judgment in the moment.
+
+Scaling drone delivery was never really a hardware problem. It was proving, to regulators and to the airspace itself, that a drone could be trusted to fly somewhere nobody was watching.
+
+#dronedelivery #autonomousflight #computervision #logistics #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() {
+      const text = document.getElementById('captionText').innerText;
+      const btn = document.getElementById('copyBtn');
+      let ok = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+      }
+      if (!ok) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+      }
+      if (!ok && navigator.share) {
+        try { await navigator.share({ text }); ok = true; } catch (e) {}
+      }
+      if (ok) {
+        btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+      } else {
+        btn.innerHTML = copySVG + 'Copy failed';
+        setTimeout(() => { btn.innerHTML = copySVG + 'Copy'; }, 2500);
+      }
+    }
+    async function cap(s) {
+      const wrap = document.querySelector('.carousel-wrap');
+      if (wrap) wrap.style.zoom = '1';
+      await new Promise(r => setTimeout(r, 50));
+      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      if (wrap) wrap.style.zoom = '';
+      return canvas;
+    }
+    function canvasToFile(canvas, filename) {
+      return new Promise(resolve => { canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png'); });
+    }
+    async function saveFile(file) {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.download = file.name; a.href = URL.createObjectURL(file);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+      try { const file = await canvasToFile(await cap(slides[cur]), 'dronedelivery-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
+    }
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%';
+      try {
+        const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto';
+        const files = [];
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          files.push(await canvasToFile(await cap(slides[i]), 'dronedelivery-' + String(i + 1).padStart(2, '0') + '.png'));
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
+        if (navigator.canShare && navigator.canShare({ files })) {
+          try { await navigator.share({ files }); }
+          catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
+        } else {
+          for (const f of files) await saveFile(f);
+        }
+      } catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>

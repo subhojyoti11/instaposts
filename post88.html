@@ -41,10 +41,8 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     .slide {
-      flex: 0 0 520px;
-    width: 520px;
-    height: 650px;
-      
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
       scroll-snap-align: center;
       background: var(--card);
       color: var(--ink);
@@ -234,10 +232,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">03 / 07</span></div>
-        <div class="body">
-          <p style="margin-bottom:14px"> </p>
+        <div class="body" style="justify-content:center">
           <h2>One <span class="c1">Leader</span>,<br>Rest <span class="c2">Follow</span>.</h2>
-          <div style="height:6px"></div>
+          <div style="height:16px"></div>
           <div class="ring-wrap">
             <div class="ring-circle"></div>
             <div class="ring-node leader" style="top:8%;left:50%">S1</div>
@@ -301,7 +298,7 @@ def <span class="c1">on_election_timeout</span>(server):
           <h2>In<br><span class="c3">Production</span>.</h2>
           <div style="height:20px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>5</b><span>Typical cluster</span></div>
+            <div class="metric"><b>5</b><span style="color:var(--a1)">Typical cluster</span></div>
             <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>3</b><span
                 style="color:var(--a2)">Nodes for quorum</span></div>
             <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>2</b><span

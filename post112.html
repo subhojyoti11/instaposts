@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Robotics and On-Orbit Servicing, Post 112</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f6fe;
+      --card: #ffffff;
+      --ink: #14132b;
+      --ink2: #45435f;
+      --dim: #9694b0;
+      --a1: #4338ca;
+      --a2: #0891b2;
+      --a3: #db2777;
+      --a1rgb: 67, 56, 202;
+      --a2rgb: 8, 145, 178;
+      --a3rgb: 219, 39, 119;
+      --border: rgba(67, 56, 202, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(var(--a1rgb), .05);
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 18px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 10px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
+    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+
+    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
+    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(30px, 10.5vw, 56px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
+    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
+    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
+    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
+    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
+
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
+    .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
+    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .3); background: rgba(var(--a2rgb), .04); }
+    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .3); background: rgba(var(--a3rgb), .04); }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
+    .cmp-col.c1 .cmp-icon { background: var(--a1); }
+    .cmp-col.c2 .cmp-icon { background: var(--a2); }
+    .cmp-col.c3 .cmp-icon { background: var(--a3); }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-col.c1 .cmp-title { color: var(--a1); }
+    .cmp-col.c2 .cmp-title { color: var(--a2); }
+    .cmp-col.c3 .cmp-title { color: var(--a3); }
+    .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
+    .cmp-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
+    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .28); background: rgba(var(--a1rgb), .06); color: var(--a1); }
+
+    .code {
+      background: #edecfb;
+      border: 1px solid rgba(var(--a1rgb), .16);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      padding: 13px 16px;
+      margin: 8px 0;
+      white-space: pre-wrap;
+      flex-shrink: 0;
+      line-height: 1.55;
+    }
+    .code .c1 { color: #3730a3; }
+    .code .c2 { color: #0e7490; }
+    .code .c3 { color: #be185d; }
+    .code .dm { color: var(--dim); }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
+    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
+    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
+    .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
+    .tl-item:last-child::before { display: none; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .12); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
+    .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(20, 19, 43, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
+    .metric span { font-size: 7.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
+    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 6px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(20, 19, 43, .1); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
+    .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .05); }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+    .copy-btn:hover { background: var(--a1); color: #fff; }
+    .copy-btn.copied { border-color: #059669; color: #059669; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+  /* Mobile Scaling for perfect aspect ratio captures */
+  @media (max-width: 600px) {
+    .carousel-wrap {
+      zoom: 0.65;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 07</span></div>
+        <div class="big-title-wrap">
+          <div class="big-word c1">Abandon</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c2">Deorbit</div>
+          <div class="big-vs">vs</div>
+          <div class="big-word c3">Service</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Out of Fuel.<br>Still <span class="c1">Working</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Dead satellites, still in orbit</span>
+              <div class="st-t"><strong>A satellite that runs out of fuel is historically abandoned in
+                  place,</strong> even though the rest still works fine.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Millions in stranded value</span>
+              <div class="st-t"><strong>A geostationary satellite costs hundreds of millions,</strong> and a minor
+                fuel shortage used to end its mission years early.</div>
+            </div>
+            <div class="st"><span class="st-v c3">A growing debris field</span>
+              <div class="st-t"><strong>Every abandoned satellite becomes a permanent collision risk,</strong>
+                already forcing the ISS to maneuver out of the way.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Three Fates for<br>a <span class="c3">Satellite</span>.</h2>
+          <div class="cmp-grid">
+            <div class="cmp-col c1">
+              <div class="cmp-icon">🛰️</div>
+              <div class="cmp-title">ABANDON</div>
+              <div class="cmp-sub">Leave in orbit</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Do nothing once fuel runs low or a part fails.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">The spacecraft is simply left in its existing orbit.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Hundreds of millions stranded, added debris risk.</div>
+            </div>
+            <div class="cmp-col c2">
+              <div class="cmp-icon">🔥</div>
+              <div class="cmp-title">DEORBIT</div>
+              <div class="cmp-sub">Controlled burn</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Deliberately guide the satellite to burn up.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Uses the satellite's last fuel for a controlled descent.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Removes debris risk, but the asset is still gone.</div>
+            </div>
+            <div class="cmp-col c3">
+              <div class="cmp-icon">🔧</div>
+              <div class="cmp-title">SERVICE</div>
+              <div class="cmp-sub">Repair in orbit</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Dock with the satellite and extend its life.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">A servicing spacecraft refuels or repairs it directly.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Years of extra mission life from the same hardware.</div>
+            </div>
+          </div>
+          <div class="cmp-cta">↻ Refueling a satellite never designed to be refueled</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Docking with<br>Nobody at the <span class="c1">Wheel</span>.</h2>
+          <div style="height:6px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Rendezvous in orbit</b><span>A
+                  servicing spacecraft autonomously matches the target's orbit over days, not minutes.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Vision-guided docking</b><span>Cameras
+                  and lidar guide the final approach, docking with a satellite never designed to be grabbed.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Autonomous repair or refuel</b><span>Robotic
+                  arms transfer propellant or replace a component, largely without real-time control.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Extended or corrected
+                  mission</b><span>The satellite regains years of life, or gets repositioned entirely.</span></div></div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
+          <div style="height:20px"></div>
+          <div class="code"><span class="dm"># One approach phase for a servicing spacecraft</span>
+def <span class="c1">rendezvous_step</span>(chaser, target):
+    relative_state = <span class="c2">estimate_pose</span>(chaser.sensors, target)
+    if relative_state.distance < DOCK_THRESHOLD:
+        dock_sequence(chaser, target)
+    else:
+        chaser.thrusters.apply(closing_maneuver(relative_state))</div>
+          <div class="callout c2"><p><strong>Communication delay makes real-time joystick control impossible at
+                these distances.</strong> The spacecraft has to make its own docking decisions.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Already<br>Refueling <span class="c3">Satellites</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>Years</b><span>Added satellite life</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>$100M+</b><span
+                style="color:var(--a2)">Typical satellite value</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Autonomous</b><span
+                style="color:var(--a3)">Docking, minimal control</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Commercial refueling missions</span>
+              <div class="st-t"><strong>Servicing spacecraft have already docked with and extended</strong> the
+                life of operational commercial satellites, a first for the industry.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Debris mitigation</span>
+              <div class="st-t"><strong>The same technology is being adapted to deorbit dead satellites</strong>
+                before they fragment further.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">07 / 07</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">On-orbit servicing</span>
+              <div class="st-t"><strong>Using a spacecraft to refuel, repair, or reposition another
+                  satellite</strong> while both remain in orbit.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Rendezvous</span>
+              <div class="st-t"><strong>Matching orbits and closing distance with a target,</strong> typically over
+                days rather than minutes.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Autonomous docking</span>
+              <div class="st-t"><strong>Physically connecting two spacecraft without real-time control,</strong>
+                necessary given orbital communication delay.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Space debris mitigation</span>
+              <div class="st-t"><strong>Actively removing or deorbiting defunct satellites</strong> to reduce
+                collision risk.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+      <div class="post-nav-links">
+        <a href="post111.html" class="pn-btn">← Previous Post</a>
+        <a href="post113.html" class="pn-btn">Next Post →</a>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">A satellite worth hundreds of millions of dollars used to become permanent space junk the moment it ran low on fuel, even if every other component still worked perfectly. On-orbit servicing exists because that was always an absurd way to lose an asset.
+
+For the entire history of spaceflight, satellites were built to be disposable in a very specific way, once deployed, nobody could touch them again. Run out of fuel, and a fully functional spacecraft becomes permanently stranded in its existing orbit, adding to a growing debris field that has already forced the International Space Station to maneuver out of the way of dangerous fragments. Deliberately deorbiting a dying satellite at least removes the collision risk, burning it up in the atmosphere using its last fuel reserves, but the asset itself is still gone for good either way.
+
+Autonomous servicing spacecraft change that equation by treating a stranded satellite as repairable rather than disposable. A servicing spacecraft autonomously matches the target's orbit and closes the distance over days, not minutes, since communication delay at orbital distances makes real-time joystick control physically impossible, the spacecraft has to make its own docking decisions. Cameras and lidar guide the final approach, docking with a satellite that in most cases was never even designed to be grabbed by anything. Once attached, robotic arms can transfer propellant, replace a failed component, or attach an entirely new propulsion module, largely without a human directly steering the process.
+
+This is no longer theoretical. Servicing spacecraft have already docked with and extended the operational life of commercial satellites by years, the first time that had ever been done in the industry. The same rendezvous and docking technology is now being adapted specifically to deorbit dead satellites and remove large debris before it fragments into thousands of smaller, far more dangerous pieces.
+
+A dead satellite used to just mean a dead satellite. Now it means a servicing mission hasn't reached it yet.
+
+#spacerobotics #onorbitservicing #satellites #spacetech #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() {
+      const text = document.getElementById('captionText').innerText;
+      const btn = document.getElementById('copyBtn');
+      let ok = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+      }
+      if (!ok) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+      }
+      if (!ok && navigator.share) {
+        try { await navigator.share({ text }); ok = true; } catch (e) {}
+      }
+      if (ok) {
+        btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+      } else {
+        btn.innerHTML = copySVG + 'Copy failed';
+        setTimeout(() => { btn.innerHTML = copySVG + 'Copy'; }, 2500);
+      }
+    }
+    async function cap(s) {
+      const wrap = document.querySelector('.carousel-wrap');
+      if (wrap) wrap.style.zoom = '1';
+      await new Promise(r => setTimeout(r, 50));
+      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      if (wrap) wrap.style.zoom = '';
+      return canvas;
+    }
+    function canvasToFile(canvas, filename) {
+      return new Promise(resolve => { canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png'); });
+    }
+    async function saveFile(file) {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.download = file.name; a.href = URL.createObjectURL(file);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+      try { const file = await canvasToFile(await cap(slides[cur]), 'onorbitservice-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
+    }
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%';
+      try {
+        const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto';
+        const files = [];
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          files.push(await canvasToFile(await cap(slides[i]), 'onorbitservice-' + String(i + 1).padStart(2, '0') + '.png'));
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
+        if (navigator.canShare && navigator.canShare({ files })) {
+          try { await navigator.share({ files }); }
+          catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
+        } else {
+          for (const f of files) await saveFile(f);
+        }
+      } catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
+    }
+  </script>
+</body>
+
+</html>
