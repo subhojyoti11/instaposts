@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Automated Warehousing, Post 107</title>
+  <title>How Two People Can Type the Same Sentence at Once, Post 107</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -29,7 +29,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #1f120a 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #1f130a 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +44,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #1a120d52 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #1a130d52 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Aisle</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Conveyor</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Grid</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Two People Type<br>One Line and<br>Never <span class="c1">Collide</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Walking, Not<br><span class="c1">Picking</span>.</h2>
+          <h2>Two Cursors,<br>One <span class="c1">Paragraph</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Walking, not picking</span>
-              <div class="st-t"><strong>Human pickers spend most of their shift walking between aisles,</strong>
-                not actually picking items.</div>
+            <div class="st"><span class="st-v c1">Naive locking blocks people</span>
+              <div class="st-t"><strong>Locking a paragraph while one person edits it</strong> freezes everyone else out of that exact spot.</div>
             </div>
-            <div class="st"><span class="st-v c2">Fixed conveyor paths</span>
-              <div class="st-t"><strong>Conveyor sortation can only move items along pre-built tracks,</strong>
-                impossible to reconfigure without ripping out infrastructure.</div>
+            <div class="st"><span class="st-v c2">Merging text conflicts</span>
+              <div class="st-t"><strong>Comparing two edited copies of the same file line by line</strong> breaks down the moment both changed the same line.</div>
             </div>
-            <div class="st"><span class="st-v c3">Wasted vertical space</span>
-              <div class="st-t"><strong>Standard shelving leaves most of a warehouse's height empty,</strong> since
-                a person can only reach so high.</div>
+            <div class="st"><span class="st-v c3">Order isn't guaranteed</span>
+              <div class="st-t"><strong>Edits from different people arrive over the network</strong> in unpredictable order, sometimes out of sequence entirely.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Run a <span class="c3">Warehouse</span>.</h2>
+          <h2>Three Ways to<br>Share a <span class="c3">Doc</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🚶</div>
-              <div class="cmp-title">AISLE</div>
-              <div class="cmp-sub">Human picking</div>
+              <div class="cmp-icon">🔒</div>
+              <div class="cmp-title">LOCK</div>
+              <div class="cmp-sub">Pessimistic</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Humans walk to shelves and manually pick items.</div>
+              <div class="cmp-text">Prevent conflicts by letting only one editor touch a section.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Flexible, but limited by walking speed and reach.</div>
+              <div class="cmp-text">A lock blocks anyone else from writing there.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Most labor time is spent traveling, not picking.</div>
+              <div class="cmp-text">Safe, but painfully serial for real collaboration.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🎢</div>
-              <div class="cmp-title">CONVEYOR</div>
-              <div class="cmp-sub">Fixed belts</div>
+              <div class="cmp-icon">🔀</div>
+              <div class="cmp-title">MERGE</div>
+              <div class="cmp-sub">Diff & merge</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Move items along fixed mechanical belts.</div>
+              <div class="cmp-text">Let everyone edit freely, reconcile the copies after.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Fast for high volume, but permanently fixed layout.</div>
+              <div class="cmp-text">Line-by-line diffing tries to combine two versions.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Efficient at scale, expensive and rigid to change.</div>
+              <div class="cmp-text">Works for code, breaks on live simultaneous typing.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🤖</div>
-              <div class="cmp-title">GRID</div>
-              <div class="cmp-sub">Robot swarm</div>
+              <div class="cmp-icon">🧩</div>
+              <div class="cmp-title">CRDT</div>
+              <div class="cmp-sub">Conflict-free</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Swarm robots travel a 3D grid above stacked bins.</div>
+              <div class="cmp-text">Design the data itself so edits always combine safely.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Thousands of bots share the grid, coordinating in real time.</div>
+              <div class="cmp-text">Each character gets a unique, ordered identity, not just a position.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Any item reachable, dense vertical storage.</div>
+              <div class="cmp-text">Real-time typing from many people, no conflicts, no locks.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ Ocado runs 1,000+ bots on one grid</div>
+          <div class="cmp-cta">↻ The shift: prevent conflicts → make conflicts impossible</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,17 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>No Aisles.<br>Just <span class="c1">Stacks</span>.</h2>
+          <h2>Every Letter Has<br>Its Own <span class="c1">ID</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Bins stacked in a 3D grid</b><span>Grocery
-                  totes are stacked directly on top of each other, no aisles between them at all.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Bots ride the top rail</b><span>Robots
-                  move on a rail across the top of the grid, dropping a claw down to lift a bin.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Real-time traffic coordination</b><span>A
-                  central scheduler assigns each of a thousand-plus bots a path, resolving conflicts live.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Bin delivered to a picker</b><span>The
-                  retrieved bin surfaces at a station where a human places the item into an order.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Unique character identity</b><span>Every character you type is tagged with a unique ID tied to your device and a logical clock, not just its position.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Position by reference</b><span>A new character remembers which characters sit before and after it, not a raw index number.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Independent broadcasting</b><span>Each edit is broadcast to every other collaborator's copy of the document as an independent operation.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Deterministic merge</b><span>Because every character has a globally unique, ordered ID, every replica resolves edits into the exact same final text.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -311,14 +301,12 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One scheduling tick across the grid's active bots</span>
-def <span class="c1">grid_step</span>(bots, order_queue):
-    paths = [plan_path(b, order_queue) for b in bots]
-    safe_paths = <span class="c2">resolve_conflicts</span>(paths)
-    for bot, path in zip(bots, safe_paths):
-        bot.move(path.next_step())</div>
-          <div class="callout c2"><p><strong>With over a thousand bots sharing the grid,</strong> the hard problem
-              was never lifting a bin, it was making sure two bots never claim the same square.</p></div>
+          <div class="code"><span class="dm"># Inserting one character in a CRDT text document</span>
+def <span class="c1">insert_char</span>(doc, char, after_id):
+    id = <span class="c2">generate_unique_id</span>(device, clock)
+    doc.<span class="c3">place_after</span>(after_id, char, id)
+    broadcast(char, id, after_id)   <span class="dm"># every replica applies this independently</span></div>
+          <div class="callout c2"><p><strong>No one is editing "the document."</strong> Everyone holds an independent copy, and the math guarantees they always converge to the same result.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -328,23 +316,21 @@ def <span class="c1">grid_step</span>(bots, order_queue):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Centimeters<br>Apart, <span class="c3">Constantly</span>.</h2>
+          <h2>Behind Every<br>Shared <span class="c3">Doc</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1,000+</b><span>Bots per grid</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>50cm</b><span
-                style="color:var(--a2)">Typical bot spacing</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>Minutes</b><span
-                style="color:var(--a3)">Order fulfillment time</span></div>
+            <div class="metric"><b>0</b><span>Locks needed to type together</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Any</b><span
+                style="color:var(--a2)">Edit order still converges</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>ms</b><span
+                style="color:var(--a3)">Typical sync latency</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Millimeter coordination</span>
-              <div class="st-t"><strong>Bots pass within centimeters of each other continuously,</strong>
-                coordinated entirely by a central real-time scheduler.</div>
+            <div class="st"><span class="st-v c1">Google Docs and Notion</span>
+              <div class="st-t"><strong>Real-time collaborative editors rely on CRDTs</strong> or a closely related technique called operational transformation.</div>
             </div>
-            <div class="st"><span class="st-v c2">Order density</span>
-              <div class="st-t"><strong>A single grid fulfills thousands of orders per hour</strong> from a
-                footprint a conventional warehouse would need to be far larger to match.</div>
+            <div class="st"><span class="st-v c2">Offline-first apps</span>
+              <div class="st-t"><strong>The same structure lets an app accept edits made entirely offline</strong> and merge them cleanly once reconnected.</div>
             </div>
           </div>
         </div>
@@ -359,21 +345,17 @@ def <span class="c1">grid_step</span>(bots, order_queue):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">3D grid warehousing</span>
-              <div class="st-t"><strong>Storing bins stacked with no aisles,</strong> retrieved by robots riding a
-                rail above the stack.</div>
+            <div class="st"><span class="st-v c1">CRDT</span>
+              <div class="st-t"><strong>A conflict-free replicated data type,</strong> a structure designed so concurrent edits always merge without coordination.</div>
             </div>
-            <div class="st"><span class="st-v c2">Fleet scheduling</span>
-              <div class="st-t"><strong>Continuously computing collision-free paths</strong> for hundreds or
-                thousands of robots sharing one space.</div>
+            <div class="st"><span class="st-v c2">Operational transformation</span>
+              <div class="st-t"><strong>An alternative technique that mathematically adjusts conflicting edits</strong> so they apply consistently.</div>
             </div>
-            <div class="st"><span class="st-v c3">Pick station</span>
-              <div class="st-t"><strong>The point where a retrieved bin surfaces to a human,</strong> who places the
-                item into an order.</div>
+            <div class="st"><span class="st-v c3">Logical clock</span>
+              <div class="st-t"><strong>A counter used to order events across devices</strong> without relying on synchronized real-world time.</div>
             </div>
-            <div class="st"><span class="st-v c1">Storage density</span>
-              <div class="st-t"><strong>How much inventory fits per square meter,</strong> dramatically higher in a
-                stacked grid than aisled shelving.</div>
+            <div class="st"><span class="st-v c1">Convergence</span>
+              <div class="st-t"><strong>The guarantee that every replica ends up identical</strong> regardless of edit order received.</div>
             </div>
           </div>
         </div>
@@ -412,17 +394,15 @@ def <span class="c1">grid_step</span>(bots, order_queue):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Over a thousand robots share the same physical grid above a grocery warehouse, passing within centimeters of each other continuously, and none of them ever collide. That is not a safety margin, it is the entire point of the design.
+      <div class="caption-text" id="captionText">Two people can type into the exact same sentence of a shared document at the same instant, and neither one ever sees a conflict message. That isn't luck, it's a specific design choice about how the text itself is represented.
 
-Traditional warehouses store inventory on shelves accessed by aisles, and human pickers walk to each item. It's flexible, but most of a picker's shift is spent walking between shelves, not actually picking anything. Conveyor-based sortation improves throughput by moving items along mechanical belts to central sorting points, but the physical layout is permanently fixed once built, expensive and disruptive to ever reconfigure. Both approaches also waste most of a warehouse's vertical space, since a person or forklift can only comfortably reach so high.
+The obvious way to prevent editing conflicts is locking, letting only one person touch a section of a document at a time. It works, but it's brutal for real collaboration, freezing everyone else out of that exact spot the moment someone starts typing there. The next instinct is treating collaboration like version control, letting everyone edit freely and reconciling the differences afterward through a diff and merge. That holds up fine for code committed occasionally, but it collapses the moment two people are typing into the same line in real time, there's no clean way to diff two versions of a sentence still being written.
 
-Ocado's grid system removes aisles and shelving entirely. Grocery totes are stacked directly on top of each other in dense columns, and robots travel on a rail system across the top of the grid, dropping a claw down into the stack to lift out whichever bin an order needs. The genuinely hard engineering problem was never lifting the bin, it was coordinating over a thousand robots sharing that same grid without any of them colliding. A central scheduler continuously plans a path for every active bot and resolves near-collisions in real time, letting bots pass within centimeters of each other on a live, constantly shifting traffic pattern.
+Real-time collaborative editors solve this differently, by changing what a character actually is. Every single character you type gets a unique identifier tied to your device and a logical clock, not merely a position number in the text. Instead of remembering "this is character 47," the system remembers "this character comes immediately after that specific other character," a reference, not an index. Every edit gets broadcast to every other collaborator's copy as an independent operation, and because every character carries a globally unique, ordered identity, every replica mathematically resolves incoming edits into the exact same final text, regardless of what order those edits happen to arrive in over the network.
 
-Once a bot retrieves the right bin, it surfaces at a picking station where a human, not a robot, places the specific item into a customer's actual order, the one part of the process still faster and more reliable done by a person. The result is a warehouse that fulfills thousands of grocery orders per hour from a physical footprint a conventional aisled warehouse would need to be far larger to match.
+This structure is called a conflict-free replicated data type, or a closely related technique called operational transformation. No one is actually editing "the document." Everyone holds their own independent copy, and the underlying math guarantees convergence. It's also why offline-first apps can accept edits made with no connection at all and merge them cleanly the moment you reconnect.
 
-The breakthrough here isn't really robotics, lifting a bin is easy. It's scheduling, keeping a thousand independent robots moving through the exact same space without a single one ever colliding.
-
-#warehouseautomation #robotics #logistics #ocado #ravenextechnologies</div>
+#crdt #realtimecollaboration #distributedsystems #softwareengineering #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -469,7 +449,7 @@ The breakthrough here isn't really robotics, lifting a bin is easy. It's schedul
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -487,7 +467,7 @@ The breakthrough here isn't really robotics, lifting a bin is easy. It's schedul
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'gridwarehouse-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'crdtsync-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -501,7 +481,7 @@ The breakthrough here isn't really robotics, lifting a bin is easy. It's schedul
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'gridwarehouse-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'crdtsync-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

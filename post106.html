@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Micro-robotics in Medicine, Post 106</title>
+  <title>The Hidden Digit on Every Barcode, Post 106</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Pill</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">IV</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Nanobot</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">That Barcode's<br>Last Digit Isn't<br><span class="c1">Product Data</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Your Whole Body,<br>for One <span class="c1">Tumor</span>.</h2>
+          <h2>A Smudge Looks<br>Like Any <span class="c1">Digit</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Whole-body exposure</span>
-              <div class="st-t"><strong>Swallowed or injected drugs circulate through your entire
-                  bloodstream,</strong> damaging healthy tissue en route.</div>
+            <div class="st"><span class="st-v c1">Optical noise is common</span>
+              <div class="st-t"><strong>Grocery store scanners read through smudges, curves, and bad lighting</strong> thousands of times a day.</div>
             </div>
-            <div class="st"><span class="st-v c2">No steering</span>
-              <div class="st-t"><strong>A pill or IV drip has no way to navigate,</strong> it relies on blood flow
-                and diffusion to eventually reach the target.</div>
+            <div class="st"><span class="st-v c2">One misread digit</span>
+              <div class="st-t"><strong>A single misread bar can silently turn one product's price</strong> into a completely different item's price.</div>
             </div>
-            <div class="st"><span class="st-v c3">Low effective dose</span>
-              <div class="st-t"><strong>Because so much of a systemic drug is absorbed elsewhere,</strong> only a
-                small fraction ever reaches the actual tumor.</div>
+            <div class="st"><span class="st-v c3">No built-in confidence score</span>
+              <div class="st-t"><strong>A laser scanner has no way to know on its own</strong> whether the number it just read is real.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Deliver a <span class="c3">Drug</span>.</h2>
+          <h2>Three Ways to<br>Trust a <span class="c3">Scan</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">💊</div>
-              <div class="cmp-title">PILL</div>
-              <div class="cmp-sub">Systemic</div>
+              <div class="cmp-icon">📷</div>
+              <div class="cmp-title">READ</div>
+              <div class="cmp-sub">Optical only</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Deliver a drug systemically through digestion.</div>
+              <div class="cmp-text">Convert bars and spaces directly into digits.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Absorbed broadly through the gut into circulation.</div>
+              <div class="cmp-text">Pure optical decoding, trusts whatever pattern it sees.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but the tumor gets only a small fraction.</div>
+              <div class="cmp-text">Fast, but any misread passes straight through.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">💉</div>
-              <div class="cmp-title">IV</div>
-              <div class="cmp-sub">Direct injection</div>
+              <div class="cmp-icon">🔁</div>
+              <div class="cmp-title">RETRY</div>
+              <div class="cmp-sub">Rescan on fail</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Inject the drug directly into circulation.</div>
+              <div class="cmp-text">Ask the cashier to scan again if something looks wrong.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Faster onset, still travels the whole body.</div>
+              <div class="cmp-text">Relies on a human noticing an implausible price.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Higher peak dose, still no way to steer.</div>
+              <div class="cmp-text">Catches some errors, misses silent ones.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🧲</div>
-              <div class="cmp-title">NANOBOT</div>
-              <div class="cmp-sub">Magnetically steered</div>
+              <div class="cmp-icon">➗</div>
+              <div class="cmp-title">VERIFY</div>
+              <div class="cmp-sub">Check digit math</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Physically steer the payload to the exact site.</div>
+              <div class="cmp-text">Mathematically confirm the scanned number is even possible.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">An external magnetic field pushes bots to the target.</div>
+              <div class="cmp-text">The last digit must satisfy a weighted-sum formula.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Concentrated dose at the tumor, minimal exposure.</div>
+              <div class="cmp-text">Nearly every misread is caught before checkout.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: hope it arrives → steer it there</div>
+          <div class="cmp-cta">↻ The shift: trust the scan → verify the math</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,17 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Steered from<br>Outside the <span class="c1">Body</span>.</h2>
+          <h2>One Digit Doing<br>All the <span class="c1">Work</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Micro-scale fabrication</b><span>Bots
-                  as small as a few micrometers are built from biocompatible material with a magnetic core.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>External magnetic guidance</b><span>A
-                  field generated outside the body pulls and steers bots through the bloodstream.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Real-time imaging feedback</b><span>MRI
-                  or ultrasound tracks the bots' position live, correcting the path as they travel.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Payload release at target</b><span>Once
-                  at the tumor site, the bot releases its drug payload directly.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Eleven real digits</b><span>A UPC-A barcode encodes a manufacturer and product code across its first eleven digits.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Alternating weights</b><span>Each of those digits is multiplied by three or by one, alternating position by position.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Summed and checked</b><span>All eleven weighted values are added together into a single running total.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The twelfth digit</b><span>A final check digit is chosen specifically to make that total a multiple of ten.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -311,14 +301,14 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One control tick for magnetically guided nanobots</span>
-def <span class="c1">guidance_step</span>(imaging_feed, target_site):
-    position = <span class="c2">localize</span>(imaging_feed)
-    field_vector = <span class="c3">steer_toward</span>(position, target_site)
-    external_magnet.set_field(field_vector)
-    <span class="dm"># payload releases only once position matches target</span></div>
-          <div class="callout c2"><p><strong>The bot itself has no engine and no brain.</strong> Every steering
-              decision happens outside the body, in the magnetic field controlling it.</p></div>
+          <div class="code"><span class="dm"># Verifying a scanned UPC-A barcode</span>
+def <span class="c1">is_valid_upc</span>(digits):
+    total = <span class="c2">0</span>
+    for i, d in enumerate(digits[:11]):
+        total += d * (<span class="c3">3</span> if i % 2 == 0 else 1)
+    check = (10 - total % 10) % 10
+    return check == digits[11]   <span class="dm"># the 12th digit, not product data</span></div>
+          <div class="callout c2"><p><strong>That last digit was never part of the product code.</strong> It exists purely so a scanner can catch its own optical mistakes.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -328,23 +318,21 @@ def <span class="c1">guidance_step</span>(imaging_feed, target_site):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Already in<br>Real <span class="c3">Trials</span>.</h2>
+          <h2>Running at Every<br><span class="c3">Checkout</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>μm</b><span>Typical bot size</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>External</b><span
-                style="color:var(--a2)">Non-invasive control</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>Live</b><span
-                style="color:var(--a3)">Imaging feedback</span></div>
+            <div class="metric"><b>12</b><span>Digits on a UPC-A code</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>1</b><span
+                style="color:var(--a2)">Check digit doing the verifying</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>1973</b><span
+                style="color:var(--a3)">Year UPC was standardized</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Targeted chemotherapy</span>
-              <div class="st-t"><strong>Early trials concentrate chemotherapy directly at a tumor,</strong> sparing
-                the healthy tissue systemic dosing damages.</div>
+            <div class="st"><span class="st-v c1">Every grocery scanner</span>
+              <div class="st-t"><strong>The same weighted checksum runs invisibly</strong> on every single item passed over a store scanner.</div>
             </div>
-            <div class="st"><span class="st-v c2">Clot removal</span>
-              <div class="st-t"><strong>Similar microbots are tested to break up blood clots</strong> in hard-to-reach
-                vessels without surgery.</div>
+            <div class="st"><span class="st-v c2">Beyond retail</span>
+              <div class="st-t"><strong>ISBNs on books and shipping container codes</strong> use the identical checksum principle to catch transcription errors.</div>
             </div>
           </div>
         </div>
@@ -359,21 +347,17 @@ def <span class="c1">guidance_step</span>(imaging_feed, target_site):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Magnetically steered nanobot</span>
-              <div class="st-t"><strong>A microscopic device guided by an external magnetic field,</strong> not its
-                own propulsion.</div>
+            <div class="st"><span class="st-v c1">UPC-A</span>
+              <div class="st-t"><strong>The twelve-digit barcode format</strong> standard on most retail products in the United States.</div>
             </div>
-            <div class="st"><span class="st-v c2">Targeted drug delivery</span>
-              <div class="st-t"><strong>Releasing a drug payload only at a specific site,</strong> instead of
-                exposing the entire system.</div>
+            <div class="st"><span class="st-v c2">Check digit</span>
+              <div class="st-t"><strong>A final digit computed from the others specifically</strong> to catch scanning or transcription errors.</div>
             </div>
-            <div class="st"><span class="st-v c3">Real-time imaging feedback</span>
-              <div class="st-t"><strong>Using MRI or ultrasound to track a bot's live position</strong> so its path
-                can be corrected.</div>
+            <div class="st"><span class="st-v c3">Weighted sum</span>
+              <div class="st-t"><strong>Multiplying each digit by an alternating factor</strong> before adding them together for verification.</div>
             </div>
-            <div class="st"><span class="st-v c1">Systemic exposure</span>
-              <div class="st-t"><strong>Whole-body absorption of a drug via pill or IV,</strong> the side effect
-                targeted delivery avoids.</div>
+            <div class="st"><span class="st-v c1">Optical misread</span>
+              <div class="st-t"><strong>A scanner error where bars are decoded into the wrong digit</strong> due to glare, angle, or damage.</div>
             </div>
           </div>
         </div>
@@ -412,17 +396,19 @@ def <span class="c1">guidance_step</span>(imaging_feed, target_site):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A robot smaller than the width of a human hair, with no engine of its own, can be steered through your bloodstream to a tumor using nothing but a magnetic field outside your body. That is the entire premise of medical micro-robotics, and it is already being tested in real patients.
+      <div class="caption-text" id="captionText">Look at any barcode on a product in your kitchen. The very last digit isn't part of the product code at all. Its only job is catching a scanner's own mistake.
 
-Every conventional drug delivery method shares the same fundamental limitation, it cannot steer. Swallow a pill and it gets absorbed broadly through your gut into your entire bloodstream. Take an IV and the drug still circulates everywhere, not just where it's needed. Both rely purely on blood flow and diffusion to eventually, hopefully, reach the target site, and because so much of the dose gets absorbed or filtered out elsewhere along the way, only a small fraction ever actually reaches the tumor. The rest just damages healthy tissue it passes through.
+Optical scanning is noisy work. A grocery store laser reads through smudges, curved surfaces, glare, and bad lighting thousands of times a shift, and pure optical decoding, converting bars and spaces directly into digits, trusts whatever pattern it sees with no way to sanity check itself. A misread bar can silently turn one product's price into a completely different item's price, and a cashier has no reliable way to notice unless the number that comes up looks obviously wrong.
 
-Magnetically steered nanobots solve the steering problem directly. Built from biocompatible materials with a tiny magnetic core, small enough at a few micrometers to pass through capillaries, these bots carry no engine and no onboard intelligence at all. Instead, a magnetic field generated outside the patient's body pulls and steers them through the bloodstream toward the exact target vessel, while real-time MRI or ultrasound imaging tracks their position so doctors can correct the path as the bots travel. Once positioned precisely at the tumor site, the bot releases its drug payload directly there, concentrating the dose exactly where it's needed instead of diluting it across the entire body.
+Rescanning on an implausible result catches some of these errors, but it relies entirely on a human noticing something off, which misses the quiet ones. What actually protects every checkout is a check digit built directly into the barcode format itself. A standard UPC-A code encodes eleven real digits of manufacturer and product information, then alternates multiplying each of those digits by three or by one depending on its position, and sums the results. A twelfth digit is chosen specifically to make that entire weighted sum land on an exact multiple of ten.
 
-Early trials are already using this approach to deliver chemotherapy directly to tumor sites, sparing the healthy tissue that systemic dosing would otherwise damage along the way. A related application steers similar microbots to physically break up hard-to-reach blood clots without invasive surgery at all.
+When a scanner reads a code, it runs this same arithmetic instantly and compares the result against that twelfth digit. If they don't match, the scan is rejected outright before a price ever appears on screen, regardless of how confident the optical read looked. This has been standard since UPC was formalized in 1973, decades before anyone was thinking about software validation the way we do now.
 
-The intelligence in this system was never inside the bot. It lives entirely in the magnet outside the body, and the imaging feed guiding it, precisely, in real time, to a target a pill could only ever hope to reach.
+The exact same principle protects ISBNs on books and shipping container codes, a single extra digit computed from the others, existing purely to catch a transcription or optical error before it becomes someone's problem.
 
-#nanomedicine #microrobotics #targeteddrugdelivery #medtech #ravenextechnologies</div>
+That twelfth digit never described the product. It exists so the scanner can catch itself being wrong.
+
+#barcode #upc #checksum #retailtech #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -469,7 +455,7 @@ The intelligence in this system was never inside the bot. It lives entirely in t
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -487,7 +473,7 @@ The intelligence in this system was never inside the bot. It lives entirely in t
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'nanobot-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'barcodecheck-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -501,7 +487,7 @@ The intelligence in this system was never inside the bot. It lives entirely in t
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'nanobot-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'barcodecheck-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

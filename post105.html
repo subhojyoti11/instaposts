@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agricultural Autonomy, Post 105</title>
+  <title>The Hidden Math That Catches a Mistyped Card Number, Post 105</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Spray</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Scout</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Zap</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Your Card Number<br>Was Never<br>Just <span class="c1">Digits</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Whole Field,<br>for One <span class="c1">Weed</span>.</h2>
+          <h2>One Wrong Digit,<br>Same <span class="c1">Length</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Blanket application</span>
-              <div class="st-t"><strong>Conventional spraying covers an entire field uniformly,</strong> stressing
-                soil acres a single weed problem never touched.</div>
+            <div class="st"><span class="st-v c1">No validation at all</span>
+              <div class="st-t"><strong>Accepting any 16-digit string on the spot means</strong> a single fat-fingered digit reaches your bank's servers.</div>
             </div>
-            <div class="st"><span class="st-v c2">Herbicide resistance</span>
-              <div class="st-t"><strong>Decades of blanket spraying bred weeds now genetically resistant</strong> to
-                the most common herbicides.</div>
+            <div class="st"><span class="st-v c2">Length checks aren't enough</span>
+              <div class="st-t"><strong>A number can have the right digit count</strong> and still not correspond to any real card ever issued.</div>
             </div>
-            <div class="st"><span class="st-v c3">No per-plant decisions</span>
-              <div class="st-t"><strong>A sprayer can't tell a healthy crop row from an invasive weed inches
-                  away,</strong> it treats the whole field the same.</div>
+            <div class="st"><span class="st-v c3">Costly downstream failures</span>
+              <div class="st-t"><strong>Catching a bad number only after a payment attempt</strong> wastes a network round trip and confuses the customer.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Clear a <span class="c3">Field</span>.</h2>
+          <h2>Three Ways to<br>Check a <span class="c3">Number</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🚜</div>
-              <div class="cmp-title">SPRAY</div>
-              <div class="cmp-sub">Whole field</div>
+              <div class="cmp-icon">🚫</div>
+              <div class="cmp-title">NONE</div>
+              <div class="cmp-sub">No check</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Kill weeds across the entire field at once.</div>
+              <div class="cmp-text">Accept whatever digits are typed.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Uniform chemical coverage regardless of what's growing.</div>
+              <div class="cmp-text">No validation happens before submission at all.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Resistant weed strains, runoff, high input cost.</div>
+              <div class="cmp-text">Every typo reaches the payment network.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🚁</div>
-              <div class="cmp-title">SCOUT</div>
-              <div class="cmp-sub">Drone mapping</div>
+              <div class="cmp-icon">📏</div>
+              <div class="cmp-title">LENGTH</div>
+              <div class="cmp-sub">Digit count</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Map exactly where weeds and crop stress actually are.</div>
+              <div class="cmp-text">Confirm the number has a plausible digit count.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Multispectral cameras build a live weed map.</div>
+              <div class="cmp-text">Only checks that there are 15 or 16 digits.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">You know precisely where, but haven't fixed it yet.</div>
+              <div class="cmp-text">A single swapped digit still passes.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔦</div>
-              <div class="cmp-title">ZAP</div>
-              <div class="cmp-sub">Laser removal</div>
+              <div class="cmp-icon">🔢</div>
+              <div class="cmp-title">LUHN</div>
+              <div class="cmp-sub">Checksum formula</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Remove each weed individually with a targeted laser.</div>
+              <div class="cmp-text">Verify the number satisfies a specific checksum formula.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Vision identifies a weed, laser burns its growing point.</div>
+              <div class="cmp-text">A weighted digit sum must land on a multiple of ten.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Zero herbicide, millimeter precision, crop untouched.</div>
+              <div class="cmp-text">Almost every typo is caught instantly, offline.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: whole field → single plant</div>
+          <div class="cmp-cta">↻ The shift: does it look right → does the math actually work</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,17 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>A Laser for<br>Every <span class="c1">Weed</span>.</h2>
+          <h2>A Formula<br>Hiding in Your <span class="c1">Wallet</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Field imaging</b><span>Cameras
-                  mounted on the rover capture every plant in the row at close range as it drives.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Per-plant classification</b><span>A
-                  vision model classifies each plant in real time as crop or weed, down to species.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Targeting the growing point</b><span>For
-                  every weed found, the system aims a low-power laser at its meristem, its growing point.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Mechanical kill, no chemicals</b><span>A
-                  brief laser pulse stops the weed, without a drop of herbicide sprayed.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Double every second digit</b><span>Starting from the rightmost digit, every second digit going left gets doubled.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Subtract nine if needed</b><span>Any doubled digit over nine has nine subtracted from it, a shortcut for summing its two digits.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Sum every digit</b><span>All digits, doubled and untouched alike, are added into one running total.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Check the multiple of ten</b><span>A genuine card number always makes that total land on an exact multiple of ten.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -311,16 +301,16 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One frame of a laser-weeding rover's vision loop</span>
-def <span class="c1">weeding_step</span>(frame):
-    plants = <span class="c2">detect_plants</span>(frame)
-    for plant in plants:
-        label = <span class="c3">classify_plant</span>(plant)
-        if label == "weed":
-            laser.fire_at(plant.growing_point)
-        <span class="dm"># crop plants are simply left untouched</span></div>
-          <div class="callout c2"><p><strong>The model doesn't decide where to spray.</strong> It decides, plant by
-              plant, whether this specific one gets removed at all.</p></div>
+          <div class="code"><span class="dm"># The Luhn checksum, run on every card field</span>
+def <span class="c1">is_valid_card</span>(digits):
+    total = <span class="c2">0</span>
+    for i, d in enumerate(reversed(digits)):
+        if i % 2 == 1:
+            d = d * <span class="c2">2</span>
+            if d > 9: d -= <span class="c2">9</span>
+        total += d
+    return total % <span class="c3">10</span> == 0</div>
+          <div class="callout c2"><p><strong>This check never touches a bank.</strong> It runs entirely in your browser, the instant you finish typing, before any network request exists.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -330,23 +320,21 @@ def <span class="c1">weeding_step</span>(frame):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Organic by<br><span class="c3">Design</span>.</h2>
+          <h2>Invented Before<br>the <span class="c3">Internet</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>100K+</b><span>Weeds ID'd per acre</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>0</b><span
-                style="color:var(--a2)">Herbicide used</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>mm</b><span
-                style="color:var(--a3)">Targeting precision</span></div>
+            <div class="metric"><b>1954</b><span>Year the formula was patented</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>~90%</b><span
+                style="color:var(--a2)">Single-digit typos caught</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>0ms</b><span
+                style="color:var(--a3)">Network calls needed to check</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Organic-compatible</span>
-              <div class="st-t"><strong>Because no chemicals touch the field,</strong> laser-weeded crops can
-                qualify for organic certification.</div>
+            <div class="st"><span class="st-v c1">Every major card network</span>
+              <div class="st-t"><strong>Visa, Mastercard, and Amex numbers are all constructed</strong> to satisfy the exact same Luhn formula.</div>
             </div>
-            <div class="st"><span class="st-v c2">Resistance-proof</span>
-              <div class="st-t"><strong>A laser can't be evolved around the way herbicide resistance
-                  evolves,</strong> it kills mechanically, not chemically.</div>
+            <div class="st"><span class="st-v c2">Beyond payments</span>
+              <div class="st-t"><strong>The same checksum protects IMEI phone numbers</strong> and some government ID formats from single-digit typos.</div>
             </div>
           </div>
         </div>
@@ -361,21 +349,17 @@ def <span class="c1">weeding_step</span>(frame):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Precision agriculture</span>
-              <div class="st-t"><strong>Making farming decisions at the level of individual plants</strong> instead
-                of a uniform whole-field treatment.</div>
+            <div class="st"><span class="st-v c1">Luhn algorithm</span>
+              <div class="st-t"><strong>A checksum formula that validates a number</strong> by doubling alternating digits and summing the result.</div>
             </div>
-            <div class="st"><span class="st-v c2">Multispectral imaging</span>
-              <div class="st-t"><strong>Capturing crop data outside visible light</strong> to detect stress and
-                species differences.</div>
+            <div class="st"><span class="st-v c2">Checksum digit</span>
+              <div class="st-t"><strong>A number appended to a sequence specifically</strong> so simple errors can be detected mathematically.</div>
             </div>
-            <div class="st"><span class="st-v c3">Meristem targeting</span>
-              <div class="st-t"><strong>Aiming removal at a weed's specific growing point</strong> rather than the
-                whole plant body.</div>
+            <div class="st"><span class="st-v c3">Modulo ten</span>
+              <div class="st-t"><strong>The final test in the Luhn formula:</strong> the weighted digit sum must divide evenly by ten.</div>
             </div>
-            <div class="st"><span class="st-v c1">Herbicide resistance</span>
-              <div class="st-t"><strong>A weed population's evolved ability to survive a chemical</strong> that used
-                to kill it.</div>
+            <div class="st"><span class="st-v c1">Client-side validation</span>
+              <div class="st-t"><strong>Confirming input the moment it's typed,</strong> without waiting on a server round trip.</div>
             </div>
           </div>
         </div>
@@ -414,17 +398,19 @@ def <span class="c1">weeding_step</span>(frame):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A laser can identify a single weed among thousands of healthy crop plants and destroy just that one, without a drop of herbicide touching the field. That is not a lab demo anymore, it is running on rovers in commercial fields today.
+      <div class="caption-text" id="captionText">Every credit card number you've ever typed has one digit whose entire job is catching your typos, before the number ever reaches a bank.
 
-Conventional weed control still mostly means spraying an entire field uniformly, regardless of where the actual weeds are. It works, but at a real cost. Blanket application kills weeds and stresses soil biology across acres a single weed problem never touched, and decades of repeated spraying have bred weed populations that are now genetically resistant to the most common herbicides. A sprayer has no way to tell a healthy crop row from an invasive weed growing inches away, it simply treats the whole field the same.
+Accepting a card number with no validation at all means a single fat-fingered digit sails straight through to the payment network, wasting a full round trip only to bounce back as declined. Checking just the digit count catches almost nothing either, plenty of sixteen-digit strings look plausible and correspond to no card ever issued. Real validation needs to check whether the number itself is mathematically consistent, not just correctly shaped.
 
-Drone scouting was the first real improvement, flying multispectral cameras over fields to build a live map of exactly where weeds and crop stress actually exist. That solves the information problem, you finally know where the weeds are, but scouting alone doesn't remove anything. The real shift happens on the ground, where laser-weeding rovers drive down crop rows with cameras capturing every individual plant at close range. A vision model classifies each plant in real time, crop or weed, often down to the specific species, and for every plant labeled a weed, the rover aims a low-power laser precisely at its meristem, the plant's growing point, and fires a brief pulse that stops the weed without touching a single neighboring crop plant.
+That's what the Luhn algorithm does, and it's been quietly running under every major card network since 1954, long before the internet existed to validate anything over. Starting from the rightmost digit and moving left, every second digit gets doubled. Any doubled value over nine has nine subtracted from it, a shortcut equivalent to summing its two digits. Every digit, doubled or untouched, gets added into one running total. A genuine card number is constructed so that total always lands on an exact multiple of ten.
 
-The result is mechanical weed control with zero herbicide and millimeter-level precision, at a scale of well over a hundred thousand individual plant decisions per acre pass. Because no chemicals ever touch the field, laser-weeded crops can qualify for organic certification that herbicide use would immediately disqualify. And a laser cannot be evolved around the way herbicide resistance evolves, it kills mechanically, plant by plant, not through a chemical a population can adapt to.
+This check never touches a server. It runs entirely in your browser or your phone's keyboard, the instant you finish typing, and catches roughly nine out of ten single-digit typos on the spot, with zero network latency and zero cost. Visa, Mastercard, and American Express numbers are all built to satisfy this exact same formula, despite being issued by completely different networks with no shared infrastructure.
 
-Farming spent a century treating the field as one uniform surface. Computer vision finally lets it treat every single plant as its own decision.
+The same trick shows up far outside payments. IMEI numbers identifying phones, and several national ID formats, use the identical checksum principle for the same reason, catching a transcription slip before it causes a real problem downstream.
 
-#agtech #precisionagriculture #computervision #sustainablefarming #ravenextechnologies</div>
+That final digit was never encoding anything about your account. It exists purely so a simple formula can catch a mistake before a human, or a bank, ever has to.
+
+#luhnalgorithm #fintech #checksum #paymentsystems #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -471,7 +457,7 @@ Farming spent a century treating the field as one uniform surface. Computer visi
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -489,7 +475,7 @@ Farming spent a century treating the field as one uniform surface. Computer visi
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'agriauto-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'luhncheck-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -503,7 +489,7 @@ Farming spent a century treating the field as one uniform surface. Computer visi
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'agriauto-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'luhncheck-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

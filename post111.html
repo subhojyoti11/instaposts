@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drone Deliveries at Scale, Post 111</title>
+  <title>Maps Doesn't Try Every Road, It Explores the Cheapest First, Post 111</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Manual</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Line-of-Sight</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Autonomous</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Maps Never<br>Tries Every<br><span class="c1">Road</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>One Pilot.<br>One <span class="c1">Drone</span>.</h2>
+          <h2>Every Road,<br>Every <span class="c1">Combination</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">One pilot, one drone</span>
-              <div class="st-t"><strong>Early rules required a pilot to keep visual line of sight on every
-                  flight,</strong> capping throughput at one drone per operator.</div>
+            <div class="st"><span class="st-v c1">Combinatorial explosion</span>
+              <div class="st-t"><strong>A city-sized road network has more possible routes</strong> than could ever be checked one by one.</div>
             </div>
-            <div class="st"><span class="st-v c2">No shared airspace map</span>
-              <div class="st-t"><strong>Without a real-time tracking system,</strong> regulators had no way to
-                guarantee two drones wouldn't collide.</div>
+            <div class="st"><span class="st-v c2">No sense of direction</span>
+              <div class="st-t"><strong>An algorithm that expands outward blindly wastes time</strong> exploring roads that clearly lead away from the destination.</div>
             </div>
-            <div class="st"><span class="st-v c3">Precision landing failures</span>
-              <div class="st-t"><strong>GPS alone is only accurate to a few meters,</strong> nowhere near precise
-                enough to drop a package on a porch.</div>
+            <div class="st"><span class="st-v c3">Real roads have real costs</span>
+              <div class="st-t"><strong>Distance alone isn't enough,</strong> traffic, road type, and turns all change what "shortest" actually means.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Fly a <span class="c3">Fleet</span>.</h2>
+          <h2>Three Ways to<br>Find a <span class="c3">Route</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🎮</div>
-              <div class="cmp-title">MANUAL</div>
-              <div class="cmp-sub">Full control</div>
+              <div class="cmp-icon">🔁</div>
+              <div class="cmp-title">BRUTE FORCE</div>
+              <div class="cmp-sub">Try everything</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">A human pilot flies the drone for the entire delivery.</div>
+              <div class="cmp-text">Check every possible path between two points.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Full manual control from takeoff to landing.</div>
+              <div class="cmp-text">Explores combinations exhaustively, no prioritization.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Safe but impossibly slow to scale.</div>
+              <div class="cmp-text">Guaranteed correct, computationally impossible at scale.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">👀</div>
-              <div class="cmp-title">LINE-OF-SIGHT</div>
-              <div class="cmp-sub">Supervised</div>
+              <div class="cmp-icon">📊</div>
+              <div class="cmp-title">DIJKSTRA</div>
+              <div class="cmp-sub">Cheapest first</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">A human supervises but the drone flies itself.</div>
+              <div class="cmp-text">Always expand the cheapest known path so far.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Autopilot handles the route, a human can intervene.</div>
+              <div class="cmp-text">A priority queue explores outward by lowest cost first.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Still one operator per drone, capping fleet size.</div>
+              <div class="cmp-text">Optimal and efficient, but explores every direction equally.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🛰️</div>
-              <div class="cmp-title">AUTONOMOUS</div>
-              <div class="cmp-sub">Beyond sight</div>
+              <div class="cmp-icon">🎯</div>
+              <div class="cmp-title">A*</div>
+              <div class="cmp-sub">Cheapest + closest</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">One operator supervises many drones beyond sight.</div>
+              <div class="cmp-text">Prioritize paths that are both cheap and headed toward the goal.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Onboard vision plus a shared traffic system handle flight.</div>
+              <div class="cmp-text">Adds a distance estimate to the goal into the priority.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">One operator now runs a real delivery fleet.</div>
+              <div class="cmp-text">Same optimal route, dramatically fewer roads examined.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: one pilot, one drone → one pilot, a fleet</div>
+          <div class="cmp-cta">↻ The shift: explore everywhere → explore toward the destination</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,20 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Flying Where<br>Nobody's <span class="c1">Watching</span>.</h2>
+          <h2>A Queue, Not<br>a <span class="c1">Guess</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Regulatory approval for
-                  BVLOS</b><span>Regulators began approving Beyond Visual Line of Sight flights, the legal unlock
-                  for scale.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Onboard sense-and-avoid</b><span>Computer
-                  vision and radar let the drone detect and avoid obstacles without a human watching.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Shared airspace
-                  deconfliction</b><span>A traffic management system tracks every drone in an area, routing around
-                  conflicts.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Vision-guided precision
-                  landing</b><span>Downward cameras identify the delivery spot, correcting for GPS drift to land
-                  within centimeters.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Every intersection is a node</b><span>The road network becomes a graph, intersections as nodes, roads as weighted edges.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A priority queue, not a list</b><span>The algorithm always pulls the cheapest unexplored path first, never wandering to an expensive one early.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A heuristic points the way</b><span>A* adds a straight-line distance estimate to the goal, biasing exploration toward it.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Stopping the instant it arrives</b><span>The search ends the moment the destination node is reached with the lowest total cost.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -314,14 +301,15 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One planning tick for an autonomous delivery drone</span>
-def <span class="c1">flight_step</span>(drone, traffic_system, target):
-    nearby = traffic_system.query_nearby(drone.position)
-    path = <span class="c2">deconflict</span>(plan_route(drone, target), nearby)
-    drone.follow(path)
-    <span class="dm"># sense-and-avoid still runs independently as a safety net</span></div>
-          <div class="callout c2"><p><strong>The route planner and the collision-avoidance system are deliberately
-                separate.</strong> One plans efficiency, the other exists purely to prevent disaster.</p></div>
+          <div class="code"><span class="dm"># One step of A* route search</span>
+def <span class="c1">search_step</span>(frontier, goal):
+    node = <span class="c2">pop_cheapest</span>(frontier)
+    if node == goal: return reconstruct_path(node)
+    for neighbor in node.roads:
+        cost = node.cost + neighbor.weight
+        priority = cost + <span class="c3">estimate_to_goal</span>(neighbor, goal)
+        frontier.push(neighbor, priority)</div>
+          <div class="callout c2"><p><strong>The map never actually "sees" the destination.</strong> It only ever compares which unexplored road looks cheapest to try next.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -331,23 +319,21 @@ def <span class="c1">flight_step</span>(drone, traffic_system, target):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Already on<br>Your <span class="c3">Street</span>.</h2>
+          <h2>Millions of Roads.<br>One <span class="c3">Queue</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>BVLOS</b><span>Flights now approved</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>cm</b><span
-                style="color:var(--a2)">Landing precision</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>1:many</b><span
-                style="color:var(--a3)">Operator to drone ratio</span></div>
+            <div class="metric"><b>1959</b><span>Year Dijkstra published the algorithm</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>1968</b><span
+                style="color:var(--a2)">A* heuristic extension published</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>ms</b><span
+                style="color:var(--a3)">Typical route computed in</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Suburban rollout</span>
-              <div class="st-t"><strong>Companies run regular residential delivery routes</strong> with average
-                flight times under 30 minutes.</div>
+            <div class="st"><span class="st-v c1">Real-time traffic weighting</span>
+              <div class="st-t"><strong>Live maps constantly update road weights with current traffic,</strong> changing which path is actually cheapest.</div>
             </div>
-            <div class="st"><span class="st-v c2">Weather and no-fly limits</span>
-              <div class="st-t"><strong>Systems automatically ground flights during high winds,</strong> decisions
-                no longer left to a pilot's judgment call.</div>
+            <div class="st"><span class="st-v c2">Beyond maps</span>
+              <div class="st-t"><strong>The exact same priority-queue search routes network packets</strong> and finds paths in video game pathfinding.</div>
             </div>
           </div>
         </div>
@@ -362,21 +348,17 @@ def <span class="c1">flight_step</span>(drone, traffic_system, target):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">BVLOS</span>
-              <div class="st-t"><strong>Regulatory approval allowing a drone to fly beyond visual sight,</strong>
-                the legal foundation for scaled delivery.</div>
+            <div class="st"><span class="st-v c1">Dijkstra's algorithm</span>
+              <div class="st-t"><strong>A shortest-path search that always expands</strong> the lowest-cost unexplored node next.</div>
             </div>
-            <div class="st"><span class="st-v c2">Sense-and-avoid</span>
-              <div class="st-t"><strong>Onboard sensors letting a drone detect and route around
-                  obstacles</strong> without human intervention.</div>
+            <div class="st"><span class="st-v c2">A* search</span>
+              <div class="st-t"><strong>Dijkstra's algorithm plus a heuristic estimate</strong> that biases the search toward the goal.</div>
             </div>
-            <div class="st"><span class="st-v c3">Airspace deconfliction</span>
-              <div class="st-t"><strong>Automatically resolving conflicts between drones</strong> sharing the same
-                airspace in real time.</div>
+            <div class="st"><span class="st-v c3">Heuristic</span>
+              <div class="st-t"><strong>An estimate of remaining cost to the goal,</strong> used to guide search without guaranteeing exactness alone.</div>
             </div>
-            <div class="st"><span class="st-v c1">Vision-guided landing</span>
-              <div class="st-t"><strong>Using cameras to correct for GPS imprecision</strong> and land a package
-                within centimeters.</div>
+            <div class="st"><span class="st-v c1">Priority queue</span>
+              <div class="st-t"><strong>A data structure that always returns the lowest-cost item first,</strong> the engine behind both algorithms.</div>
             </div>
           </div>
         </div>
@@ -415,17 +397,17 @@ def <span class="c1">flight_step</span>(drone, traffic_system, target):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A single operator now supervises an entire fleet of delivery drones flying routes they can't even see. Five years ago, regulations required one human watching one drone at all times. The shift from that to a real delivery network needed two separate breakthroughs, one legal and one technical.
+      <div class="caption-text" id="captionText">When your maps app finds the fastest route across a city in under a second, it isn't testing every possible path between two points. It's running a queue that only ever explores the cheapest option next.
 
-The legal unlock was approval for Beyond Visual Line of Sight flight, BVLOS. Before regulators allowed it, every drone delivery required a pilot maintaining direct visual contact with the aircraft, which meant one operator could realistically manage exactly one drone. No amount of better hardware could scale a delivery network under that constraint, the bottleneck was the rule, not the robot.
+Checking literally every combination of roads between two points is mathematically hopeless at city scale, the number of possible routes explodes far beyond anything that could be evaluated one by one, even on fast hardware. A naive search that just expands outward in every direction has no sense of where the destination even is, wasting real computation exploring roads that are obviously heading the wrong way entirely.
 
-The technical unlock was making the drone trustworthy enough to fly unsupervised. Onboard sense-and-avoid systems, using cameras and radar, let a drone detect obstacles, birds, and other aircraft and route around them without a human watching every second. A shared airspace traffic management system tracks every registered drone operating in an area in real time, automatically resolving potential conflicts before two drones ever get close to each other. And because GPS alone is only accurate to a few meters, nowhere near precise enough to drop a package on a specific porch, downward-facing cameras handle the final approach, visually identifying the landing spot and correcting for GPS drift to land within centimeters.
+Dijkstra's algorithm, published in 1959, solves the first problem by always expanding whichever known path is cheapest so far, using a priority queue instead of a plain list, guaranteeing the shortest route is found without ever needing to check every combination. It's provably optimal, but it still explores in every direction fairly equally, with no bias toward the actual destination.
 
-Together, these systems let companies run regular suburban delivery routes today, with average flight times under thirty minutes from order to doorstep, while a single remote operator supervises dozens of drones instead of one. The system also makes its own conservative calls, automatically grounding flights during high winds or near restricted airspace, decisions that used to depend entirely on a pilot's judgment in the moment.
+The A* algorithm, a 1968 extension, adds exactly that bias. Alongside the real cost of a path so far, it adds a heuristic, typically a straight-line distance estimate to the goal, into the priority calculation. That single addition steers the search toward the destination without sacrificing the guarantee of finding the truly shortest route, and in practice it examines a dramatically smaller slice of the road network to arrive at the identical answer Dijkstra's algorithm would.
 
-Scaling drone delivery was never really a hardware problem. It was proving, to regulators and to the airspace itself, that a drone could be trusted to fly somewhere nobody was watching.
+The map never actually "sees" the destination in any meaningful sense. It only ever compares which unexplored road segment currently looks cheapest to try next, repeatedly, until the goal happens to be the node it pulls off the queue. Live traffic constantly reweights those road costs in real time, changing which path is genuinely cheapest minute to minute. The exact same priority-queue search also routes packets across computer networks and finds paths for characters in video games, the algorithm doesn't know or care that it's roads.
 
-#dronedelivery #autonomousflight #computervision #logistics #ravenextechnologies</div>
+#pathfinding #algorithms #computerscience #dijkstra #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -472,7 +454,7 @@ Scaling drone delivery was never really a hardware problem. It was proving, to r
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -490,7 +472,7 @@ Scaling drone delivery was never really a hardware problem. It was proving, to r
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'dronedelivery-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'routesearch-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -504,7 +486,7 @@ Scaling drone delivery was never really a hardware problem. It was proving, to r
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'dronedelivery-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'routesearch-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exo-skeletons and Human Augmentation, Post 104</title>
+  <title>Why Autocorrect Guesses Your Next Word, Post 104</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Tethered</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Passive</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Powered</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Autocorrect Never<br>Checks Your<br><span class="c1">Spelling</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Strong, and<br>Bolted to a <span class="c1">Wall</span>.</h2>
+          <h2>It's Not Checking<br>Your <span class="c1">Spelling</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Tethered to a wall</span>
-              <div class="st-t"><strong>Early powered exoskeletons needed a cable to a stationary power
-                  supply,</strong> useless outside a lab.</div>
+            <div class="st"><span class="st-v c1">Binary dictionary lookup</span>
+              <div class="st-t"><strong>Early spellcheckers only flagged words missing from a fixed dictionary,</strong> offering no ranked guess at all.</div>
             </div>
-            <div class="st"><span class="st-v c2">Passive springs only</span>
-              <div class="st-t"><strong>Spring-based suits reduce fatigue but add zero force,</strong> they can't
-                help you lift something genuinely heavy.</div>
+            <div class="st"><span class="st-v c2">No context awareness</span>
+              <div class="st-t"><strong>A word-list checker treats "there" and "their" identically,</strong> it has no idea which one your sentence needs.</div>
             </div>
-            <div class="st"><span class="st-v c3">Battery weight penalty</span>
-              <div class="st-t"><strong>A battery strong enough for real actuation weighed more than the strength it
-                  added,</strong> a net loss.</div>
+            <div class="st"><span class="st-v c3">One typo, wrong fix</span>
+              <div class="st-t"><strong>Correcting to the nearest spelled word can overrule</strong> a correctly spelled word you actually meant.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Wear <span class="c3">Strength</span>.</h2>
+          <h2>Three Ways to<br>Guess a <span class="c3">Word</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🔌</div>
-              <div class="cmp-title">TETHERED</div>
-              <div class="cmp-sub">Cable power</div>
+              <div class="cmp-icon">📖</div>
+              <div class="cmp-title">DICTIONARY</div>
+              <div class="cmp-sub">Word list</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Deliver real powered assistance to joints.</div>
+              <div class="cmp-text">Flag any word missing from a fixed dictionary.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Power comes through a cable to a fixed source.</div>
+              <div class="cmp-text">Exact match against a static list of known words.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Strong, but physically stuck in one place.</div>
+              <div class="cmp-text">Catches typos, blind to meaning or context.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🌀</div>
-              <div class="cmp-title">PASSIVE</div>
-              <div class="cmp-sub">Springs only</div>
+              <div class="cmp-icon">🔤</div>
+              <div class="cmp-title">EDIT DISTANCE</div>
+              <div class="cmp-sub">Nearest spelling</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Reduce fatigue using springs and elastic elements.</div>
+              <div class="cmp-text">Find the closest correctly spelled word to what you typed.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Stores and returns your own energy, adds none.</div>
+              <div class="cmp-text">Counts letter insertions, deletions, swaps to the nearest match.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Untethered, but can't lift anything heavier for you.</div>
+              <div class="cmp-text">Fixes typos, still guesses without context.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔋</div>
-              <div class="cmp-title">POWERED</div>
-              <div class="cmp-sub">Onboard battery</div>
+              <div class="cmp-icon">✍️</div>
+              <div class="cmp-title">PROBABILITY</div>
+              <div class="cmp-sub">Language model</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Deliver real force from an onboard battery.</div>
+              <div class="cmp-text">Predict the most likely next word given everything before it.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Dense battery cells plus efficient motors, worn like a suit.</div>
+              <div class="cmp-text">Ranks candidates by probability learned from huge text corpora.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Genuine strength augmentation, fully mobile.</div>
+              <div class="cmp-text">Suggests, corrects, and predicts, using context.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: tethered → wearable</div>
+          <div class="cmp-cta">↻ The shift: is it spelled right → what word fits here</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,17 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Sensing Intent.<br>Adding <span class="c1">Force</span>.</h2>
+          <h2>Betting on<br>Your Next <span class="c1">Word</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Joint torque sensing</b><span>Sensors
-                  at the hip, knee, or back detect the exact moment a person starts to lift or walk.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Battery-driven actuation</b><span>An
-                  onboard, now energy-dense battery powers compact motors at each assisted joint.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Force amplification</b><span>The
-                  suit adds real torque in sync with the wearer's own movement, multiplying force.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>All-day wearability</b><span>Modern
-                  cell chemistry keeps the pack light enough for a full factory shift or rehab session.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>N-gram training</b><span>Billions of real sentences teach the model how often each word follows the last two or three words.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Context window</b><span>Every keystroke updates the probability of every likely next word, not just spelling matches.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Ranked candidates</b><span>Edit distance and language-model probability are combined into a single ranked list of guesses.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Silent correction</b><span>The top-ranked candidate replaces your word automatically once its probability clears a threshold.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -311,15 +301,14 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One control tick for a powered exosuit joint</span>
-def <span class="c1">exo_step</span>(joint_sensor, battery):
-    intent = <span class="c2">detect_movement_intent</span>(joint_sensor)
-    assist_torque = <span class="c3">compute_assist</span>(intent)
-    motor.apply(assist_torque)
-    <span class="dm"># battery density is what makes this wearable at all</span>
-    return battery.remaining_capacity()</div>
-          <div class="callout c2"><p><strong>Detecting intent is the easy half.</strong> For decades the actuation
-              itself was too heavy to wear, until battery energy density finally caught up.</p></div>
+          <div class="code"><span class="dm"># One keystroke tick in a predictive keyboard</span>
+def <span class="c1">suggest_word</span>(typed, context):
+    candidates = <span class="c2">nearby_spellings</span>(typed)
+    ranked = <span class="c3">rank_by_probability</span>(candidates, context)
+    if ranked[0].prob > THRESHOLD:
+        return ranked[0]   <span class="dm"># silently replaces what you typed</span>
+    return typed</div>
+          <div class="callout c2"><p><strong>The "wrong" autocorrect isn't a spelling failure.</strong> It's a probability model confidently betting on the wrong word for your context.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -329,23 +318,21 @@ def <span class="c1">exo_step</span>(joint_sensor, battery):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Factory Floor.<br>Physical <span class="c3">Therapy</span>.</h2>
+          <h2>Trained on<br>Trillions of <span class="c3">Words</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Full</b><span>Shift battery life</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>0</b><span
-                style="color:var(--a2)">Cables, fully untethered</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>2</b><span
-                style="color:var(--a3)">Main use cases</span></div>
+            <div class="metric"><b>3</b><span>Words of context typically used</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Billions</b><span
+                style="color:var(--a2)">Sentences in training data</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>&lt;50ms</b><span
+                style="color:var(--a3)">Per-keystroke prediction time</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Factory floor adoption</span>
-              <div class="st-t"><strong>Automakers issue powered exosuits to workers doing overhead lifting,</strong>
-                cutting shoulder injury rates measurably.</div>
+            <div class="st"><span class="st-v c1">Personal adaptation</span>
+              <div class="st-t"><strong>Your keyboard keeps a small model of your own writing,</strong> nudging predictions toward words and names you actually use.</div>
             </div>
-            <div class="st"><span class="st-v c2">Physical therapy</span>
-              <div class="st-t"><strong>Powered leg exosuits help stroke and spinal injury patients relearn
-                  gait</strong> with real, adjustable assistance.</div>
+            <div class="st"><span class="st-v c2">Swipe typing</span>
+              <div class="st-t"><strong>Gesture keyboards use the same probability model</strong> to reconstruct a whole word from an imprecise finger swipe path.</div>
             </div>
           </div>
         </div>
@@ -360,21 +347,17 @@ def <span class="c1">exo_step</span>(joint_sensor, battery):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Powered exoskeleton</span>
-              <div class="st-t"><strong>A wearable robotic suit delivering real, battery-driven force,</strong> not
-                just passive spring support.</div>
+            <div class="st"><span class="st-v c1">N-gram model</span>
+              <div class="st-t"><strong>Predicting a word's probability from the two or three words</strong> that came immediately before it.</div>
             </div>
-            <div class="st"><span class="st-v c2">Passive exosuit</span>
-              <div class="st-t"><strong>A spring-based suit that stores and returns the wearer's own
-                  energy,</strong> adding no external force.</div>
+            <div class="st"><span class="st-v c2">Edit distance</span>
+              <div class="st-t"><strong>Counting the minimum letter changes needed</strong> to turn one word into another.</div>
             </div>
-            <div class="st"><span class="st-v c3">Torque sensing</span>
-              <div class="st-t"><strong>Detecting a wearer's intended movement</strong> so the suit can assist in
-                sync, not lag behind.</div>
+            <div class="st"><span class="st-v c3">Language model</span>
+              <div class="st-t"><strong>A system trained to estimate how likely a sequence of words</strong> is to appear together.</div>
             </div>
-            <div class="st"><span class="st-v c1">Energy density</span>
-              <div class="st-t"><strong>Power stored per unit of battery weight,</strong> the breakthrough enabling
-                untethered powered suits.</div>
+            <div class="st"><span class="st-v c1">Autocorrect threshold</span>
+              <div class="st-t"><strong>The probability score a suggested word must clear</strong> before it silently replaces what you typed.</div>
             </div>
           </div>
         </div>
@@ -413,17 +396,19 @@ def <span class="c1">exo_step</span>(joint_sensor, battery):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">For decades, the most powerful exoskeletons were the least useful ones, because they were bolted to a wall. Real powered assistance existed only in labs, tethered to a stationary power supply by a cable nobody could walk far with. Battery chemistry, not motor design, was the actual bottleneck.
+      <div class="caption-text" id="captionText">Every time your keyboard finishes a word before you do, it isn't checking spelling. It's running a bet on which word is statistically most likely to come next, and it happens to also fix your typos along the way.
 
-Passive exosuits solved the mobility problem first, using springs and elastic elements to store energy from your own movement and return it, reducing fatigue on long shifts. But a spring only gives back what you put in. It cannot help you lift something genuinely heavy, because it adds no force of its own, only recycles yours. For real augmentation, you need actuation, motors and actual power, and for years the battery pack dense enough to run those motors weighed more than the strength it added back, a net loss for anyone wearing it.
+The earliest spellcheckers worked off a plain dictionary lookup, a word either existed in a fixed list or it didn't. That catches obvious nonsense but offers zero help ranking which correction you actually meant, and it has no concept of context at all, "there" and "their" look identical to a system that only checks whether a word exists.
 
-What changed is battery energy density, the amount of power a cell stores per unit of weight. As that number climbed, it finally became possible to pack enough onboard power into a suit light enough to wear through a full shift without cables. Modern powered exosuits sense joint torque directly, detecting the exact moment and direction a wearer starts to lift or take a step, then apply real, motor-driven force in sync with that intent, multiplying the person's own strength rather than just conserving it.
+Edit distance improved that by measuring how many letters would need to change, add, or delete to turn your typed word into a real one, then picking whichever known word is closest. That fixes far more typos, but it still guesses blind. It has no idea whether you're writing a normal word in a sentence or something your keyboard has learned to override for you.
 
-The applications are already concrete. Automakers now issue powered exosuits to line workers performing repetitive overhead lifting, and measurably cut shoulder injury rates as a result. In physical therapy, powered leg exosuits help stroke and spinal injury patients relearn correct walking gait with real, precisely adjustable assistance, something a passive brace could never provide.
+What actually runs today is a language model trained on billions of real sentences, estimating the probability of every possible next word given the two or three words you just typed. Every keystroke reranks that whole list of candidates in real time, combining spelling proximity with contextual probability, and the top-ranked guess gets silently substituted the instant its score clears a threshold, whether you asked for it or not.
 
-Detecting a person's intent to move was never the hard problem. Building a battery light enough to act on that intent, worn on a body, all day, was. That problem is now solved.
+That's also exactly why autocorrect fails in such a specific, memeable way. It isn't confused about spelling, it's confidently betting on the statistically likely word for people in general, not the specific word you actually meant. The same probability engine powers swipe typing too, reconstructing an entire word from an imprecise dragged finger path by comparing it against the most probable candidates, not a perfect key by key trace.
 
-#exoskeleton #wearabletech #humanaugmentation #robotics #ravenextechnologies</div>
+Correcting a typo was never the hard part. Guessing your next word before you've finished typing it, that's the trick.
+
+#autocorrect #nlp #languagemodels #machinelearning #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +455,7 @@ Detecting a person's intent to move was never the hard problem. Building a batte
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -488,7 +473,7 @@ Detecting a person's intent to move was never the hard problem. Building a batte
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'exoskeleton-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'autocorrect-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -502,7 +487,7 @@ Detecting a person's intent to move was never the hard problem. Building a batte
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'exoskeleton-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'autocorrect-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

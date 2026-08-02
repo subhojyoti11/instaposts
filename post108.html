@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RLHF in Robotics, Post 108</title>
+  <title>Netflix Isn't Watching You, It's Doing Math on Everyone Else, Post 108</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -29,7 +29,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0a0f1f 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #120f1f 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +44,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #0d0d1a52 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #14122052 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Programmed</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Simulated</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Human-Rated</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Netflix Has<br>Never Watched<br>a Single <span class="c1">Show</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>No Equation<br>for <span class="c1">"Polite."</span></h2>
+          <h2>It Doesn't Know<br>What You <span class="c1">Like</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">No hardcoded "polite"</span>
-              <div class="st-t"><strong>There is no equation for staying clear of a person's face,</strong>
-                engineers can't hand-write every rule for acceptable physical behavior.</div>
+            <div class="st"><span class="st-v c1">Genre tags are shallow</span>
+              <div class="st-t"><strong>Sorting by genre alone can't tell a slow-burn drama you'd love</strong> from one you'd abandon in ten minutes.</div>
             </div>
-            <div class="st"><span class="st-v c2">Simulators can't judge comfort</span>
-              <div class="st-t"><strong>A physics simulator can score task success,</strong> but has no way to
-                judge whether a motion felt safe to a human.</div>
+            <div class="st"><span class="st-v c2">Content analysis has limits</span>
+              <div class="st-t"><strong>Comparing plot descriptions or cast lists misses</strong> the actual reason people enjoy or skip a title.</div>
             </div>
-            <div class="st"><span class="st-v c3">Reward hacking</span>
-              <div class="st-t"><strong>Robots trained on a narrow reward function reliably find shortcuts</strong>
-                that score well but behave strangely or unsafely.</div>
+            <div class="st"><span class="st-v c3">Your taste is unlabeled</span>
+              <div class="st-t"><strong>No one manually tags why you personally finished one show</strong> and dropped a near-identical one.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Teach <span class="c3">Behavior</span>.</h2>
+          <h2>Three Ways to<br>Guess a <span class="c3">Taste</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">📏</div>
-              <div class="cmp-title">PROGRAMMED</div>
-              <div class="cmp-sub">Hand-written</div>
+              <div class="cmp-icon">🏷️</div>
+              <div class="cmp-title">GENRE</div>
+              <div class="cmp-sub">Category match</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Hand-write explicit rules for acceptable behavior.</div>
+              <div class="cmp-text">Recommend more of whatever category you just watched.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Engineers enumerate distances, speeds, forbidden motions.</div>
+              <div class="cmp-text">Matches based on fixed labels like comedy or thriller.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Breaks the moment a scenario wasn't anticipated.</div>
+              <div class="cmp-text">Repetitive, misses what you actually respond to.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🧮</div>
-              <div class="cmp-title">SIMULATED</div>
-              <div class="cmp-sub">Formula reward</div>
+              <div class="cmp-icon">📄</div>
+              <div class="cmp-title">CONTENT</div>
+              <div class="cmp-sub">Metadata match</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Optimize a hand-coded reward function in simulation.</div>
+              <div class="cmp-text">Recommend titles with similar plot or cast metadata.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Reward is a formula, task success, time, energy used.</div>
+              <div class="cmp-text">Compares descriptions, actors, and keywords directly.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The robot optimizes exactly what you wrote, not what you meant.</div>
+              <div class="cmp-text">Better, but still blind to real audience reaction.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🙋</div>
-              <div class="cmp-title">HUMAN-RATED</div>
-              <div class="cmp-sub">RLHF</div>
+              <div class="cmp-icon">🧮</div>
+              <div class="cmp-title">BEHAVIOR</div>
+              <div class="cmp-sub">Collaborative filtering</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Let real people rank which behaviors feel acceptable.</div>
+              <div class="cmp-text">Recommend based on what similar viewers actually watched.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Evaluators compare pairs of robot motions, pick the better one.</div>
+              <div class="cmp-text">Finds patterns across millions of other people's history.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The robot learns nuanced, hard-to-formalize social norms.</div>
+              <div class="cmp-text">Surfaces titles no metadata comparison would ever find.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: hand-coded rules → human preference</div>
+          <div class="cmp-cta">↻ The shift: what it's about → who else liked it</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,18 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Nobody Wrote<br>Down <span class="c1">"Polite."</span></h2>
+          <h2>Borrowing Taste<br>From <span class="c1">Strangers</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Collect behavior pairs</b><span>The
-                  robot generates two different motions for the same task, both recorded for review.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Human comparison</b><span>An
-                  evaluator watches both clips and simply picks which felt safer or more appropriate.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Train a reward model</b><span>Thousands
-                  of pairwise preferences train a model that predicts how a human would rate any new motion.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Optimize against the reward
-                  model</b><span>The robot's policy is trained to maximize that learned model, chasing human approval
-                  directly.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Every view is a signal</b><span>Every watch, pause, rewatch, and skip becomes a data point in a massive shared matrix.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Finding your neighbors</b><span>The system finds other viewers whose patterns closely resemble your own, not your demographics.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Borrowing their taste</b><span>Titles those similar viewers loved, that you haven't seen yet, become your top candidates.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Matrix factorization</b><span>The viewer-by-title matrix compresses into hidden taste dimensions, discovered statistically, never labeled.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -312,14 +301,12 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One RLHF training step for a robot policy</span>
-def <span class="c1">rlhf_step</span>(policy, reward_model, state):
-    action = policy.sample(state)
-    score = <span class="c2">reward_model.predict</span>(state, action)
-    <span class="dm"># score comes from learned human preference, not a formula</span>
-    policy.update(state, action, score)</div>
-          <div class="callout c2"><p><strong>Nobody wrote down the definition of "polite."</strong> The reward
-              model learned it, purely from thousands of humans picking one clip over another.</p></div>
+          <div class="code"><span class="dm"># One simplified recommendation pass</span>
+def <span class="c1">recommend</span>(user, matrix):
+    neighbors = <span class="c2">find_similar_viewers</span>(user, matrix)
+    scores = <span class="c3">aggregate_ratings</span>(neighbors, unseen_titles)
+    return top_n(scores)   <span class="dm"># no plot summary was ever read</span></div>
+          <div class="callout c2"><p><strong>The system has never seen the movie.</strong> It only knows a pattern: people who liked what you liked, also liked this.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -329,23 +316,21 @@ def <span class="c1">rlhf_step</span>(policy, reward_model, state):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Learning<br>What "Safe" <span class="c3">Feels Like</span>.</h2>
+          <h2>Running Behind<br>Every <span class="c3">Row</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Pairs</b><span>Comparisons, not scores</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Learned</b><span
-                style="color:var(--a2)">Reward, not hand-coded</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>24/7</b><span
-                style="color:var(--a3)">Continuous refinement</span></div>
+            <div class="metric"><b>80%</b><span>Netflix views from recommendations</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Millions</b><span
+                style="color:var(--a2)">Viewer taste vectors compared</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>ms</b><span
+                style="color:var(--a3)">Ranking time per home screen</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Comfortable proximity</span>
-              <div class="st-t"><strong>Robots learn appropriate distance and speed around humans</strong> purely
-                from evaluator preferences, a rule no formula fully captures.</div>
+            <div class="st"><span class="st-v c1">The cold start problem</span>
+              <div class="st-t"><strong>A brand new title has no viewing history yet,</strong> so it initially leans on content-based signals until data accumulates.</div>
             </div>
-            <div class="st"><span class="st-v c2">Reduced reward hacking</span>
-              <div class="st-t"><strong>Because the reward comes from human judgment,</strong> robots are far less
-                likely to find unintended, strange shortcuts.</div>
+            <div class="st"><span class="st-v c2">Same math, different labels</span>
+              <div class="st-t"><strong>Spotify's Discover Weekly and Amazon's "customers also bought"</strong> run on the same collaborative filtering principle.</div>
             </div>
           </div>
         </div>
@@ -360,21 +345,17 @@ def <span class="c1">rlhf_step</span>(policy, reward_model, state):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">RLHF</span>
-              <div class="st-t"><strong>Training a policy using a reward model learned from human
-                  preferences,</strong> instead of a hand-coded formula.</div>
+            <div class="st"><span class="st-v c1">Collaborative filtering</span>
+              <div class="st-t"><strong>Recommending items based on patterns across many users'</strong> behavior, not the item's own content.</div>
             </div>
-            <div class="st"><span class="st-v c2">Reward model</span>
-              <div class="st-t"><strong>A model trained to predict how a human would rate a behavior,</strong> based
-                on prior pairwise comparisons.</div>
+            <div class="st"><span class="st-v c2">Content-based filtering</span>
+              <div class="st-t"><strong>Recommending items by comparing their own attributes,</strong> like genre or cast, to what you've liked.</div>
             </div>
-            <div class="st"><span class="st-v c3">Pairwise preference</span>
-              <div class="st-t"><strong>Choosing which of two behaviors is better,</strong> a judgment humans make
-                reliably even without an exact score.</div>
+            <div class="st"><span class="st-v c3">Matrix factorization</span>
+              <div class="st-t"><strong>Compressing a huge user-by-item ratings matrix</strong> into smaller hidden taste dimensions.</div>
             </div>
-            <div class="st"><span class="st-v c1">Reward hacking</span>
-              <div class="st-t"><strong>When a policy exploits a narrow reward function</strong> to score well while
-                behaving unsafely.</div>
+            <div class="st"><span class="st-v c1">Cold start problem</span>
+              <div class="st-t"><strong>The difficulty of recommending a new item or user</strong> with no behavioral history yet.</div>
             </div>
           </div>
         </div>
@@ -413,17 +394,17 @@ def <span class="c1">rlhf_step</span>(policy, reward_model, state):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Nobody can write down a formula for "polite." You cannot hand a robot an equation that fully defines a comfortable approach distance, an acceptable reaching speed near someone's face, or what counts as startling versus gentle. Yet robots are increasingly expected to get exactly that right. RLHF is how they learn it anyway.
+      <div class="caption-text" id="captionText">Netflix has never watched a single one of your shows. What it has is a giant matrix of everyone else's viewing habits, and a lot of math finding people whose taste looks statistically like yours.
 
-The old approach was to hand-code the rules directly, engineers enumerating acceptable distances, speeds, and forbidden motions one by one. It breaks constantly, because the real world always produces a scenario nobody explicitly anticipated. Training in simulation against a hand-coded reward function doesn't fully fix this either. A simulator can score whether a task was completed, or how much energy or time it took, but it has no way to judge whether a motion actually felt safe or comfortable to a human. Left to optimize a narrow formula like that, robots reliably find reward hacking shortcuts, technically maximizing the score while behaving in ways nobody intended.
+Sorting recommendations by genre alone is shallow, it can't distinguish a slow-burn drama you'd binge from a near-identical one you'd abandon after ten minutes, because a category label carries none of the reason you actually respond to a story. Comparing metadata like cast, plot keywords, or descriptions goes a step further, but it's still blind to the thing that actually matters, how real audiences reacted, not what a title is nominally about.
 
-Reinforcement learning from human feedback sidesteps the entire problem by never asking anyone to write the formula. Instead, the robot generates two different motions for the same task, and a human evaluator simply watches both and picks whichever one felt more appropriate, no numeric scoring required, just a preference. Thousands of these pairwise comparisons train a separate reward model that learns to predict how a human would rate any new motion, capturing nuance no engineer could have written down directly. The robot's actual policy is then trained to maximize that learned reward model, effectively optimizing directly against human judgment rather than a proxy for it.
+What actually drives most of what you see is collaborative filtering. Every view, pause, rewatch, and abandoned episode across the entire platform becomes a data point in an enormous shared matrix of viewers and titles. Instead of analyzing what a show is about, the system finds other viewers whose viewing pattern closely resembles yours, and surfaces titles those similar viewers loved that you haven't seen yet. Behind the scenes, that entire matrix gets compressed through matrix factorization into a small set of hidden taste dimensions, discovered statistically, never labeled or named by a human at any point.
 
-The results show up exactly where hand-coded rules failed. Robots trained this way learn comfortable approach distances and appropriate motion speed around people purely from evaluator preferences, and because the reward itself reflects genuine human judgment rather than a narrow formula, they are far less prone to the strange, technically-correct shortcuts reward hacking produces.
+The system genuinely doesn't know what a movie is about. It only knows a pattern, people who watched what you watched also tended to love this, and that pattern turns out to predict your taste better than reading a plot summary ever could. Around eighty percent of what people watch on Netflix reportedly comes from these recommendations rather than active search. Brand new titles face a real cold start problem, with no viewing history yet to draw on, which is why they initially lean on content-based signals until real behavioral data accumulates. Spotify's Discover Weekly and Amazon's "customers also bought" run on the exact same underlying principle.
 
-We could never fully specify what "safe" physical behavior means. It turns out we didn't need to, we only needed to reliably recognize it when we saw it.
+Your taste was never described to the system. It was inferred entirely from strangers.
 
-#reinforcementlearning #rlhf #robotics #humanrobotinteraction #ravenextechnologies</div>
+#recommendersystems #collaborativefiltering #machinelearning #netflix #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +451,7 @@ We could never fully specify what "safe" physical behavior means. It turns out w
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -488,7 +469,7 @@ We could never fully specify what "safe" physical behavior means. It turns out w
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'rlhfrobot-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'recommendmath-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -502,7 +483,7 @@ We could never fully specify what "safe" physical behavior means. It turns out w
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'rlhfrobot-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'recommendmath-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi-Modal Vision-Language-Action Models, Post 109</title>
+  <title>Your GPS Would Drift 10km a Day Without Relativity, Post 109</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -120,7 +120,7 @@
     }
     .code .c1 { color: #67e8f9; }
     .code .c2 { color: #f9a8d4; }
-    .code .c3 { color: #fde047; }
+    .code .c3 { color: #fde68a; }
     .code .dm { color: #7d8595; }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -202,12 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 07</span></div>
-        <div class="big-title-wrap">
-          <div class="big-word c1">Vision</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c2">Language</div>
-          <div class="big-vs">vs</div>
-          <div class="big-word c3">Action</div>
+        <div class="body">
+          <p style="margin-bottom:70px"> </p>
+          <h2 style="font-size:42px;line-height:1.0">Your GPS Is<br>Quietly Correcting<br><span class="c1">Einstein</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -217,20 +214,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Robots Don't<br>Read the <span class="c1">Internet</span>.</h2>
+          <h2>Your Location Is<br>Really a <span class="c1">Time</span> Problem.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">No web-scale knowledge</span>
-              <div class="st-t"><strong>Robot policies train only on demonstration data,</strong> never on the
-                billions of images and sentences that taught language models about the world.</div>
+            <div class="st"><span class="st-v c1">It's all about timing</span>
+              <div class="st-t"><strong>GPS finds your position by timing radio signals to nanosecond precision,</strong> not by literally triangulating angles.</div>
             </div>
-            <div class="st"><span class="st-v c2">No common-sense grounding</span>
-              <div class="st-t"><strong>Ask a narrow policy to pick up "the extinct animal" and it fails,</strong>
-                it was never trained on what extinct means.</div>
+            <div class="st"><span class="st-v c2">Satellite clocks run differently</span>
+              <div class="st-t"><strong>A clock moving fast in weaker gravity ticks at a measurably different rate</strong> than one on Earth's surface.</div>
             </div>
-            <div class="st"><span class="st-v c3">Separate models, glued together</span>
-              <div class="st-t"><strong>Older pipelines ran vision, then language, then a planner,</strong> each
-                hand-off losing information.</div>
+            <div class="st"><span class="st-v c3">Errors compound instantly</span>
+              <div class="st-t"><strong>A timing error of just one microsecond translates directly</strong> into roughly 300 meters of position error.</div>
             </div>
           </div>
         </div>
@@ -242,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Parts of<br>One <span class="c3">Model</span>.</h2>
+          <h2>Three Ways to<br>Read a <span class="c3">Clock</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">👁️</div>
-              <div class="cmp-title">VISION</div>
-              <div class="cmp-sub">Perception</div>
+              <div class="cmp-icon">⏱️</div>
+              <div class="cmp-title">UNCORRECTED</div>
+              <div class="cmp-sub">Ignore relativity</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Recognize objects and scenes from camera input.</div>
+              <div class="cmp-text">Trust satellite clocks exactly as they tick onboard.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Classifies pixels into trained label categories.</div>
+              <div class="cmp-text">No adjustment for speed or gravity differences.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Sees a dinosaur toy, no idea what "extinct" means.</div>
+              <div class="cmp-text">Position drifts roughly 10km per day.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">💬</div>
-              <div class="cmp-title">LANGUAGE</div>
-              <div class="cmp-sub">Understanding</div>
+              <div class="cmp-icon">🛰️</div>
+              <div class="cmp-title">PARTIAL</div>
+              <div class="cmp-sub">Speed only</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Understand instructions in flexible, natural phrasing.</div>
+              <div class="cmp-text">Correct only for the satellite's orbital velocity.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Trained on web-scale text, knows what "extinct" means.</div>
+              <div class="cmp-text">Special relativity's time dilation from speed alone.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Understands the sentence, never controlled a motor.</div>
+              <div class="cmp-text">Still off, ignores gravity's opposing effect.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🦾</div>
-              <div class="cmp-title">ACTION</div>
-              <div class="cmp-sub">Motor output</div>
+              <div class="cmp-icon">✅</div>
+              <div class="cmp-title">CORRECTED</div>
+              <div class="cmp-sub">Speed + gravity</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Output the literal motor commands for a robot arm.</div>
+              <div class="cmp-text">Correct for both velocity and weaker gravity at altitude.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">One model treats motor commands as just another token.</div>
+              <div class="cmp-text">Combines special and general relativity into one offset.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">One model that sees, understands, and physically acts.</div>
+              <div class="cmp-text">Nanosecond-accurate timing, meter-level position.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ Action tokens, right next to word tokens</div>
+          <div class="cmp-cta">↻ The shift: trust the satellite clock → correct it before trusting it</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -288,19 +282,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Knowledge First.<br>Motors <span class="c1">Second</span>.</h2>
+          <h2>Two Kinds of<br>Time <span class="c1">Drift</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Web-scale pretraining</b><span>The
-                  model first trains on the same massive internet image-and-text data as general vision-language
-                  models.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Action as a token</b><span>Robot
-                  motor commands are encoded as tokens in the exact same vocabulary as words.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Joint fine-tuning</b><span>The
-                  model is then fine-tuned on real robot data, learning to output action tokens.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Instruction-to-motion inference</b><span>A
-                  plain-language instruction and a camera frame produce a direct sequence of motor
-                  commands.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Speed slows the clock</b><span>Moving at roughly 14,000 km/h, a satellite's clock ticks slightly slower, per special relativity.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Gravity speeds it up</b><span>Sitting far from Earth in weaker gravity, that same clock ticks slightly faster, per general relativity.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The two don't cancel</b><span>Gravity's effect wins, so uncorrected clocks would gain about 38 microseconds every day.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Built-in correction</b><span>Engineers detune each satellite's clock frequency before launch to offset the predicted drift.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -313,15 +301,13 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One inference step of a vision-language-action model</span>
-def <span class="c1">vla_step</span>(image, instruction):
-    tokens = <span class="c2">tokenize</span>(image, instruction)
-    output = transformer(tokens)
-    action_tokens = <span class="c3">extract_action</span>(output)
-    <span class="dm"># same model, same vocabulary, as any text token</span>
-    execute(action_tokens)</div>
-          <div class="callout c2"><p><strong>The model was never taught what a dinosaur is for this task.</strong>
-              It already knew, from the same web data every language model learns from.</p></div>
+          <div class="code"><span class="dm"># Correcting a satellite timestamp before use</span>
+def <span class="c1">corrected_time</span>(raw_clock, velocity, altitude):
+    dt_velocity = <span class="c2">special_relativity_offset</span>(velocity)
+    dt_gravity = <span class="c3">general_relativity_offset</span>(altitude)
+    return raw_clock - dt_velocity + dt_gravity
+    <span class="dm"># gravity's effect is larger, net drift is corrected before broadcast</span></div>
+          <div class="callout c2"><p><strong>Without this correction, GPS wouldn't be slightly wrong, it would be useless.</strong> Errors would compound to kilometers within a single day.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -331,23 +317,21 @@ def <span class="c1">vla_step</span>(image, instruction):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>"Pick Up the<br><span class="c3">Extinct Animal</span>."</h2>
+          <h2>Physics You<br>Never <span class="c3">Notice</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Web</b><span>Scale pretraining</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>RT-2</b><span
-                style="color:var(--a2)">Google DeepMind model</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>1</b><span
-                style="color:var(--a3)">Unified transformer</span></div>
+            <div class="metric"><b>38μs</b><span>Daily drift if uncorrected</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>~10km</b><span
+                style="color:var(--a2)">Resulting daily position error</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>24</b><span
+                style="color:var(--a3)">Satellites needing correction</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Semantic generalization</span>
-              <div class="st-t"><strong>RT-2 correctly picks "the extinct animal" from a group of toys,</strong>
-                transferring knowledge it never saw paired with a demo.</div>
+            <div class="st"><span class="st-v c1">Predicted before launch</span>
+              <div class="st-t"><strong>The exact relativistic offset is calculated and built into each satellite's clock rate</strong> before it ever reaches orbit.</div>
             </div>
-            <div class="st"><span class="st-v c2">No separate planner</span>
-              <div class="st-t"><strong>Vision, language, and action share one model and vocabulary,</strong> no
-                brittle hand-off to break.</div>
+            <div class="st"><span class="st-v c2">Confirms Einstein daily</span>
+              <div class="st-t"><strong>Every working GPS fix is, in effect, a live confirmation</strong> that both relativity theories are correct.</div>
             </div>
           </div>
         </div>
@@ -362,21 +346,17 @@ def <span class="c1">vla_step</span>(image, instruction):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Vision-Language-Action model</span>
-              <div class="st-t"><strong>A single model outputting robot commands as tokens</strong> in the same
-                vocabulary as vision and language tokens.</div>
+            <div class="st"><span class="st-v c1">Special relativity</span>
+              <div class="st-t"><strong>The effect where a clock moving fast relative to an observer</strong> ticks slower than a stationary one.</div>
             </div>
-            <div class="st"><span class="st-v c2">Web-scale pretraining</span>
-              <div class="st-t"><strong>Training on the same massive internet data</strong> used for
-                general-purpose language and vision models.</div>
+            <div class="st"><span class="st-v c2">General relativity</span>
+              <div class="st-t"><strong>The effect where a clock in weaker gravity</strong> ticks faster than one deeper in a gravity well.</div>
             </div>
-            <div class="st"><span class="st-v c3">Action token</span>
-              <div class="st-t"><strong>A discrete unit representing a motor command,</strong> predicted exactly
-                like the next word.</div>
+            <div class="st"><span class="st-v c3">Time dilation</span>
+              <div class="st-t"><strong>The general phenomenon of clocks running at different rates</strong> depending on speed and gravity.</div>
             </div>
-            <div class="st"><span class="st-v c1">Semantic generalization</span>
-              <div class="st-t"><strong>Correctly acting on a concept never paired with a demonstration</strong>
-                during training.</div>
+            <div class="st"><span class="st-v c1">Trilateration</span>
+              <div class="st-t"><strong>Computing a position by measuring precise time delay</strong> from multiple known reference points.</div>
             </div>
           </div>
         </div>
@@ -415,17 +395,17 @@ def <span class="c1">vla_step</span>(image, instruction):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Ask a robot to pick up the extinct animal from a pile of toys, and a model trained purely on labeled robot demonstrations has no chance, it was never taught what extinct means. RT-2 gets it right, and the reason why says something important about where robot intelligence is actually coming from now.
+      <div class="caption-text" id="captionText">Your phone's GPS chip is quietly correcting for Einstein, every single second, or it would drift by about ten kilometers a day.
 
-Traditional robot policies train exclusively on robot demonstration data, expert-labeled examples of an arm picking up specific, named objects. That data is expensive to collect and inherently narrow, it can only teach the robot about exactly what was demonstrated. Ask it to generalize to a concept like "extinct" and it fails completely, because that knowledge simply was never in its training data. Older pipelines tried to patch this by chaining together separate models, a vision system, then a language system, then a motion planner, but every hand-off between those systems loses information and adds a place things can break.
+GPS doesn't work the way most people picture it, triangulating angles between satellites. It's really a timing problem, your phone measures how long a radio signal took to arrive from each satellite, to nanosecond precision, and converts that delay directly into distance. Which means the accuracy of your position depends entirely on how accurately those satellite clocks are actually running, and it turns out they don't run at the same rate as a clock sitting still on Earth's surface.
 
-Vision-language-action models take a fundamentally different approach, one model, one shared vocabulary. Robot motor commands are encoded as discrete action tokens sitting in the exact same token space as words and image patches, so a single transformer can predict "move," "grip," and "extinct" using the identical mechanism. Critically, that model is first pretrained on the same web-scale image-and-text data that powers general-purpose language and vision models, absorbing broad world knowledge before it ever sees a single robot demonstration. Only afterward is it fine-tuned on real robot data, learning to translate that pre-existing knowledge into physical motor commands.
+Two separate relativistic effects are pulling in opposite directions. Special relativity says a clock moving fast, and GPS satellites move at roughly fourteen thousand kilometers an hour, ticks slightly slower than a stationary one. General relativity says a clock sitting in weaker gravity, farther from Earth's mass, ticks slightly faster than one deeper in a gravity well. These two effects don't cancel out. Gravity's effect wins, and left completely uncorrected, satellite clocks would gain about thirty-eight microseconds every single day, which sounds tiny until you realize a single microsecond of timing error translates to roughly three hundred meters of position error on the ground.
 
-The result is genuine semantic generalization. RT-2, Google DeepMind's version of this approach, correctly identifies and picks up "the extinct animal" from a group of toys, a task it was never explicitly trained on, because the concept of extinction was already baked into its pretraining, and the model simply routes that existing knowledge into an action.
+Uncorrected, that compounds to a position error of around ten kilometers within twenty-four hours, useless for turn-by-turn navigation and everything else that depends on GPS. So engineers precisely calculate the predicted relativistic drift before a satellite ever launches and detune its onboard clock frequency to counteract it in advance, combining corrections for both speed and gravity into one net offset built into the hardware itself.
 
-The model was never taught what a dinosaur is for the purpose of this task. It already knew, from the same data every language model learns from, and for the first time, a robot arm can act on it.
+Every accurate GPS fix you've ever gotten is, in a very literal sense, a live, continuous confirmation that both of Einstein's relativity theories are correct, running silently in a satellite you've never thought about, so your map app can tell you which street you're on.
 
-#visionlanguageaction #rt2 #robotics #foundationmodels #ravenextechnologies</div>
+#gps #relativity #physics #satellitetech #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -472,7 +452,7 @@ The model was never taught what a dinosaur is for the purpose of this task. It a
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 2, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -490,7 +470,7 @@ The model was never taught what a dinosaur is for the purpose of this task. It a
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'rt2vla-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'gpsrelativity-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -504,7 +484,7 @@ The model was never taught what a dinosaur is for the purpose of this task. It a
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'rt2vla-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'gpsrelativity-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
