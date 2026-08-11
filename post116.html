@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Elevator That Skips Your Floor Isn't Broken, Post 113</title>
+  <title>Why Your Wi-Fi Devices Never Talk Over Each Other, Post 116</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,13 +17,13 @@
       --ink: #14132b;
       --ink2: #45435f;
       --dim: #9694b0;
-      --a1: #7c3aed;
-      --a2: #0d9488;
-      --a3: #dc2626;
-      --a1rgb: 124, 58, 237;
-      --a2rgb: 13, 148, 136;
-      --a3rgb: 220, 38, 38;
-      --border: rgba(124, 58, 237, .08);
+      --a1: #0284c7;
+      --a2: #ea580c;
+      --a3: #059669;
+      --a1rgb: 2, 132, 199;
+      --a2rgb: 234, 88, 12;
+      --a3rgb: 5, 150, 105;
+      --border: rgba(2, 132, 199, .08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,13 +81,6 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
-    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
-    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
-    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
-    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
-    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
-    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
-
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
     .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
     .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
@@ -118,9 +111,9 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #6d28d9; }
-    .code .c2 { color: #0f766e; }
-    .code .c3 { color: #b91c1c; }
+    .code .c1 { color: #0369a1; }
+    .code .c2 { color: #c2410c; }
+    .code .c3 { color: #047857; }
     .code .dm { color: var(--dim); }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -204,7 +197,7 @@
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">That Elevator<br>Skipping Your Floor<br>Isn't <span class="c1">Broken</span>.</h2>
+          <h2 style="font-size:42px;line-height:1.0">Your Router Never<br>Lets Two Devices<br><span class="c1">Talk</span> at Once.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +207,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>First Come,<br>Worst <span class="c1">Served</span>.</h2>
+          <h2>One Channel,<br>Every <span class="c1">Device</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">First-come, first-served fails</span>
-              <div class="st-t"><strong>Answering calls in the exact order they arrive</strong> can send a car bouncing between distant floors constantly.</div>
+            <div class="st"><span class="st-v c1">Shared airwaves, no wires</span>
+              <div class="st-t"><strong>Every device on your Wi-Fi network broadcasts into the exact same slice of spectrum</strong> at the exact same time.</div>
             </div>
-            <div class="st"><span class="st-v c2">Greedy nearest-first backfires</span>
-              <div class="st-t"><strong>Always chasing the closest call can strand someone</strong> on a far floor indefinitely if closer calls keep arriving.</div>
+            <div class="st"><span class="st-v c2">Collisions destroy both messages</span>
+              <div class="st-t"><strong>If two devices transmit simultaneously, their signals overlap</strong> and neither one arrives readable.</div>
             </div>
-            <div class="st"><span class="st-v c3">Direction reversals cost time</span>
-              <div class="st-t"><strong>Every unnecessary change in direction adds real seconds</strong> that compound across a full day of trips.</div>
+            <div class="st"><span class="st-v c3">No central conductor</span>
+              <div class="st-t"><strong>Unlike a wired network, there's no single cable</strong> forcing devices to take turns physically.</div>
             </div>
           </div>
         </div>
@@ -236,43 +229,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Schedule a <span class="c3">Car</span>.</h2>
+          <h2>Three Ways to<br>Share the <span class="c3">Air</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">📋</div>
-              <div class="cmp-title">FIFO</div>
-              <div class="cmp-sub">Arrival order</div>
+              <div class="cmp-icon">🎲</div>
+              <div class="cmp-title">ALOHA</div>
+              <div class="cmp-sub">Just transmit</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Serve calls in the exact order they were placed.</div>
+              <div class="cmp-text">Send data the moment you have it, no coordination.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A simple queue, ignoring current floor or direction.</div>
+              <div class="cmp-text">Any device can transmit whenever it wants.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but wastes trips crossing the building repeatedly.</div>
+              <div class="cmp-text">Frequent collisions, throughput collapses under load.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📍</div>
-              <div class="cmp-title">NEAREST</div>
-              <div class="cmp-sub">Closest call</div>
+              <div class="cmp-icon">👂</div>
+              <div class="cmp-title">CSMA</div>
+              <div class="cmp-sub">Listen first</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Always answer whichever call is physically closest.</div>
+              <div class="cmp-text">Check if the channel is busy before transmitting.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Greedy, floor-distance-only decision each time.</div>
+              <div class="cmp-text">A device waits for silence before it starts sending.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast on average, can starve distant requests.</div>
+              <div class="cmp-text">Fewer collisions, but two devices can still start together.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">↕️</div>
-              <div class="cmp-title">SCAN</div>
-              <div class="cmp-sub">Continue, then reverse</div>
+              <div class="cmp-icon">🤝</div>
+              <div class="cmp-title">CSMA/CA</div>
+              <div class="cmp-sub">Listen, then wait</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep moving in one direction, serving every call along the way.</div>
+              <div class="cmp-text">Avoid collisions before they happen, not just detect them.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Only reverses direction once no calls remain ahead.</div>
+              <div class="cmp-text">After sensing silence, each device waits a random backoff.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Predictable, fair, minimizes total direction changes.</div>
+              <div class="cmp-text">Devices naturally stagger, collisions become rare.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: chase the nearest call → finish the sweep first</div>
+          <div class="cmp-cta">↻ The shift: detect a collision → avoid one before it happens</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,13 +275,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Like a Disk Head,<br>Not a <span class="c1">Taxi</span>.</h2>
+          <h2>A Random<br>Wait, Not a <span class="c1">Rule</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Calls queue by floor and direction</b><span>Every button press is logged as a floor number plus whether you want to go up or down.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Continue in the current direction</b><span>The car keeps moving the way it's already headed, picking up every matching call along the way.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>No calls left ahead, then reverse</b><span>Only once nothing remains to serve in the current direction does the car reverse course.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Elevator banks split the load</b><span>In busy buildings, multiple cars each cover different floor zones, running the same logic in parallel.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Carrier sensing</b><span>Before transmitting, a device's radio checks whether the channel is currently silent.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Random backoff timer</b><span>If the channel is busy, it picks a small random wait time instead of retrying immediately.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Staggered retries</b><span>Because every device's random wait is different, they naturally spread out instead of colliding again.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Acknowledgment required</b><span>The receiver must send back a confirmation, or the sender assumes a collision and retries.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -301,13 +294,15 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One decision tick for a SCAN-scheduled elevator</span>
-def <span class="c1">next_move</span>(car, calls):
-    ahead = <span class="c2">calls_in_direction</span>(car.floor, car.direction)
-    if ahead: return ahead[0]
-    car.direction = <span class="c3">reverse</span>(car.direction)
-    return <span class="c2">calls_in_direction</span>(car.floor, car.direction)[0]</div>
-          <div class="callout c2"><p><strong>Skipping your floor on the way down isn't a glitch.</strong> The car is finishing its current sweep before it ever turns around for you.</p></div>
+          <div class="code"><span class="dm"># One transmission attempt under CSMA/CA</span>
+def <span class="c1">send_frame</span>(frame):
+    while <span class="c2">channel_busy</span>():
+        wait(<span class="c3">random_backoff</span>())
+    transmit(frame)
+    if not wait_for_ack():
+        <span class="dm"># assume collision, retry with a new random backoff</span>
+        return send_frame(frame)</div>
+          <div class="callout c2"><p><strong>No device ever asks permission from a central authority.</strong> The network stays orderly purely because everyone follows the same random-wait rule.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -317,21 +312,21 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Same Trick<br>Runs a <span class="c3">Disk</span>.</h2>
+          <h2>Running in<br>Every <span class="c3">Router</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1960s</b><span>SCAN scheduling first formalized</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>HDD</b><span
-                style="color:var(--a2)">Same algorithm scheduling disk reads</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
-                style="color:var(--a3)">Wasted direction reversals</span></div>
+            <div class="metric"><b>μs</b><span>Typical random backoff window</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>1</b><span
+                style="color:var(--a2)">Shared channel, many devices</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>ACK</b><span
+                style="color:var(--a3)">Confirms every successful frame</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Elevator banks in skyscrapers</span>
-              <div class="st-t"><strong>Modern high-rises assign cars to floor zones</strong> and predict traffic patterns to pre-position idle cars.</div>
+            <div class="st"><span class="st-v c1">Bluetooth uses a relative</span>
+              <div class="st-t"><strong>Bluetooth's frequency-hopping scheme solves the same shared-spectrum problem</strong> with a different coordination trick.</div>
             </div>
-            <div class="st"><span class="st-v c2">Hard disk scheduling</span>
-              <div class="st-t"><strong>The identical SCAN algorithm minimizes a spinning disk head's travel</strong> across read and write requests.</div>
+            <div class="st"><span class="st-v c2">Wired Ethernet did this differently</span>
+              <div class="st-t"><strong>Older wired networks used CSMA/CD,</strong> detecting collisions after they happened instead of avoiding them first.</div>
             </div>
           </div>
         </div>
@@ -346,17 +341,17 @@ def <span class="c1">next_move</span>(car, calls):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">SCAN scheduling</span>
-              <div class="st-t"><strong>An algorithm that serves requests in one direction fully</strong> before reversing, minimizing total travel.</div>
+            <div class="st"><span class="st-v c1">CSMA/CA</span>
+              <div class="st-t"><strong>Carrier Sense Multiple Access with Collision Avoidance,</strong> the protocol Wi-Fi uses to share airwaves.</div>
             </div>
-            <div class="st"><span class="st-v c2">Starvation</span>
-              <div class="st-t"><strong>A scheduling failure where a request keeps getting delayed</strong> indefinitely by higher-priority ones.</div>
+            <div class="st"><span class="st-v c2">Carrier sensing</span>
+              <div class="st-t"><strong>Checking whether a shared communication channel is currently in use</strong> before transmitting.</div>
             </div>
-            <div class="st"><span class="st-v c3">Elevator bank</span>
-              <div class="st-t"><strong>A group of elevators coordinated together,</strong> often assigned to different floor zones.</div>
+            <div class="st"><span class="st-v c3">Random backoff</span>
+              <div class="st-t"><strong>A randomly chosen wait time used to prevent multiple devices</strong> from retrying at the exact same moment.</div>
             </div>
-            <div class="st"><span class="st-v c1">Disk head scheduling</span>
-              <div class="st-t"><strong>Applying the same directional-sweep logic</strong> to minimize a hard drive's physical read arm movement.</div>
+            <div class="st"><span class="st-v c1">Collision</span>
+              <div class="st-t"><strong>Two or more simultaneous transmissions overlapping</strong> and becoming unreadable at the receiver.</div>
             </div>
           </div>
         </div>
@@ -385,8 +380,8 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post112.html" class="pn-btn">← Previous Post</a>
-        <a href="post114.html" class="pn-btn">Next Post →</a>
+        <a href="post115.html" class="pn-btn">← Previous Post</a>
+        <a href="post117.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -395,17 +390,17 @@ def <span class="c1">next_move</span>(car, calls):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The elevator that sails past your floor while it's clearly empty and heading down isn't broken, and it isn't ignoring you. It's finishing an algorithm before it's allowed to turn around.
+      <div class="caption-text" id="captionText">Every device on your Wi-Fi network is broadcasting into the exact same slice of radio spectrum, at the exact same time, and somehow they almost never talk over each other.
 
-Serving elevator calls in the exact order they were pressed sounds fair, but it can send a single car bouncing between distant floors constantly, wasting real time on unnecessary direction changes throughout the day. Always chasing whichever call is currently closest sounds smarter, but it can strand someone on a far floor indefinitely if closer calls keep arriving first, a failure mode called starvation. Every unwanted reversal in direction costs real seconds, and across hundreds of trips a day, those seconds add up into a genuinely worse building.
+The simplest possible approach is to just transmit whenever you have data ready, no coordination at all. That works fine with one device, and falls apart almost immediately with several, because any two devices transmitting at once produce overlapping signals that arrive unreadable at the receiver, a collision that wastes both transmissions entirely. Listening for silence before transmitting helps, but it doesn't fully solve the problem either, since two devices can both sense a silent channel at the same instant and start transmitting together anyway.
 
-What actually runs in most modern elevator systems is SCAN scheduling. Every button press, yours included, gets logged as a floor number plus a direction, up or down. The car keeps moving in whatever direction it's already heading, picking up and dropping off every call that matches along the way, and only reverses direction once there are genuinely no more calls left to serve ahead of it in the current direction. That's exactly why a descending, empty-looking car can pass your floor without stopping, it's still finishing its current downward sweep, and your call is queued for the moment it reverses.
+What Wi-Fi actually runs is CSMA/CA, carrier sense multiple access with collision avoidance. A device first listens to confirm the channel is silent, exactly like before, but then, critically, it waits a small randomly chosen amount of time before actually transmitting. Because that wait is random and different for every device, two devices that both wanted to transmit at the same instant almost never pick the identical wait time, so they naturally stagger apart instead of colliding. After a successful transmission, the receiver sends back an acknowledgment, and if the sender never hears that acknowledgment, it assumes a collision happened somewhere and retries with a fresh random wait.
 
-This isn't a new idea invented for elevators specifically. SCAN scheduling was formalized in the 1960s and the identical algorithm runs inside spinning hard disk drives, minimizing how far a physical read head has to travel by finishing a sweep across the disk before reversing, rather than jumping erratically to whichever request arrived first. In busy skyscrapers, entire banks of elevators run this same logic in parallel, each car assigned to a floor zone, predicting traffic patterns to pre-position idle cars before anyone even presses a button.
+There is no router centrally scheduling whose turn it is to speak. Every device independently follows the same simple rule, listen, then wait a random beat, and orderly behavior emerges purely from every device following that shared protocol at once. Bluetooth solves the same shared-spectrum problem differently, hopping between frequencies instead, and older wired Ethernet used a related approach, detecting collisions after they happened rather than avoiding them beforehand.
 
-Your floor wasn't forgotten. The sweep just wasn't finished yet.
+Your smart TV, laptop, and phone were never taking turns because something told them to. They were taking turns because none of them wanted to guess wrong twice.
 
-#elevators #algorithms #scanscheduling #systemdesign #ravenextechnologies</div>
+#wifi #networking #csma #wirelessprotocols #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +465,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'elevatorscan-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'wificsma-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -484,7 +479,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'elevatorscan-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'wificsma-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

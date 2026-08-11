@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Elevator That Skips Your Floor Isn't Broken, Post 113</title>
+  <title>How an ATM Hands You Exact Change, Post 119</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,13 +17,13 @@
       --ink: #14132b;
       --ink2: #45435f;
       --dim: #9694b0;
-      --a1: #7c3aed;
-      --a2: #0d9488;
-      --a3: #dc2626;
-      --a1rgb: 124, 58, 237;
-      --a2rgb: 13, 148, 136;
-      --a3rgb: 220, 38, 38;
-      --border: rgba(124, 58, 237, .08);
+      --a1: #15803d;
+      --a2: #a16207;
+      --a3: #1d4ed8;
+      --a1rgb: 21, 128, 61;
+      --a2rgb: 161, 98, 7;
+      --a3rgb: 29, 78, 216;
+      --border: rgba(21, 128, 61, .08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,13 +81,6 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
-    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
-    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
-    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
-    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
-    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
-    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
-
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
     .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
     .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
@@ -118,9 +111,9 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #6d28d9; }
-    .code .c2 { color: #0f766e; }
-    .code .c3 { color: #b91c1c; }
+    .code .c1 { color: #166534; }
+    .code .c2 { color: #854d0e; }
+    .code .c3 { color: #1e40af; }
     .code .dm { color: var(--dim); }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -204,7 +197,7 @@
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">That Elevator<br>Skipping Your Floor<br>Isn't <span class="c1">Broken</span>.</h2>
+          <h2 style="font-size:42px;line-height:1.0">Your ATM Never<br>Guesses Which<br><span class="c1">Bills</span> to Give You.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +207,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>First Come,<br>Worst <span class="c1">Served</span>.</h2>
+          <h2>Too Many Ways<br>to Make <span class="c1">$140</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">First-come, first-served fails</span>
-              <div class="st-t"><strong>Answering calls in the exact order they arrive</strong> can send a car bouncing between distant floors constantly.</div>
+            <div class="st"><span class="st-v c1">Too many combinations to guess</span>
+              <div class="st-t"><strong>A single amount can be made from dozens of different bill combinations,</strong> and most are wrong.</div>
             </div>
-            <div class="st"><span class="st-v c2">Greedy nearest-first backfires</span>
-              <div class="st-t"><strong>Always chasing the closest call can strand someone</strong> on a far floor indefinitely if closer calls keep arriving.</div>
+            <div class="st"><span class="st-v c2">Wrong change means real cost</span>
+              <div class="st-t"><strong>Handing out too many notes drains a cassette faster,</strong> requiring more frequent, costly refills.</div>
             </div>
-            <div class="st"><span class="st-v c3">Direction reversals cost time</span>
-              <div class="st-t"><strong>Every unnecessary change in direction adds real seconds</strong> that compound across a full day of trips.</div>
+            <div class="st"><span class="st-v c3">Milliseconds, not minutes</span>
+              <div class="st-t"><strong>A customer standing at the machine expects an instant answer,</strong> not a slow trial-and-error search.</div>
             </div>
           </div>
         </div>
@@ -236,43 +229,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Schedule a <span class="c3">Car</span>.</h2>
+          <h2>Three Ways to<br>Count Out <span class="c3">Cash</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">📋</div>
-              <div class="cmp-title">FIFO</div>
-              <div class="cmp-sub">Arrival order</div>
+              <div class="cmp-icon">🔁</div>
+              <div class="cmp-title">BRUTE FORCE</div>
+              <div class="cmp-sub">Try everything</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Serve calls in the exact order they were placed.</div>
+              <div class="cmp-text">Check every possible mix of notes that sums to the amount.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A simple queue, ignoring current floor or direction.</div>
+              <div class="cmp-text">Exhaustively tests combinations until one works.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but wastes trips crossing the building repeatedly.</div>
+              <div class="cmp-text">Correct, but far too slow for every withdrawal.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📍</div>
-              <div class="cmp-title">NEAREST</div>
-              <div class="cmp-sub">Closest call</div>
+              <div class="cmp-icon">🏃</div>
+              <div class="cmp-title">GREEDY</div>
+              <div class="cmp-sub">Biggest note first</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Always answer whichever call is physically closest.</div>
+              <div class="cmp-text">Always use the largest note that still fits.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Greedy, floor-distance-only decision each time.</div>
+              <div class="cmp-text">Repeatedly subtracts the biggest available denomination.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast on average, can starve distant requests.</div>
+              <div class="cmp-text">Fast and usually right, but can fail on odd note sets.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">↕️</div>
-              <div class="cmp-title">SCAN</div>
-              <div class="cmp-sub">Continue, then reverse</div>
+              <div class="cmp-icon">🧮</div>
+              <div class="cmp-title">DYNAMIC PROGRAMMING</div>
+              <div class="cmp-sub">Build up the answer</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep moving in one direction, serving every call along the way.</div>
+              <div class="cmp-text">Compute the minimum notes for every smaller amount first.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Only reverses direction once no calls remain ahead.</div>
+              <div class="cmp-text">Reuses previously solved smaller amounts to solve the full one.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Predictable, fair, minimizes total direction changes.</div>
+              <div class="cmp-text">Always correct, and fast enough for real-time dispensing.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: chase the nearest call → finish the sweep first</div>
+          <div class="cmp-cta">↻ The shift: search for an answer → build the answer from smaller ones</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,13 +275,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Like a Disk Head,<br>Not a <span class="c1">Taxi</span>.</h2>
+          <h2>Solving Every<br>Smaller <span class="c1">Amount</span> First.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Calls queue by floor and direction</b><span>Every button press is logged as a floor number plus whether you want to go up or down.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Continue in the current direction</b><span>The car keeps moving the way it's already headed, picking up every matching call along the way.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>No calls left ahead, then reverse</b><span>Only once nothing remains to serve in the current direction does the car reverse course.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Elevator banks split the load</b><span>In busy buildings, multiple cars each cover different floor zones, running the same logic in parallel.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Denominations are fixed and known</b><span>The machine only ever works with a small, fixed set of note values it currently has loaded.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Smaller amounts solved first</b><span>The algorithm calculates the minimum notes needed for every smaller amount, in order.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Each answer reuses the last</b><span>The best way to make a given amount is built directly from the best way to make a smaller one.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The cassette count constrains it</b><span>The final choice also has to respect how many notes of each type are actually left.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -301,13 +294,15 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One decision tick for a SCAN-scheduled elevator</span>
-def <span class="c1">next_move</span>(car, calls):
-    ahead = <span class="c2">calls_in_direction</span>(car.floor, car.direction)
-    if ahead: return ahead[0]
-    car.direction = <span class="c3">reverse</span>(car.direction)
-    return <span class="c2">calls_in_direction</span>(car.floor, car.direction)[0]</div>
-          <div class="callout c2"><p><strong>Skipping your floor on the way down isn't a glitch.</strong> The car is finishing its current sweep before it ever turns around for you.</p></div>
+          <div class="code"><span class="dm"># Minimum notes needed for an amount</span>
+def <span class="c1">min_notes</span>(amount, notes):
+    best = [0] + [<span class="c2">infinity</span>] * amount
+    for a in range(1, amount + 1):
+        for n in notes:
+            if n <= a:
+                best[a] = <span class="c3">min</span>(best[a], best[a - n] + 1)
+    return best[amount]</div>
+          <div class="callout c2"><p><strong>The machine never gambles on a combination.</strong> It already knows the cheapest way to make every smaller amount before it ever answers yours.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -317,21 +312,21 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Same Trick<br>Runs a <span class="c3">Disk</span>.</h2>
+          <h2>Behind Every<br>Cash <span class="c3">Withdrawal</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1960s</b><span>SCAN scheduling first formalized</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>HDD</b><span
-                style="color:var(--a2)">Same algorithm scheduling disk reads</span></div>
+            <div class="metric"><b>4-5</b><span>Typical note denominations loaded</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>&lt;1s</b><span
+                style="color:var(--a2)">Time to compute the dispense</span></div>
             <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
-                style="color:var(--a3)">Wasted direction reversals</span></div>
+                style="color:var(--a3)">Guessed or retried combinations</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Elevator banks in skyscrapers</span>
-              <div class="st-t"><strong>Modern high-rises assign cars to floor zones</strong> and predict traffic patterns to pre-position idle cars.</div>
+            <div class="st"><span class="st-v c1">Cassette-level constraints</span>
+              <div class="st-t"><strong>Real machines also balance which cassette to draw from,</strong> to avoid running one denomination empty early.</div>
             </div>
-            <div class="st"><span class="st-v c2">Hard disk scheduling</span>
-              <div class="st-t"><strong>The identical SCAN algorithm minimizes a spinning disk head's travel</strong> across read and write requests.</div>
+            <div class="st"><span class="st-v c2">Same math elsewhere</span>
+              <div class="st-t"><strong>Vending machines and point-of-sale systems solve the identical problem</strong> for cash change.</div>
             </div>
           </div>
         </div>
@@ -346,17 +341,17 @@ def <span class="c1">next_move</span>(car, calls):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">SCAN scheduling</span>
-              <div class="st-t"><strong>An algorithm that serves requests in one direction fully</strong> before reversing, minimizing total travel.</div>
+            <div class="st"><span class="st-v c1">Coin change problem</span>
+              <div class="st-t"><strong>A classic algorithmic problem: finding the minimum number of denominations</strong> that sum to a target.</div>
             </div>
-            <div class="st"><span class="st-v c2">Starvation</span>
-              <div class="st-t"><strong>A scheduling failure where a request keeps getting delayed</strong> indefinitely by higher-priority ones.</div>
+            <div class="st"><span class="st-v c2">Greedy algorithm</span>
+              <div class="st-t"><strong>An approach that always makes the locally best choice,</strong> fast but not always globally correct.</div>
             </div>
-            <div class="st"><span class="st-v c3">Elevator bank</span>
-              <div class="st-t"><strong>A group of elevators coordinated together,</strong> often assigned to different floor zones.</div>
+            <div class="st"><span class="st-v c3">Dynamic programming</span>
+              <div class="st-t"><strong>Solving a problem by building up answers to smaller subproblems</strong> and reusing them.</div>
             </div>
-            <div class="st"><span class="st-v c1">Disk head scheduling</span>
-              <div class="st-t"><strong>Applying the same directional-sweep logic</strong> to minimize a hard drive's physical read arm movement.</div>
+            <div class="st"><span class="st-v c1">Denomination set</span>
+              <div class="st-t"><strong>The specific fixed values of notes or coins</strong> a system has available to use.</div>
             </div>
           </div>
         </div>
@@ -385,8 +380,8 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post112.html" class="pn-btn">← Previous Post</a>
-        <a href="post114.html" class="pn-btn">Next Post →</a>
+        <a href="post118.html" class="pn-btn">← Previous Post</a>
+        <a href="post120.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -395,17 +390,17 @@ def <span class="c1">next_move</span>(car, calls):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The elevator that sails past your floor while it's clearly empty and heading down isn't broken, and it isn't ignoring you. It's finishing an algorithm before it's allowed to turn around.
+      <div class="caption-text" id="captionText">An ATM never guesses which bills to hand you. Before it dispenses a single note, it has already computed the mathematically fewest notes possible to make your exact amount.
 
-Serving elevator calls in the exact order they were pressed sounds fair, but it can send a single car bouncing between distant floors constantly, wasting real time on unnecessary direction changes throughout the day. Always chasing whichever call is currently closest sounds smarter, but it can strand someone on a far floor indefinitely if closer calls keep arriving first, a failure mode called starvation. Every unwanted reversal in direction costs real seconds, and across hundreds of trips a day, those seconds add up into a genuinely worse building.
+The naive approach would be trying every possible combination of available notes until one happens to add up correctly, which technically works but is far too slow to run every time someone withdraws cash, especially with several denominations to consider. A faster shortcut is a greedy approach, always grabbing the largest note that still fits under the remaining amount and repeating. That's fast and usually correct with common denomination sets, but greedy reasoning can quietly fail on certain combinations of note values, leaving you with more bills than necessary or, worse, no valid combination at all.
 
-What actually runs in most modern elevator systems is SCAN scheduling. Every button press, yours included, gets logged as a floor number plus a direction, up or down. The car keeps moving in whatever direction it's already heading, picking up and dropping off every call that matches along the way, and only reverses direction once there are genuinely no more calls left to serve ahead of it in the current direction. That's exactly why a descending, empty-looking car can pass your floor without stopping, it's still finishing its current downward sweep, and your call is queued for the moment it reverses.
+What machines actually run is dynamic programming, the same technique behind the classic coin change problem. Instead of searching blindly, the algorithm first calculates the minimum number of notes needed to make every amount smaller than your request, one at a time, in order. Each of those smaller answers gets reused to build the next one, since the cheapest way to make a given amount is always just one note added to the cheapest way to make some smaller amount. By the time the calculation reaches your actual requested amount, the answer is already guaranteed to be the true minimum, not a guess and not a greedy shortcut that might be wrong.
 
-This isn't a new idea invented for elevators specifically. SCAN scheduling was formalized in the 1960s and the identical algorithm runs inside spinning hard disk drives, minimizing how far a physical read head has to travel by finishing a sweep across the disk before reversing, rather than jumping erratically to whichever request arrived first. In busy skyscrapers, entire banks of elevators run this same logic in parallel, each car assigned to a floor zone, predicting traffic patterns to pre-position idle cars before anyone even presses a button.
+Real machines layer more onto this too, factoring in exactly how many notes of each denomination remain loaded in each cassette, so the dispenser doesn't drain one denomination empty while ignoring another. The identical minimum-coin logic runs inside vending machines and point-of-sale terminals calculating your change, anywhere a fixed set of denominations needs to sum to an exact amount instantly and correctly.
 
-Your floor wasn't forgotten. The sweep just wasn't finished yet.
+Your cash never came from a lucky guess. It came from a machine that had already solved every smaller version of your problem first.
 
-#elevators #algorithms #scanscheduling #systemdesign #ravenextechnologies</div>
+#algorithms #fintech #dynamicprogramming #atm #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +465,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'elevatorscan-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'atmchange-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -484,7 +479,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'elevatorscan-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'atmchange-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

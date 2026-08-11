@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Elevator That Skips Your Floor Isn't Broken, Post 113</title>
+  <title>Why IRCTC's New Website Still Might Crash on Tatkal, Post 124</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,13 +17,13 @@
       --ink: #14132b;
       --ink2: #45435f;
       --dim: #9694b0;
-      --a1: #7c3aed;
-      --a2: #0d9488;
-      --a3: #dc2626;
-      --a1rgb: 124, 58, 237;
-      --a2rgb: 13, 148, 136;
-      --a3rgb: 220, 38, 38;
-      --border: rgba(124, 58, 237, .08);
+      --a1: #be123c;
+      --a2: #0369a1;
+      --a3: #65a30d;
+      --a1rgb: 190, 18, 60;
+      --a2rgb: 3, 105, 161;
+      --a3rgb: 101, 163, 13;
+      --border: rgba(190, 18, 60, .08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,13 +81,6 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
-    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
-    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
-    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
-    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
-    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
-    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
-
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
     .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
     .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
@@ -118,9 +111,9 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #6d28d9; }
-    .code .c2 { color: #0f766e; }
-    .code .c3 { color: #b91c1c; }
+    .code .c1 { color: #9f1239; }
+    .code .c2 { color: #0369a1; }
+    .code .c3 { color: #4d7c0f; }
     .code .dm { color: var(--dim); }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -204,7 +197,7 @@
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">That Elevator<br>Skipping Your Floor<br>Isn't <span class="c1">Broken</span>.</h2>
+          <h2 style="font-size:42px;line-height:1.0">A Faster Website<br>Never Fixes<br>a <span class="c1">Seat</span> Problem.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +207,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>First Come,<br>Worst <span class="c1">Served</span>.</h2>
+          <h2>Two People,<br>One <span class="c1">Seat</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">First-come, first-served fails</span>
-              <div class="st-t"><strong>Answering calls in the exact order they arrive</strong> can send a car bouncing between distant floors constantly.</div>
+            <div class="st"><span class="st-v c1">Two people, one seat</span>
+              <div class="st-t"><strong>Showing two users the same seat as available isn't a glitch,</strong> it's a correctness failure a booking system can't allow.</div>
             </div>
-            <div class="st"><span class="st-v c2">Greedy nearest-first backfires</span>
-              <div class="st-t"><strong>Always chasing the closest call can strand someone</strong> on a far floor indefinitely if closer calls keep arriving.</div>
+            <div class="st"><span class="st-v c2">Frontend isn't the bottleneck</span>
+              <div class="st-t"><strong>Removing captchas and pop-ups reduces request volume,</strong> but the seat-locking transaction underneath is untouched.</div>
             </div>
-            <div class="st"><span class="st-v c3">Direction reversals cost time</span>
-              <div class="st-t"><strong>Every unnecessary change in direction adds real seconds</strong> that compound across a full day of trips.</div>
+            <div class="st"><span class="st-v c3">The real engine is decades old</span>
+              <div class="st-t"><strong>The system actually handling seat reservations</strong> has been running since 2002.</div>
             </div>
           </div>
         </div>
@@ -236,43 +229,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Schedule a <span class="c3">Car</span>.</h2>
+          <h2>Three Ways to<br>Trust a <span class="c3">Booking</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">📋</div>
-              <div class="cmp-title">FIFO</div>
-              <div class="cmp-sub">Arrival order</div>
+              <div class="cmp-icon">🔄</div>
+              <div class="cmp-title">EVENTUAL</div>
+              <div class="cmp-sub">Update, then sync</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Serve calls in the exact order they were placed.</div>
+              <div class="cmp-text">Let servers show slightly different data temporarily.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A simple queue, ignoring current floor or direction.</div>
+              <div class="cmp-text">Changes replicate across servers after the fact.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but wastes trips crossing the building repeatedly.</div>
+              <div class="cmp-text">Fine for likes and views, unacceptable for a single seat.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📍</div>
-              <div class="cmp-title">NEAREST</div>
-              <div class="cmp-sub">Closest call</div>
+              <div class="cmp-icon">🗂️</div>
+              <div class="cmp-title">SHARDED</div>
+              <div class="cmp-sub">Split the data up</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Always answer whichever call is physically closest.</div>
+              <div class="cmp-text">Spread bookings across many independent database copies.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Greedy, floor-distance-only decision each time.</div>
+              <div class="cmp-text">Each server handles a slice of the load in parallel.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast on average, can starve distant requests.</div>
+              <div class="cmp-text">Scales huge platforms, but a shared seat can't be split.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">↕️</div>
-              <div class="cmp-title">SCAN</div>
-              <div class="cmp-sub">Continue, then reverse</div>
+              <div class="cmp-icon">🔒</div>
+              <div class="cmp-title">STRICT CONSISTENCY</div>
+              <div class="cmp-sub">One seat, one truth</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep moving in one direction, serving every call along the way.</div>
+              <div class="cmp-text">Guarantee every booking resolves through a single truth.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Only reverses direction once no calls remain ahead.</div>
+              <div class="cmp-text">A locked transaction confirms a seat before anyone else can.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Predictable, fair, minimizes total direction changes.</div>
+              <div class="cmp-text">Slower to scale, but never double-books a seat.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: chase the nearest call → finish the sweep first</div>
+          <div class="cmp-cta">↻ The shift: scale like a social feed → lock like a bank ledger</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,13 +275,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Like a Disk Head,<br>Not a <span class="c1">Taxi</span>.</h2>
+          <h2>Everyone Hits<br>the Same <span class="c1">Lock</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Calls queue by floor and direction</b><span>Every button press is logged as a floor number plus whether you want to go up or down.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Continue in the current direction</b><span>The car keeps moving the way it's already headed, picking up every matching call along the way.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>No calls left ahead, then reverse</b><span>Only once nothing remains to serve in the current direction does the car reverse course.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Elevator banks split the load</b><span>In busy buildings, multiple cars each cover different floor zones, running the same logic in parallel.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>10 AM, the whole country logs in</b><span>Tatkal opens a tiny inventory, a few hundred seats, to millions of simultaneous requests.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Every request hits the same lock</b><span>Because a seat can't be split or replicated, every booking attempt queues behind the same lock.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The frontend redesign trims noise</b><span>Removing captchas and unnecessary steps cuts wasted requests, but doesn't touch the lock.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The real engine gets tested at scale</b><span>Only real peak load, not a calm launch day, proves whether the engine can keep up.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -301,13 +294,14 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One decision tick for a SCAN-scheduled elevator</span>
-def <span class="c1">next_move</span>(car, calls):
-    ahead = <span class="c2">calls_in_direction</span>(car.floor, car.direction)
-    if ahead: return ahead[0]
-    car.direction = <span class="c3">reverse</span>(car.direction)
-    return <span class="c2">calls_in_direction</span>(car.floor, car.direction)[0]</div>
-          <div class="callout c2"><p><strong>Skipping your floor on the way down isn't a glitch.</strong> The car is finishing its current sweep before it ever turns around for you.</p></div>
+          <div class="code"><span class="dm"># One Tatkal seat booking attempt, simplified</span>
+def <span class="c1">book_seat</span>(seat_id, user):
+    with <span class="c2">lock</span>(seat_id):
+        if seat.status == "available":
+            seat.status = <span class="c3">"booked"</span>
+            return confirm(user)
+        return reject(user)</div>
+          <div class="callout c2"><p><strong>A faster form doesn't shrink the queue behind that lock.</strong> Every one of those million requests still has to wait its turn at the exact same seat.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -317,21 +311,21 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Same Trick<br>Runs a <span class="c3">Disk</span>.</h2>
+          <h2>The Real Test<br>Is <span class="c3">Diwali</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1960s</b><span>SCAN scheduling first formalized</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>HDD</b><span
-                style="color:var(--a2)">Same algorithm scheduling disk reads</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
-                style="color:var(--a3)">Wasted direction reversals</span></div>
+            <div class="metric"><b>2002</b><span>Year the current engine launched</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>100-200</b><span
+                style="color:var(--a2)">Tatkal seats, nationwide demand</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Aug 2026</b><span
+                style="color:var(--a3)">New backend expected to launch</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Elevator banks in skyscrapers</span>
-              <div class="st-t"><strong>Modern high-rises assign cars to floor zones</strong> and predict traffic patterns to pre-position idle cars.</div>
+            <div class="st"><span class="st-v c1">Ticketmaster hit the same wall</span>
+              <div class="st-t"><strong>A billion-dollar ticketing platform crashed under an identical thundering-herd spike</strong> during a high-demand on-sale.</div>
             </div>
-            <div class="st"><span class="st-v c2">Hard disk scheduling</span>
-              <div class="st-t"><strong>The identical SCAN algorithm minimizes a spinning disk head's travel</strong> across read and write requests.</div>
+            <div class="st"><span class="st-v c2">The real test is Diwali</span>
+              <div class="st-t"><strong>A calm beta launch proves little,</strong> the true stress test comes at the next major Tatkal rush.</div>
             </div>
           </div>
         </div>
@@ -346,17 +340,17 @@ def <span class="c1">next_move</span>(car, calls):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">SCAN scheduling</span>
-              <div class="st-t"><strong>An algorithm that serves requests in one direction fully</strong> before reversing, minimizing total travel.</div>
+            <div class="st"><span class="st-v c1">Strict consistency</span>
+              <div class="st-t"><strong>A guarantee that every read reflects the single, most recent write,</strong> with no conflicting versions.</div>
             </div>
-            <div class="st"><span class="st-v c2">Starvation</span>
-              <div class="st-t"><strong>A scheduling failure where a request keeps getting delayed</strong> indefinitely by higher-priority ones.</div>
+            <div class="st"><span class="st-v c2">Thundering herd</span>
+              <div class="st-t"><strong>A surge where an enormous number of requests hit</strong> the exact same limited resource at once.</div>
             </div>
-            <div class="st"><span class="st-v c3">Elevator bank</span>
-              <div class="st-t"><strong>A group of elevators coordinated together,</strong> often assigned to different floor zones.</div>
+            <div class="st"><span class="st-v c3">Eventual consistency</span>
+              <div class="st-t"><strong>A weaker guarantee where replicas may briefly disagree</strong> before converging.</div>
             </div>
-            <div class="st"><span class="st-v c1">Disk head scheduling</span>
-              <div class="st-t"><strong>Applying the same directional-sweep logic</strong> to minimize a hard drive's physical read arm movement.</div>
+            <div class="st"><span class="st-v c1">Reservation engine</span>
+              <div class="st-t"><strong>The backend system responsible for locking and confirming</strong> seat inventory in real time.</div>
             </div>
           </div>
         </div>
@@ -385,8 +379,8 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post112.html" class="pn-btn">← Previous Post</a>
-        <a href="post114.html" class="pn-btn">Next Post →</a>
+        <a href="post123.html" class="pn-btn">← Previous Post</a>
+        <a href="index.html" class="pn-btn">More Posts →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -395,17 +389,15 @@ def <span class="c1">next_move</span>(car, calls):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The elevator that sails past your floor while it's clearly empty and heading down isn't broken, and it isn't ignoring you. It's finishing an algorithm before it's allowed to turn around.
+      <div class="caption-text" id="captionText">IRCTC's new website removed the captcha, cut booking steps, and looks noticeably faster. None of that determines whether it survives the next Tatkal rush, because the crash was never really a frontend problem.
 
-Serving elevator calls in the exact order they were pressed sounds fair, but it can send a single car bouncing between distant floors constantly, wasting real time on unnecessary direction changes throughout the day. Always chasing whichever call is currently closest sounds smarter, but it can strand someone on a far floor indefinitely if closer calls keep arriving first, a failure mode called starvation. Every unwanted reversal in direction costs real seconds, and across hundreds of trips a day, those seconds add up into a genuinely worse building.
+Booking a train seat has a requirement most apps don't: strict consistency. If two people are both shown seat 42 in coach S4 as available, that isn't a minor inconsistency to shrug off later, the way it would be if two people saw slightly different like counts on a social post. It's a direct correctness failure, because only one of them can actually get that seat. That single requirement is why IRCTC can't simply scale the way platforms like Google or Instagram do, spreading data loosely across thousands of servers that sync up eventually. Every booking has to resolve through one locked transaction against a single source of truth, because there is only one seat to sell.
 
-What actually runs in most modern elevator systems is SCAN scheduling. Every button press, yours included, gets logged as a floor number plus a direction, up or down. The car keeps moving in whatever direction it's already heading, picking up and dropping off every call that matches along the way, and only reverses direction once there are genuinely no more calls left to serve ahead of it in the current direction. That's exactly why a descending, empty-looking car can pass your floor without stopping, it's still finishing its current downward sweep, and your call is queued for the moment it reverses.
+Tatkal makes this specific problem as hard as it can possibly get. It isn't a normal flash sale spreading demand across thousands of items, it's the entire country hitting a few hundred seats on one specific train in the exact same second at 10 AM. That's a thundering-herd spike severe enough to have crashed billion-dollar ticketing platforms like Ticketmaster during comparable high-demand on-sales, and no amount of frontend polish changes how many requests are queuing behind that one locking transaction.
 
-This isn't a new idea invented for elevators specifically. SCAN scheduling was formalized in the 1960s and the identical algorithm runs inside spinning hard disk drives, minimizing how far a physical read head has to travel by finishing a sweep across the disk before reversing, rather than jumping erratically to whichever request arrived first. In busy skyscrapers, entire banks of elevators run this same logic in parallel, each car assigned to a floor zone, predicting traffic patterns to pre-position idle cars before anyone even presses a button.
+The beta released in mid-2026 trimmed real frontend and request-volume overhead, which helps, but the actual reservation engine handling the seat lock has been running since 2002, and its replacement isn't expected until mid-August. A calm launch day proves very little about whether that new backend holds up. The real test only comes the next time Tatkal opens and the whole country logs in at once.
 
-Your floor wasn't forgotten. The sweep just wasn't finished yet.
-
-#elevators #algorithms #scanscheduling #systemdesign #ravenextechnologies</div>
+#irctc #systemdesign #distributedsystems #consistency #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +462,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'elevatorscan-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'irctctatkal-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -484,7 +476,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'elevatorscan-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'irctctatkal-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

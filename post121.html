@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Elevator That Skips Your Floor Isn't Broken, Post 113</title>
+  <title>Planes Land Themselves in Zero Visibility, Post 121</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -17,13 +17,13 @@
       --ink: #14132b;
       --ink2: #45435f;
       --dim: #9694b0;
-      --a1: #7c3aed;
-      --a2: #0d9488;
-      --a3: #dc2626;
-      --a1rgb: 124, 58, 237;
-      --a2rgb: 13, 148, 136;
-      --a3rgb: 220, 38, 38;
-      --border: rgba(124, 58, 237, .08);
+      --a1: #0f766e;
+      --a2: #b91c1c;
+      --a3: #7c3aed;
+      --a1rgb: 15, 118, 110;
+      --a2rgb: 185, 28, 28;
+      --a3rgb: 124, 58, 237;
+      --border: rgba(15, 118, 110, .08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,13 +81,6 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
-    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
-    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
-    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
-    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
-    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
-    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
-
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
     .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
     .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
@@ -118,9 +111,9 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #6d28d9; }
-    .code .c2 { color: #0f766e; }
-    .code .c3 { color: #b91c1c; }
+    .code .c1 { color: #0f766e; }
+    .code .c2 { color: #b91c1c; }
+    .code .c3 { color: #6d28d9; }
     .code .dm { color: var(--dim); }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
@@ -204,7 +197,7 @@
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">That Elevator<br>Skipping Your Floor<br>Isn't <span class="c1">Broken</span>.</h2>
+          <h2 style="font-size:42px;line-height:1.0">Landing in Fog<br>Never Relies<br>on a <span class="c1">Pilot's Eyes</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +207,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>First Come,<br>Worst <span class="c1">Served</span>.</h2>
+          <h2>Sight Fails<br>the Moment It's <span class="c1">Needed</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">First-come, first-served fails</span>
-              <div class="st-t"><strong>Answering calls in the exact order they arrive</strong> can send a car bouncing between distant floors constantly.</div>
+            <div class="st"><span class="st-v c1">Human eyes need to see the runway</span>
+              <div class="st-t"><strong>A visual landing requires the pilot to actually spot the runway,</strong> useless in dense fog.</div>
             </div>
-            <div class="st"><span class="st-v c2">Greedy nearest-first backfires</span>
-              <div class="st-t"><strong>Always chasing the closest call can strand someone</strong> on a far floor indefinitely if closer calls keep arriving.</div>
+            <div class="st"><span class="st-v c2">Manual precision has limits</span>
+              <div class="st-t"><strong>Landing safely means staying within meters of a precise glide path,</strong> hard to judge by feel.</div>
             </div>
-            <div class="st"><span class="st-v c3">Direction reversals cost time</span>
-              <div class="st-t"><strong>Every unnecessary change in direction adds real seconds</strong> that compound across a full day of trips.</div>
+            <div class="st"><span class="st-v c3">Weather doesn't wait for clear skies</span>
+              <div class="st-t"><strong>Airports can't close every time visibility drops near zero,</strong> flights still need to land.</div>
             </div>
           </div>
         </div>
@@ -236,43 +229,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Schedule a <span class="c3">Car</span>.</h2>
+          <h2>Three Ways to<br>Find the <span class="c3">Runway</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">📋</div>
-              <div class="cmp-title">FIFO</div>
-              <div class="cmp-sub">Arrival order</div>
+              <div class="cmp-icon">👁️</div>
+              <div class="cmp-title">VISUAL</div>
+              <div class="cmp-sub">See and land</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Serve calls in the exact order they were placed.</div>
+              <div class="cmp-text">Land using the pilot's direct view of the runway.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A simple queue, ignoring current floor or direction.</div>
+              <div class="cmp-text">Relies entirely on visibility and human judgment.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but wastes trips crossing the building repeatedly.</div>
+              <div class="cmp-text">Safe in clear weather, grounded in fog.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📍</div>
-              <div class="cmp-title">NEAREST</div>
-              <div class="cmp-sub">Closest call</div>
+              <div class="cmp-icon">🛰️</div>
+              <div class="cmp-title">GPS APPROACH</div>
+              <div class="cmp-sub">Satellite guidance</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Always answer whichever call is physically closest.</div>
+              <div class="cmp-text">Use GPS position data to guide the approach.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Greedy, floor-distance-only decision each time.</div>
+              <div class="cmp-text">Satellite positioning estimates the plane's location.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast on average, can starve distant requests.</div>
+              <div class="cmp-text">Helpful, but not precise enough for zero-visibility alone.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">↕️</div>
-              <div class="cmp-title">SCAN</div>
-              <div class="cmp-sub">Continue, then reverse</div>
+              <div class="cmp-icon">📡</div>
+              <div class="cmp-title">ILS AUTOLAND</div>
+              <div class="cmp-sub">Fly the beam</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep moving in one direction, serving every call along the way.</div>
+              <div class="cmp-text">Let radio beams and autopilot fly the exact approach.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Only reverses direction once no calls remain ahead.</div>
+              <div class="cmp-text">Ground transmitters broadcast a precise flight path.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Predictable, fair, minimizes total direction changes.</div>
+              <div class="cmp-text">Lands safely with the runway completely invisible.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: chase the nearest call → finish the sweep first</div>
+          <div class="cmp-cta">↻ The shift: see the runway → fly a radio beam to it</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,13 +275,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Like a Disk Head,<br>Not a <span class="c1">Taxi</span>.</h2>
+          <h2>Flying Where<br>Two Beams <span class="c1">Cross</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Calls queue by floor and direction</b><span>Every button press is logged as a floor number plus whether you want to go up or down.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Continue in the current direction</b><span>The car keeps moving the way it's already headed, picking up every matching call along the way.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>No calls left ahead, then reverse</b><span>Only once nothing remains to serve in the current direction does the car reverse course.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Elevator banks split the load</b><span>In busy buildings, multiple cars each cover different floor zones, running the same logic in parallel.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Two radio beams from the ground</b><span>A localizer defines the correct left-right path, a glideslope defines the correct descent angle.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The autopilot flies the intersection</b><span>The aircraft's systems continuously steer to stay exactly where those two beams cross.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Radar altimeter confirms height</b><span>A separate sensor measures true height above the ground for the final seconds of approach.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Autothrottle and flare, automatically</b><span>The system reduces power and gently pitches up for touchdown, hands off the controls.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -301,13 +294,13 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One decision tick for a SCAN-scheduled elevator</span>
-def <span class="c1">next_move</span>(car, calls):
-    ahead = <span class="c2">calls_in_direction</span>(car.floor, car.direction)
-    if ahead: return ahead[0]
-    car.direction = <span class="c3">reverse</span>(car.direction)
-    return <span class="c2">calls_in_direction</span>(car.floor, car.direction)[0]</div>
-          <div class="callout c2"><p><strong>Skipping your floor on the way down isn't a glitch.</strong> The car is finishing its current sweep before it ever turns around for you.</p></div>
+          <div class="code"><span class="dm"># One control tick during an ILS autoland approach</span>
+def <span class="c1">autoland_step</span>(localizer, glideslope, radar_alt):
+    correction = <span class="c2">compute_deviation</span>(localizer, glideslope)
+    autopilot.adjust(correction)
+    if radar_alt < FLARE_HEIGHT:
+        <span class="c3">flare_and_reduce_power</span>()</div>
+          <div class="callout c2"><p><strong>The pilot isn't landing blind, they're not landing at all.</strong> The aircraft is flying two invisible radio beams to a point exactly above the runway.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -317,21 +310,21 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Same Trick<br>Runs a <span class="c3">Disk</span>.</h2>
+          <h2>Certified for<br>Total <span class="c3">Fog</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1960s</b><span>SCAN scheduling first formalized</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>HDD</b><span
-                style="color:var(--a2)">Same algorithm scheduling disk reads</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
-                style="color:var(--a3)">Wasted direction reversals</span></div>
+            <div class="metric"><b>CAT IIIc</b><span>Highest autoland category</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>0ft</b><span
+                style="color:var(--a2)">Minimum required visual reference</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>1960s</b><span
+                style="color:var(--a3)">Decade autoland was first certified</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Elevator banks in skyscrapers</span>
-              <div class="st-t"><strong>Modern high-rises assign cars to floor zones</strong> and predict traffic patterns to pre-position idle cars.</div>
+            <div class="st"><span class="st-v c1">Triple redundant systems</span>
+              <div class="st-t"><strong>Autoland-capable aircraft run three independent computers voting</strong> on every control decision.</div>
             </div>
-            <div class="st"><span class="st-v c2">Hard disk scheduling</span>
-              <div class="st-t"><strong>The identical SCAN algorithm minimizes a spinning disk head's travel</strong> across read and write requests.</div>
+            <div class="st"><span class="st-v c2">Pilots still monitor everything</span>
+              <div class="st-t"><strong>The crew supervises the entire automated approach,</strong> ready to take over at any moment.</div>
             </div>
           </div>
         </div>
@@ -346,17 +339,17 @@ def <span class="c1">next_move</span>(car, calls):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">SCAN scheduling</span>
-              <div class="st-t"><strong>An algorithm that serves requests in one direction fully</strong> before reversing, minimizing total travel.</div>
+            <div class="st"><span class="st-v c1">ILS</span>
+              <div class="st-t"><strong>Instrument Landing System,</strong> ground-based radio transmitters defining a precise approach path.</div>
             </div>
-            <div class="st"><span class="st-v c2">Starvation</span>
-              <div class="st-t"><strong>A scheduling failure where a request keeps getting delayed</strong> indefinitely by higher-priority ones.</div>
+            <div class="st"><span class="st-v c2">Localizer</span>
+              <div class="st-t"><strong>The ILS component broadcasting the correct left-right alignment</strong> with the runway centerline.</div>
             </div>
-            <div class="st"><span class="st-v c3">Elevator bank</span>
-              <div class="st-t"><strong>A group of elevators coordinated together,</strong> often assigned to different floor zones.</div>
+            <div class="st"><span class="st-v c3">Glideslope</span>
+              <div class="st-t"><strong>The ILS component broadcasting the correct vertical descent angle</strong> toward the runway.</div>
             </div>
-            <div class="st"><span class="st-v c1">Disk head scheduling</span>
-              <div class="st-t"><strong>Applying the same directional-sweep logic</strong> to minimize a hard drive's physical read arm movement.</div>
+            <div class="st"><span class="st-v c1">CAT III autoland</span>
+              <div class="st-t"><strong>The highest-precision landing category,</strong> certified for touchdown with little to no visibility.</div>
             </div>
           </div>
         </div>
@@ -385,8 +378,8 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post112.html" class="pn-btn">← Previous Post</a>
-        <a href="post114.html" class="pn-btn">Next Post →</a>
+        <a href="post120.html" class="pn-btn">← Previous Post</a>
+        <a href="post122.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -395,17 +388,17 @@ def <span class="c1">next_move</span>(car, calls):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The elevator that sails past your floor while it's clearly empty and heading down isn't broken, and it isn't ignoring you. It's finishing an algorithm before it's allowed to turn around.
+      <div class="caption-text" id="captionText">Planes land in fog so thick the pilots genuinely cannot see the runway, and the aircraft does it by flying two invisible radio beams instead of looking for anything at all.
 
-Serving elevator calls in the exact order they were pressed sounds fair, but it can send a single car bouncing between distant floors constantly, wasting real time on unnecessary direction changes throughout the day. Always chasing whichever call is currently closest sounds smarter, but it can strand someone on a far floor indefinitely if closer calls keep arriving first, a failure mode called starvation. Every unwanted reversal in direction costs real seconds, and across hundreds of trips a day, those seconds add up into a genuinely worse building.
+Landing by sight works fine in clear weather, but it fundamentally requires the pilot to actually spot the runway before touchdown, which becomes impossible the moment visibility drops in dense fog. GPS-based approaches help refine a plane's position in space, but satellite positioning alone still isn't precise enough, by itself, to guarantee a safe touchdown when the runway is completely invisible.
 
-What actually runs in most modern elevator systems is SCAN scheduling. Every button press, yours included, gets logged as a floor number plus a direction, up or down. The car keeps moving in whatever direction it's already heading, picking up and dropping off every call that matches along the way, and only reverses direction once there are genuinely no more calls left to serve ahead of it in the current direction. That's exactly why a descending, empty-looking car can pass your floor without stopping, it's still finishing its current downward sweep, and your call is queued for the moment it reverses.
+What actually enables a zero-visibility landing is the Instrument Landing System, a pair of radio transmitters positioned on the ground near the runway. A localizer transmitter broadcasts the correct left-right alignment with the runway centerline, while a separate glideslope transmitter broadcasts the correct vertical descent angle. The aircraft's autopilot continuously measures its position relative to both beams and steers to stay exactly where they intersect, correcting constantly rather than following a single fixed path. In the final seconds before touchdown, a radar altimeter measures the plane's true height above the actual ground below it, not estimated altitude from air pressure, and once that height crosses a threshold, the system automatically reduces engine power and gently pitches the nose up to flare for a soft landing, all without a hand on the controls.
 
-This isn't a new idea invented for elevators specifically. SCAN scheduling was formalized in the 1960s and the identical algorithm runs inside spinning hard disk drives, minimizing how far a physical read head has to travel by finishing a sweep across the disk before reversing, rather than jumping erratically to whichever request arrived first. In busy skyscrapers, entire banks of elevators run this same logic in parallel, each car assigned to a floor zone, predicting traffic patterns to pre-position idle cars before anyone even presses a button.
+The highest certified category of this system, CAT IIIc, requires no minimum visual reference at all, meaning the aircraft can land with the runway entirely obscured by fog. Autoland-capable aircraft run three independent flight computers simultaneously, each voting on every control decision, so a single computer fault can't silently cause an unsafe correction. Pilots still actively monitor the entire automated approach and remain ready to intervene, even with their hands off the controls the whole time.
 
-Your floor wasn't forgotten. The sweep just wasn't finished yet.
+Nobody was flying blind. The runway was never the target. Two invisible beams were.
 
-#elevators #algorithms #scanscheduling #systemdesign #ravenextechnologies</div>
+#aviation #ils #autoland #aerospaceengineering #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -470,7 +463,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'elevatorscan-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'ilsautoland-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -484,7 +477,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'elevatorscan-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'ilsautoland-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

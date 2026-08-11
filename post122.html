@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Elevator That Skips Your Floor Isn't Broken, Post 113</title>
+  <title>Your Bank Flags a Stolen Card Before You Notice, Post 122</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -12,24 +12,24 @@
     rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f6fe;
-      --card: #ffffff;
-      --ink: #14132b;
-      --ink2: #45435f;
-      --dim: #9694b0;
-      --a1: #7c3aed;
-      --a2: #0d9488;
-      --a3: #dc2626;
-      --a1rgb: 124, 58, 237;
-      --a2rgb: 13, 148, 136;
-      --a3rgb: 220, 38, 38;
-      --border: rgba(124, 58, 237, .08);
+      --bg: #07070d;
+      --card: #0d0f1a;
+      --ink: #e8f0ff;
+      --ink2: #a0a0a0;
+      --dim: #545b6e;
+      --a1: #ef4444;
+      --a2: #34d399;
+      --a3: #818cf8;
+      --a1rgb: 239, 68, 68;
+      --a2rgb: 52, 211, 153;
+      --a3rgb: 129, 140, 248;
+      --border: rgba(148, 163, 184, .1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #1f0a0a 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +44,8 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: var(--card);
+      background: linear-gradient(160deg, #1a0d0d52 0%, var(--card) 40%);
+      background-color: var(--card);
       color: var(--ink);
       position: relative;
       overflow: hidden;
@@ -52,7 +53,6 @@
       flex-direction: column;
       border: 1px solid var(--border);
       border-radius: 14px;
-      box-shadow: 0 4px 28px rgba(var(--a1rgb), .05);
     }
 
     .ghost { display: none; }
@@ -81,34 +81,27 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
     .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
 
-    .big-title-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px; }
-    .big-word { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(26px, 9vw, 48px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; padding-bottom: 4px; border-bottom: 4px solid transparent; }
-    .big-word.c1 { color: var(--a1); border-color: rgba(var(--a1rgb), .35); }
-    .big-word.c2 { color: var(--a2); border-color: rgba(var(--a2rgb), .35); }
-    .big-word.c3 { color: var(--a3); border-color: rgba(var(--a3rgb), .35); }
-    .big-vs { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: .35em; margin: 6px 0; }
-
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
     .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
-    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .04); }
-    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .3); background: rgba(var(--a2rgb), .04); }
-    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .3); background: rgba(var(--a3rgb), .04); }
-    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
+    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .35); background: rgba(var(--a1rgb), .05); }
+    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .35); background: rgba(var(--a2rgb), .05); }
+    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .35); background: rgba(var(--a3rgb), .05); }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
     .cmp-col.c3 .cmp-icon { background: var(--a3); }
-    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10.5px; text-align: center; letter-spacing: .01em; }
     .cmp-col.c1 .cmp-title { color: var(--a1); }
     .cmp-col.c2 .cmp-title { color: var(--a2); }
     .cmp-col.c3 .cmp-title { color: var(--a3); }
     .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
     .cmp-label { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
-    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
-    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .28); background: rgba(var(--a1rgb), .06); color: var(--a1); }
+    .cmp-text { font-size: 8.6px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .3); background: rgba(var(--a1rgb), .07); color: var(--a1); }
 
     .code {
-      background: #eaf1fd;
-      border: 1px solid rgba(var(--a1rgb), .16);
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid var(--border);
       border-radius: 8px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11.5px;
@@ -118,10 +111,10 @@
       flex-shrink: 0;
       line-height: 1.55;
     }
-    .code .c1 { color: #6d28d9; }
-    .code .c2 { color: #0f766e; }
-    .code .c3 { color: #b91c1c; }
-    .code .dm { color: var(--dim); }
+    .code .c1 { color: #fca5a5; }
+    .code .c2 { color: #6ee7b7; }
+    .code .c3 { color: #a5b4fc; }
+    .code .dm { color: #7d8595; }
 
     .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
     .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -134,9 +127,9 @@
     .st-t strong { font-weight: 600; color: var(--ink); }
 
     .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
-    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
-    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
-    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout.c1 { background: rgba(var(--a1rgb), .07); border-color: rgba(var(--a1rgb), .2); }
+    .callout.c2 { background: rgba(var(--a2rgb), .07); border-color: rgba(var(--a2rgb), .2); }
+    .callout.c3 { background: rgba(var(--a3rgb), .07); border-color: rgba(var(--a3rgb), .2); }
     .callout p { color: var(--ink2); }
     .callout strong { font-weight: 600; color: var(--ink); }
 
@@ -145,24 +138,24 @@
     .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
     .tl-item:last-child::before { display: none; }
     .tl-item:last-child { padding-bottom: 0; }
-    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .12); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(var(--a1rgb), .15); border: 1.5px solid var(--a1); flex-shrink: 0; }
     .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
     .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
 
     .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
-    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(20, 19, 43, .02); }
+    .metric { border: 1px solid var(--border); border-radius: 8px; padding: 10px 4px; text-align: center; background: rgba(255, 255, 255, .02); }
     .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
     .metric span { font-size: 7.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
 
     .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
     .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 6px; }
-    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn:hover { background: var(--a1); color: var(--bg); }
     .dl-btn.alt { border-color: var(--border); color: var(--dim); }
     .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
     .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .dl-btn:disabled { opacity: .3; }
 
-    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .1); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
     .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
 
     .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
@@ -170,19 +163,19 @@
     .nav button:hover { border-color: var(--a1); color: var(--a1); }
 
     .dots { display: flex; gap: 8px; align-items: center; }
-    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(20, 19, 43, .1); cursor: pointer; transition: all .35s; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(232, 240, 255, .08); cursor: pointer; transition: all .35s; }
     .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
 
     .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
     .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
     .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
 
-    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .05); }
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
     .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
     .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
     .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
-    .copy-btn:hover { background: var(--a1); color: #fff; }
-    .copy-btn.copied { border-color: #059669; color: #059669; }
+    .copy-btn:hover { background: var(--a1); color: var(--bg); }
+    .copy-btn.copied { border-color: #34d399; color: #34d399; }
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
@@ -204,7 +197,7 @@
         <div class="hdr"><span class="num">01 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:70px"> </p>
-          <h2 style="font-size:42px;line-height:1.0">That Elevator<br>Skipping Your Floor<br>Isn't <span class="c1">Broken</span>.</h2>
+          <h2 style="font-size:42px;line-height:1.0">Catching Fraud<br>Never Waits<br>for a <span class="c1">Human</span> to Look.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +207,17 @@
         <div class="hdr"><span class="num">02 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>First Come,<br>Worst <span class="c1">Served</span>.</h2>
+          <h2>Too Fast for<br>Any <span class="c1">Team</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">First-come, first-served fails</span>
-              <div class="st-t"><strong>Answering calls in the exact order they arrive</strong> can send a car bouncing between distant floors constantly.</div>
+            <div class="st"><span class="st-v c1">Millions of transactions a second</span>
+              <div class="st-t"><strong>No team of humans could manually review the sheer volume</strong> of card swipes happening globally.</div>
             </div>
-            <div class="st"><span class="st-v c2">Greedy nearest-first backfires</span>
-              <div class="st-t"><strong>Always chasing the closest call can strand someone</strong> on a far floor indefinitely if closer calls keep arriving.</div>
+            <div class="st"><span class="st-v c2">Fraud patterns keep changing</span>
+              <div class="st-t"><strong>A fixed rulebook written today is already outdated</strong> against tomorrow's new fraud tactics.</div>
             </div>
-            <div class="st"><span class="st-v c3">Direction reversals cost time</span>
-              <div class="st-t"><strong>Every unnecessary change in direction adds real seconds</strong> that compound across a full day of trips.</div>
+            <div class="st"><span class="st-v c3">Delay costs real money</span>
+              <div class="st-t"><strong>Every second between a stolen card being used and blocked</strong> adds directly to the fraud loss.</div>
             </div>
           </div>
         </div>
@@ -236,43 +229,43 @@
         <div class="hdr"><span class="num">03 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Schedule a <span class="c3">Car</span>.</h2>
+          <h2>Three Ways to<br>Catch <span class="c3">Fraud</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
               <div class="cmp-icon">📋</div>
-              <div class="cmp-title">FIFO</div>
-              <div class="cmp-sub">Arrival order</div>
+              <div class="cmp-title">FIXED RULES</div>
+              <div class="cmp-sub">If this, then flag</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Serve calls in the exact order they were placed.</div>
+              <div class="cmp-text">Flag transactions that break simple, predefined rules.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A simple queue, ignoring current floor or direction.</div>
+              <div class="cmp-text">Hard-coded thresholds, like a fixed dollar limit abroad.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Simple, but wastes trips crossing the building repeatedly.</div>
+              <div class="cmp-text">Easy to understand, easy for fraud to learn and dodge.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📍</div>
-              <div class="cmp-title">NEAREST</div>
-              <div class="cmp-sub">Closest call</div>
+              <div class="cmp-icon">🧑</div>
+              <div class="cmp-title">HUMAN REVIEW</div>
+              <div class="cmp-sub">A person checks it</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Always answer whichever call is physically closest.</div>
+              <div class="cmp-text">Have an analyst manually review suspicious activity.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Greedy, floor-distance-only decision each time.</div>
+              <div class="cmp-text">Skilled judgment applied case by case.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast on average, can starve distant requests.</div>
+              <div class="cmp-text">Accurate, but far too slow for real-time blocking.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">↕️</div>
-              <div class="cmp-title">SCAN</div>
-              <div class="cmp-sub">Continue, then reverse</div>
+              <div class="cmp-icon">🧠</div>
+              <div class="cmp-title">ANOMALY SCORING</div>
+              <div class="cmp-sub">Score against your normal</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep moving in one direction, serving every call along the way.</div>
+              <div class="cmp-text">Compare each transaction to your own spending pattern.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Only reverses direction once no calls remain ahead.</div>
+              <div class="cmp-text">A model scores how unusual this transaction is for you.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Predictable, fair, minimizes total direction changes.</div>
+              <div class="cmp-text">Blocks in milliseconds, adapts as patterns shift.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: chase the nearest call → finish the sweep first</div>
+          <div class="cmp-cta">↻ The shift: match a rule → deviate from your own pattern</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,13 +275,13 @@
         <div class="hdr"><span class="num">04 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Like a Disk Head,<br>Not a <span class="c1">Taxi</span>.</h2>
+          <h2>Compared to<br>You, Not <span class="c1">Everyone</span>.</h2>
           <div style="height:6px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Calls queue by floor and direction</b><span>Every button press is logged as a floor number plus whether you want to go up or down.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Continue in the current direction</b><span>The car keeps moving the way it's already headed, picking up every matching call along the way.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>No calls left ahead, then reverse</b><span>Only once nothing remains to serve in the current direction does the car reverse course.</span></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Elevator banks split the load</b><span>In busy buildings, multiple cars each cover different floor zones, running the same logic in parallel.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A profile built from your history</b><span>The model learns your typical spending, locations, times, and merchant types from real transactions.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Every swipe gets scored instantly</b><span>A new transaction is compared against that personal baseline the moment it's submitted.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Context matters, not just amount</b><span>Location jumps, unusual merchant categories, and odd timing all weigh in together.</span></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A threshold triggers a hold</b><span>Once the score crosses a risk threshold, the transaction is paused before it settles.</span></div></div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
@@ -301,13 +294,14 @@
           <p style="margin-bottom:14px"> </p>
           <h2>The Loop, in<br><span class="c2">Pseudocode</span>.</h2>
           <div style="height:20px"></div>
-          <div class="code"><span class="dm"># One decision tick for a SCAN-scheduled elevator</span>
-def <span class="c1">next_move</span>(car, calls):
-    ahead = <span class="c2">calls_in_direction</span>(car.floor, car.direction)
-    if ahead: return ahead[0]
-    car.direction = <span class="c3">reverse</span>(car.direction)
-    return <span class="c2">calls_in_direction</span>(car.floor, car.direction)[0]</div>
-          <div class="callout c2"><p><strong>Skipping your floor on the way down isn't a glitch.</strong> The car is finishing its current sweep before it ever turns around for you.</p></div>
+          <div class="code"><span class="dm"># One transaction scored in real time</span>
+def <span class="c1">score_transaction</span>(txn, user_profile):
+    deviation = <span class="c2">compare_to_baseline</span>(txn, user_profile)
+    risk = <span class="c3">anomaly_score</span>(deviation)
+    if risk > THRESHOLD:
+        return "hold_for_review"
+    return "approve"</div>
+          <div class="callout c2"><p><strong>The system doesn't know what fraud looks like in general.</strong> It only knows what looks unlike you, and reacts the instant something does.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -317,21 +311,21 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="hdr"><span class="num">06 / 07</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Same Trick<br>Runs a <span class="c3">Disk</span>.</h2>
+          <h2>Running on Every<br>Card <span class="c3">Swipe</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>1960s</b><span>SCAN scheduling first formalized</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>HDD</b><span
-                style="color:var(--a2)">Same algorithm scheduling disk reads</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>0</b><span
-                style="color:var(--a3)">Wasted direction reversals</span></div>
+            <div class="metric"><b>&lt;300ms</b><span>Typical scoring time per transaction</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Millions</b><span
+                style="color:var(--a2)">Transactions scored per minute globally</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>Continuous</b><span
+                style="color:var(--a3)">Model retraining as patterns shift</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Elevator banks in skyscrapers</span>
-              <div class="st-t"><strong>Modern high-rises assign cars to floor zones</strong> and predict traffic patterns to pre-position idle cars.</div>
+            <div class="st"><span class="st-v c1">False positives are the real tradeoff</span>
+              <div class="st-t"><strong>Set the threshold too aggressively and legitimate purchases get declined too,</strong> a constant balance.</div>
             </div>
-            <div class="st"><span class="st-v c2">Hard disk scheduling</span>
-              <div class="st-t"><strong>The identical SCAN algorithm minimizes a spinning disk head's travel</strong> across read and write requests.</div>
+            <div class="st"><span class="st-v c2">The same math protects logins</span>
+              <div class="st-t"><strong>Account takeover detection uses an identical anomaly-scoring approach</strong> on login patterns.</div>
             </div>
           </div>
         </div>
@@ -346,17 +340,17 @@ def <span class="c1">next_move</span>(car, calls):
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">SCAN scheduling</span>
-              <div class="st-t"><strong>An algorithm that serves requests in one direction fully</strong> before reversing, minimizing total travel.</div>
+            <div class="st"><span class="st-v c1">Anomaly detection</span>
+              <div class="st-t"><strong>Identifying data points that deviate significantly</strong> from an established normal pattern.</div>
             </div>
-            <div class="st"><span class="st-v c2">Starvation</span>
-              <div class="st-t"><strong>A scheduling failure where a request keeps getting delayed</strong> indefinitely by higher-priority ones.</div>
+            <div class="st"><span class="st-v c2">User baseline</span>
+              <div class="st-t"><strong>A learned profile of typical, individual behavior</strong> used as the reference point.</div>
             </div>
-            <div class="st"><span class="st-v c3">Elevator bank</span>
-              <div class="st-t"><strong>A group of elevators coordinated together,</strong> often assigned to different floor zones.</div>
+            <div class="st"><span class="st-v c3">False positive</span>
+              <div class="st-t"><strong>A legitimate transaction incorrectly flagged</strong> as fraudulent.</div>
             </div>
-            <div class="st"><span class="st-v c1">Disk head scheduling</span>
-              <div class="st-t"><strong>Applying the same directional-sweep logic</strong> to minimize a hard drive's physical read arm movement.</div>
+            <div class="st"><span class="st-v c1">Real-time scoring</span>
+              <div class="st-t"><strong>Evaluating and deciding on a transaction's risk</strong> within the transaction's own processing window.</div>
             </div>
           </div>
         </div>
@@ -385,8 +379,8 @@ def <span class="c1">next_move</span>(car, calls):
         <div class="fill" id="progressFill"></div>
       </div>
       <div class="post-nav-links">
-        <a href="post112.html" class="pn-btn">← Previous Post</a>
-        <a href="post114.html" class="pn-btn">Next Post →</a>
+        <a href="post121.html" class="pn-btn">← Previous Post</a>
+        <a href="post123.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -395,17 +389,17 @@ def <span class="c1">next_move</span>(car, calls):
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">The elevator that sails past your floor while it's clearly empty and heading down isn't broken, and it isn't ignoring you. It's finishing an algorithm before it's allowed to turn around.
+      <div class="caption-text" id="captionText">Your bank can flag a stolen card being used on the other side of the world before you've even noticed your wallet is gone, and no human ever looked at the transaction to make that call.
 
-Serving elevator calls in the exact order they were pressed sounds fair, but it can send a single car bouncing between distant floors constantly, wasting real time on unnecessary direction changes throughout the day. Always chasing whichever call is currently closest sounds smarter, but it can strand someone on a far floor indefinitely if closer calls keep arriving first, a failure mode called starvation. Every unwanted reversal in direction costs real seconds, and across hundreds of trips a day, those seconds add up into a genuinely worse building.
+Fixed rules, like automatically flagging any purchase over a certain amount made abroad, are simple to write and simple for fraud to eventually learn around, and they treat every customer identically regardless of how that person actually spends. Having a human analyst manually review flagged activity brings real judgment to the decision, but it's far too slow to stop a transaction from settling in real time, the fraud is often long done by the time a person looks at it.
 
-What actually runs in most modern elevator systems is SCAN scheduling. Every button press, yours included, gets logged as a floor number plus a direction, up or down. The car keeps moving in whatever direction it's already heading, picking up and dropping off every call that matches along the way, and only reverses direction once there are genuinely no more calls left to serve ahead of it in the current direction. That's exactly why a descending, empty-looking car can pass your floor without stopping, it's still finishing its current downward sweep, and your call is queued for the moment it reverses.
+What actually protects most card transactions today is anomaly scoring, built from a profile of your own specific spending history, not a generic rulebook. The system learns your typical locations, spending amounts, preferred merchant categories, and even the times of day you usually transact, built up from months of your real, legitimate activity. Every new transaction gets compared against that personal baseline the instant it's submitted, weighing multiple signals together, an unusual location, an unfamiliar merchant category, an odd hour, none of them damning alone but meaningful in combination. Once that combined anomaly score crosses a risk threshold, the transaction gets held or declined before it ever fully settles, all within a fraction of a second.
 
-This isn't a new idea invented for elevators specifically. SCAN scheduling was formalized in the 1960s and the identical algorithm runs inside spinning hard disk drives, minimizing how far a physical read head has to travel by finishing a sweep across the disk before reversing, rather than jumping erratically to whichever request arrived first. In busy skyscrapers, entire banks of elevators run this same logic in parallel, each car assigned to a floor zone, predicting traffic patterns to pre-position idle cars before anyone even presses a button.
+The real tradeoff banks constantly tune is how aggressive that threshold should be, since setting it too sensitive starts blocking your own legitimate purchases along with genuine fraud, a false positive that's its own kind of costly failure. The identical anomaly-scoring principle protects account logins too, watching for unfamiliar devices or login locations that deviate from your normal pattern, not a fixed list of suspicious behaviors.
 
-Your floor wasn't forgotten. The sweep just wasn't finished yet.
+Nobody was watching your card. Something was just watching for you, and reacted the instant a transaction stopped looking like you.
 
-#elevators #algorithms #scanscheduling #systemdesign #ravenextechnologies</div>
+#fraudetection #fintech #machinelearning #anomalydetection #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -452,7 +446,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -470,7 +464,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'elevatorscan-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'frauddetect-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -484,7 +478,7 @@ Your floor wasn't forgotten. The sweep just wasn't finished yet.
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'elevatorscan-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'frauddetect-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
