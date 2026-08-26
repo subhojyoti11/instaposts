@@ -457,7 +457,7 @@ That final digit was never encoding anything about your account. It exists purel
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -503,6 +503,7 @@ That final digit was never encoding anything about your account. It exists purel
       b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
     }
   </script>
+  <script src="sync.js"></script>
 </body>
 
 </html>

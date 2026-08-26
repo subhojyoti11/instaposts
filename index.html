@@ -371,12 +371,12 @@
     <div id="empty">No posts match your search.</div>
   </div>
 
+  <script src="sync.js"></script>
   <script>
-    const MAX_POST = 150;
+    const MAX_POST = 250;
     const BATCH = 20;
     const HIDDEN_POSTS = new Set([
-      ...Array.from({ length: 67 }, (_, i) => i + 1),
-      69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 117, 120, 123, 124
+      ...Array.from({ length: 128 }, (_, i) => i + 1),
     ]);
 
     function parsePost(num, html) {
@@ -392,18 +392,22 @@
       return { num, topic, primaryHex, bgHex, isLight };
     }
 
-    const DONE_KEY = 'donePosts';
-    const doneSet = new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]'));
+    const cardRefs = new Map();
 
-    function saveDone() {
-      localStorage.setItem(DONE_KEY, JSON.stringify([...doneSet]));
+    function refreshDoneUI() {
+      cardRefs.forEach(({ card, chk }, num) => {
+        const done = RavenexSync.isDone(num);
+        chk.checked = done;
+        card.classList.toggle('is-done', done);
+      });
     }
+    RavenexSync.onChange(refreshDoneUI);
 
     function makeCard({ num, topic, bgHex, isLight }) {
       const card = document.createElement('div');
       card.className = 'card';
       card.dataset.topic = topic.toLowerCase();
-      if (doneSet.has(num)) card.classList.add('is-done');
+      if (RavenexSync.isDone(num)) card.classList.add('is-done');
 
       const top = document.createElement('div');
       top.className = 'card-top';
@@ -412,13 +416,13 @@
       chkWrap.className = 'chk-wrap';
       const chk = document.createElement('input');
       chk.type = 'checkbox';
-      chk.checked = doneSet.has(num);
+      chk.checked = RavenexSync.isDone(num);
       chk.addEventListener('change', () => {
-        if (chk.checked) doneSet.add(num); else doneSet.delete(num);
         card.classList.toggle('is-done', chk.checked);
-        saveDone();
+        RavenexSync.toggle(num);
       });
       chkWrap.appendChild(chk);
+      cardRefs.set(num, { card, chk });
 
       const numEl = document.createElement('div');
       numEl.className = 'card-num';

@@ -410,5 +410,6 @@ async function downloadSlide(btn){const slide=btn.closest('.slide');const idx=Ar
 async function downloadCurrentSlide(){const btn=document.getElementById('dlCurrent');btn.disabled=true;btn.textContent='Capturing...';try{const canvas=await captureSlide(slides[currentSlideIndex]);triggerDownload(canvas,'bloom-filter-slide-'+String(currentSlideIndex+1).padStart(2,'0')+'.png')}catch(err){console.error(err)}btn.innerHTML=dlIconSVG+'Download Current Slide';btn.disabled=false}
 async function downloadAllSlides(){const btn=document.getElementById('dlAll'),bar=document.getElementById('progressBar'),fill=document.getElementById('progressFill');btn.disabled=true;btn.textContent='Downloading...';bar.style.display='block';fill.style.width='0%';try{for(let i=0;i<slides.length;i++){fill.style.width=((i+1)/slides.length*100)+'%';const canvas=await captureSlide(slides[i]);triggerDownload(canvas,'bloom-filter-slide-'+String(i+1).padStart(2,'0')+'.png');await new Promise(r=>setTimeout(r,400))}}catch(err){console.error(err)}btn.innerHTML=dlIconSVG+'Download All Slides';btn.disabled=false;setTimeout(()=>{bar.style.display='none';fill.style.width='0%'},1000)}
 </script>
+  <script src="sync.js"></script>
 </body>
 </html>

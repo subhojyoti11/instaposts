@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -79,13 +79,12 @@
 
     .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--border); margin-top: auto; }
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); }
-    .ftr .right { font-size: 13px; font-weight: 600; color: var(--a1); }
+    .ftr .right { font-size: 13px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
 
     .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
-    .cmp-col { border: 1.5px solid; border-radius: 10px; padding: 9px 6px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
-    .cmp-col.c1 { border-color: rgba(var(--a1rgb), .35); background: rgba(var(--a1rgb), .05); }
-    .cmp-col.c2 { border-color: rgba(var(--a2rgb), .35); background: rgba(var(--a2rgb), .05); }
-    .cmp-col.c3 { border-color: rgba(var(--a3rgb), .35); background: rgba(var(--a3rgb), .05); }
+    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
+    .cmp-col:first-child { border-left: none; padding-left: 0; }
+    .cmp-col:last-child { padding-right: 0; }
     .cmp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
@@ -125,6 +124,23 @@
     .st-v.c3 { color: var(--a3); }
     .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
     .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 12px; flex: 1; margin: 8px 0; padding: 4px 0; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; border: 1.5px solid; line-height: 1.15; letter-spacing: .01em; }
+    .term-tag.shape-box { border-radius: 12px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { opacity: .5; font-size: 10.5px; padding: 8px 14px; }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 9px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { border-color: rgba(var(--a1rgb), .4); background: rgba(var(--a1rgb), .08); color: var(--a1); }
+    .term-tag.c2 { border-color: rgba(var(--a2rgb), .4); background: rgba(var(--a2rgb), .08); color: var(--a2); }
+    .term-tag.c3 { border-color: rgba(var(--a3rgb), .4); background: rgba(var(--a3rgb), .08); color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
 
     .callout { padding: 12px 14px; margin: 8px 0; border-radius: 8px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
     .callout.c1 { background: rgba(var(--a1rgb), .07); border-color: rgba(var(--a1rgb), .2); }
@@ -338,19 +354,16 @@ def <span class="c1">generate_token</span>(candidates, step):
           <p style="margin-bottom:14px"> </p>
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">LLM watermark</span>
-              <div class="st-t"><strong>A statistical pattern embedded in a model's word choices,</strong> used to detect AI-generated text.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Token</span>
-              <div class="st-t"><strong>A word or word-fragment unit</strong> a language model generates one at a time.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Sampling bias</span>
-              <div class="st-t"><strong>Adjusting the probability of certain choices during generation</strong> without eliminating any option.</div>
-            </div>
-            <div class="st"><span class="st-v c1">EU AI Act</span>
-              <div class="st-t"><strong>European Union regulation requiring AI-generated content</strong> to be identifiable as such.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">LLM Watermark</div>
+            <div class="term-tag shape-circle c2">Token</div>
+            <div class="term-tag shape-pill c3">Sampling Bias</div>
+            <div class="term-tag shape-pill c1">EU AI Act</div>
+            <div class="term-tag fill shape-pill c2">Metadata Tag</div>
+            <div class="term-tag fill shape-circle c3">Style Analysis</div>
+            <div class="term-tag fill shape-box c1">Token Watermark</div>
+            <div class="term-tag fill shape-pill c2">Per-Token</div>
+            <div class="term-tag fill shape-circle c3">Invisible</div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
@@ -379,7 +392,7 @@ def <span class="c1">generate_token</span>(candidates, step):
       </div>
       <div class="post-nav-links">
         <a href="post127.html" class="pn-btn">← Previous Post</a>
-        <a href="index.html" class="pn-btn">More Posts →</a>
+        <a href="post129.html" class="pn-btn">Next Post →</a>
       </div>
     </div>
     <div class="caption-section">
@@ -445,7 +458,7 @@ Nothing about the text itself ever looked different to you. The pattern was only
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -491,6 +504,7 @@ Nothing about the text itself ever looked different to you. The pattern was only
       b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
     }
   </script>
+  <script src="sync.js"></script>
 </body>
 
 </html>

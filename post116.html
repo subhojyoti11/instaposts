@@ -447,7 +447,7 @@ Your smart TV, laptop, and phone were never taking turns because something told 
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 3, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -493,6 +493,7 @@ Your smart TV, laptop, and phone were never taking turns because something told 
       b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
     }
   </script>
+  <script src="sync.js"></script>
 </body>
 
 </html>

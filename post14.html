@@ -98,5 +98,6 @@ h1 .acc{color:var(--acc)}
 <script>
 async function downloadPoster(){const btn=document.getElementById('dlBtn');btn.disabled=true;btn.textContent='Capturing...';try{const canvas=await html2canvas(document.getElementById('poster'),{backgroundColor:null,scale:3,useCORS:true,allowTaint:true,logging:false});const link=document.createElement('a');link.download='claude-codes-cheatsheet.png';link.href=canvas.toDataURL('image/png');link.click()}catch(err){console.error(err)}btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download Image';btn.disabled=false}
 </script>
+  <script src="sync.js"></script>
 </body>
 </html>

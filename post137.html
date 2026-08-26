@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deleting a Message Doesn't Actually Delete It Everywhere, Post 137</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f6fe;
+      --card: #ffffff;
+      --ink: #14132b;
+      --ink2: #45435f;
+      --dim: #9694b0;
+      --a1: #7c3aed;
+      --a2: #dc2626;
+      --a3: #0891b2;
+      --a1rgb: 124, 58, 237;
+      --a2rgb: 220, 38, 38;
+      --a3rgb: 8, 145, 178;
+      --border: rgba(124, 58, 237, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 40px 16px 80px;
+    }
+
+    .carousel-wrap { max-width: 1100px; margin: 0 auto; }
+    .carousel { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 16px 2px 36px; scrollbar-width: none; }
+    .carousel::-webkit-scrollbar { display: none; }
+
+    .slide {
+      flex: 0 0 min(92vw, 460px);
+      aspect-ratio: 2/2.3;
+      scroll-snap-align: center;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 4px 28px rgba(var(--a1rgb), .06);
+    }
+
+    .ghost { display: none; }
+    .hdr { flex-shrink: 0; padding: 16px 24px 0 26px; display: flex; justify-content: space-between; align-items: center; }
+    .hdr .num {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .06em;
+      color: var(--dim);
+    }
+
+    .body { flex: 1; min-height: 0; overflow: hidden; padding: 12px 24px 0 26px; display: flex; flex-direction: column; }
+
+    .slide h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 34px;
+      line-height: 1.03;
+      letter-spacing: -.035em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .slide h2 .c1 { color: var(--a1); }
+    .slide h2 .c2 { color: var(--a2); }
+    .slide h2 .c3 { color: var(--a3); }
+
+    .lead { font-size: 13.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 10px; }
+
+    .ftr { flex-shrink: 0; padding: 10px 24px 16px 26px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); margin-top: auto; }
+    .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+    .ftr .right { font-size: 12px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
+
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
+    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
+    .cmp-col:first-child { border-left: none; padding-left: 0; }
+    .cmp-col:last-child { padding-right: 0; }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
+    .cmp-col.c1 .cmp-icon { background: var(--a1); }
+    .cmp-col.c2 .cmp-icon { background: var(--a2); }
+    .cmp-col.c3 .cmp-icon { background: var(--a3); }
+    .cmp-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; text-align: center; letter-spacing: .01em; }
+    .cmp-col.c1 .cmp-title { color: var(--a1); }
+    .cmp-col.c2 .cmp-title { color: var(--a2); }
+    .cmp-col.c3 .cmp-title { color: var(--a3); }
+    .cmp-sub { font-size: 7px; text-align: center; color: var(--dim); text-transform: uppercase; letter-spacing: .03em; margin-top: -3px; line-height: 1.2; }
+    .cmp-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink); margin-top: 3px; }
+    .cmp-text { font-size: 8.8px; line-height: 1.3; color: var(--ink2); }
+    .cmp-cta { margin-top: 8px; text-align: center; padding: 9px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; border: 1.5px solid rgba(var(--a1rgb), .28); background: rgba(var(--a1rgb), .06); color: var(--a1); }
+
+    .stats { display: flex; flex-direction: column; gap: 0; margin: 6px 0; flex-shrink: 0; }
+    .st { display: grid; grid-template-columns: 26% 1fr; gap: 0 10px; align-items: start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .st:last-child { border-bottom: none; }
+    .st-v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 400; text-align: right; word-break: break-word; }
+    .st-v.c1 { color: var(--a1); }
+    .st-v.c2 { color: var(--a2); }
+    .st-v.c3 { color: var(--a3); }
+    .st-t { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+    .st-t strong { font-weight: 600; color: var(--ink); }
+
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 12px; flex: 1; margin: 8px 0; padding: 4px 0; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; border: 1.5px solid; line-height: 1.15; letter-spacing: .01em; }
+    .term-tag.shape-box { border-radius: 12px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { opacity: .5; font-size: 10.5px; padding: 8px 14px; }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 9px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { border-color: rgba(var(--a1rgb), .4); background: rgba(var(--a1rgb), .08); color: var(--a1); }
+    .term-tag.c2 { border-color: rgba(var(--a2rgb), .4); background: rgba(var(--a2rgb), .08); color: var(--a2); }
+    .term-tag.c3 { border-color: rgba(var(--a3rgb), .4); background: rgba(var(--a3rgb), .08); color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
+    .callout { padding: 12px 14px; margin: 10px 0 0; border-radius: 10px; font-size: 12.5px; line-height: 1.5; flex-shrink: 0; border: 1px solid; }
+    .callout.c1 { background: rgba(var(--a1rgb), .06); border-color: rgba(var(--a1rgb), .18); }
+    .callout.c2 { background: rgba(var(--a2rgb), .06); border-color: rgba(var(--a2rgb), .18); }
+    .callout.c3 { background: rgba(var(--a3rgb), .06); border-color: rgba(var(--a3rgb), .18); }
+    .callout p { color: var(--ink2); }
+    .callout strong { font-weight: 600; color: var(--ink); }
+
+    .timeline { display: flex; flex-direction: column; margin: 8px 0; flex-shrink: 0; }
+    .tl-item { display: grid; grid-template-columns: 20px 1fr; gap: 12px; padding: 0 0 14px; position: relative; }
+    .tl-item::before { content: ''; position: absolute; left: 9px; top: 20px; bottom: -2px; width: 1px; background: var(--border); }
+    .tl-item:last-child::before { display: none; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 18px; height: 18px; border-radius: 6px; background: rgba(var(--a1rgb), .12); border: 1.5px solid var(--a1); flex-shrink: 0; }
+    .tl-body b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 2px; }
+    .tl-body span { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; flex-shrink: 0; }
+    .metric { border: 1px solid var(--border); border-radius: 10px; padding: 10px 4px; text-align: center; background: rgba(20, 19, 43, .02); }
+    .metric b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--a1); }
+    .metric span { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: .04em; }
+
+    .dl-bar { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+    .dl-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 11px 24px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 8px; border-radius: 20px; }
+    .dl-btn:hover { background: var(--a1); color: #fff; }
+    .dl-btn.alt { border-color: var(--border); color: var(--dim); }
+    .dl-btn.alt:hover { border-color: var(--a1); color: var(--a1); }
+    .dl-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .dl-btn:disabled { opacity: .3; }
+
+    .progress-bar { width: 160px; height: 2px; background: rgba(var(--a1rgb), .12); overflow: hidden; display: none; margin-top: 12px; border-radius: 2px; }
+    .progress-bar .fill { height: 100%; width: 0%; background: var(--a1); transition: width .3s; }
+
+    .nav { display: flex; justify-content: center; gap: 16px; margin-top: 20px; align-items: center; }
+    .nav button { background: transparent; border: 1px solid var(--border); color: var(--dim); width: 38px; height: 38px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; border-radius: 10px; transition: all .25s; }
+    .nav button:hover { border-color: var(--a1); color: var(--a1); }
+
+    .dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(20, 19, 43, .1); cursor: pointer; transition: all .35s; }
+    .dot.active { background: var(--a1); width: 22px; border-radius: 3px; }
+
+    .post-nav-links { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .pn-btn { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; color: var(--ink2); text-decoration: none; transition: all .25s; flex: 1; text-align: center; max-width: 220px; }
+    .pn-btn:hover { border-color: var(--a1); color: var(--a1); }
+
+    .caption-section { max-width: min(92vw, 520px); margin: 28px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 28px rgba(var(--a1rgb), .06); }
+    .caption-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .caption-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+    .copy-btn { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 14px; background: transparent; border: 1px solid rgba(var(--a1rgb), .3); color: var(--a1); cursor: pointer; transition: all .25s; display: flex; align-items: center; gap: 6px; border-radius: 20px; }
+    .copy-btn:hover { background: var(--a1); color: #fff; }
+    .copy-btn.copied { border-color: #059669; color: #059669; }
+    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+    @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
+  </style>
+</head>
+
+<body>
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel">
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">01 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:40px;line-height:1.0">Unsending a Text<br>Never Erases<br>What Already <span class="c1">Arrived</span>.</h2>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">02 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Delivery Happens<br>Before <span class="c1">Deletion</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Delivery happens before deletion</span>
+              <div class="st-t"><strong>By the time you tap delete, the message has often already</strong> been received and stored.</div>
+            </div>
+            <div class="st"><span class="st-v c2">A notification already fired</span>
+              <div class="st-t"><strong>The recipient's phone frequently shows a preview</strong> before you get to unsend anything.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Deleting locally isn't global</span>
+              <div class="st-t"><strong>Removing a message from your own screen only ever controls</strong> your own copy.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">03 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Three Ways to<br>"Delete" a <span class="c3">Message</span>.</h2>
+          <div class="cmp-grid">
+            <div class="cmp-col c1">
+              <div class="cmp-icon">🗑️</div>
+              <div class="cmp-title">LOCAL DELETE</div>
+              <div class="cmp-sub">Remove it from your view</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Delete the message from your own history.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">Only affects the copy stored locally on your phone.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">The recipient's copy is completely untouched.</div>
+            </div>
+            <div class="cmp-col c2">
+              <div class="cmp-icon">🔄</div>
+              <div class="cmp-title">SYNC DELETE</div>
+              <div class="cmp-sub">Ask every device</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Send a delete instruction to every synced device.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">A deletion event propagates to online devices.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Removes it where possible, misses offline devices.</div>
+            </div>
+            <div class="cmp-col c3">
+              <div class="cmp-icon">🪦</div>
+              <div class="cmp-title">TOMBSTONE EVENT</div>
+              <div class="cmp-sub">Mark it as retracted</div>
+              <div class="cmp-label">Goal</div>
+              <div class="cmp-text">Record a message as retracted, not erased instantly.</div>
+              <div class="cmp-label">Focus</div>
+              <div class="cmp-text">A retraction event applies wherever it eventually reaches.</div>
+              <div class="cmp-label">Result</div>
+              <div class="cmp-text">Cleans up over time, can't undo an already-seen preview.</div>
+            </div>
+          </div>
+          <div class="cmp-cta">↻ The shift: erase everywhere instantly → mark it retracted, everywhere eventually</div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">04 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>A Request,<br>Not a <span class="c1">Guarantee</span>.</h2>
+          <div style="height:4px"></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The message is sent and stored</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A notification may already show it</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Delete triggers a retraction event</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Offline devices catch up later</b></div></div>
+          </div>
+          <div class="callout c1"><p><strong>Unsend was never a true erase.</strong> It's a best-effort instruction, and anything already seen, cached, or screenshotted was already out of its reach.</p></div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">05 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Screenshots<br>Defeat It <span class="c3">Entirely</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="metric-grid">
+            <div class="metric"><b>Best-effort</b><span>Not a guaranteed instant erase</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>Cached</b><span
+                style="color:var(--a2)">Notifications and previews may persist</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Sync-dependent</b><span
+                style="color:var(--a3)">Needs every device online to fully apply</span></div>
+          </div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">Screenshots defeat it entirely</span>
+              <div class="st-t"><strong>No retraction event can undo a screenshot</strong> taken before deletion happens.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Server copies vary by platform</span>
+              <div class="st-t"><strong>Some services retain a server-side record briefly</strong> even after retraction.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
+      </div>
+
+      <div class="slide">
+        <div class="ghost"> </div>
+        <div class="hdr"><span class="num">06 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:14px"> </p>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
+          <div style="height:16px"></div>
+          <div class="term-cloud">
+            <div class="term-tag shape-circle c1">Tombstone Event</div>
+            <div class="term-tag shape-pill c2">Message Delivery</div>
+            <div class="term-tag shape-pill c3">Sync Propagation</div>
+            <div class="term-tag shape-box c1">Client-Side Deletion</div>
+            <div class="term-tag fill shape-pill c2">Local Delete</div>
+            <div class="term-tag fill shape-circle c3">Sync Delete</div>
+            <div class="term-tag fill shape-box c1">Best-Effort</div>
+            <div class="term-tag fill shape-circle c2">Cached</div>
+            <div class="term-tag fill shape-pill c3">Sync-Dependent</div>
+          </div>
+        </div>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="nav"><button id="prev">←</button>
+      <div class="dots" id="dots"></div><button id="next">→</button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="dl-bar">
+        <button class="dl-btn" id="dlCurrent" onclick="downloadCurrentSlide()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>Current Slide</button>
+        <button class="dl-btn alt" id="dlAll" onclick="downloadAllSlides()"><svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>All Slides</button>
+      </div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+      <div class="post-nav-links">
+        <a href="post136.html" class="pn-btn">← Previous Post</a>
+        <a href="post138.html" class="pn-btn">Next Post →</a>
+      </div>
+    </div>
+    <div class="caption-section">
+      <div class="caption-hdr"><span class="caption-label">Caption</span><button class="copy-btn" id="copyBtn"
+          onclick="copyCaption()"><svg viewBox="0 0 24 24">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>Copy</button></div>
+      <div class="caption-text" id="captionText">Tapping delete on a message you regret sending feels instant, but the message was very likely already delivered, stored, and possibly even shown in a notification before you ever got the chance to touch delete.
+
+Deleting a message from your own device only ever removes your own local copy, the recipient's copy, already received and stored independently the moment it arrived, is completely untouched by that action. A better system sends a delete instruction out to every device currently synced to that conversation, and most modern messaging apps do exactly this, but it only reaches devices that happen to be online at that moment, missing anything offline until it later reconnects.
+
+What actually happens under something like an unsend feature is closer to a retraction event than a true erase. The app records that a specific message has been marked as deleted, and that record gets applied wherever and whenever it eventually reaches each device, sometimes instantly, sometimes only once an offline phone reconnects and syncs. That's why unsending can feel inconsistent, one device shows the message gone right away, another still shows it briefly until it catches up.
+
+Critically, this mechanism can only ever act on data the recipient's device still holds a reference to. A lock screen notification preview that already displayed the message content before you deleted it isn't retroactively hidden, that moment already happened. And nothing about a retraction event can undo a screenshot taken in the meantime, the content already left the system entirely at that point, existing as a static image with no connection to the original message at all.
+
+Unsend was never really an erase button. It was always just a request, sent after the fact, hoping it arrives in time.
+
+#messaging #privacy #softwareengineering #dataintegrity #ravenextechnologies</div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const carousel = document.getElementById('carousel'), slides = carousel.querySelectorAll('.slide'), dotsC = document.getElementById('dots'), prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    const dlSVG = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    let cur = 0;
+    slides.forEach((_, i) => { const d = document.createElement('div'); d.className = 'dot' + (i === 0 ? ' active' : ''); d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); dotsC.appendChild(d); });
+    const dots = dotsC.querySelectorAll('.dot');
+    const sc = dir => carousel.scrollBy({ left: dir * (slides[0].offsetWidth + 18), behavior: 'smooth' });
+    prevBtn.onclick = () => sc(-1); nextBtn.onclick = () => sc(1);
+    slides.forEach(s => new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { cur = Array.from(slides).indexOf(e.target); dots.forEach((d, i) => d.classList.toggle('active', i === cur)); } }); }, { root: carousel, threshold: .6 }).observe(s));
+    document.onkeydown = e => { if (e.key === 'ArrowRight') sc(1); if (e.key === 'ArrowLeft') sc(-1); };
+    const copySVG = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    async function copyCaption() {
+      const text = document.getElementById('captionText').innerText;
+      const btn = document.getElementById('copyBtn');
+      let ok = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {}
+      }
+      if (!ok) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+      }
+      if (!ok && navigator.share) {
+        try { await navigator.share({ text }); ok = true; } catch (e) {}
+      }
+      if (ok) {
+        btn.classList.add('copied'); btn.innerHTML = copySVG + 'Copied!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copySVG + 'Copy'; }, 2000);
+      } else {
+        btn.innerHTML = copySVG + 'Copy failed';
+        setTimeout(() => { btn.innerHTML = copySVG + 'Copy'; }, 2500);
+      }
+    }
+    async function cap(s) {
+      const wrap = document.querySelector('.carousel-wrap');
+      if (wrap) wrap.style.zoom = '1';
+      await new Promise(r => setTimeout(r, 50));
+      const canvas = await html2canvas(s, { backgroundColor: '#ffffff', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      if (wrap) wrap.style.zoom = '';
+      return canvas;
+    }
+    function canvasToFile(canvas, filename) {
+      return new Promise(resolve => { canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png'); });
+    }
+    async function saveFile(file) {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; }
+      }
+      const a = document.createElement('a');
+      a.download = file.name; a.href = URL.createObjectURL(file);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    }
+    async function downloadCurrentSlide() {
+      const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
+      try { const file = await canvasToFile(await cap(slides[cur]), 'unsendmessage-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
+    }
+    async function downloadAllSlides() {
+      const b = document.getElementById('dlAll'), bar = document.getElementById('progressBar'), fill = document.getElementById('progressFill');
+      b.disabled = true; b.innerHTML = dlSVG + 'Capturing...'; bar.style.display = 'block'; fill.style.width = '0%';
+      try {
+        const o = carousel.scrollLeft; carousel.style.scrollBehavior = 'auto';
+        const files = [];
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
+          await new Promise(r => setTimeout(r, 150));
+          fill.style.width = ((i + 1) / slides.length * 100) + '%';
+          files.push(await canvasToFile(await cap(slides[i]), 'unsendmessage-' + String(i + 1).padStart(2, '0') + '.png'));
+          await new Promise(r => setTimeout(r, 400));
+        }
+        carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
+        if (navigator.canShare && navigator.canShare({ files })) {
+          try { await navigator.share({ files }); }
+          catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
+        } else {
+          for (const f of files) await saveFile(f);
+        }
+      } catch (e) { alert('Download failed: ' + e.message); }
+      b.innerHTML = dlSVG + 'All Slides'; b.disabled = false; bar.style.display = 'none';
+    }
+  </script>
+  <script src="sync.js"></script>
+</body>
+
+</html>
