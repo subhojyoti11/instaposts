@@ -4,17 +4,18 @@
   GitHub repo, read/written via the GitHub Contents API, so the checklist
   looks the same on your phone and on desktop.
 
-  SETUP (one time):
+  Unlike an earlier version of this file, the GitHub token is NEVER stored
+  here in source. It lives only in each browser's localStorage, entered
+  once per device via the "Connect Sync" button. That keeps it out of git
+  history and off the public page entirely.
+
+  SETUP (one time per device):
   1. GitHub -> Settings -> Developer settings -> Personal access tokens ->
      Fine-grained tokens -> Generate new token.
   2. Repository access: Only select repositories -> this repo only.
   3. Permissions -> Repository permissions -> Contents: Read and write.
-  4. Paste the generated token below as GH_TOKEN.
-
-  This token lives in a public JS file served by GitHub Pages, so anyone who
-  views source can see and use it. It is scoped to ONLY this repo's contents,
-  so the worst case is someone edits this repo's files, nothing else on your
-  account is reachable with it. Rotate/regenerate the token if that ever happens.
+  4. Click "Connect Sync" on this site (index page or any post) and paste
+     the token in when prompted. It's saved only to this browser.
 */
 (function () {
   'use strict';
@@ -23,11 +24,21 @@
   const GH_REPO = 'instaposts';
   const GH_BRANCH = 'main';
   const GH_PATH = 'data/donePosts.json';
-  const GH_TOKEN = 'PASTE_YOUR_FINE_GRAINED_TOKEN_HERE';
 
   const API_BASE = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
   const LOCAL_KEY = 'donePostsCache';
-  const tokenConfigured = !!GH_TOKEN && !GH_TOKEN.startsWith('PASTE_');
+  const TOKEN_KEY = 'ravenexGhToken';
+
+  function getToken() {
+    try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  }
+  function setToken(t) {
+    try {
+      if (t) localStorage.setItem(TOKEN_KEY, t.trim());
+      else localStorage.removeItem(TOKEN_KEY);
+    } catch (e) {}
+  }
+  function hasToken() { return !!getToken(); }
 
   function b64DecodeUnicode(str) {
     return decodeURIComponent(
@@ -57,7 +68,8 @@
 
   function authHeaders(extra) {
     const headers = Object.assign({ 'Accept': 'application/vnd.github+json' }, extra || {});
-    if (tokenConfigured) headers['Authorization'] = 'Bearer ' + GH_TOKEN;
+    const token = getToken();
+    if (token) headers['Authorization'] = 'Bearer ' + token;
     return headers;
   }
 
@@ -71,7 +83,7 @@
   }
 
   async function pushRemote(doneSet, isRetry) {
-    if (!tokenConfigured) throw new Error('No GitHub token configured in sync.js');
+    if (!hasToken()) throw new Error('No GitHub token configured for this device');
     const body = {
       message: 'Update donePosts.json',
       content: b64EncodeUnicode(JSON.stringify({ done: [...doneSet].sort((a, b) => a - b) }, null, 2)),
@@ -95,10 +107,23 @@
   const listeners = [];
   const RavenexSync = {
     doneSet: readLocalCache(),
-    tokenConfigured,
+    hasToken,
     onChange(fn) { listeners.push(fn); },
     notify() { listeners.forEach(fn => fn(RavenexSync.doneSet)); },
     isDone(n) { return RavenexSync.doneSet.has(n); },
+
+    connect() {
+      const current = getToken();
+      const t = prompt(
+        current
+          ? 'Update the GitHub sync token for this device (leave blank to disconnect):'
+          : 'Paste your GitHub fine-grained token (Contents: Read and write, scoped to this repo only). It is saved only in this browser:'
+      );
+      if (t === null) return; // cancelled
+      setToken(t);
+      RavenexSync.notify();
+      if (t) RavenexSync.init();
+    },
 
     async init() {
       RavenexSync.notify();
@@ -138,20 +163,24 @@
     return m ? parseInt(m[1], 10) : null;
   }
 
+  function injectStyle() {
+    if (document.getElementById('ravenex-sync-style')) return;
+    const style = document.createElement('style');
+    style.id = 'ravenex-sync-style';
+    style.textContent =
+      '.posted-btn.is-posted { background: rgba(52,211,153,.14) !important; ' +
+      'border-color: rgba(52,211,153,.55) !important; color: #34d399 !important; }' +
+      '.ravenex-connect-btn.is-connected { color: #34d399 !important; border-color: rgba(52,211,153,.5) !important; }';
+    document.head.appendChild(style);
+  }
+
   function injectPostedButton() {
     const n = currentPostNumber();
     if (!n) return;
     const bar = document.querySelector('.dl-bar');
     if (!bar) return;
 
-    if (!document.getElementById('ravenex-posted-style')) {
-      const style = document.createElement('style');
-      style.id = 'ravenex-posted-style';
-      style.textContent =
-        '.posted-btn.is-posted { background: rgba(52,211,153,.14) !important; ' +
-        'border-color: rgba(52,211,153,.55) !important; color: #34d399 !important; }';
-      document.head.appendChild(style);
-    }
+    injectStyle();
 
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -181,8 +210,31 @@
     if (allBtn) bar.insertBefore(btn, allBtn); else bar.appendChild(btn);
   }
 
+  function injectConnectButton() {
+    const bar = document.querySelector('.dl-bar');
+    if (!bar) return;
+    injectStyle();
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    const existing = document.getElementById('dlAll') || document.getElementById('dlCurrent');
+    btn.className = existing ? existing.className : 'dl-btn';
+    btn.classList.add('ravenex-connect-btn');
+
+    function render() {
+      const connected = hasToken();
+      btn.textContent = connected ? '🔗 Synced' : '🔗 Connect Sync';
+      btn.classList.toggle('is-connected', connected);
+    }
+    render();
+    btn.addEventListener('click', () => RavenexSync.connect());
+    RavenexSync.onChange(render);
+    bar.appendChild(btn);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     RavenexSync.init();
     injectPostedButton();
+    injectConnectButton();
   });
 })();

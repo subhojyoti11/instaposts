@@ -356,7 +356,10 @@
 
   <div class="status-bar">
     <div class="status-left"><span class="pulse" id="dot"></span><span id="statusText">Discovering posts…</span></div>
-    <div id="counter"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button id="connectSync" type="button" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;">🔗 Connect Sync</button>
+      <div id="counter"></div>
+    </div>
   </div>
 
   <div id="err" style="padding:0 24px">
@@ -402,6 +405,17 @@
       });
     }
     RavenexSync.onChange(refreshDoneUI);
+
+    const connectBtn = document.getElementById('connectSync');
+    function renderConnectBtn() {
+      const connected = RavenexSync.hasToken();
+      connectBtn.textContent = connected ? '🔗 Synced' : '🔗 Connect Sync';
+      connectBtn.style.color = connected ? '#34d399' : 'var(--dim)';
+      connectBtn.style.borderColor = connected ? 'rgba(52,211,153,.5)' : 'var(--border)';
+    }
+    renderConnectBtn();
+    connectBtn.addEventListener('click', () => RavenexSync.connect());
+    RavenexSync.onChange(renderConnectBtn);
 
     function makeCard({ num, topic, bgHex, isLight }) {
       const card = document.createElement('div');
