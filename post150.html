@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your npm Install Just Ran Code You Never Reviewed, Post 150</title>
+  <title>A Hard Drive That Lasts a Thousand Years, Post 150</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -12,24 +12,26 @@
     rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0505;
-      --card: #170c0c;
-      --ink: #fff0ee;
+      --bg: #07070d;
+      --card: #0d0f1a;
+      --ink: #e8f0ff;
       --ink2: #a0a0a0;
-      --dim: #6b5555;
-      --a1: #f43f5e;
-      --a2: #fbbf24;
-      --a3: #a78bfa;
-      --a1rgb: 244, 63, 94;
-      --a2rgb: 251, 191, 36;
-      --a3rgb: 167, 139, 250;
-      --border: rgba(244, 63, 94, .16);
+      --dim: #545b6e;
+      --a1: #34d399;
+      --a2: #38bdf8;
+      --a3: #fbbf24;
+      --a1rgb: 52, 211, 153;
+      --a2rgb: 56, 189, 248;
+      --a3rgb: 251, 191, 36;
+      --border: rgba(148, 163, 184, .1);
+      --neu-light: rgba(255, 255, 255, .045);
+      --neu-dark: rgba(0, 0, 0, .6);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #240c14 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0a1f16 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +46,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #24101052 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #0d1a1552 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -101,7 +103,7 @@
     .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
     .cmp-col:first-child { border-left: none; padding-left: 0; }
     .cmp-col:last-child { padding-right: 0; }
-    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #170c0c; }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
     .cmp-col.c3 .cmp-icon { background: var(--a3); }
@@ -177,6 +179,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -187,30 +206,30 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">⚠ Supply Chain Risk</div>
-          <h2 style="font-size:37px;line-height:1.0">Installing a Package<br>Never Means<br>Just Copying <span class="c1">Files</span>.</h2>
+        <div class="hdr"><span class="num">01 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:37px;line-height:1.0">A Hard Drive That<br>Lasts a Thousand<br><span class="c1">Years</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">02 / 06</span></div>
+        <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>You Can't<br>Review It <span class="c1">All</span>.</h2>
+          <h2>Every Medium<br>Rots and <span class="c1">Expires</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Install scripts run automatically</span>
-              <div class="st-t"><strong>Many packages execute setup code instantly,</strong> before you've opened a single file.</div>
+            <div class="st"><span class="st-v c1">Archives grow faster than media can hold</span>
+              <div class="st-t"><strong>Data creation is outpacing</strong> cheap long-term capacity.</div>
             </div>
-            <div class="st"><span class="st-v c2">Dependency trees run deep</span>
-              <div class="st-t"><strong>A single package can pull in dozens of transitive dependencies,</strong> each a potential entry point.</div>
+            <div class="st"><span class="st-v c2">Tape and disk degrade in decades</span>
+              <div class="st-t"><strong>And the drives to read old formats</strong> disappear soon after.</div>
             </div>
-            <div class="st"><span class="st-v c3">Nobody reviews every line</span>
-              <div class="st-t"><strong>At the scale modern projects install packages,</strong> manually auditing each one isn't realistic.</div>
+            <div class="st"><span class="st-v c3">So archives are migrated forever</span>
+              <div class="st-t"><strong>Copying petabytes to the next medium,</strong> again and again.</div>
             </div>
           </div>
         </div>
@@ -219,88 +238,88 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">03 / 06</span></div>
+        <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways<br>to <span class="c1">Install</span>.</h2>
+          <h2>Three Ways to Keep<br>Data for a <span class="c1">Century</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c2">
-              <div class="cmp-icon">📦</div>
-              <div class="cmp-title">INSTALL & TRUST</div>
-              <div class="cmp-sub">Assume it's fine</div>
+              <div class="cmp-icon">💽</div>
+              <div class="cmp-title">SPINNING DISK</div>
+              <div class="cmp-sub">Magnetic platters</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Install whatever a package needs, no review.</div>
+              <div class="cmp-text">Store data on rotating magnetic media.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Full trust in the registry and popularity.</div>
+              <div class="cmp-text">Fast random access, moving parts.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">One compromised dependency from attacker code.</div>
+              <div class="cmp-text">Fails in years, must be replaced.</div>
             </div>
             <div class="cmp-col c1">
-              <div class="cmp-icon">🔍</div>
-              <div class="cmp-title">MANUAL REVIEW</div>
-              <div class="cmp-sub">Read it yourself</div>
+              <div class="cmp-icon">📼</div>
+              <div class="cmp-title">MAGNETIC TAPE</div>
+              <div class="cmp-sub">Offline cold storage</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Review a package's source before installing.</div>
+              <div class="cmp-text">Cheap sequential archival capacity.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Human inspection of code and dependencies.</div>
+              <div class="cmp-text">High density, reels stored offline.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Doesn't scale past a handful of packages.</div>
+              <div class="cmp-text">Lasts about 30 years, drives go obsolete.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🛡️</div>
-              <div class="cmp-title">AUTOMATED GUARDRAILS</div>
-              <div class="cmp-sub">Let tooling catch it</div>
+              <div class="cmp-icon">🧬</div>
+              <div class="cmp-title">SYNTHETIC DNA</div>
+              <div class="cmp-sub">Bits into A, C, G, T</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Use lockfiles, scoped permissions, scanning.</div>
+              <div class="cmp-text">Encode data into DNA base sequences.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Pinned versions, install-script restrictions.</div>
+              <div class="cmp-text">A dried molecular pool, read by sequencing.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Malicious changes get caught before running.</div>
+              <div class="cmp-text">Stable for millennia, read tech never obsolete.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: trust every package → verify what actually runs</div>
+          <div class="cmp-cta">↻ The shift: migrate the archive every decade → write it once into a molecule</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">04 / 06</span></div>
+        <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How the<br>Attack <span class="c1">Happens</span>.</h2>
+          <h2>Bits to Bases<br>and <span class="c1">Back</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A popular package gets compromised</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A new version ships to the registry</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Your install pulls it automatically</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The install script runs immediately</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Binary is mapped onto the four bases, with error correction and index tags added</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Millions of short strands are chemically synthesized</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The dried strand pool is sealed and stored cool</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>To read, the pool is sequenced and reassembled by its index tags</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>You never ran untrusted code on purpose.</strong> The install step did it for you, automatically, the moment the package finished downloading.</p></div>
+          <div class="callout c1"><p><strong>You don't spin a DNA drive.</strong> You copy the whole pool by amplifying it, sequence a sample, and the index tags tell software how to put the file back together.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">05 / 06</span></div>
+        <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Real<br><span class="c1">Exposure</span>.</h2>
+          <h2>Dense and Durable,<br>Slow to <span class="c1">Write</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Deep</b><span>Typical dependency tree depth</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>Automatic</b><span
-                style="color:var(--a2)">Install scripts run unconfirmed</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>Widespread</b><span
-                style="color:var(--a3)">Reach of one compromised package</span></div>
+            <div class="metric"><b>~2 bits</b><span>Per base, before overhead</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>Grams</b><span
+                style="color:var(--a2)">Can hold exabytes in principle</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>Millennia</b><span
+                style="color:var(--a3)">Shelf life if kept cool and dry</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Lockfiles matter more than they seem</span>
-              <div class="st-t"><strong>A committed lockfile pins exact versions,</strong> preventing a silent upgrade to a compromised release.</div>
+            <div class="st"><span class="st-v c1">Writing is the bottleneck</span>
+              <div class="st-t"><strong>Synthesizing DNA is slow and expensive,</strong> so this suits write-once archives.</div>
             </div>
-            <div class="st"><span class="st-v c2">npm audit isn't a full solution</span>
-              <div class="st-t"><strong>It catches known vulnerabilities,</strong> not a brand-new supply chain compromise.</div>
+            <div class="st"><span class="st-v c2">Reads aren't disk random-access</span>
+              <div class="st-t"><strong>You retrieve by sequencing and filtering,</strong> not by seeking a sector.</div>
             </div>
           </div>
         </div>
@@ -309,27 +328,23 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Supply Chain</span><span class="num">06 / 06</span></div>
+        <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Protect<br><span class="c1">Yourself</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Pin and commit your lockfile</span>
-              <div class="st-t"><strong>Prevents installs from silently pulling</strong> a newer, potentially compromised version.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Restrict or review install scripts</span>
-              <div class="st-t"><strong>Some package managers let you disable</strong> automatic script execution entirely.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Audit new dependencies before adding</span>
-              <div class="st-t"><strong>A new package deserves more scrutiny</strong> than an update to one already trusted.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Watch for unusual maintainer activity</span>
-              <div class="st-t"><strong>A sudden ownership change</strong> or unusual release pattern is a real signal.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">DNA Data Storage</div>
+            <div class="term-tag shape-pill c2">Base Encoding</div>
+            <div class="term-tag shape-circle c3">Oligo Synthesis</div>
+            <div class="term-tag shape-pill c1">DNA Sequencing</div>
+            <div class="term-tag fill shape-pill c2">Index Tag</div>
+            <div class="term-tag fill shape-circle c3">Homopolymer Run</div>
+            <div class="term-tag fill shape-box c1">Cold Storage</div>
+            <div class="term-tag fill shape-circle c2">Error Correction</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">⚠ Save before your next install</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -364,17 +379,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Running npm install doesn't just copy files into a folder. For a meaningful number of packages, it executes code automatically, before you've opened a single file or run a single line of your own application.
+      <div class="caption-text" id="captionText">The world creates data faster than affordable long-term storage can keep up, and every medium used for archives has the same two flaws: it physically degrades within a few decades, and the hardware to read its format disappears not long after. The practical consequence is that a serious archive is migrated forever, copied from tape to newer tape to disk to something else, every ten to fifteen years, at real cost, just to stay readable.
 
-Modern projects don't just depend on the packages listed directly, they pull in a full dependency tree, often dozens of transitive dependencies deep, each one a package written and maintained by someone else entirely. At that scale, manually reviewing every line of every dependency simply isn't realistic, which means most installs run on trust in the registry and a package's popularity, not on actual inspection of what the code does.
+DNA sidesteps both problems. It is an information storage molecule that biology has already proven can survive for thousands of years when kept cool and dry, and it is astonishingly dense, a single gram can in principle hold on the order of an exabyte. Crucially, the technology to read it, sequencing, will never become obsolete, because medicine and biology will always need it.
 
-That trust is exactly what a supply chain attack exploits. An attacker compromises a popular package, either by gaining access to a maintainer's account or slipping a malicious change past review, and ships a new version that looks like a routine update. Without a pinned dependency version, the next install anywhere in the world automatically pulls that compromised release, and if the package includes an install script, malicious code can execute immediately, often before any of your own application code has even run.
+Encoding works by mapping binary onto the four bases, A, C, G and T, roughly two bits per base before you subtract overhead for error correction and for avoiding sequences that are hard to synthesize or read, like long runs of the same base. The data is split into millions of short fragments, each tagged with an index that records where it belongs, and those fragments are chemically synthesized and stored as a dried pool. Reading means sequencing the pool, using the index tags to reassemble the original file, and running error correction over the result.
 
-What actually catches this isn't hoping a package stays trustworthy forever, it's automated guardrails. A committed lockfile pins exact dependency versions, so an install can't silently jump to a newer, compromised release without a deliberate update. Restricting or reviewing automatic install script execution removes the single most common way a compromised package actually runs code on your machine in the first place. And treating a brand-new dependency with more scrutiny than an update to one you already trust catches a real category of risk that a tool like a standard vulnerability audit, which only flags already-known issues, simply can't.
+The limitation is writing. Synthesizing DNA is slow and expensive compared to writing a disk, and retrieval is not random access in the way a drive is, you sequence and filter rather than seek. That makes DNA a fit for cold archival storage, write once and read rarely, not for working data. Costs are falling steadily but are still far from competitive.
 
-You never chose to run code you hadn't reviewed. The install step made that choice automatically, the instant the download finished.
+The archive was never going to last by being copied forever. It lasts by being written into the same kind of molecule that has stored information for billions of years.
 
-#supplychainsecurity #cybersecurity #devsecops #softwareengineering #ravenextechnologies</div>
+#dnastorage #datastorage #biotech #archives #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -421,7 +436,7 @@ You never chose to run code you hadn't reviewed. The install step made that choi
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#170c0c', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -439,7 +454,7 @@ You never chose to run code you hadn't reviewed. The install step made that choi
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'npmsupplychain-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'dnastorage-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -453,7 +468,7 @@ You never chose to run code you hadn't reviewed. The install step made that choi
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'npmsupplychain-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'dnastorage-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

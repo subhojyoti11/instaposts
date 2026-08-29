@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Before You Scale, Talk to Someone Who's Seen It Break, Post 153</title>
+  <title>You Can't Copy a Qubit, So You Can't Amplify It, Post 153</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 185, 28, 28;
       --a3rgb: 67, 56, 202;
       --border: rgba(15, 118, 110, .1);
+      --neu-light: #ffffff;
+      --neu-dark: rgba(15, 23, 42, .14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -183,9 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">Scaling Audit</div>
-          <h2 style="font-size:34px;line-height:1.05">Growth Finds Every<br>Assumption Your System<br>Was Built <span class="c1">On</span>.</h2>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:34px;line-height:1.05">You Can't Copy a Qubit,<br>So You Can't<br><span class="c1">Amplify It</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>What Worked at 10x<br>Fails at <span class="c2">100x</span>.</h2>
+          <h2>The Classical Repeater<br>Trick <span class="c2">Fails</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">What worked at 10x fails at 100x</span>
-              <div class="st-t"><strong>An architecture decision correct at small scale</strong> can become the actual bottleneck at a larger one.</div>
+            <div class="st"><span class="st-v c1">The internet copies and boosts signals</span>
+              <div class="st-t"><strong>Every few kilometres, a repeater reads the bits</strong> and retransmits a clean copy.</div>
             </div>
-            <div class="st"><span class="st-v c2">The warning signs are quiet at first</span>
-              <div class="st-t"><strong>Slower queries and occasional timeouts</strong> often get dismissed until they're a real outage.</div>
+            <div class="st"><span class="st-v c2">A qubit can't be copied</span>
+              <div class="st-t"><strong>The no-cloning rule forbids duplicating</strong> an unknown quantum state.</div>
             </div>
-            <div class="st"><span class="st-v c3">Scaling problems compound under pressure</span>
-              <div class="st-t"><strong>The worst time to discover a bottleneck</strong> is during the traffic spike that exposes it.</div>
+            <div class="st"><span class="st-v c3">And it can't be amplified</span>
+              <div class="st-t"><strong>Boosting a weak quantum signal</strong> destroys the information in it.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Wait vs Spend<br>vs <span class="c1">Ravenex</span>.</h2>
+          <h2>Three Ways to Get<br>a Qubit <span class="c1">Across</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c2">
-              <div class="cmp-icon">🕰️</div>
-              <div class="cmp-title">WAIT AND SEE</div>
-              <div class="cmp-sub">Fix it when it breaks</div>
+              <div class="cmp-icon">📡</div>
+              <div class="cmp-title">SEND IT DIRECTLY</div>
+              <div class="cmp-sub">One long hop</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Address scaling issues only once they cause problems.</div>
+              <div class="cmp-text">Fire the photon down a long fiber.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Reactive fixes under real production pressure.</div>
+              <div class="cmp-text">One qubit, one uninterrupted span.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The most expensive time to solve a problem.</div>
+              <div class="cmp-text">Photon loss kills it, no boosting allowed.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">💰</div>
-              <div class="cmp-title">ADD INFRASTRUCTURE</div>
-              <div class="cmp-sub">Scale by spending</div>
+              <div class="cmp-icon">🔁</div>
+              <div class="cmp-title">CLASSIC REPEATER</div>
+              <div class="cmp-sub">Read and resend</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Throw more servers or compute at the symptom.</div>
+              <div class="cmp-text">Measure the qubit along the way and retransmit.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Treats the cost, not the actual bottleneck.</div>
+              <div class="cmp-text">The copy-and-boost trick from classical links.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">More expensive, often without fixing the cause.</div>
+              <div class="cmp-text">Measuring destroys the state, defeats the point.</div>
             </div>
             <div class="cmp-col c1">
-              <div class="cmp-icon">🔍</div>
-              <div class="cmp-title">RAVENEX</div>
-              <div class="cmp-sub">Find it before it finds you</div>
+              <div class="cmp-icon">🔗</div>
+              <div class="cmp-title">SHARE ENTANGLEMENT</div>
+              <div class="cmp-sub">Teleport across it</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Identify what breaks under real growth, ahead of time.</div>
+              <div class="cmp-text">Establish an entangled pair between the two nodes.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A focused audit under real load assumptions.</div>
+              <div class="cmp-text">Repeaters swap and purify entanglement, memory holds it.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">A prioritized fix list before the outage, not after.</div>
+              <div class="cmp-text">The qubit's state teleports over the shared pair.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: scale by spending → scale by knowing what to fix</div>
+          <div class="cmp-cta">↻ The shift: transmit the qubit → share entanglement, then teleport across it</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How the<br>Audit <span class="c1">Runs</span>.</h2>
+          <h2>Link the Segments,<br>Not the Whole <span class="c1">Line</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Understanding your growth trajectory</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Load-testing the real bottlenecks</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Mapping failure points to real cost</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A clear plan before growth arrives</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Each short segment establishes entanglement between adjacent nodes</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Quantum memory holds each link while neighbours catch up</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Entanglement swapping joins two short links into one longer one</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Purification cleans the noise, leaving a usable long-distance pair</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>The best time to find a scaling bottleneck is before a single user notices it.</strong> The audit exists specifically to make that the normal case, not the lucky one.</p></div>
+          <div class="callout c1"><p><strong>A quantum repeater never sees your qubit.</strong> It only extends entanglement, segment by segment, until the two endpoints share a pair good enough to teleport across.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Proactive,<br>Not <span class="c2">Reactive</span>.</h2>
+          <h2>A Network for<br>Entanglement, Not <span class="c2">Bits</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Proactive</b><span>Found before the outage, not during</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>Prioritized</b><span
-                style="color:var(--a2)">Fixes ranked by actual risk</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Specific</b><span
-                style="color:var(--a3)">Scoped to your real architecture</span></div>
+            <div class="metric"><b>Entanglement</b><span>The resource being distributed</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>Teleportation</b><span
+                style="color:var(--a2)">How a qubit's state actually moves</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Quantum memory</b><span
+                style="color:var(--a3)">The hardest missing piece</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Not a generic scaling checklist</span>
-              <div class="st-t"><strong>Every recommendation is grounded</strong> in how your specific system behaves under load.</div>
+            <div class="st"><span class="st-v c1">The payoff is more than secure keys</span>
+              <div class="st-t"><strong>Linked processors can act as one larger quantum computer,</strong> and clocks and sensors can be networked.</div>
             </div>
-            <div class="st"><span class="st-v c2">Built on the same depth as this library</span>
-              <div class="st-t"><strong>The same systems expertise</strong> behind every distributed systems post here.</div>
+            <div class="st"><span class="st-v c2">It rides on the classical internet</span>
+              <div class="st-t"><strong>Teleportation still needs a couple of ordinary classical bits</strong> sent alongside.</div>
             </div>
           </div>
         </div>
@@ -307,24 +326,20 @@
         <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>What's<br><span class="c1">Included</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Review</span>
-              <div class="st-t"><strong>A full load and architecture review,</strong> understanding where the system strains.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Risk report</span>
-              <div class="st-t"><strong>A prioritized risk report,</strong> what to fix first and why it matters most.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Recommendations</span>
-              <div class="st-t"><strong>Realistic scaling recommendations,</strong> grounded in your actual traffic patterns.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Support</span>
-              <div class="st-t"><strong>Direct follow-up support,</strong> available as fixes get implemented.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">Quantum Internet</div>
+            <div class="term-tag shape-pill c2">Entanglement Distribution</div>
+            <div class="term-tag shape-circle c3">No-Cloning</div>
+            <div class="term-tag shape-pill c1">Quantum Teleportation</div>
+            <div class="term-tag fill shape-pill c2">Entanglement Swapping</div>
+            <div class="term-tag fill shape-circle c3">Quantum Repeater</div>
+            <div class="term-tag fill shape-box c1">Quantum Memory</div>
+            <div class="term-tag fill shape-circle c2">Purification</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">DM "SCALE" to start</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -359,17 +374,19 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Almost every serious outage traces back to an architecture decision that was perfectly correct at a smaller scale and quietly became the actual bottleneck once growth arrived. The system didn't get worse. The assumptions it was built on just stopped holding.
+      <div class="caption-text" id="captionText">The classical internet moves data by copying it. A signal travels a few kilometres down a fiber, weakens, and a repeater reads the bits, regenerates a clean copy, and sends it on. That simple trick, copy and boost, is what lets a bit cross an ocean.
 
-Waiting until something actually breaks to address scaling risk is the most expensive way to find out where the real bottlenecks are, because by then it's happening under production pressure, with real users watching, not in a calm review beforehand. Throwing more infrastructure at the problem treats the symptom, more servers or more compute can mask a bottleneck temporarily, but it doesn't fix the underlying architectural decision causing it, it just makes the workaround more expensive every month it continues.
+None of it works for a qubit. The no-cloning theorem forbids making a copy of an unknown quantum state, and any attempt to amplify a faint quantum signal disturbs it and destroys the information. So firing a single photon carrying a qubit down a long fiber fails: it is lost to attenuation long before it arrives, and nothing along the way is allowed to help.
 
-A proactive scaling audit works differently, starting with a genuine understanding of the growth trajectory actually being planned for, not a generic assumption about scale. From there, the real work is load-testing the specific systems under realistic conditions to find where they genuinely strain first, rather than guessing based on intuition or industry checklists that don't account for how a particular system actually behaves. That produces a prioritized list of what to fix and why it matters most, ranked by actual risk rather than by whatever feels most urgent in the moment.
+The quantum internet gets around this by changing what the network distributes. Instead of transmitting qubits, it distributes entanglement: it establishes shared entangled pairs between distant nodes. Once two nodes hold an entangled pair, one of them can send a qubit's state to the other by quantum teleportation, consuming the pair and a couple of ordinary classical bits sent over the normal internet. The same shared entanglement also underpins provably secure key exchange and lets separate small quantum processors act together as one larger machine.
 
-The entire point is timing. Recommendations built to be implemented ahead of a traffic spike are fundamentally different from a scramble during one, and every finding here comes from the same depth of systems expertise behind the distributed systems and infrastructure posts in this library, not a generic scaling checklist applied without context.
+Building it needs quantum repeaters that work nothing like classical ones. Rather than reading and resending, they use entanglement swapping: entangle node A with B and B with C, then a measurement at B leaves A and C entangled without B ever touching the payload. Quantum memory holds each link stable while neighbouring segments catch up, and entanglement purification trades several noisy pairs for one cleaner one.
 
-The best time to find a scaling bottleneck is before a single user ever notices it exists. That's not a lucky outcome. It's what the audit is actually built to make normal.
+The hard parts are exactly those components: quantum memories with long enough coherence, and efficient interfaces between photons and matter. Small multi-node testbeds exist, but a wide-area quantum internet is still years out.
 
-#scalability #systemdesign #softwarearchitecture #techconsulting #ravenextechnologies</div>
+The network was never going to carry your qubit across the world. It carries entanglement, and your qubit steps across that.
+
+#quantuminternet #quantumcomputing #networking #entanglement #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -434,7 +451,7 @@ The best time to find a scaling bottleneck is before a single user ever notices 
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'scalingaudit-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'quantuminternet-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -448,7 +465,7 @@ The best time to find a scaling bottleneck is before a single user ever notices 
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'scalingaudit-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'quantuminternet-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

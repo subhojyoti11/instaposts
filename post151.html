@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>"It Works on My Machine" Costs More Than a Fix, Post 151</title>
+  <title>A Bit That's a Pulse, Not a Voltage, Post 151</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 180, 83, 9;
       --a3rgb: 15, 118, 110;
       --border: rgba(30, 58, 138, .1);
+      --neu-light: #ffffff;
+      --neu-dark: rgba(15, 23, 42, .14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -183,9 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">Engineering Consulting</div>
-          <h2 style="font-size:36px;line-height:1.05">A Working Demo<br>Isn't a Working <span class="c1">System</span>.</h2>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:36px;line-height:1.05">A Bit That's a<br>Pulse, Not a<br><span class="c1">Voltage</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Gap<br>Is <span class="c2">Invisible</span> Early.</h2>
+          <h2>CMOS Hits a<br>Heat <span class="c2">Wall</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Demos hide real load</span>
-              <div class="st-t"><strong>Something that works for one user</strong> rarely gets tested against real production traffic.</div>
+            <div class="st"><span class="st-v c1">A transistor holds a bit as a voltage</span>
+              <div class="st-t"><strong>Switching it charges and discharges wires,</strong> and that dissipates heat.</div>
             </div>
-            <div class="st"><span class="st-v c2">Architecture debt compounds quietly</span>
-              <div class="st-t"><strong>A shortcut taken early</strong> gets more expensive to unwind the longer it goes unaddressed.</div>
+            <div class="st"><span class="st-v c2">Past a few GHz the heat is unmanageable</span>
+              <div class="st-t"><strong>Which is why clock speeds</strong> stopped climbing over a decade ago.</div>
             </div>
-            <div class="st"><span class="st-v c3">Outside eyes catch what familiarity misses</span>
-              <div class="st-t"><strong>A team too close to a system</strong> stops seeing the assumptions it was built on.</div>
+            <div class="st"><span class="st-v c3">The wire itself has resistance</span>
+              <div class="st-t"><strong>Every signal fights it,</strong> and loses energy doing so.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>DIY vs Freelancer<br>vs <span class="c2">Ravenex</span>.</h2>
+          <h2>Three Ways to<br>Represent a <span class="c2">Bit</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🛠️</div>
-              <div class="cmp-title">DIY</div>
-              <div class="cmp-sub">Figure it out internally</div>
+              <div class="cmp-icon">⚡</div>
+              <div class="cmp-title">CMOS VOLTAGE</div>
+              <div class="cmp-sub">Hold a level</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Solve the architecture problem with the existing team.</div>
+              <div class="cmp-text">Keep a node high or low.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Whatever time and expertise is already on staff.</div>
+              <div class="cmp-text">Charge a capacitance to switch it.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Works eventually, often after it gets expensive.</div>
+              <div class="cmp-text">Universal, but heat-limited past ~5 GHz.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🧑‍💻</div>
-              <div class="cmp-title">FREELANCER</div>
-              <div class="cmp-sub">Bring in extra hands</div>
+              <div class="cmp-icon">📉</div>
+              <div class="cmp-title">LOW-VOLTAGE CMOS</div>
+              <div class="cmp-sub">Shrink the swing</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Add capacity without a specific systems focus.</div>
+              <div class="cmp-text">Cut the voltage to save switching power.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">General development help, not architecture depth.</div>
+              <div class="cmp-text">Run transistors at a smaller level.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">More output, not fewer structural problems.</div>
+              <div class="cmp-text">Helps a little, noise margins shrink.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🎯</div>
-              <div class="cmp-title">RAVENEX</div>
-              <div class="cmp-sub">Bring the right depth</div>
+              <div class="cmp-icon">🌀</div>
+              <div class="cmp-title">SINGLE FLUX QUANTUM</div>
+              <div class="cmp-sub">One flux packet</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Get a focused review from systems specialists.</div>
+              <div class="cmp-text">Represent a bit as one magnetic flux quantum.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">System design, scaling, and architecture review.</div>
+              <div class="cmp-text">A picosecond pulse in superconducting loops.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The actual bottleneck identified, not patched.</div>
+              <div class="cmp-text">Tiny switching energy, 100+ GHz clocks.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: add more hands → add the right depth</div>
+          <div class="cmp-cta">↻ The shift: hold a voltage on a wire → send a single quantized flux pulse</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How an<br>Engagement <span class="c1">Works</span>.</h2>
+          <h2>Pulses Through<br><span class="c1">Junctions</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A real conversation first</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A focused architecture review</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Clear, prioritized recommendations</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Direct access throughout</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Wires are cooled until they superconduct, with zero resistance</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A bit is the presence or absence of one flux quantum</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Josephson junctions switch that pulse along in about a picosecond</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Almost no energy is spent per operation, so heat stays low</b></div></div>
           </div>
-          <div class="callout c2"><p><strong>The goal was never to rebuild everything.</strong> It's finding the specific thing that will actually break next, before it does.</p></div>
+          <div class="callout c2"><p><strong>There is no charged node holding the bit.</strong> A single flux quantum ripples through the circuit as a tiny, fast voltage spike, and that is the whole signal.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>What Working<br>With Us <span class="c2">Looks Like</span>.</h2>
+          <h2>Fast and Cold, Not<br>General-<span class="c2">Purpose</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Direct</b><span>You work with the engineer, not a layer</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>Focused</b><span
-                style="color:var(--a2)">Scoped to your actual bottleneck</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Plain</b><span
-                style="color:var(--a3)">Recommendations without the jargon</span></div>
+            <div class="metric"><b>100+ GHz</b><span>Achievable clock speeds</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>~4 K</b><span
+                style="color:var(--a2)">Needs liquid-helium cooling</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Weak RAM</b><span
+                style="color:var(--a3)">No dense superconducting memory yet</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Built from the same library you're reading</span>
-              <div class="st-t"><strong>Every post here comes from real engineering depth,</strong> not marketing copy.</div>
+            <div class="st"><span class="st-v c1">The cooling is the real cost</span>
+              <div class="st-t"><strong>The chip sips power,</strong> but the refrigerator to keep it at 4 K does not.</div>
             </div>
-            <div class="st"><span class="st-v c2">No engagement is one-size-fits-all</span>
-              <div class="st-t"><strong>What gets reviewed depends entirely</strong> on what's actually at risk.</div>
+            <div class="st"><span class="st-v c2">It has found a niche next to quantum</span>
+              <div class="st-t"><strong>Cold, fast classical logic is useful</strong> for controlling quantum processors that are already cold.</div>
             </div>
           </div>
         </div>
@@ -307,24 +326,20 @@
         <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>What's<br><span class="c1">Included</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Walkthrough</span>
-              <div class="st-t"><strong>An initial system walkthrough,</strong> understanding the architecture before recommending anything.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Risk report</span>
-              <div class="st-t"><strong>A written breakdown of real risk areas,</strong> specific to what's actually in your system.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Next steps</span>
-              <div class="st-t"><strong>Prioritized next steps,</strong> with the reasoning behind them.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Follow-up</span>
-              <div class="st-t"><strong>A direct line for follow-up questions,</strong> support doesn't stop at handoff.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">RSFQ</div>
+            <div class="term-tag shape-pill c2">Flux Quantum</div>
+            <div class="term-tag shape-circle c3">Josephson Junction</div>
+            <div class="term-tag shape-pill c1">Superconducting Logic</div>
+            <div class="term-tag fill shape-pill c2">CMOS Heat Wall</div>
+            <div class="term-tag fill shape-circle c3">Cryogenic Cooling</div>
+            <div class="term-tag fill shape-box c1">Picosecond Switching</div>
+            <div class="term-tag fill shape-circle c2">Quantum Control</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">DM "AUDIT" to start</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -359,17 +374,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A system that works perfectly in a demo and a system that survives real production load are not the same thing, and the gap between them is usually invisible until it's expensive.
+      <div class="caption-text" id="captionText">A conventional transistor stores a bit as a voltage level held on a wire: high for one, low for zero. Changing that bit means charging or discharging the capacitance of the wire and the gate, and every one of those switches dissipates a little heat. Multiply by billions of transistors switching billions of times a second, and heat becomes the hard ceiling. It is the reason processor clock speeds stopped climbing past a few gigahertz over a decade ago, even as transistor counts kept rising.
 
-Most architecture problems don't show up early. Something works fine for one user, passes every test the team thought to write, and gets shipped, and the real gaps only surface once traffic, data volume, or team size grows past what the original design ever accounted for. By the time that happens, the shortcut that made sense early on has usually compounded into something genuinely difficult to unwind, and the team closest to the system is often the last to see it clearly, simply because familiarity makes assumptions invisible.
+Superconducting logic, in its rapid single flux quantum form, represents a bit in a completely different way. The wires are cooled until they superconduct, carrying current with zero resistance, and a bit is no longer a voltage level but the presence or absence of a single quantized packet of magnetic flux, a flux quantum. That quantum shows up as an extremely short voltage pulse, roughly a picosecond wide, and it is passed along the circuit by devices called Josephson junctions that switch in about that same time.
 
-Solving that internally works, eventually, but it usually means solving it after the problem has already gotten expensive. Bringing in general development help adds output, but output isn't the same as architectural depth, more hands don't automatically mean the actual bottleneck gets found. What a focused systems review does differently is start with understanding what's actually breaking, or close to it, through a real conversation, followed by a concrete look at the system as it exists today, not a generic checklist applied regardless of context.
+Because there is no charged node being held and no resistance to fight, the energy spent per operation is thousands of times smaller than in CMOS, and the junctions are fast enough to support clock speeds above a hundred gigahertz.
 
-That review ends with specific, prioritized recommendations, what to address first and why, explained in plain terms rather than buried in jargon, plus direct access to the person who actually did the review, not a layer of account management between your team and the engineering. Every post in this library reflects the same underlying depth this comes from, real systems knowledge, not marketing copy dressed up as expertise.
+The catches are significant. The circuit has to be kept near four kelvin, which requires liquid-helium-class cooling whose power draw dwarfs the chip's own. Designing large systems in pulse-based logic is unfamiliar and hard. Dense memory is an unsolved weak point. And moving signals between the cold chip and room-temperature electronics is lossy. So RSFQ is not a general-purpose CPU replacement; it lives in niches like ultra-fast signal processing and, increasingly, as the cold classical control logic for quantum computers that are already refrigerated.
 
-The goal was never to rebuild everything from scratch. It's finding the specific thing most likely to break next, and fixing that, before it does.
+The bit was never a level you held steady. It was a single flux quantum, passing through.
 
-#systemdesign #softwarearchitecture #engineeringconsulting #techconsulting #ravenextechnologies</div>
+#superconductors #computing #hardware #cryogenics #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -434,7 +449,7 @@ The goal was never to rebuild everything from scratch. It's finding the specific
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'itworksonmymachine-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'rsfq-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -448,7 +463,7 @@ The goal was never to rebuild everything from scratch. It's finding the specific
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'itworksonmymachine-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'rsfq-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

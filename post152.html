@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Engineering Team Doesn't Need More Meetings, Post 152</title>
+  <title>A Circuit That Solves the Equation by Being It, Post 152</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 8, 145, 178;
       --a3rgb: 180, 83, 9;
       --border: rgba(67, 56, 202, .1);
+      --neu-light: #ffffff;
+      --neu-dark: rgba(15, 23, 42, .14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -183,9 +202,9 @@
       <div class="slide">
         <div class="ghost"> </div>
         <div class="hdr"><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">Architecture Documentation</div>
-          <h2 style="font-size:34px;line-height:1.05">Tribal Knowledge Isn't<br>a Documentation <span class="c1">Strategy</span>.</h2>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:34px;line-height:1.05">A Circuit That Solves<br>the Equation by<br><span class="c1">Being It</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Meetings Fill<br>a <span class="c2">Documentation</span> Gap.</h2>
+          <h2>Digital Solves It One<br>Tiny <span class="c2">Step</span> at a Time.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Onboarding takes longer than it should</span>
-              <div class="st-t"><strong>New engineers spend weeks</strong> piecing together architecture that lives only in people's heads.</div>
+            <div class="st"><span class="st-v c1">Continuous problems get chopped into steps</span>
+              <div class="st-t"><strong>Time is sliced thin,</strong> and each slice is a batch of arithmetic.</div>
             </div>
-            <div class="st"><span class="st-v c2">One person becomes a bottleneck</span>
-              <div class="st-t"><strong>Critical system knowledge in one engineer</strong> creates real risk when they're unavailable.</div>
+            <div class="st"><span class="st-v c2">Stability forces the steps smaller</span>
+              <div class="st-t"><strong>Which means more steps,</strong> more operations, more energy.</div>
             </div>
-            <div class="st"><span class="st-v c3">Meetings fill the documentation gap</span>
-              <div class="st-t"><strong>Without written architecture,</strong> every question becomes a synchronous interruption.</div>
+            <div class="st"><span class="st-v c3">Every step rounds</span>
+              <div class="st-t"><strong>Errors accumulate</strong> across millions of iterations.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Tribal vs Wiki<br>vs <span class="c2">Ravenex</span>.</h2>
+          <h2>Three Ways to Solve<br>a <span class="c2">Diff. Equation</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🧠</div>
-              <div class="cmp-title">TRIBAL</div>
-              <div class="cmp-sub">Keep it in people's heads</div>
+              <div class="cmp-icon">🔢</div>
+              <div class="cmp-title">DIGITAL STEPPING</div>
+              <div class="cmp-sub">Step by step</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Rely on senior engineers to explain as needed.</div>
+              <div class="cmp-text">Approximate the curve one time-step at a time.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Whoever remembers the most becomes the source.</div>
+              <div class="cmp-text">Millions of rounded arithmetic operations.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast until that person is busy, or leaves.</div>
+              <div class="cmp-text">Exact to many digits, slow and power-hungry.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">📝</div>
-              <div class="cmp-title">GENERIC WIKI</div>
-              <div class="cmp-sub">Write it eventually</div>
+              <div class="cmp-icon">⚙️</div>
+              <div class="cmp-title">SOLVER CHIP</div>
+              <div class="cmp-sub">Accelerate the stepping</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Document architecture loosely, when there's time.</div>
+              <div class="cmp-text">Run the same method faster in hardware.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Whatever gets written during a rare quiet week.</div>
+              <div class="cmp-text">Parallel digital arithmetic units.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Outdated within months, trusted less over time.</div>
+              <div class="cmp-text">Faster, still discretized and rounding.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">📚</div>
-              <div class="cmp-title">RAVENEX</div>
-              <div class="cmp-sub">Built to actually get used</div>
+              <div class="cmp-icon">〰️</div>
+              <div class="cmp-title">ANALOG CIRCUIT</div>
+              <div class="cmp-sub">Be the equation</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Produce documentation engineers will actually read.</div>
+              <div class="cmp-text">Let the circuit obey the equation directly.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">The same clarity-first approach behind this library.</div>
+              <div class="cmp-text">Voltages, integrators, and summers wired to match.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fewer repeated questions, faster onboarding.</div>
+              <div class="cmp-text">The answer evolves continuously, in real time.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: explain it again → write it once, clearly</div>
+          <div class="cmp-cta">↻ The shift: compute the answer step by step → let a circuit's physics be the equation</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How the<br>Engagement <span class="c1">Runs</span>.</h2>
+          <h2>Set It Up,<br>Let It <span class="c1">Run</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Mapping the real architecture</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Interviewing the people who know it</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Writing it like this library is written</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Handing off something maintainable</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Each variable is assigned a voltage on a wire</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Op-amps are wired as integrators and summers to match the equation</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Initial conditions are set and the circuit is released</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The output voltage traces the solution in real time, no stepping</b></div></div>
           </div>
-          <div class="callout c2"><p><strong>The problem was never that nobody knew the system.</strong> It's that the knowledge lived in exactly one place, somebody's memory.</p></div>
+          <div class="callout c2"><p><strong>The circuit isn't calculating the answer.</strong> Its own electrical behaviour is governed by the same differential equation, so the solution just appears as a voltage over time.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Written<br><span class="c2">Once</span>.</h2>
+          <h2>Fast and Low-Power,<br>But <span class="c2">Imprecise</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Written</b><span>Once, instead of explained repeatedly</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>Structured</b><span
-                style="color:var(--a2)">Same clarity standard as this library</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Maintainable</b><span
-                style="color:var(--a3)">Built for your team to keep updating</span></div>
+            <div class="metric"><b>Real-time</b><span>The solution evolves as it runs</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>No stepping</b><span
+                style="color:var(--a2)">Nothing is discretized</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>~Few digits</b><span
+                style="color:var(--a3)">Precision limited by noise</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Faster onboarding, fewer interruptions</span>
-              <div class="st-t"><strong>Clear documentation reduces</strong> how often new hires need a synchronous explanation.</div>
+            <div class="st"><span class="st-v c1">It shines on specific math</span>
+              <div class="st-t"><strong>Systems of differential equations, control loops, and some neural-net operations</strong> map well.</div>
             </div>
-            <div class="st"><span class="st-v c2">Less risk in one person</span>
-              <div class="st-t"><strong>Critical system knowledge stops depending</strong> on a single engineer's availability.</div>
+            <div class="st"><span class="st-v c2">The revival is hybrid</span>
+              <div class="st-t"><strong>Modern designs pair a reconfigurable analog block with a digital host,</strong> including analog in-memory compute for AI.</div>
             </div>
           </div>
         </div>
@@ -307,24 +326,20 @@
         <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>What's<br><span class="c1">Included</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Walkthrough</span>
-              <div class="st-t"><strong>A full architecture walkthrough,</strong> documented as it actually exists.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Interviews</span>
-              <div class="st-t"><strong>Interviews with key engineers,</strong> capturing current tribal knowledge.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Documentation</span>
-              <div class="st-t"><strong>Clear, structured written documentation,</strong> the same standard as this library.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Handoff</span>
-              <div class="st-t"><strong>A maintenance handoff,</strong> guidance for keeping it accurate afterward.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">Analog Computing</div>
+            <div class="term-tag shape-pill c2">Continuous Variable</div>
+            <div class="term-tag shape-circle c3">Op-Amp Integrator</div>
+            <div class="term-tag shape-pill c1">Differential Equation</div>
+            <div class="term-tag fill shape-pill c2">Time-Stepping</div>
+            <div class="term-tag fill shape-circle c3">In-Memory Compute</div>
+            <div class="term-tag fill shape-box c1">Reconfigurable Array</div>
+            <div class="term-tag fill shape-circle c2">Limited Precision</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">DM "DOCS" to start</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -359,17 +374,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A new engineer joining most teams doesn't actually learn the system from documentation, they learn it from asking a senior engineer the same questions previous new hires already asked, because the real architecture only ever lived in someone's head.
+      <div class="caption-text" id="captionText">A digital computer solves a differential equation by pretending time moves in discrete jumps. It slices the timeline into tiny steps and, at each step, performs a batch of arithmetic to estimate how every variable changes. For a large system, a fluid simulation, a power-grid model, a network of coupled equations, that is millions or billions of operations, each carrying a small rounding error that accumulates, and numerical stability often forces the steps to be even smaller, which makes it slower still.
 
-That pattern is common, and it's expensive in ways that don't always show up on a spreadsheet. Onboarding takes longer than it should, because piecing together an undocumented system from scattered conversations is slower than reading a clear explanation once. Critical knowledge concentrates in one or two people, which becomes a real risk the moment they're on vacation, in back-to-back meetings, or leave the team entirely. And without written architecture to point to, every question becomes a synchronous interruption instead of something someone could have looked up.
+An analog computer does not step through time at all. Each variable in the problem is represented by a continuous physical quantity, usually a voltage on a wire. Operational amplifiers are then wired into configurations that perform integration and summation, and the wiring is arranged so that the circuit's own electrical behaviour is described by the same differential equation you are trying to solve. You set the initial conditions as starting voltages, release the circuit, and the output voltage simply traces out the solution as it evolves, in real time, at the speed of the electronics, with no discretization and no per-step rounding.
 
-A wiki page written during a rare quiet week helps briefly, but it drifts out of date within months and gets trusted less every time it turns out to be wrong. What actually solves this is documentation written with the same standard this library is built on, mapping the system as it genuinely works today rather than as it was originally designed, interviewing the engineers who hold the tribal knowledge that never made it into any document, and writing the result clearly enough that people actually read it instead of skimming past it.
+The revival happening now is not about replacing digital computers. It is about analog blocks, often reconfigurable, sitting on a chip next to a digital host and acting as an accelerator for the kinds of math they are good at: systems of differential equations, real-time control, and increasingly the multiply-accumulate operations at the heart of neural networks, done in a resistor crossbar using basic circuit laws.
 
-The goal isn't a document nobody opens again. It's architecture documentation your team can actually maintain after the engagement ends, structured well enough that keeping it current doesn't feel like a chore, and clear enough that a new engineer can genuinely learn the system from it instead of interrupting someone else to explain it one more time.
+The limitation is precision. An analog result is typically good to a few digits, set by electrical noise and component tolerances, not the fifteen-plus digits a digital float gives you. For problems where that is enough, the speed and energy advantage can be large.
 
-The problem was never that nobody understood the system. It's that the understanding lived in exactly one place, somebody's memory, instead of somewhere the whole team could actually reach it.
+The circuit was never computing the answer. It was built so that its own physics had no choice but to obey the same equation.
 
-#techdocumentation #softwareengineering #engineeringconsulting #systemdesign #ravenextechnologies</div>
+#analogcomputing #hardware #computing #differentialequations #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -434,7 +449,7 @@ The problem was never that nobody understood the system. It's that the understan
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'archdocs-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'analogcomputing-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -448,7 +463,7 @@ The problem was never that nobody understood the system. It's that the understan
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'archdocs-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'analogcomputing-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

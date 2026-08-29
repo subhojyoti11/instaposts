@@ -506,4 +506,65 @@ Future Topics for Ravenex Technologies
 - Focus: Why letting an AI coding agent start building straight from a one-line prompt produces an app that drifts, contradicts itself, and has to be rebuilt. An agent has no memory of intent between sessions and no way to infer decisions the builder never wrote down, so ambiguity upstream becomes rework downstream.
 - Key angle: Six documents remove that ambiguity before a single line of code is written. A PRD specifies exactly what is being built and every feature in scope. A TRD locks in the tech stack, APIs, and tools so the agent never has to guess. An App Flow map defines every screen, button, and navigation path. A UI/UX design brief fixes the color palette, typography, and layout so output stays visually consistent. A backend schema defines tables, columns, relationships, and auth flows before any data model gets improvised. And an implementation plan orders the build sequence so features land in a working, buildable order rather than all at once. All six can be drafted for free with a general-purpose AI assistant, and the clearer they are, the less an agent has to invent on its own.
 
-----Completed----
+
+
+--- EVERYDAY TECH & SECURITY (212+) ---
+212. Why Ink Cartridges Report Empty With Ink Still Inside
+- Focus: Why a printer refuses to print well before the cartridge is actually out of ink. Most consumer cartridges carry no fluid-level sensor at all; an embedded chip counts estimated usage against an expected page capacity, and printing halts on that estimate plus a deliberate safety margin, not on a real measurement of what is left.
+- Key angle: A direct fluid sensor would be accurate but adds a cost most cartridges skip, so the chip estimates instead, and an estimate has to stay conservative. Stopping early protects the print head from running dry and avoids shipping visibly degraded pages as ink genuinely runs low. The same margin also nudges owners toward earlier replacement and confuses refilled or third-party cartridges whose counters no longer match reality, a widely criticized side effect of estimating instead of measuring.
+
+213. Why a Microwave Needs a Turntable to Cook Evenly
+- Focus: Why a microwave oven cannot heat food uniformly on its own. Microwaves bouncing inside a sealed metal cavity form a standing-wave pattern of fixed hot and cold zones, so a stationary dish just sits in whatever zone it landed in, one spot overheating while another an inch away stays cold.
+- Key angle: The fix is not to correct the wave pattern but to move the food through it. A motor rotating the dish carries every part of the meal through both the peaks and the nulls, so uneven heating averages out over each rotation. Larger commercial ovens sometimes scatter the pattern with a rotating mode-stirrer fan instead, and newer flat-bed designs use multiple emitters with phase-shifting, but the cheap and universal answer for decades has been one slow turntable.
+
+214. The Diagnostic Code Hiding Behind Your Check Engine Light
+- Focus: Why a single dashboard warning light tells you nothing about what is actually wrong. The instant a sensor detects a fault the car logs a specific standardized trouble code internally, but the dashboard only ever shows a generic icon, so diagnosing by guesswork means paying for parts that were never the problem.
+- Key angle: Since 1996 every car sold in the US exposes these codes through a standardized OBD-II port, and the core code format is shared across nearly all manufacturers rather than being proprietary. A basic consumer scanner retrieves the identical code a shop's professional tool would, in seconds, narrowing the problem to an exact system before a single part gets touched.
+
+215. Why the Seat Next to Yours Cost a Different Price
+- Focus: Why the same cabin and seat type on one flight sells at dramatically different prices to different passengers. An empty seat at departure is pure unrecoverable loss, unlike physical inventory, and demand for a route shifts hour by hour, so one fixed price always leaves either money or seats on the table.
+- Key angle: Airlines split one physically identical cabin into many fare buckets, each holding a set number of seats at a specific price, and open or close those buckets continuously based on booking pace. The cheapest buckets sell first, which is why booking earlier genuinely improves the odds of a lower fare. This revenue-management approach is decades old and predates its spread to hotels and ride-hailing.
+
+216. How a Smartwatch Spots a Heart Problem Before You Feel It
+- Focus: Why a wrist wearable watches heart rhythm, not just heart rate. A beats-per-minute average cannot separate a normal rhythm from a dangerous one, some arrhythmias produce a normal-looking rate, and many people in atrial fibrillation feel nothing until a complication occurs.
+- Key angle: An optical PPG sensor shines light into the wrist to track blood flow and times every beat-to-beat gap continuously through the day. Irregular spacing gets flagged, and a flagged episode prompts the wearer to seek a real ECG. These features are cleared as a screening tool, not a diagnostic one, and large real-world studies using consumer wearables have detected previously unknown arrhythmias this way.
+
+217. Why Deleting a Message Doesn't Delete It Everywhere
+- Focus: Why unsending a text never guarantees the message is gone. By the time you tap delete, the message has usually already been delivered, stored, and shown in a notification preview on the recipient's device, and deleting it locally only ever controls your own copy.
+- Key angle: A modern unsend sends a retraction, a tombstone event that marks the message as withdrawn and propagates to devices as they come online, rather than an instant global erase. It is best-effort by design: offline devices catch up later, some platforms keep a brief server-side record, and nothing can undo a screenshot or a cached preview captured before the retraction arrived.
+
+218. How a Lost Tracker Gets Found With No Signal of Its Own
+- Focus: Why a coin-sized item tracker with no GPS and no cellular radio can still be located almost anywhere. A direct Bluetooth signal only carries a few dozen meters, so a tag in a stranger's bag miles away should be unreachable.
+- Key angle: The tag broadcasts a quiet encrypted Bluetooth beacon that any nearby smartphone in a crowdsourced network silently picks up and relays, stamped with that phone's location. Millions of passing devices form the network, so coverage depends on how many phones pass nearby rather than on the tag's own power. The location reports are end-to-end encrypted and the relaying phones are never identified, and stopping the mesh from being used to track people instead of objects was the hard part of the design.
+
+219. How a Parking Garage Knows Which Spots Are Empty
+- Focus: Why those green and red overhead lights are never a guess or a running count. An entry counter knows total occupancy but not which specific spaces are free, and no human can watch hundreds of spots in real time.
+- Key angle: A small ultrasonic sensor mounted above each individual space measures the distance to the floor and reports occupied the moment a car changes that distance. Hundreds of sensors independently answer the same simple question continuously, the row-level and garage-level signs just aggregate their readings, and the same per-space sensing scales up to city-wide street-parking systems.
+
+220. Why Your Credit Score Doesn't Update the Moment You Pay
+- Focus: Why paying off a card balance doesn't move your score right away. The score isn't calculated by your bank, and card issuers don't stream account changes to the credit bureaus as they happen.
+- Key angle: Issuers batch each account's status into a single snapshot and submit it to the bureaus on a roughly monthly schedule tied to the billing cycle, so the score reflects a picture that can be weeks old. Credit scoring was built around periodic snapshots from the start, not a live feed. Paying a balance down before the statement closing date, rather than just before the due date, is what gets a lower utilization figure reported sooner, and the three bureaus each receive data on their own schedule, so the same account can look different at each.
+
+221. Why Subtitles Never Drift Out of Sync
+- Focus: Why captions stay aligned to the picture even when you pause, buffer, or skip around. Playing subtitle lines in sequence, or tracking elapsed time since playback started, both fall apart the instant that counter and the actual video position diverge.
+- Key angle: Every subtitle line carries two timestamps, an exact start and end bound to the video's own clock. The player continuously asks which cue belongs at the current timestamp and looks it up, so a seek is just another fresh lookup and there is no accumulated timing error over a feature-length film. Multiple language tracks each carry their own timestamps and resolve identically, and the same standard cue formats underpin captions across nearly every streaming service.
+
+222. Why Solar Panels Still Generate Power Under Heavy Cloud
+- Focus: Why a solar panel doesn't need a clear line to the sun. An overcast sky is still bright enough to see by, and that scattered light carries real usable energy, so cloud cover reduces output rather than cutting it off.
+- Key angle: The photovoltaic effect responds to any photon that reaches the cell, whether it arrived as a direct beam or was scattered through an entire cloud bank as diffuse irradiance. Output under heavy overcast typically falls to roughly 10 to 25 percent of peak rather than to zero, some panel technologies do relatively well in consistently cloudy climates, and extreme heat often costs more efficiency than moderate cloud does, a common misconception.
+
+223. How a Washing Machine Measures How Dirty the Water Is
+- Focus: Why a smart washer doesn't just run a fixed timed cycle. One preset wash time and water volume for every load wastes water and energy on light loads and under-cleans heavy ones, and load weight alone says nothing about how dirty the laundry actually is.
+- Key angle: A turbidity sensor shines a light beam through the wash water and measures how much suspended dirt scatters it, in real time. The machine adds or drops rinse cycles based on when the water stops looking dirty rather than on a timer, measurably cutting water use on lightly soiled loads. The same optical turbidity measurement is a standard water-quality check used well beyond appliances, including for drinking water.
+
+224. How an AI Coding Agent Leaks Your Secrets Without Trying
+- Focus: Why giving an AI coding assistant repo access is a structural risk to credentials. An agent reads .env files and secret configs like any other file, pasting whole files in for context routinely sweeps in credentials nobody meant to share, and anything that touched a prompt can persist in logs or a shared transcript.
+- Key angle: The mistake isn't a bad prompt, it is that nothing tells the agent one file is different from the rest, so trusting it by default is one "explain this file" request away from a leak, and relying on a human to remember to redact every time works until the one time it doesn't. The structural fix is scoped access: gitignore-aware tooling, isolation, and secret managers that keep the secret unreadable to the agent in the first place. Once a key is exposed, rotating it is the only real fix, since removing it from a file doesn't invalidate it.
+
+225. That 'Test Only' Key You Committed Is Already Being Used
+- Focus: Why a credential pushed to a public repository should be treated as compromised the instant it lands. Every push to a public repo is visible immediately, bots built to scan new commits for credential patterns run around the clock, and a key that works in a test environment usually authenticates identically to production.
+- Key angle: Typical time from commit to first malicious use is minutes. Deleting the line in a new commit fixes future clones but leaves the key fully readable in git history, and the key still works. Only rotating the credential, revoking the exposed one and issuing a new one, actually stops it. Major cloud providers run their own detection and will proactively flag exposed keys, but a live credential in the wrong hands can run up real billable usage before anyone notices.
+
+226. Why 'npm install' Runs Code You Never Reviewed
+- Focus: Why installing a package is never just copying files onto disk. Many packages execute setup scripts automatically the moment they finish downloading, before you have opened a single file, and one dependency can pull in dozens of transitive packages, each a potential entry point.
+- Key angle: At the scale modern projects install dependencies, auditing every line by hand isn't realistic, so a supply-chain attack works by compromising a popular package, shipping a new version to the registry, and letting everyone's install pull it and run its install script automatically. A committed lockfile pins exact versions and prevents a silent upgrade to a compromised release, while scoped permissions and install-script restrictions catch malicious changes before they run; npm audit only flags already-known vulnerabilities, not a fresh compromise.

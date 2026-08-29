@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>That 'Test Only' Key You Committed Is Already Being Used, Post 149</title>
+  <title>A Matrix Multiply at the Speed of Light, Post 149</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -12,24 +12,26 @@
     rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0505;
-      --card: #170c0c;
-      --ink: #fff0ee;
+      --bg: #07070d;
+      --card: #0d0f1a;
+      --ink: #e8f0ff;
       --ink2: #a0a0a0;
-      --dim: #6b5555;
-      --a1: #dc2626;
-      --a2: #fb923c;
-      --a3: #f43f5e;
-      --a1rgb: 220, 38, 38;
-      --a2rgb: 251, 146, 60;
-      --a3rgb: 244, 63, 94;
-      --border: rgba(220, 38, 38, .16);
+      --dim: #545b6e;
+      --a1: #38bdf8;
+      --a2: #fbbf24;
+      --a3: #c084fc;
+      --a1rgb: 56, 189, 248;
+      --a2rgb: 251, 191, 36;
+      --a3rgb: 192, 132, 252;
+      --border: rgba(148, 163, 184, .1);
+      --neu-light: rgba(255, 255, 255, .045);
+      --neu-dark: rgba(0, 0, 0, .6);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #240c0c 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0a1520 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +46,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #24101052 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #0d172052 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -101,7 +103,7 @@
     .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
     .cmp-col:first-child { border-left: none; padding-left: 0; }
     .cmp-col:last-child { padding-right: 0; }
-    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #170c0c; }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
     .cmp-col.c3 .cmp-icon { background: var(--a3); }
@@ -177,6 +179,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -187,30 +206,30 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">⚠ Active Threat</div>
-          <h2 style="font-size:37px;line-height:1.0">A Committed Key<br>Never Stays<br>Private for <span class="c1">Long</span>.</h2>
+        <div class="hdr"><span class="num">01 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:37px;line-height:1.0">A Matrix Multiply<br>at the Speed of<br><span class="c1">Light</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">02 / 06</span></div>
+        <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Public Isn't<br><span class="c1">Hidden</span>.</h2>
+          <h2>Every Digital Multiply<br>Costs <span class="c1">Electrons</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Public commits are watched, not hidden</span>
-              <div class="st-t"><strong>Every push to a public repository</strong> is visible the instant it lands, not eventually.</div>
+            <div class="st"><span class="st-v c1">AI is mostly multiply-accumulate</span>
+              <div class="st-t"><strong>Billions of the same tiny operation</strong> per inference.</div>
             </div>
-            <div class="st"><span class="st-v c2">Scraping is automated and constant</span>
-              <div class="st-t"><strong>Bots built specifically to scan new commits</strong> for credential patterns run around the clock.</div>
+            <div class="st"><span class="st-v c2">Each one switches transistors and heats up</span>
+              <div class="st-t"><strong>And the energy per operation</strong> has largely stopped improving.</div>
             </div>
-            <div class="st"><span class="st-v c3">"Test only" isn't a real safeguard</span>
-              <div class="st-t"><strong>A key working in a test environment</strong> usually authenticates identically to production.</div>
+            <div class="st"><span class="st-v c3">Moving the data costs more than the math</span>
+              <div class="st-t"><strong>Fetching weights from memory</strong> dominates the power budget.</div>
             </div>
           </div>
         </div>
@@ -219,88 +238,88 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">03 / 06</span></div>
+        <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways<br>to <span class="c1">Respond</span>.</h2>
+          <h2>Three Ways<br>to Do the <span class="c1">Math</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c2">
-              <div class="cmp-icon">🤷</div>
-              <div class="cmp-title">IGNORE IT</div>
-              <div class="cmp-sub">Probably fine</div>
+              <div class="cmp-icon">🔌</div>
+              <div class="cmp-title">DIGITAL GPU</div>
+              <div class="cmp-sub">Transistor arithmetic</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Leave the key in history, hope nobody notices.</div>
+              <div class="cmp-text">Compute exact products with logic gates.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">No action taken beyond hoping it's unnoticed.</div>
+              <div class="cmp-text">Clocked math, weights fetched from memory.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Often already scraped before this thought finishes.</div>
+              <div class="cmp-text">Precise and flexible, energy-bound.</div>
             </div>
             <div class="cmp-col c1">
-              <div class="cmp-icon">🗑️</div>
-              <div class="cmp-title">DELETE THE FILE</div>
-              <div class="cmp-sub">Remove going forward</div>
+              <div class="cmp-icon">⚙️</div>
+              <div class="cmp-title">ANALOG ELECTRONIC</div>
+              <div class="cmp-sub">Sum currents</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Delete the file or line in a new commit.</div>
+              <div class="cmp-text">Add currents on a wire instead of digitally.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Fixes future clones, not what already leaked.</div>
+              <div class="cmp-text">In-memory crossbars of resistive cells.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The key still works, just harder to find.</div>
+              <div class="cmp-text">Lower energy, drifts and wears.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔄</div>
-              <div class="cmp-title">ROTATE IMMEDIATELY</div>
-              <div class="cmp-sub">Invalidate the key</div>
+              <div class="cmp-icon">🔦</div>
+              <div class="cmp-title">PHOTONIC MESH</div>
+              <div class="cmp-sub">Interfering beams</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Revoke the exposed credential, issue a new one.</div>
+              <div class="cmp-text">Let interfering light beams do the multiply.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">The only action that stops the key working.</div>
+              <div class="cmp-text">A passive mesh of splitters and phase shifters.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Whatever scraped it gets nothing usable.</div>
+              <div class="cmp-text">The product forms as the light passes through.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: hide the evidence → invalidate the credential</div>
+          <div class="cmp-cta">↻ The shift: add numbers with transistors → let light interfere and read the result</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">04 / 06</span></div>
+        <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How Fast<br>It <span class="c1">Moves</span>.</h2>
+          <h2>Encode, Interfere,<br><span class="c1">Detect</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A commit lands publicly</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Automated scanners pick it up</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The key gets tested for validity</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>It gets used or resold within minutes</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Input numbers are encoded onto the amplitude and phase of light beams</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The beams pass through a fixed mesh that mixes them</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Interference at the outputs is the matrix-vector product</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Photodetectors and converters turn the light back into digital numbers</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>Git history doesn't forget.</strong> Deleting the line in a new commit still leaves the original commit, and the key inside it, fully readable in history.</p></div>
+          <div class="callout c1"><p><strong>The multiply itself spends almost no energy, it's just light passing through glass.</strong> The cost is getting data in and out, the lasers, modulators, and analog-to-digital conversion.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">05 / 06</span></div>
+        <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Cost<br>of <span class="c1">Waiting</span>.</h2>
+          <h2>Fast and Cool,<br>But <span class="c1">Analog</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Minutes</b><span>Typical time from commit to first use</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>24/7</b><span
-                style="color:var(--a2)">Automated scanning never stops</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>History</b><span
-                style="color:var(--a3)">Where deleted keys still live</span></div>
+            <div class="metric"><b>Passive</b><span>No switching per operation</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>Light-speed</b><span
+                style="color:var(--a2)">The product forms in one pass</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>Low precision</b><span
+                style="color:var(--a3)">Analog noise caps the bit depth</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Cloud providers scan too</span>
-              <div class="st-t"><strong>Major platforms run their own automated detection</strong> and will proactively flag exposed keys.</div>
+            <div class="st"><span class="st-v c1">Inference is the target, not training</span>
+              <div class="st-t"><strong>Low-precision analog math suits running a trained model,</strong> not training one.</div>
             </div>
-            <div class="st"><span class="st-v c2">Cost can accrue fast</span>
-              <div class="st-t"><strong>A live cloud credential in the wrong hands</strong> can generate real, billable usage unnoticed.</div>
+            <div class="st"><span class="st-v c2">Conversion dominates the budget</span>
+              <div class="st-t"><strong>Turning electronic data into light and back</strong> is where most of the energy and error now sit.</div>
             </div>
           </div>
         </div>
@@ -309,27 +328,23 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Active Threat</span><span class="num">06 / 06</span></div>
+        <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Protect<br><span class="c1">Yourself</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Rotate first, investigate second</span>
-              <div class="st-t"><strong>Treat any possible exposure as confirmed</strong> and invalidate the credential immediately.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Purge the commit history, not just the file</span>
-              <div class="st-t"><strong>A proper history rewrite is required</strong> to actually remove a leaked secret.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Use secret scanning tools</span>
-              <div class="st-t"><strong>Automated pre-commit and repo-level scanners</strong> catch this before it's ever pushed.</div>
-            </div>
-            <div class="st"><span class="st-v c1">Never rely on "probably private"</span>
-              <div class="st-t"><strong>Access settings change, forks happen,</strong> and mistakes get made.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">Optical Computing</div>
+            <div class="term-tag shape-pill c2">Matrix-Vector Multiply</div>
+            <div class="term-tag shape-circle c3">Interferometer Mesh</div>
+            <div class="term-tag shape-pill c1">Photonic Accelerator</div>
+            <div class="term-tag fill shape-pill c2">Analog Compute</div>
+            <div class="term-tag fill shape-circle c3">Electro-Optic Modulator</div>
+            <div class="term-tag fill shape-box c1">Data Conversion</div>
+            <div class="term-tag fill shape-circle c2">Inference</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">⚠ Save before your next push</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -364,17 +379,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A credential committed to a public repository doesn't sit there quietly waiting to be discovered. It's often already being tested for validity before you've even finished typing the commit message.
+      <div class="caption-text" id="captionText">The workhorse operation inside a neural network is the multiply-accumulate: multiply two numbers, add the result to a running total, repeat billions of times per inference. On a digital chip, every one of those operations pushes electrons through transistors that switch and dissipate heat, and the energy cost per operation has largely stopped falling. Worse, fetching the weights from memory to feed the arithmetic units often costs more energy than the arithmetic itself.
 
-Public commits aren't obscure, they're actively watched. Automated bots built specifically to scan new commit feeds for credential-shaped strings run constantly, and they don't care whether a key was labeled "test only" in a comment, because most test credentials authenticate through the exact same mechanism as production ones. The moment a push lands, the diff is publicly readable, and scanners built for exactly this purpose can pick it up within minutes, not days.
+Optical computing does the same linear algebra with light. Numbers are encoded onto the amplitude and phase of laser beams, and those beams are sent through a fixed mesh of beam splitters and phase shifters. As the beams pass through and interfere with each other, the pattern of light at the outputs is, physically, the result of a matrix multiplied by a vector. The multiplication happens in a single pass at the speed of light, and once the light exists, propagating it through the mesh costs almost no additional energy, because nothing is switching per operation.
 
-The instinctive response, deleting the file or the line in a new commit, doesn't actually fix anything that matters. Git history doesn't forget, the original commit containing the secret is still fully present and readable in the repository's history regardless of what a later commit does, which means the key is still exactly as exposed as it was the moment it was pushed. The only action that genuinely stops a leaked key from being usable is rotating it, revoking the old credential and issuing a new one, because that's the one step that makes whatever already scraped the key useless.
+The catch is everything around the mesh. You need lasers to make the light, modulators to imprint the input data onto it, and photodetectors plus analog-to-digital converters to read the answer back into a form a normal computer can use. Those input and output conversions now dominate both the energy budget and the error budget, and because the computation is analog, it is inherently lower precision and noisier than digital arithmetic.
 
-The financial risk here is real too. A live cloud credential in the wrong hands can generate real, billable usage before anyone on the legitimate side even notices something is wrong, and major cloud providers now run their own automated scanning specifically because this pattern is common enough to justify it.
+That makes optics a good fit for inference, running an already-trained model where some imprecision is tolerable, rather than training, which needs high precision. Companies building photonic accelerators pair an optical core for the matrix math with conventional electronics for control and for the parts that do not map onto light.
 
-The safest assumption is also the simplest one, treat any possible exposure as a confirmed one. Rotate the credential immediately, purge the actual commit history rather than just the current file state, and use pre-commit secret scanning so this never reaches a public push in the first place.
+The multiply was never the expensive part once you did it with light. Getting the numbers into the light, and back out again, is the problem that is left.
 
-#cybersecurity #devsecops #appsecurity #gitsecurity #ravenextechnologies</div>
+#optcomputing #photonics #ai #hardware #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -421,7 +436,7 @@ The safest assumption is also the simplest one, treat any possible exposure as a
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#170c0c', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -439,7 +454,7 @@ The safest assumption is also the simplest one, treat any possible exposure as a
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'keyscraped-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'opticalcomputing-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -453,7 +468,7 @@ The safest assumption is also the simplest one, treat any possible exposure as a
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'keyscraped-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'opticalcomputing-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

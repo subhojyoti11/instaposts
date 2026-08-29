@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your AI Coding Agent Can Leak Your API Keys Without Trying, Post 148</title>
+  <title>A Chip That Spends No Power Until a Neuron Fires, Post 148</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -12,24 +12,26 @@
     rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0505;
-      --card: #170c0c;
-      --ink: #fff0ee;
+      --bg: #07070d;
+      --card: #0d0f1a;
+      --ink: #e8f0ff;
       --ink2: #a0a0a0;
-      --dim: #6b5555;
-      --a1: #ef4444;
-      --a2: #f59e0b;
-      --a3: #fb7185;
-      --a1rgb: 239, 68, 68;
-      --a2rgb: 245, 158, 11;
-      --a3rgb: 251, 113, 133;
-      --border: rgba(239, 68, 68, .16);
+      --dim: #545b6e;
+      --a1: #a3e635;
+      --a2: #38bdf8;
+      --a3: #f472b6;
+      --a1rgb: 163, 230, 53;
+      --a2rgb: 56, 189, 248;
+      --a3rgb: 244, 114, 182;
+      --border: rgba(148, 163, 184, .1);
+      --neu-light: rgba(255, 255, 255, .045);
+      --neu-dark: rgba(0, 0, 0, .6);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      background: radial-gradient(ellipse 900px 480px at 50% -8%, #240c0c 0%, var(--bg) 55%) var(--bg);
+      background: radial-gradient(ellipse 900px 480px at 50% -8%, #0f1a0a 0%, var(--bg) 55%) var(--bg);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -44,7 +46,7 @@
       flex: 0 0 min(92vw, 460px);
       aspect-ratio: 2/2.3;
       scroll-snap-align: center;
-      background: linear-gradient(160deg, #24101052 0%, var(--card) 40%);
+      background: linear-gradient(160deg, #0d1a0d52 0%, var(--card) 40%);
       background-color: var(--card);
       color: var(--ink);
       position: relative;
@@ -101,7 +103,7 @@
     .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
     .cmp-col:first-child { border-left: none; padding-left: 0; }
     .cmp-col:last-child { padding-right: 0; }
-    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #170c0c; }
+    .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
     .cmp-col.c3 .cmp-icon { background: var(--a3); }
@@ -177,6 +179,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -187,30 +206,30 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">01 / 06</span></div>
-        <div class="body" style="align-items:center;text-align:center;justify-content:center;">
-          <div class="tag-badge">⚠ Security Risk</div>
-          <h2 style="font-size:38px;line-height:1.0">Your Coding Agent<br>Never Knows<br>Which Files Are <span class="c1">Secret</span>.</h2>
+        <div class="hdr"><span class="num">01 / 06</span></div>
+        <div class="body">
+          <p style="margin-bottom:60px"> </p>
+          <h2 style="font-size:38px;line-height:1.0">A Chip That Spends<br>No Power Until a<br>Neuron <span class="c1">Fires</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">02 / 06</span></div>
+        <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The <span class="c1">Risk</span> Is Structural.</h2>
+          <h2>A GPU Computes<br>Everything, Every <span class="c1">Cycle</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Agents read everything in scope</span>
-              <div class="st-t"><strong>An AI coding assistant given repo access</strong> reads .env files and secrets like any other file.</div>
+            <div class="st"><span class="st-v c1">Dense math runs on a clock</span>
+              <div class="st-t"><strong>Every neuron's value is recomputed each cycle,</strong> active or not.</div>
             </div>
-            <div class="st"><span class="st-v c2">Context windows love full files</span>
-              <div class="st-t"><strong>Pasting an entire file for "context"</strong> routinely includes credentials nobody meant to share.</div>
+            <div class="st"><span class="st-v c2">Idle neurons still cost power</span>
+              <div class="st-t"><strong>There is no "do nothing"</strong> in a synchronous matrix multiply.</div>
             </div>
-            <div class="st"><span class="st-v c3">Logs and chat history persist</span>
-              <div class="st-t"><strong>A key that touched a prompt</strong> can end up stored in logs or a shared session transcript.</div>
+            <div class="st"><span class="st-v c3">Data shuttles to and from memory</span>
+              <div class="st-t"><strong>Moving weights back and forth</strong> burns more energy than the math.</div>
             </div>
           </div>
         </div>
@@ -219,88 +238,88 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">03 / 06</span></div>
+        <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Safe vs Risky<br>vs <span class="c1">Exposed</span>.</h2>
+          <h2>Three Ways to Run<br>a Neural <span class="c1">Net</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c2">
-              <div class="cmp-icon">🙈</div>
-              <div class="cmp-title">IGNORE IT</div>
-              <div class="cmp-sub">Trust by default</div>
+              <div class="cmp-icon">⏱️</div>
+              <div class="cmp-title">CLOCKED GPU</div>
+              <div class="cmp-sub">Multiply everything</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Give an agent full repo access, assume it behaves.</div>
+              <div class="cmp-text">Multiply big matrices as fast as possible.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">No boundaries on what's readable or pasteable.</div>
+              <div class="cmp-text">Every unit updates every tick.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">One "explain this file" request from a leak.</div>
+              <div class="cmp-text">Great for training, power-hungry when idle.</div>
             </div>
             <div class="cmp-col c1">
-              <div class="cmp-icon">🧍</div>
-              <div class="cmp-title">MANUAL CAUTION</div>
-              <div class="cmp-sub">Remember every time</div>
+              <div class="cmp-icon">📉</div>
+              <div class="cmp-title">QUANTIZED CHIP</div>
+              <div class="cmp-sub">Shrink the math</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Rely on remembering to redact secrets each time.</div>
+              <div class="cmp-text">Cut precision to save energy per operation.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Human discipline as the only safeguard.</div>
+              <div class="cmp-text">Lower-precision weights and activations.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Works until the one time it's forgotten.</div>
+              <div class="cmp-text">Cheaper per op, still always-on.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔒</div>
-              <div class="cmp-title">SCOPED ACCESS</div>
-              <div class="cmp-sub">Fence off secrets</div>
+              <div class="cmp-icon">⚡</div>
+              <div class="cmp-title">SPIKING NEUROMORPHIC</div>
+              <div class="cmp-sub">Compute on events</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Structurally block an agent from reading secrets.</div>
+              <div class="cmp-text">Do work only when something happens.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Gitignore-aware tooling, isolation, secret managers.</div>
+              <div class="cmp-text">Neurons fire spikes only when a threshold is crossed.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">The mistake becomes structurally impossible.</div>
+              <div class="cmp-text">Near-zero power between spikes.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: hope it doesn't happen → make it impossible</div>
+          <div class="cmp-cta">↻ The shift: recompute everything on a clock → react only when a neuron spikes</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">04 / 06</span></div>
+        <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>How It<br>Actually <span class="c1">Happens</span>.</h2>
+          <h2>Event-Driven,<br>End to <span class="c1">End</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A repo gets connected</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A broad prompt gets asked</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The key rides along in context</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>It resurfaces somewhere unexpected</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Inputs arrive as sparse spikes, not dense frames</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A neuron integrates its inputs and stays silent below threshold</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Crossing threshold emits one spike to connected neurons</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Between spikes, that part of the chip draws almost nothing</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>The agent was never trying to leak anything.</strong> It was just doing exactly what it was asked, and nothing told it that one file was different from the rest.</p></div>
+          <div class="callout c1"><p><strong>Nothing on the chip is clocked into action.</strong> A neuron only does work, and only sends a message, at the instant it actually fires.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">05 / 06</span></div>
+        <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Real<br><span class="c1">Cost</span>.</h2>
+          <h2>Cheap When Sparse,<br>Not a GPU <span class="c1">Replacement</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Seconds</b><span>Time for a scraped key to be abused</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>Plain text</b><span
-                style="color:var(--a2)">How most .env secrets are stored</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>1 prompt</b><span
-                style="color:var(--a3)">Enough to pull a secret into context</span></div>
+            <div class="metric"><b>Event-driven</b><span>Work happens only on a spike</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.3)"><b>Memory local</b><span
+                style="color:var(--a2)">Synapses sit next to the neuron</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.3)"><b>On-chip learning</b><span
+                style="color:var(--a3)">Weights can adapt in place</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Public repos get scanned constantly</span>
-              <div class="st-t"><strong>Automated bots scrape public commits</strong> specifically looking for credential patterns.</div>
+            <div class="st"><span class="st-v c1">Sparse sensor workloads are the sweet spot</span>
+              <div class="st-t"><strong>Keyword spotting, event cameras, and robotic control</strong> fit the model well.</div>
             </div>
-            <div class="st"><span class="st-v c2">Rotation is the real fix, not deletion</span>
-              <div class="st-t"><strong>Removing a leaked key from a file</strong> doesn't invalidate it, only rotating it does.</div>
+            <div class="st"><span class="st-v c2">The software is the bottleneck</span>
+              <div class="st-t"><strong>Spiking networks need different training methods,</strong> and the tooling is still young.</div>
             </div>
           </div>
         </div>
@@ -309,27 +328,23 @@
 
       <div class="slide">
         <div class="ghost"> </div>
-        <div class="hdr"><span class="warn-tag">⚠ Risk</span><span class="num">06 / 06</span></div>
+        <div class="hdr"><span class="num">06 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Protect<br><span class="c1">Yourself</span>.</h2>
+          <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="stats">
-            <div class="st"><span class="st-v c1">Keep secrets out of the repo</span>
-              <div class="st-t"><strong>Use environment variables injected at runtime,</strong> never committed files.</div>
-            </div>
-            <div class="st"><span class="st-v c2">Scope what an agent can read</span>
-              <div class="st-t"><strong>Exclude .env, credentials, and key files</strong> from any tool's accessible context.</div>
-            </div>
-            <div class="st"><span class="st-v c3">Rotate immediately if possible exposure</span>
-              <div class="st-t"><strong>Treat "it might have seen it"</strong> the same as "it definitely did."</div>
-            </div>
-            <div class="st"><span class="st-v c1">Audit chat and log history too</span>
-              <div class="st-t"><strong>A key can persist</strong> in places outside the codebase entirely.</div>
-            </div>
+          <div class="term-cloud">
+            <div class="term-tag shape-box c1">Spiking Neural Network</div>
+            <div class="term-tag shape-pill c2">Event-Driven Compute</div>
+            <div class="term-tag shape-circle c3">Membrane Threshold</div>
+            <div class="term-tag shape-pill c1">Neuromorphic Chip</div>
+            <div class="term-tag fill shape-pill c2">Dense Matrix Multiply</div>
+            <div class="term-tag fill shape-circle c3">In-Memory Compute</div>
+            <div class="term-tag fill shape-box c1">On-Chip Learning</div>
+            <div class="term-tag fill shape-circle c2">Sparse Activation</div>
           </div>
         </div>
-        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">⚠ Save this before it happens</span>
+        <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
         </div>
       </div>
 
@@ -364,17 +379,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">An AI coding agent doesn't need to be malicious, or even wrong, to leak your API keys. It just needs to be asked a normal question about a file it was never told to treat differently.
+      <div class="caption-text" id="captionText">A standard AI accelerator runs a neural network as dense matrix multiplication on a clock. Every artificial neuron's value is recomputed on every cycle, whether or not it changed and whether or not it matters, and the weights are shuttled in and out of memory constantly. That movement, not the arithmetic, is where most of the energy goes, and an idle neuron costs almost as much as a busy one because there is no "do nothing" in a synchronous pipeline.
 
-Give an agent read access to a repository, and it reads every file in scope the same way, your source code, your configuration, and your .env file all look identical to it unless something explicitly says otherwise. Ask something as ordinary as "why is this request failing," and the agent will happily pull the relevant files into its context window to answer, which very often includes exactly the config file holding a live credential. Relying on remembering to redact secrets manually before every single prompt works right up until the one time it doesn't, and that one time is usually all it takes.
+Biological brains work differently. A neuron sits quiet, accumulating input, and only emits a short electrical spike when its accumulated input crosses a threshold. Information is carried in which neurons spike and when, not in a continuously updated number. Most neurons are silent most of the time.
 
-What actually prevents this is structural, not behavioral. Secrets that never live in the repository at all, injected instead as environment variables at runtime, can't be read by a tool that only has repo access in the first place. Tooling that's explicitly scoped to exclude .env files, credential stores, and key files from what an agent can access turns this from "hope it doesn't happen" into "it structurally cannot happen." That distinction matters, because a leaked key doesn't need a sophisticated attacker to become a real problem, automated bots scan public commits constantly, specifically looking for credential patterns, and a scraped key can be abused within seconds of becoming visible.
+Neuromorphic chips such as Intel's Loihi build that behaviour into silicon. The chip is divided into many small cores, each simulating groups of spiking neurons, and the whole system is event-driven: a neuron does computational work, and sends a message to the neurons it connects to, only at the moment it actually fires. Between spikes, that region of the chip draws almost nothing. Synaptic weights are stored right next to the neurons that use them, so there is no constant round trip to a separate memory, and many designs support adjusting those weights on the chip itself while it runs.
 
-If a secret might have been exposed, even briefly, treating that as a confirmed leak rather than a maybe is the only safe move, because deleting the file doesn't invalidate the key, only rotating it does. Chat logs and session transcripts deserve the same scrutiny, since a credential that touched a prompt doesn't necessarily disappear when the conversation ends.
+The result is very low power consumption for workloads that are naturally sparse and event-based: spotting a keyword in an audio stream, processing the output of an event camera, running a control loop for a small robot. The catch is that it is not a drop-in replacement for a GPU. You need models expressed as spiking neural networks, the training methods for those are still an active research area, and the software ecosystem is far less mature than the one around conventional deep learning.
 
-The agent was never the vulnerability here. The missing boundary around what it was allowed to read always was.
+The chip was never trying to compute faster. It was trying to compute only when something actually happened.
 
-#cybersecurity #appsecurity #aicoding #devsecops #ravenextechnologies</div>
+#neuromorphic #chips #ai #edgecomputing #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -421,7 +436,7 @@ The agent was never the vulnerability here. The missing boundary around what it 
       const wrap = document.querySelector('.carousel-wrap');
       if (wrap) wrap.style.zoom = '1';
       await new Promise(r => setTimeout(r, 50));
-      const canvas = await html2canvas(s, { backgroundColor: '#170c0c', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
+      const canvas = await html2canvas(s, { backgroundColor: '#0d0f1a', scale: 4, windowWidth: 1200, windowHeight: 800, useCORS: true, logging: false });
       if (wrap) wrap.style.zoom = '';
       return canvas;
     }
@@ -439,7 +454,7 @@ The agent was never the vulnerability here. The missing boundary around what it 
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'aikeyleak-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'neuromorphic-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -453,7 +468,7 @@ The agent was never the vulnerability here. The missing boundary around what it 
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'aikeyleak-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'neuromorphic-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
