@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Molecule a Classical Computer Can't Solve, Post 146</title>
+  <title>Why the Little Boxes on Your Walls Vanished Overnight, Post 146</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 56, 189, 248;
       --a3rgb: 163, 230, 53;
       --border: rgba(148, 163, 184, .1);
+      --neu-light: rgba(255, 255, 255, .045);
+      --neu-dark: rgba(0, 0, 0, .6);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,10 +94,10 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
     .ftr .right { font-size: 12px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
 
-    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
-    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
-    .cmp-col:first-child { border-left: none; padding-left: 0; }
-    .cmp-col:last-child { padding-right: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 10px; margin: 12px 0 0; flex-shrink: 0; }
+    .cmp-col { padding: 12px 9px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; background: var(--card); border-radius: 13px; box-shadow: 5px 5px 12px var(--neu-dark), -5px -5px 12px var(--neu-light); }
+    .cmp-col:first-child { padding-left: 9px; }
+    .cmp-col:last-child { padding-right: 9px; }
     .cmp-icon { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #0d0f1a; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -185,7 +204,7 @@
         <div class="hdr"><span class="num">01 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:60px"> </p>
-          <h2 style="font-size:40px;line-height:1.0">A Molecule a<br>Classical Computer<br>Can't <span class="c1">Solve</span>.</h2>
+          <h2 style="font-size:40px;line-height:1.0">Why the Boxes on<br>Your Walls <span class="c1">Vanished</span><br>Overnight.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Chemistry Doesn't Fit<br>in a Normal <span class="c1">Computer</span>.</h2>
+          <h2>Tracking You From the<br>Outside <span class="c1">Broke</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">A molecule's behaviour is set by its electrons</span>
-              <div class="st-t"><strong>And electrons follow quantum rules,</strong> not classical ones.</div>
+            <div class="st"><span class="st-v c1">Base stations mean setup and calibration</span>
+              <div class="st-t"><strong>Mount two boxes, wire them, map the play space</strong> before you can start.</div>
             </div>
-            <div class="st"><span class="st-v c2">Exact simulation scales exponentially</span>
-              <div class="st-t"><strong>Each added electron roughly doubles</strong> the classical cost.</div>
+            <div class="st"><span class="st-v c2">The tracked space is a fixed box</span>
+              <div class="st-t"><strong>Step outside the sensors' view</strong> and the headset loses you.</div>
             </div>
-            <div class="st"><span class="st-v c3">So real chemistry gets approximated</span>
-              <div class="st-t"><strong>And for tricky catalysts,</strong> the approximations quietly fail.</div>
+            <div class="st"><span class="st-v c3">It doesn't travel</span>
+              <div class="st-t"><strong>A headset that needs wall-mounted hardware</strong> can't be used anywhere.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Model a <span class="c3">Molecule</span>.</h2>
+          <h2>Sensors Outside, Then<br>Cameras <span class="c3">Inside</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🧪</div>
-              <div class="cmp-title">LAB SYNTHESIS</div>
-              <div class="cmp-sub">Make it, measure it</div>
+              <div class="cmp-icon">📡</div>
+              <div class="cmp-title">EXTERNAL BASE STATIONS</div>
+              <div class="cmp-sub">Track from outside in</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Synthesize the compound and test it directly.</div>
+              <div class="cmp-text">Locate the headset from wall-mounted emitters.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Trial and error at the bench.</div>
+              <div class="cmp-text">Boxes sweep the room, headset sensors read them.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Ground truth, but slow and costly per candidate.</div>
+              <div class="cmp-text">Precise, but tied to one calibrated room.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">💻</div>
-              <div class="cmp-title">CLASSICAL APPROX.</div>
-              <div class="cmp-sub">Estimate with shortcuts</div>
+              <div class="cmp-icon">👁️</div>
+              <div class="cmp-title">OUTWARD CAMERAS</div>
+              <div class="cmp-sub">The headset watches the room</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Approximate the electronic structure.</div>
+              <div class="cmp-text">Let the headset build a map and place itself.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">DFT and similar methods on a supercomputer.</div>
+              <div class="cmp-text">Cameras track visual features frame to frame.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast, but unreliable for strongly correlated systems.</div>
+              <div class="cmp-text">Portable, works in any lit space.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">⚛️</div>
-              <div class="cmp-title">QUANTUM SIMULATION</div>
-              <div class="cmp-sub">Electrons on qubits</div>
+              <div class="cmp-icon">🧠</div>
+              <div class="cmp-title">NEURAL FUSION</div>
+              <div class="cmp-sub">Learned pose prediction</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Represent the electrons directly in qubits.</div>
+              <div class="cmp-text">Fuse cameras and motion sensors with a model.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">The molecule's state maps onto quantum hardware.</div>
+              <div class="cmp-text">A network holds pose through blur and low light.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Cost scales polynomially, exact energies in reach.</div>
+              <div class="cmp-text">Robust tracking with far fewer dropouts.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: approximate the quantum system → simulate it on a quantum system</div>
+          <div class="cmp-cta">↻ The shift: mount sensors on the walls → let the headset see the room and locate itself</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Mapping Electrons<br>Onto <span class="c1">Qubits</span>.</h2>
+          <h2>How a Headset<br>Locates <span class="c1">Itself</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The molecule's electronic states are encoded into qubits</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Quantum operations evolve that state under the molecule's own physics</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Measurements estimate the ground-state energy</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Change an atom, rerun, and compare candidate materials</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Outward-facing cameras capture the room many times a second</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The system picks distinctive visual features and remembers where they are</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Matching those features between frames tells the headset how it moved (SLAM)</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>An inertial sensor fills the gaps between frames, and the two are fused (VIO)</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>A classical computer has to store every possibility at once.</strong> A quantum computer holds the molecule's state the same way nature does, which is why the cost stops exploding.</p></div>
+          <div class="callout c1"><p><strong>Nothing outside the headset knows where you are.</strong> It works out its own position by watching the room, which is why it needs no boxes on the wall.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>The Prize: Catalysts<br>and <span class="c3">Batteries</span>.</h2>
+          <h2>A Little Precision for<br>Total <span class="c3">Freedom</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Polynomial</b><span>Cost grows manageably with size</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Ground state</b><span
-                style="color:var(--a2)">The energy that drives reactions</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>Fault-tolerant</b><span
-                style="color:var(--a3)">The big wins need error-corrected qubits</span></div>
+            <div class="metric"><b>Zero setup</b><span>No mounting or calibration</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.25)"><b>Any room</b><span
+                style="color:var(--a2)">Not a fixed tracked volume</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.25)"><b>On-headset</b><span
+                style="color:var(--a3)">All the tracking runs locally</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Nitrogen fixation is a target</span>
-              <div class="st-t"><strong>Making fertilizer industrially is energy-hungry,</strong> and the enzyme that does it cheaply resists classical modelling.</div>
+            <div class="st"><span class="st-v c1">The trade was accuracy for portability</span>
+              <div class="st-t"><strong>Sub-millimetre base-station accuracy</strong> gave way to good-enough tracking anywhere.</div>
             </div>
-            <div class="st"><span class="st-v c2">Battery materials are another</span>
-              <div class="st-t"><strong>Predicting a cathode's behaviour before synthesis</strong> would shortcut years of lab work.</div>
+            <div class="st"><span class="st-v c2">Blank walls are the weak spot</span>
+              <div class="st-t"><strong>With no features to lock onto,</strong> the headset leans harder on its motion sensors.</div>
             </div>
           </div>
         </div>
@@ -310,14 +329,14 @@
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="term-cloud">
-            <div class="term-tag shape-box c1">Quantum Simulation</div>
-            <div class="term-tag shape-pill c2">Electronic Structure</div>
-            <div class="term-tag shape-circle c3">Strong Correlation</div>
-            <div class="term-tag shape-pill c1">Ground-State Energy</div>
-            <div class="term-tag fill shape-pill c2">Classical Approximation</div>
-            <div class="term-tag fill shape-circle c3">Variational Method</div>
-            <div class="term-tag fill shape-box c1">Nitrogen Fixation</div>
-            <div class="term-tag fill shape-circle c2">Fault Tolerance</div>
+            <div class="term-tag shape-box c1">Inside-Out Tracking</div>
+            <div class="term-tag shape-pill c2">SLAM</div>
+            <div class="term-tag shape-circle c3">Visual-Inertial Odometry</div>
+            <div class="term-tag shape-pill c1">Feature Matching</div>
+            <div class="term-tag fill shape-pill c2">Base Station</div>
+            <div class="term-tag fill shape-circle c3">Play-Space Calibration</div>
+            <div class="term-tag fill shape-box c1">6DoF Pose</div>
+            <div class="term-tag fill shape-circle c2">Sensor Fusion</div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
@@ -355,17 +374,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Chemistry is quantum mechanics in disguise. How a molecule bonds, reacts, and catalyses is determined by how its electrons occupy quantum states, and that is governed by the Schrodinger equation. Solving that equation exactly on a classical computer costs resources that grow roughly exponentially with the number of electrons involved, so beyond very small molecules it simply cannot be done.
+      <div class="caption-text" id="captionText">Early consumer VR shipped with small boxes you screwed to the walls. They swept the room with infrared, sensors on the headset read that sweep, and a computer worked out where the headset was. It was extremely precise, but it meant mounting hardware, running cables, and calibrating a fixed play space. Walk out of the boxes' line of sight and tracking dropped.
 
-What chemists do instead is approximate. Methods like density functional theory make simplifying assumptions that work well for many molecules and run quickly on ordinary supercomputers. But for a class of systems called strongly correlated, where electrons interact in ways those approximations handle badly, the results become unreliable. Unfortunately, that class includes some of the most valuable targets: the transition-metal catalyst that lets a soil bacterium turn atmospheric nitrogen into fertilizer at room temperature, and many candidate battery electrode materials.
+Then those boxes disappeared from new headsets almost all at once, and the reason is a shift in who does the locating. Instead of external hardware watching the headset, the headset watches the room. Outward-facing cameras capture the space many times a second, the system picks out distinctive visual features, corners, textures, edges, and remembers where they sit. As you move, it matches those features between frames to work out how the headset travelled. This is SLAM, simultaneous localization and mapping, the same idea a robot vacuum uses.
 
-A quantum computer offers a different route. Instead of approximating the molecule, it represents the molecule's electronic state directly in qubits and lets quantum operations evolve that state according to the same physics the molecule itself obeys. Because the hardware is quantum, the cost of doing this grows polynomially rather than exponentially with system size. Near-term machines use a hybrid loop that estimates the lowest-energy configuration; fully fault-tolerant machines will be able to compute ground-state energies to chemical accuracy directly.
+Cameras alone stutter during fast turns or in dim light, so a small inertial sensor tracks motion in the gaps between frames, and the two streams are fused. Newer headsets add a learned model on top that predicts pose through motion blur and low texture, which is what cut the remaining dropouts.
 
-The lowest-energy state, the ground state, is what matters, because energy differences between configurations are what determine whether a reaction proceeds and how fast. Getting those right for a catalyst nobody can currently model would let researchers screen designs on a computer before spending years synthesizing them.
+The trade was real: base stations were accurate to a fraction of a millimetre, and inside-out tracking is merely good enough. What you get back is a headset that works in any lit room with zero setup, and can be used standing in a field. The one weak spot is a blank white wall, with nothing to lock onto, the headset has to trust its motion sensors more.
 
-The molecule was never going to fit inside a classical computer. Simulating a quantum system properly needs a computer that is quantum too.
+Nothing outside the headset was ever needed to know where you were. It just had to learn to look around and figure it out for itself.
 
-#quantumcomputing #chemistry #materialsscience #catalysis #ravenextechnologies</div>
+#vr #spatialcomputing #slam #tracking #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -430,7 +449,7 @@ The molecule was never going to fit inside a classical computer. Simulating a qu
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'quantumchem-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'insideouttracking-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -444,7 +463,7 @@ The molecule was never going to fit inside a classical computer. Simulating a qu
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'quantumchem-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'insideouttracking-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

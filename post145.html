@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Key You Can't Copy Without Being Seen, Post 145</title>
+  <title>3D Polygons Are Dying and Something Faster Is Replacing Them, Post 145</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 217, 119, 6;
       --a3rgb: 5, 150, 105;
       --border: rgba(79, 70, 229, .08);
+      --neu-light: #ffffff;
+      --neu-dark: rgba(15, 23, 42, .14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,10 +94,10 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
     .ftr .right { font-size: 12px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
 
-    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
-    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
-    .cmp-col:first-child { border-left: none; padding-left: 0; }
-    .cmp-col:last-child { padding-right: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 10px; margin: 12px 0 0; flex-shrink: 0; }
+    .cmp-col { padding: 12px 9px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; background: var(--card); border-radius: 13px; box-shadow: 5px 5px 12px var(--neu-dark), -5px -5px 12px var(--neu-light); }
+    .cmp-col:first-child { padding-left: 9px; }
+    .cmp-col:last-child { padding-right: 9px; }
     .cmp-icon { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -185,7 +204,7 @@
         <div class="hdr"><span class="num">01 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:60px"> </p>
-          <h2 style="font-size:40px;line-height:1.0">A Key You Can't<br>Copy Without<br><span class="c1">Being Seen</span>.</h2>
+          <h2 style="font-size:40px;line-height:1.0">3D Polygons Are<br>Dying. Something Faster<br>Is <span class="c1">Replacing</span> Them.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Math Secrecy Has an<br>Expiry <span class="c1">Date</span>.</h2>
+          <h2>Photoreal Used to Mean<br>Slow or <span class="c1">Fake</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Classical key exchange assumes a hard problem</span>
-              <div class="st-t"><strong>Its safety depends on factoring or discrete log</strong> staying difficult.</div>
+            <div class="st"><span class="st-v c1">Polygon meshes fake the soft stuff</span>
+              <div class="st-t"><strong>Hair, smoke, and foliage</strong> need millions of triangles or a painted-on cheat.</div>
             </div>
-            <div class="st"><span class="st-v c2">A future computer changes that assumption</span>
-              <div class="st-t"><strong>What is hard today may be quick later,</strong> even for traffic recorded now.</div>
+            <div class="st"><span class="st-v c2">NeRFs look real but crawl</span>
+              <div class="st-t"><strong>A neural radiance field can take seconds per frame,</strong> nowhere near interactive.</div>
             </div>
-            <div class="st"><span class="st-v c3">You want secrecy physics guarantees</span>
-              <div class="st-t"><strong>Not secrecy that rests</strong> on an unproven assumption.</div>
+            <div class="st"><span class="st-v c3">Photoscanned rooms come out broken</span>
+              <div class="st-t"><strong>Raw point clouds are noisy and full of holes,</strong> and cleanup takes hours.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to Share<br>a Secret <span class="c3">Key</span>.</h2>
+          <h2>Triangles to Networks<br>to <span class="c3">Blobs</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🔢</div>
-              <div class="cmp-title">PUBLIC-KEY EXCHANGE</div>
-              <div class="cmp-sub">Derive over open lines</div>
+              <div class="cmp-icon">📐</div>
+              <div class="cmp-title">POLYGON MESH</div>
+              <div class="cmp-sub">Model every surface</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Agree on a shared key over an open channel.</div>
+              <div class="cmp-text">Build a scene from triangles and textures.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Security from a hard math problem.</div>
+              <div class="cmp-text">Artists model, texture, and rig each surface.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Fast and universal, but breakable in principle.</div>
+              <div class="cmp-text">Fast to render, weak at fuzzy detail.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">💼</div>
-              <div class="cmp-title">COURIER THE KEY</div>
-              <div class="cmp-sub">Hand-deliver it</div>
+              <div class="cmp-icon">🧠</div>
+              <div class="cmp-title">NEURAL RADIANCE FIELD</div>
+              <div class="cmp-sub">Learn the whole scene</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Physically carry the key between the two sides.</div>
+              <div class="cmp-text">Store the scene as a network of position and view.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A trusted person moves it in person.</div>
+              <div class="cmp-text">The model is queried per pixel, per ray.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Truly private, but slow and unscalable.</div>
+              <div class="cmp-text">Photoreal, but far too slow to walk through.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🔦</div>
-              <div class="cmp-title">QUANTUM KEY DIST.</div>
-              <div class="cmp-sub">Send it as photons</div>
+              <div class="cmp-icon">✨</div>
+              <div class="cmp-title">GAUSSIAN SPLATTING</div>
+              <div class="cmp-sub">Millions of soft blobs</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Transmit the key as single photons.</div>
+              <div class="cmp-text">Represent the scene as coloured 3D blobs.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Any interception disturbs the photons measurably.</div>
+              <div class="cmp-text">Each blob has a position, colour, and soft shape, drawn directly.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Eavesdropping is detected, not assumed away.</div>
+              <div class="cmp-text">Photoreal capture at 100+ FPS.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: trust that the math stays hard → let physics reveal the listener</div>
+          <div class="cmp-cta">↻ The shift: model triangles or query a slow network → splat millions of soft 3D blobs</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Listening Leaves<br>a <span class="c1">Mark</span>.</h2>
+          <h2>How a Photo Set<br>Becomes a <span class="c1">Blob Cloud</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The sender transmits the key as photons, each in a random state</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The receiver measures each photon in a randomly chosen basis</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>An eavesdropper must guess, and wrong guesses disturb the photons</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The two sides compare a sample publicly; too many errors, discard the key</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Photos of a scene seed millions of 3D Gaussians, each a fuzzy ellipsoid</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Each one stores a position, a size and orientation, an opacity, and a colour</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>That colour is view-dependent via spherical harmonics, so highlights move</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The GPU rasterizes the blobs front to back, with no ray marching</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>QKD doesn't stop someone from listening.</strong> It makes listening impossible to hide, because measuring a photon changes it, and that change shows up as errors.</p></div>
+          <div class="callout c1"><p><strong>There is no mesh and no per-pixel network.</strong> The scene is a cloud of soft coloured blobs the GPU draws in one fast pass, which is why it hits real-time.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Physics-Backed,<br>But <span class="c3">Fiddly</span>.</h2>
+          <h2>From Hours to<br><span class="c3">Real-Time</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Detected</b><span>Eavesdropping shows up as errors</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>Point-to-point</b><span
-                style="color:var(--a2)">Needs dedicated fiber or line of sight</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Key only</b><span
-                style="color:var(--a3)">Still needs classical authentication</span></div>
+            <div class="metric"><b>100+ FPS</b><span>Real-time on a single GPU</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>Minutes</b><span
+                style="color:var(--a2)">To train a scene, not hours</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>No mesh</b><span
+                style="color:var(--a3)">Nothing to model or clean</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Distance is the practical limit</span>
-              <div class="st-t"><strong>Photon loss caps a direct link,</strong> and repeaters that stay end-to-end secure are still research.</div>
+            <div class="st"><span class="st-v c1">It changes capture, not just rendering</span>
+              <div class="st-t"><strong>A short phone video</strong> can become a scene you walk around inside.</div>
             </div>
-            <div class="st"><span class="st-v c2">It solves one problem, not all of them</span>
-              <div class="st-t"><strong>QKD shares a key,</strong> it does not by itself prove who is on the other end.</div>
+            <div class="st"><span class="st-v c2">Editing is still the hard part</span>
+              <div class="st-t"><strong>Blobs are not objects,</strong> so relighting and animation need extra work.</div>
             </div>
           </div>
         </div>
@@ -310,14 +329,14 @@
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="term-cloud">
-            <div class="term-tag shape-box c1">Quantum Key Distribution</div>
-            <div class="term-tag shape-pill c2">Heisenberg Uncertainty</div>
-            <div class="term-tag shape-circle c3">Photon Polarization</div>
-            <div class="term-tag shape-pill c1">Basis Reconciliation</div>
-            <div class="term-tag fill shape-pill c2">Eavesdropper Detection</div>
-            <div class="term-tag fill shape-circle c3">Public-Key Exchange</div>
-            <div class="term-tag fill shape-box c1">Photon Loss</div>
-            <div class="term-tag fill shape-circle c2">Quantum Repeater</div>
+            <div class="term-tag shape-box c1">3D Gaussian Splatting</div>
+            <div class="term-tag shape-pill c2">Radiance Field</div>
+            <div class="term-tag shape-circle c3">Rasterization</div>
+            <div class="term-tag shape-pill c1">Spherical Harmonics</div>
+            <div class="term-tag fill shape-pill c2">Polygon Mesh</div>
+            <div class="term-tag fill shape-circle c3">Point Cloud</div>
+            <div class="term-tag fill shape-box c1">Real-Time Rendering</div>
+            <div class="term-tag fill shape-circle c2">Scene Capture</div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
@@ -355,17 +374,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Classical key exchange, the step where two parties agree on a shared secret over an open channel, is secure because it rests on a hard mathematical problem. That is also its weakness: what counts as hard is an assumption, and a future computer, quantum or otherwise, could overturn it, including for traffic recorded today.
+      <div class="caption-text" id="captionText">For decades, 3D graphics has meant polygons: build every surface out of triangles, wrap it in textures, and light it. It renders fast, but it is bad at soft, messy things, hair, smoke, foliage, dust, which need either an enormous triangle count or a painted-on fake. Neural radiance fields fixed the realism by learning a scene as a function you query per pixel, but that query is slow, seconds per frame, so you cannot walk through it.
 
-Quantum key distribution takes the secrecy out of mathematics and puts it into physics. The key is transmitted as a stream of individual photons, each prepared in a quantum state chosen at random by the sender, for example a polarization angle from one of two possible sets. The receiver measures each photon using a randomly chosen setting of their own. Afterward, over an ordinary public channel, the two compare which settings they used and keep only the photons where the settings matched.
+3D Gaussian splatting takes a third path. A scene is represented as millions of tiny 3D blobs, each one a fuzzy ellipsoid with a position, a size and orientation, an opacity, and a colour. The colour is stored with spherical harmonics so it shifts with viewing angle, which is what gives surfaces their real sheen. Crucially, the GPU can draw these blobs directly, sorting them front to back and blending, with none of the per-ray marching a neural field needs.
 
-The security comes from what happens if someone intercepts the photons in between. Quantum measurement is not passive. An eavesdropper who measures a photon has to guess which set the sender used, and a wrong guess unavoidably disturbs the photon's state. When the sender and receiver later compare a random sample of their supposedly shared bits, those disturbances show up as an elevated error rate. Above a threshold, they conclude the line was watched and simply throw the key away before it is ever used.
+The result is photoreal scenes rendering at over a hundred frames per second on a single GPU, trained from ordinary photos in minutes rather than hours. It changes capture as much as rendering: a short phone video can be turned into a scene you move around inside, with no modelling and no mesh cleanup.
 
-So QKD does not prevent eavesdropping. It makes eavesdropping impossible to hide. The trade-offs are real: it needs a dedicated fiber or a clear line of sight, sometimes via satellite; photon loss limits the distance of a single link, since a repeater that preserves end-to-end security is still a research problem; and it only exchanges a key, so a separate classical method is still needed to confirm who is actually on each end.
+The open problem is editing. A blob cloud is not a set of objects, so relighting a scene, animating a character, or removing one item is still awkward, and pipelines for that are being built now.
 
-The key was never made unbreakable. It was made impossible to copy without leaving fingerprints.
+3D was never going to stay a world of triangles. It is becoming a cloud of soft coloured points the hardware can draw all at once.
 
-#quantumcomputing #cryptography #qkd #security #ravenextechnologies</div>
+#gaussiansplatting #graphics #rendering #spatialcomputing #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -430,7 +449,7 @@ The key was never made unbreakable. It was made impossible to copy without leavi
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'qkd-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'gaussiansplatting-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -444,7 +463,7 @@ The key was never made unbreakable. It was made impossible to copy without leavi
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'qkd-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'gaussiansplatting-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

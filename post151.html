@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Bit That's a Pulse, Not a Voltage, Post 151</title>
+  <title>Your 3D Avatar Can't Walk From One App Into Another, Post 151</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -94,10 +94,10 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
     .ftr .right { font-size: 11.5px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
 
-    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
-    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
-    .cmp-col:first-child { border-left: none; padding-left: 0; }
-    .cmp-col:last-child { padding-right: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 10px; margin: 12px 0 0; flex-shrink: 0; }
+    .cmp-col { padding: 12px 9px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; background: var(--card); border-radius: 13px; box-shadow: 5px 5px 12px var(--neu-dark), -5px -5px 12px var(--neu-light); }
+    .cmp-col:first-child { padding-left: 9px; }
+    .cmp-col:last-child { padding-right: 9px; }
     .cmp-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
@@ -204,7 +204,7 @@
         <div class="hdr"><span class="num">01 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:60px"> </p>
-          <h2 style="font-size:36px;line-height:1.05">A Bit That's a<br>Pulse, Not a<br><span class="c1">Voltage</span>.</h2>
+          <h2 style="font-size:36px;line-height:1.05">Your 3D Avatar Can't<br>Walk From One App<br>Into <span class="c1">Another</span>.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -214,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>CMOS Hits a<br>Heat <span class="c2">Wall</span>.</h2>
+          <h2>3D Has No Shared<br><span class="c2">Page</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">A transistor holds a bit as a voltage</span>
-              <div class="st-t"><strong>Switching it charges and discharges wires,</strong> and that dissipates heat.</div>
+            <div class="st"><span class="st-v c1">Every engine has its own file format</span>
+              <div class="st-t"><strong>An asset built for one engine</strong> doesn't open in another without a rebuild.</div>
             </div>
-            <div class="st"><span class="st-v c2">Past a few GHz the heat is unmanageable</span>
-              <div class="st-t"><strong>Which is why clock speeds</strong> stopped climbing over a decade ago.</div>
+            <div class="st"><span class="st-v c2">Materials and rigs break on export</span>
+              <div class="st-t"><strong>The geometry survives the trip,</strong> the shading and the skeleton often don't.</div>
             </div>
-            <div class="st"><span class="st-v c3">The wire itself has resistance</span>
-              <div class="st-t"><strong>Every signal fights it,</strong> and loses energy doing so.</div>
+            <div class="st"><span class="st-v c3">The web has HTML, 3D has chaos</span>
+              <div class="st-t"><strong>Dozens of incompatible containers,</strong> and no agreed one every tool can read.</div>
             </div>
           </div>
         </div>
@@ -236,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Represent a <span class="c2">Bit</span>.</h2>
+          <h2>Native Files to<br>a Shared <span class="c2">Scene</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">⚡</div>
-              <div class="cmp-title">CMOS VOLTAGE</div>
-              <div class="cmp-sub">Hold a level</div>
+              <div class="cmp-icon">🧩</div>
+              <div class="cmp-title">PER-ENGINE FORMATS</div>
+              <div class="cmp-sub">One renderer only</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Keep a node high or low.</div>
+              <div class="cmp-text">Store assets in whatever the engine prefers.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Charge a capacitance to switch it.</div>
+              <div class="cmp-text">A native format tuned for one renderer.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Universal, but heat-limited past ~5 GHz.</div>
+              <div class="cmp-text">Fast inside that engine, a dead end outside it.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">📉</div>
-              <div class="cmp-title">LOW-VOLTAGE CMOS</div>
-              <div class="cmp-sub">Shrink the swing</div>
+              <div class="cmp-icon">📦</div>
+              <div class="cmp-title">glTF</div>
+              <div class="cmp-sub">Ship a finished model</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Cut the voltage to save switching power.</div>
+              <div class="cmp-text">A lightweight standard for delivering one asset.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Run transistors at a smaller level.</div>
+              <div class="cmp-text">Compact, made for a viewer or the web.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Helps a little, noise margins shrink.</div>
+              <div class="cmp-text">Great for handing over a model, thin for whole scenes.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">🌀</div>
-              <div class="cmp-title">SINGLE FLUX QUANTUM</div>
-              <div class="cmp-sub">One flux packet</div>
+              <div class="cmp-icon">🗂️</div>
+              <div class="cmp-title">OpenUSD</div>
+              <div class="cmp-sub">Describe a whole world</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Represent a bit as one magnetic flux quantum.</div>
+              <div class="cmp-text">One scene description many tools edit at once.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">A picosecond pulse in superconducting loops.</div>
+              <div class="cmp-text">Layered edits with non-destructive overrides.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Tiny switching energy, 100+ GHz clocks.</div>
+              <div class="cmp-text">A shared container studios and platforms build on.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: hold a voltage on a wire → send a single quantized flux pulse</div>
+          <div class="cmp-cta">↻ The shift: a native file per engine → one layered scene description every tool can read</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -282,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Pulses Through<br><span class="c1">Junctions</span>.</h2>
+          <h2>A Scene Built From<br><span class="c1">Layers</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Wires are cooled until they superconduct, with zero resistance</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A bit is the presence or absence of one flux quantum</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Josephson junctions switch that pulse along in about a picosecond</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Almost no energy is spent per operation, so heat stays low</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A USD scene is a stack of layers, each one a set of changes to the world</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A studio references shared assets instead of copying them, so a fix propagates</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Overrides let one department restage a shot without touching another's work</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Any compliant tool reads the same stack, so the scene means the same in each app</b></div></div>
           </div>
-          <div class="callout c2"><p><strong>There is no charged node holding the bit.</strong> A single flux quantum ripples through the circuit as a tiny, fast voltage spike, and that is the whole signal.</p></div>
+          <div class="callout c2"><p><strong>The fight isn't about the Metaverse.</strong> It's the same fight the early web had: agree on one format everyone's tools can open, or stay locked in separate silos.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -300,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Fast and Cold, Not<br>General-<span class="c2">Purpose</span>.</h2>
+          <h2>A Container Battle,<br>Not a <span class="c2">Headset</span> One.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>100+ GHz</b><span>Achievable clock speeds</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>~4 K</b><span
-                style="color:var(--a2)">Needs liquid-helium cooling</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Weak RAM</b><span
-                style="color:var(--a3)">No dense superconducting memory yet</span></div>
+            <div class="metric"><b>Layers</b><span>Non-destructive edits stack up</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.2)"><b>References</b><span
+                style="color:var(--a2)">Assets are shared, not copied</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.2)"><b>Two camps</b><span
+                style="color:var(--a3)">glTF for delivery, USD for authoring</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">The cooling is the real cost</span>
-              <div class="st-t"><strong>The chip sips power,</strong> but the refrigerator to keep it at 4 K does not.</div>
+            <div class="st"><span class="st-v c1">The bottleneck is the file format</span>
+              <div class="st-t"><strong>What blocks shared 3D worlds</strong> is the container, not the display.</div>
             </div>
-            <div class="st"><span class="st-v c2">It has found a niche next to quantum</span>
-              <div class="st-t"><strong>Cold, fast classical logic is useful</strong> for controlling quantum processors that are already cold.</div>
+            <div class="st"><span class="st-v c2">Adoption is the whole game</span>
+              <div class="st-t"><strong>A standard only works</strong> once every major engine reads and writes it faithfully.</div>
             </div>
           </div>
         </div>
@@ -329,14 +329,14 @@
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="term-cloud">
-            <div class="term-tag shape-box c1">RSFQ</div>
-            <div class="term-tag shape-pill c2">Flux Quantum</div>
-            <div class="term-tag shape-circle c3">Josephson Junction</div>
-            <div class="term-tag shape-pill c1">Superconducting Logic</div>
-            <div class="term-tag fill shape-pill c2">CMOS Heat Wall</div>
-            <div class="term-tag fill shape-circle c3">Cryogenic Cooling</div>
-            <div class="term-tag fill shape-box c1">Picosecond Switching</div>
-            <div class="term-tag fill shape-circle c2">Quantum Control</div>
+            <div class="term-tag shape-box c1">OpenUSD</div>
+            <div class="term-tag shape-pill c2">glTF</div>
+            <div class="term-tag shape-circle c3">Scene Description</div>
+            <div class="term-tag shape-pill c1">Composition Layers</div>
+            <div class="term-tag fill shape-pill c2">Asset Reference</div>
+            <div class="term-tag fill shape-circle c3">Interoperability</div>
+            <div class="term-tag fill shape-box c1">3D Pipeline</div>
+            <div class="term-tag fill shape-circle c2">Non-Destructive Editing</div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
@@ -374,17 +374,15 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">A conventional transistor stores a bit as a voltage level held on a wire: high for one, low for zero. Changing that bit means charging or discharging the capacitance of the wire and the gate, and every one of those switches dissipates a little heat. Multiply by billions of transistors switching billions of times a second, and heat becomes the hard ceiling. It is the reason processor clock speeds stopped climbing past a few gigahertz over a decade ago, even as transistor counts kept rising.
+      <div class="caption-text" id="captionText">Forget the word "Metaverse" for a moment. The real, unglamorous problem behind connected 3D worlds is that a model built in one engine cannot simply be opened in another. Export an avatar from one tool and the geometry usually survives, but the materials, the rig, the animation setup, and the physics often do not. There is no shared document format for 3D the way HTML is a shared document format for the web.
 
-Superconducting logic, in its rapid single flux quantum form, represents a bit in a completely different way. The wires are cooled until they superconduct, carrying current with zero resistance, and a bit is no longer a voltage level but the presence or absence of a single quantized packet of magnetic flux, a flux quantum. That quantum shows up as an extremely short voltage pulse, roughly a picosecond wide, and it is passed along the circuit by devices called Josephson junctions that switch in about that same time.
+Two efforts are trying to become that format. glTF, from the Khronos Group, is a compact standard designed for delivery: shipping one finished model to a viewer or a web page efficiently. It is excellent at that and weak at describing a whole editable scene. OpenUSD, which came out of Pixar, aims higher. A USD scene is a stack of layers, each layer a set of non-destructive changes to the world. Studios reference shared assets rather than copying them, so a fix to a character propagates everywhere it appears, and different departments can override parts of a scene without stepping on each other. Any tool that speaks USD reads the same stack and gets the same result.
 
-Because there is no charged node being held and no resistance to fight, the energy spent per operation is thousands of times smaller than in CMOS, and the junctions are fast enough to support clock speeds above a hundred gigahertz.
+The fight between them is really a fight about the container, not the headset. Whether a 3D avatar can walk from Unreal to Unity to a spatial OS depends entirely on whether those engines all read and write the same scene format faithfully, and that is an adoption problem more than a technical one.
 
-The catches are significant. The circuit has to be kept near four kelvin, which requires liquid-helium-class cooling whose power draw dwarfs the chip's own. Designing large systems in pulse-based logic is unfamiliar and hard. Dense memory is an unsolved weak point. And moving signals between the cold chip and room-temperature electronics is lossy. So RSFQ is not a general-purpose CPU replacement; it lives in niches like ultra-fast signal processing and, increasingly, as the cold classical control logic for quantum computers that are already refrigerated.
+The blocker to a connected 3D web was never the graphics hardware. It is the same thing that blocked the early web: getting everyone to agree on one file format their tools can open.
 
-The bit was never a level you held steady. It was a single flux quantum, passing through.
-
-#superconductors #computing #hardware #cryogenics #ravenextechnologies</div>
+#openusd #gltf #3dpipeline #spatialcomputing #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -449,7 +447,7 @@ The bit was never a level you held steady. It was a single flux quantum, passing
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'rsfq-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'openusd-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -463,7 +461,7 @@ The bit was never a level you held steady. It was a single flux quantum, passing
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'rsfq-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'openusd-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';

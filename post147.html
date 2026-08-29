@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Qubit That Stores Its Data in Two Places at Once, Post 147</title>
+  <title>Your Eyes See the Object, Your Skin Refuses to Believe It, Post 147</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,6 +24,8 @@
       --a2rgb: 180, 83, 9;
       --a3rgb: 124, 58, 237;
       --border: rgba(3, 105, 161, .08);
+      --neu-light: #ffffff;
+      --neu-dark: rgba(15, 23, 42, .14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,10 +94,10 @@
     .ftr .left { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
     .ftr .right { font-size: 12px; font-weight: 800; color: var(--a1); letter-spacing: .02em; }
 
-    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; gap: 7px; margin: 10px 0 0; flex-shrink: 0; }
-    .cmp-col { padding: 4px 10px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; border-left: 1px solid var(--border); }
-    .cmp-col:first-child { border-left: none; padding-left: 0; }
-    .cmp-col:last-child { padding-right: 0; }
+    .cmp-grid { display: grid; grid-template-columns: repeat(3, 1fr); align-items: stretch; gap: 10px; margin: 12px 0 0; flex-shrink: 0; }
+    .cmp-col { padding: 12px 9px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; background: var(--card); border-radius: 13px; box-shadow: 5px 5px 12px var(--neu-dark), -5px -5px 12px var(--neu-light); }
+    .cmp-col:first-child { padding-left: 9px; }
+    .cmp-col:last-child { padding-right: 9px; }
     .cmp-icon { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; margin: 0 auto; color: #fff; }
     .cmp-col.c1 .cmp-icon { background: var(--a1); }
     .cmp-col.c2 .cmp-icon { background: var(--a2); }
@@ -172,6 +174,23 @@
     .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
     .caption-text { font-size: 13px; line-height: 1.7; color: var(--ink2); padding: 14px 16px; white-space: pre-line; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+    .term-cloud { display: flex; flex-wrap: wrap; align-content: space-evenly; justify-content: center; gap: 14px; flex: 1; margin: 8px 0; padding: 8px 6px; }
+    .term-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.15; letter-spacing: .01em; background: var(--card); border: none; box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light); }
+    .term-tag.shape-box { border-radius: 14px; padding: 16px 20px; font-size: 14px; }
+    .term-tag.shape-pill { border-radius: 999px; padding: 14px 26px; font-size: 13px; }
+    .term-tag.shape-circle { border-radius: 50%; width: 118px; height: 118px; padding: 10px; font-size: 12px; }
+    .term-tag.fill { font-size: 10.5px; padding: 8px 14px; box-shadow: inset 4px 4px 9px var(--neu-dark), inset -4px -4px 9px var(--neu-light); }
+    .term-tag.fill.shape-box { padding: 9px 13px; border-radius: 11px; }
+    .term-tag.fill.shape-pill { padding: 8px 16px; }
+    .term-tag.fill.shape-circle { width: 72px; height: 72px; padding: 6px; font-size: 9px; }
+    .term-tag.c1 { color: var(--a1); }
+    .term-tag.c2 { color: var(--a2); }
+    .term-tag.c3 { color: var(--a3); }
+    .term-tag:nth-child(4n+1) { transform: rotate(-3deg); }
+    .term-tag:nth-child(4n+2) { transform: rotate(2deg); }
+    .term-tag:nth-child(4n+3) { transform: rotate(-2deg); }
+    .term-tag:nth-child(4n) { transform: rotate(3deg); }
+
     @media (max-width: 600px) { .carousel-wrap { zoom: 0.65; } }
   </style>
 </head>
@@ -185,7 +204,7 @@
         <div class="hdr"><span class="num">01 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:60px"> </p>
-          <h2 style="font-size:40px;line-height:1.0">A Qubit That Stores<br>Its Data in Two<br>Places at <span class="c1">Once</span>.</h2>
+          <h2 style="font-size:40px;line-height:1.0">Your Eyes See It.<br>Your Skin Refuses<br>to <span class="c1">Believe</span> It.</h2>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">Swipe →</span></div>
       </div>
@@ -195,17 +214,17 @@
         <div class="hdr"><span class="num">02 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Every Qubit Is a<br>Point of <span class="c1">Failure</span>.</h2>
+          <h2>A Buzz Is Not<br>a <span class="c1">Wall</span>.</h2>
           <div style="height:16px"></div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">Normal qubits store info locally</span>
-              <div class="st-t"><strong>In one loop, one ion, one photon,</strong> where a single disturbance can reach it.</div>
+            <div class="st"><span class="st-v c1">Vision says the object is solid</span>
+              <div class="st-t"><strong>But your hand passes straight through it,</strong> and the illusion collapses.</div>
             </div>
-            <div class="st"><span class="st-v c2">That's why error correction is huge</span>
-              <div class="st-t"><strong>Roughly a thousand physical qubits</strong> guard each logical one.</div>
+            <div class="st"><span class="st-v c2">A vibration can't stop your fingers</span>
+              <div class="st-t"><strong>A rumble motor signals that contact happened,</strong> it can't resist the grip.</div>
             </div>
-            <div class="st"><span class="st-v c3">What if noise couldn't find the data?</span>
-              <div class="st-t"><strong>A qubit not stored in any one place</strong> would be far harder to corrupt.</div>
+            <div class="st"><span class="st-v c3">Skin reads pressure, texture, and slip</span>
+              <div class="st-t"><strong>A single buzz</strong> can't reproduce any of those.</div>
             </div>
           </div>
         </div>
@@ -217,43 +236,43 @@
         <div class="hdr"><span class="num">03 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Three Ways to<br>Protect a <span class="c3">Qubit</span>.</h2>
+          <h2>From a Buzz to a<br>Real <span class="c3">Barrier</span>.</h2>
           <div class="cmp-grid">
             <div class="cmp-col c1">
-              <div class="cmp-icon">🛡️</div>
-              <div class="cmp-title">BETTER SHIELDING</div>
-              <div class="cmp-sub">Keep noise out</div>
+              <div class="cmp-icon">📳</div>
+              <div class="cmp-title">RUMBLE MOTORS</div>
+              <div class="cmp-sub">Signal contact</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Isolate the qubit from its environment.</div>
+              <div class="cmp-text">Tell you that a touch happened.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Colder, quieter, more isolated hardware.</div>
+              <div class="cmp-text">A spinning weight buzzes the glove or controller.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Helps, but noise always leaks in.</div>
+              <div class="cmp-text">You feel something, but nothing feels real.</div>
             </div>
             <div class="cmp-col c2">
-              <div class="cmp-icon">▦</div>
-              <div class="cmp-title">ERROR CORRECTION</div>
-              <div class="cmp-sub">Fix errors after</div>
+              <div class="cmp-icon">🎈</div>
+              <div class="cmp-title">PNEUMATIC BLADDERS</div>
+              <div class="cmp-sub">Push and resist</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Detect and undo errors once they happen.</div>
+              <div class="cmp-text">Press on the fingertip and brake the grip.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Spread one logical qubit over many physical ones.</div>
+              <div class="cmp-text">Air pockets inflate against the skin, tendons are held.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Works, at a huge qubit-count cost.</div>
+              <div class="cmp-text">A sense of shape and firmness, still bulky.</div>
             </div>
             <div class="cmp-col c3">
-              <div class="cmp-icon">🪢</div>
-              <div class="cmp-title">TOPOLOGICAL QUBIT</div>
-              <div class="cmp-sub">Hide the data</div>
+              <div class="cmp-icon">⚡</div>
+              <div class="cmp-title">NEUROMUSCULAR PULSES</div>
+              <div class="cmp-sub">Drive the nerve directly</div>
               <div class="cmp-label">Goal</div>
-              <div class="cmp-text">Store the qubit where local noise can't touch it.</div>
+              <div class="cmp-text">Trigger the touch nerves and muscles themselves.</div>
               <div class="cmp-label">Focus</div>
-              <div class="cmp-text">Information split between two separated Majorana modes.</div>
+              <div class="cmp-text">Small electrical pulses create the sensation and resistance.</div>
               <div class="cmp-label">Result</div>
-              <div class="cmp-text">Protection built into the physics, not bolted on.</div>
+              <div class="cmp-text">Force and texture without heavy actuators.</div>
             </div>
           </div>
-          <div class="cmp-cta">↻ The shift: correct errors after the fact → store the data where errors can't reach it</div>
+          <div class="cmp-cta">↻ The shift: buzz to say "contact" → physically stop the finger and stimulate the nerve</div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -263,15 +282,15 @@
         <div class="hdr"><span class="num">04 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Split the Qubit,<br>Braid the <span class="c1">Ends</span>.</h2>
+          <h2>Stopping the Finger,<br>Fooling the <span class="c1">Skin</span>.</h2>
           <div style="height:4px"></div>
           <div class="timeline">
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>A nanowire and a superconductor are built to host Majorana modes at their ends</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>One qubit's state is stored nonlocally, shared between two distant modes</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Swapping the modes' positions, braiding, performs a logic gate</b></div></div>
-            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The outcome depends only on the braid's topology, not the fine details</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The headset tracks exactly where your fingers meet the virtual surface</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>The glove brakes the tendons or joints so the fingers stop at the surface</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Actuators press on the fingertip to match the object's firmness</b></div></div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><b>Fast pulses vary that pressure to fake texture and the feeling of slip</b></div></div>
           </div>
-          <div class="callout c1"><p><strong>A local disturbance can't read the qubit because no single spot holds it.</strong> You would have to disturb both ends in exactly the right way at once, which almost never happens by accident.</p></div>
+          <div class="callout c1"><p><strong>The goal was never to shake your hand.</strong> It's to stop the finger at the surface and drive the skin's pressure sensors, so your brain accepts the object as solid.</p></div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">→</span></div>
       </div>
@@ -281,21 +300,21 @@
         <div class="hdr"><span class="num">05 / 06</span></div>
         <div class="body">
           <p style="margin-bottom:14px"> </p>
-          <h2>Promising,<br>Not <span class="c3">Proven</span>.</h2>
+          <h2>Signalling Touch Is Easy,<br>Resisting It <span class="c3">Isn't</span>.</h2>
           <div style="height:16px"></div>
           <div class="metric-grid">
-            <div class="metric"><b>Nonlocal</b><span>One qubit, two separated modes</span></div>
-            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>Braiding</b><span
-                style="color:var(--a2)">Gates from swapping positions</span></div>
-            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Unproven</b><span
-                style="color:var(--a3)">No confirmed topological qubit yet</span></div>
+            <div class="metric"><b>Grip stop</b><span>The finger halts at the surface</span></div>
+            <div class="metric" style="border-color:rgba(var(--a2rgb),.22)"><b>Pressure</b><span
+                style="color:var(--a2)">Firmness, not just a buzz</span></div>
+            <div class="metric" style="border-color:rgba(var(--a3rgb),.22)"><b>Texture</b><span
+                style="color:var(--a3)">Rapid pulses fake the grain</span></div>
           </div>
           <div class="stats">
-            <div class="st"><span class="st-v c1">The payoff would be less overhead</span>
-              <div class="st-t"><strong>Hardware-level protection could shrink</strong> the physical-to-logical qubit ratio dramatically.</div>
+            <div class="st"><span class="st-v c1">Force feedback is the hard half</span>
+              <div class="st-t"><strong>Telling you a touch happened is trivial,</strong> physically stopping a hand is not.</div>
             </div>
-            <div class="st"><span class="st-v c2">Confirming Majoranas is hard</span>
-              <div class="st-t"><strong>The experimental signatures are subtle,</strong> and earlier claims have been walked back.</div>
+            <div class="st"><span class="st-v c2">Weight and bulk are the blocker</span>
+              <div class="st-t"><strong>The more real the feedback,</strong> the heavier the glove tends to be.</div>
             </div>
           </div>
         </div>
@@ -310,14 +329,14 @@
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
           <div class="term-cloud">
-            <div class="term-tag shape-box c1">Majorana Zero Mode</div>
-            <div class="term-tag shape-pill c2">Topological Qubit</div>
-            <div class="term-tag shape-circle c3">Nonlocal Encoding</div>
-            <div class="term-tag shape-pill c1">Braiding</div>
-            <div class="term-tag fill shape-pill c2">Error Correction</div>
-            <div class="term-tag fill shape-circle c3">Semiconductor Nanowire</div>
-            <div class="term-tag fill shape-box c1">Topological Protection</div>
-            <div class="term-tag fill shape-circle c2">Local Noise</div>
+            <div class="term-tag shape-box c1">Haptic Feedback</div>
+            <div class="term-tag shape-pill c2">Force Feedback</div>
+            <div class="term-tag shape-circle c3">Mechanoreceptors</div>
+            <div class="term-tag shape-pill c1">Tendon Braking</div>
+            <div class="term-tag fill shape-pill c2">Vibrotactile</div>
+            <div class="term-tag fill shape-circle c3">Pneumatic Actuator</div>
+            <div class="term-tag fill shape-box c1">Electro-Stimulation</div>
+            <div class="term-tag fill shape-circle c2">Tactile Rendering</div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
@@ -355,17 +374,17 @@
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>Copy</button></div>
-      <div class="caption-text" id="captionText">Every mainstream qubit stores its information in one physical place: a single superconducting loop, a single trapped ion, a single photon. That locality is the root of the noise problem. Any stray disturbance that reaches that one spot, a vibration, a stray photon, a fluctuating field, can corrupt the state, which is why fault-tolerant designs need roughly a thousand physical qubits to protect each usable one.
+      <div class="caption-text" id="captionText">Put on a VR headset and reach for a virtual mug and your eyes are completely convinced. Then your hand closes straight through it, and the illusion is gone. Vision is doing most of the work of presence, but touch is what makes an object feel real, and touch is the sense VR still barely addresses.
 
-The topological approach tries to remove the vulnerability instead of correcting for it. The idea is to build a system, typically a specially engineered semiconductor nanowire placed against a superconductor and cooled, whose ends host Majorana zero modes: exotic quasiparticles that are their own antiparticle. A single qubit's information is then stored nonlocally, split between two of these modes that sit far apart on the device. No local disturbance can read or change the qubit, because the information is not in any one location. Only a disturbance that hits both separated modes in a correlated way could affect it, and that essentially never happens by chance.
+A rumble motor, the spinning weight in a controller, can tell you that contact happened. It cannot stop your fingers from closing, and it cannot reproduce what skin actually reads: pressure, firmness, texture, and the tiny slip of a surface moving under your fingertip. Micro-pneumatic gloves do better by inflating small air pockets against the skin and mechanically braking the finger tendons, so a virtual object has shape and resistance, but the hardware is bulky. The frontier is skipping the actuator and stimulating the touch nerves and muscles directly with small electrical pulses.
 
-Logic gates are performed by braiding, physically moving the modes around each other so their paths wind together. The result of a braid depends only on its topology, how many times and in which order things wound around, not on the exact speed or path, so small imperfections in the operation do not change the outcome. Protection is built into the physics rather than added on top.
+Whichever method is used, the mechanism is the same. The headset knows exactly where your fingertip meets the virtual surface. At that boundary, the glove halts the finger so it stops where the surface is, actuators press on the fingertip to match how hard the object should feel, and rapid changes in that pressure imitate texture and slip. The target is your skin's mechanoreceptors, the pressure and vibration sensors your brain has trusted your whole life.
 
-The catch is that this is still largely unproven. Cleanly demonstrating a Majorana mode is experimentally subtle, several high-profile claims have later been qualified or withdrawn, and no one has yet shown a working, braided topological qubit doing computation. If it does pan out, the overhead of error correction could shrink dramatically.
+The hard half is force feedback. Signalling a touch is easy; physically resisting a moving hand takes real mechanical force, and the more convincing that force, the heavier the glove. That trade-off is why haptics has lagged years behind visuals.
 
-The qubit was never safe because it was shielded well enough. It would be safe because the information was never sitting anywhere a disturbance could find it.
+VR never actually felt like nothing because the graphics were weak. It felt like nothing because there was no barrier where your hand expected one.
 
-#quantumcomputing #majorana #topologicalqubit #physics #ravenextechnologies</div>
+#haptics #vr #spatialcomputing #hci #ravenextechnologies</div>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -430,7 +449,7 @@ The qubit was never safe because it was shielded well enough. It would be safe b
     }
     async function downloadCurrentSlide() {
       const b = document.getElementById('dlCurrent'); b.disabled = true; b.innerHTML = dlSVG + 'Capturing...';
-      try { const file = await canvasToFile(await cap(slides[cur]), 'majorana-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
+      try { const file = await canvasToFile(await cap(slides[cur]), 'haptictouch-' + String(cur + 1).padStart(2, '0') + '.png'); await saveFile(file); }
       catch (e) { alert('Download failed: ' + e.message); }
       b.innerHTML = dlSVG + 'Current Slide'; b.disabled = false;
     }
@@ -444,7 +463,7 @@ The qubit was never safe because it was shielded well enough. It would be safe b
           slides[i].scrollIntoView({ behavior: 'instant', inline: 'center' });
           await new Promise(r => setTimeout(r, 150));
           fill.style.width = ((i + 1) / slides.length * 100) + '%';
-          files.push(await canvasToFile(await cap(slides[i]), 'majorana-' + String(i + 1).padStart(2, '0') + '.png'));
+          files.push(await canvasToFile(await cap(slides[i]), 'haptictouch-' + String(i + 1).padStart(2, '0') + '.png'));
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
