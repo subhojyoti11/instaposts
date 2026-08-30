@@ -328,15 +328,19 @@
           <p style="margin-bottom:14px"> </p>
           <h2>Quick<br><span class="c1">Reference</span>.</h2>
           <div style="height:16px"></div>
-          <div class="term-cloud">
-            <div class="term-tag shape-box c1">3D Gaussian Splatting</div>
-            <div class="term-tag shape-pill c2">Radiance Field</div>
-            <div class="term-tag shape-circle c3">Rasterization</div>
-            <div class="term-tag shape-pill c1">Spherical Harmonics</div>
-            <div class="term-tag fill shape-pill c2">Polygon Mesh</div>
-            <div class="term-tag fill shape-circle c3">Point Cloud</div>
-            <div class="term-tag fill shape-box c1">Real-Time Rendering</div>
-            <div class="term-tag fill shape-circle c2">Scene Capture</div>
+          <div class="stats">
+            <div class="st"><span class="st-v c1">3D Gaussian Splatting</span>
+              <div class="st-t"><strong>Millions of soft coloured blobs,</strong> rasterized directly instead of modelled as triangles.</div>
+            </div>
+            <div class="st"><span class="st-v c2">Radiance Field</span>
+              <div class="st-t"><strong>A neural network queried per ray,</strong> photoreal but far too slow to walk through.</div>
+            </div>
+            <div class="st"><span class="st-v c3">Spherical Harmonics</span>
+              <div class="st-t"><strong>How each blob's colour shifts with view angle,</strong> giving surfaces a real sheen.</div>
+            </div>
+            <div class="st"><span class="st-v c1">Real-Time Rendering</span>
+              <div class="st-t"><strong>100+ frames a second on one GPU,</strong> the payoff of skipping the mesh entirely.</div>
+            </div>
           </div>
         </div>
         <div class="ftr"><span class="left">@ravenextechnologies</span><span class="right">↻ Save &amp; Share</span>
