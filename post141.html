@@ -412,7 +412,7 @@ The grid was never reading the qubit. It was watching the parity around it, and 
         try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
         document.body.removeChild(ta);
       }
-      if (!ok && navigator.share) {
+      if (!ok && isMobile && navigator.share) {
         try { await navigator.share({ text }); ok = true; } catch (e) {}
       }
       if (ok) {
@@ -434,8 +434,9 @@ The grid was never reading the qubit. It was watching the parity around it, and 
     function canvasToFile(canvas, filename) {
       return new Promise(resolve => { canvas.toBlob(blob => resolve(new File([blob], filename, { type: 'image/png' })), 'image/png'); });
     }
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     async function saveFile(file) {
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
         try { await navigator.share({ files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; }
       }
       const a = document.createElement('a');
@@ -463,7 +464,7 @@ The grid was never reading the qubit. It was watching the parity around it, and 
           await new Promise(r => setTimeout(r, 400));
         }
         carousel.scrollTo({ left: o, behavior: 'instant' }); carousel.style.scrollBehavior = 'smooth';
-        if (navigator.canShare && navigator.canShare({ files })) {
+        if (isMobile && navigator.canShare && navigator.canShare({ files })) {
           try { await navigator.share({ files }); }
           catch (e) { if (e.name !== 'AbortError') for (const f of files) await saveFile(f); }
         } else {
